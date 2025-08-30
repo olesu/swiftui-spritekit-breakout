@@ -11,6 +11,8 @@ class GameScene: SKScene {
     var gameService: GameService
     
     private var stateLabel: SKLabelNode?
+    private var paddleNode: SKSpriteNode?
+    private var paddle = Paddle()
     
     init(gameService: GameService, size: CGSize) {
         self.gameService = gameService
@@ -23,8 +25,21 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         backgroundColor = .black
+        setupPaddle()
         setupBricks()
         updateForState()
+    }
+    
+    func setupPaddle() {
+        // Create the paddle sprite
+        paddleNode = SKSpriteNode(color: .white, size: paddle.size)
+        paddleNode?.position = paddle.position
+        paddleNode?.name = "paddle"
+        
+        // Add paddle to the scene
+        if let paddleNode = paddleNode {
+            addChild(paddleNode)
+        }
     }
     
     func setupBricks() {
