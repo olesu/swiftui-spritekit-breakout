@@ -18,6 +18,8 @@ class PaddleController: SKSpriteNode {
             color: .white,
             size: paddle.size
         )
+        
+        self.position = paddle.position
     }
     
     required init?(coder aDecoder: NSCoder) {
