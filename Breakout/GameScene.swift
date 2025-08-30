@@ -24,9 +24,16 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         backgroundColor = .black
+        setupPhysicsWorld()
         setupPaddle()
         setupBricks()
         updateForState()
+    }
+    
+    func setupPhysicsWorld() {
+        // Just basic physics world setup for the paddle
+        physicsWorld.gravity = CGVector(dx: 0, dy: 0) // No gravity for breakout
+        
     }
     
     func setupPaddle() {

@@ -19,11 +19,34 @@ class PaddleController: SKSpriteNode {
             size: paddle.size
         )
         
+        // Set the visual position
         self.position = paddle.position
+        
+        // Set up physics body
+        setupPhysicsBody()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupPhysicsBody() {
+        // Create rectangular physics body matching the paddle size
+        let physicsBody = SKPhysicsBody(rectangleOf: paddle.size)
+        
+        // Configure physics properties
+        physicsBody.isDynamic = false // Static body - won't be affected by forces
+        physicsBody.affectedByGravity = false // No gravity effects
+        physicsBody.friction = 0 // No friction for clean bounces
+        physicsBody.restitution = 1.0 // Perfect bounce (no energy loss)
+        
+        // Set physics categories for collision detection
+        physicsBody.categoryBitMask = PhysicsCategory.paddle
+        physicsBody.contactTestBitMask = PhysicsCategory.ball
+        physicsBody.collisionBitMask = PhysicsCategory.ball
+        
+        // Assign the physics body to this node
+        self.physicsBody = physicsBody
     }
     
     func moveTo(x: CGFloat) {
