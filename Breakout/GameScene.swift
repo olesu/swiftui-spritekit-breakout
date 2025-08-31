@@ -12,6 +12,7 @@ class GameScene: SKScene {
     
     private var stateLabel: SKLabelNode?
     private var paddleController: PaddleController?
+    private var ballController: BallController?
     
     init(gameService: GameService, size: CGSize) {
         self.gameService = gameService
@@ -26,6 +27,7 @@ class GameScene: SKScene {
         backgroundColor = .black
         setupPhysicsWorld()
         setupPaddle()
+        setupBall()
         setupBricks()
         updateForState()
     }
@@ -40,6 +42,13 @@ class GameScene: SKScene {
         paddleController = PaddleController(gameAreaWidth: size.width)
         if let paddleController = paddleController {
             addChild(paddleController)
+        }
+    }
+    
+    func setupBall() {
+        ballController = BallController()
+        if let ballController = ballController {
+            addChild(ballController)
         }
     }
     
