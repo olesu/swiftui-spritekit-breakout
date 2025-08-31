@@ -51,7 +51,8 @@ class GameScene: SKScene {
         if let paddleController = paddleController {
             ballController = BallController(paddlePosition: paddleController.position)
             if let ballController = ballController {
-                addChild(ballController)
+                paddleController.addChild(ballController)
+                ballController.position = CGPoint(x: 0, y: 20)
             }
         }
     }
