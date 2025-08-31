@@ -30,6 +30,8 @@ class GameScene: SKScene {
         setupBall()
         setupBricks()
         updateForState()
+
+        view.window?.acceptsMouseMovedEvents = true
     }
     
     func setupPhysicsWorld() {
@@ -94,6 +96,11 @@ class GameScene: SKScene {
             gameService.launchBall()
             updateForState()
         }
+    }
+    
+    override func mouseMoved(with event: NSEvent) {
+        let location = event.location(in: self)
+        paddleController?.moveTo(x: location.x)
     }
     
     func brickHit(_ brick: Brick) {
