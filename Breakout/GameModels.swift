@@ -5,18 +5,6 @@ struct Brick: Identifiable {
     let id: UUID
 }
 
-struct Ball {
-    var position: CGPoint
-    
-    init(position: CGPoint = CGPoint(x: 0, y: 0)) {
-        self.position = position
-    }
-    
-    mutating func move() {
-        self.position = CGPoint(x: 2, y: 2)
-    }
-}
-
 struct Paddle {
     var position: CGPoint
     var size: CGSize
