@@ -46,9 +46,11 @@ class GameScene: SKScene {
     }
     
     func setupBall() {
-        ballController = BallController()
-        if let ballController = ballController {
-            addChild(ballController)
+        if let paddleController = paddleController {
+            ballController = BallController(paddlePosition: paddleController.position)
+            if let ballController = ballController {
+                addChild(ballController)
+            }
         }
     }
     
