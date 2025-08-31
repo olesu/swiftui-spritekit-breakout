@@ -1,12 +1,10 @@
-//
-//  BallTests.swift
-//  Breakout
-//
-//  Created by Ole Kristian Sunde on 31/08/2025.
-//
+import Testing
+import CoreGraphics
 
-import Foundation
+@testable import Breakout
 
 struct BallTests {
-    
+    @Test func hasAPosition() async throws {
+        #expect(Ball().position == CGPoint(x: 0, y: 0))
+    }
 }
