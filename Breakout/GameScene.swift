@@ -132,7 +132,7 @@ class GameScene: SKScene {
             ballController.position = ballWorldPosition ?? .zero
             
             // Add physics and initial velocity
-            // TODO: Set up ball physics and velocity
+            ballController.physicsBody?.velocity = CGVector(dx: 0, dy: 200)
         }
     }
 }

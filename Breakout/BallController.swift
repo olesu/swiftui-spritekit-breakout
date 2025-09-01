@@ -18,9 +18,26 @@ class BallController: SKSpriteNode {
         super.init(texture: nil, color: .white, size: ballSize)
         
         self.position = ballPosition
+        
+        setupPhysicsBody()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupPhysicsBody() {
+        let physicsBody = SKPhysicsBody(circleOfRadius: size.width / 2)
+        
+        physicsBody.isDynamic = true
+        physicsBody.affectedByGravity = false
+        physicsBody.friction = 0
+        physicsBody.restitution = 1
+        physicsBody.categoryBitMask = PhysicsCategory.ball
+        physicsBody.contactTestBitMask = PhysicsCategory.paddle | PhysicsCategory.brick
+        physicsBody.collisionBitMask = PhysicsCategory.paddle | PhysicsCategory.brick
+        
+        self.physicsBody = physicsBody
+        
     }
 }
