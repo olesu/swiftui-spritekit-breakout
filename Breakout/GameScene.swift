@@ -120,19 +120,7 @@ class GameScene: SKScene {
     
     func launchBall() {
         if let ballController = ballController {
-            // Convert ball position to scene coordinates before removing from paddle
-            let ballWorldPosition =
-                ballController.parent?.convert(
-                    ballController.position, to: self)
-            
-            // Remove from paddle and add to scene
-            ballController.removeFromParent()
-            addChild(ballController)
-            
-            ballController.position = ballWorldPosition ?? .zero
-            
-            // Add physics and initial velocity
-            ballController.physicsBody?.velocity = CGVector(dx: 0, dy: 200)
+            ballController.launch(to: self)
         }
     }
 }
