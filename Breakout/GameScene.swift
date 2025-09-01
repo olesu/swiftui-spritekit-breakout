@@ -94,6 +94,7 @@ class GameScene: SKScene {
     
     override func mouseDown(with event: NSEvent) {
         if gameService.state == .ready {
+            launchBall()
             gameService.launchBall()
             updateForState()
         }
@@ -115,5 +116,23 @@ class GameScene: SKScene {
     func ballHitBottom() {
         gameService.ballHitBottom()
         updateForState()
+    }
+    
+    func launchBall() {
+        if let ballController = ballController {
+            // Convert ball position to scene coordinates before removing from paddle
+            let ballWorldPosition =
+                ballController.parent?.convert(
+                    ballController.position, to: self)
+            
+            // Remove from paddle and add to scene
+            ballController.removeFromParent()
+            addChild(ballController)
+            
+            ballController.position = ballWorldPosition ?? .zero
+            
+            // Add physics and initial velocity
+            // TODO: Set up ball physics and velocity
+        }
     }
 }
