@@ -94,7 +94,8 @@ class GameScene: SKScene {
     
     override func mouseDown(with event: NSEvent) {
         if gameService.state == .ready {
-            launchBall()
+            let clickLocation = event.location(in: self)
+            launchBall(toward: clickLocation)
             gameService.launchBall()
             updateForState()
         }
@@ -118,9 +119,9 @@ class GameScene: SKScene {
         updateForState()
     }
     
-    func launchBall() {
+    func launchBall(toward target: CGPoint) {
         if let ballController = ballController {
-            ballController.launch(to: self)
+            ballController.launch(to: self, toward: target)
         }
     }
 }

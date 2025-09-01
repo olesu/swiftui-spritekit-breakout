@@ -26,18 +26,33 @@ class BallController: SKSpriteNode {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func launch(to scene: SKScene) {
+    func launch(to scene: SKScene, toward target: CGPoint) {
         // Convert ball position to scene coordinates before removing from paddle
-        let ballWorldPosition = parent?.convert(position, to: scene)
+        let ballWorldPosition = parent?.convert(position, to: scene) ?? .zero
+        
+        // Calculate direction vector
+        let direction = CGVector(
+            dx: target.x - ballWorldPosition.x,
+            dy: target.y - ballWorldPosition.y
+        )
+        
+        // Normalize and scale to desired speed
+        let length = sqrt(direction.dx * direction.dx + direction.dy * direction.dy)
+        let speed: CGFloat = 200
+        
+        let velocity = CGVector(
+            dx: (direction.dx / length) * speed,
+            dy: (direction.dy / length) * speed
+        )
         
         // Remove from paddle and add to scene
         removeFromParent()
         scene.addChild(self)
         
-        position = ballWorldPosition ?? .zero
+        position = ballWorldPosition
         
         // Add physics and initial velocity
-        physicsBody?.velocity = CGVector(dx: 0, dy: 200)
+        physicsBody?.velocity = velocity
 
     }
     
