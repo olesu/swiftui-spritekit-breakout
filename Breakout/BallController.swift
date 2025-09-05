@@ -51,8 +51,8 @@ class BallController: SKSpriteNode {
         physicsBody.friction = 0
         physicsBody.restitution = 1
         physicsBody.categoryBitMask = PhysicsCategory.ball
-        physicsBody.contactTestBitMask = PhysicsCategory.paddle | PhysicsCategory.brick
-        physicsBody.collisionBitMask = PhysicsCategory.paddle | PhysicsCategory.brick
+        physicsBody.contactTestBitMask = PhysicsCategory.paddle | PhysicsCategory.brick | PhysicsCategory.wall
+        physicsBody.collisionBitMask = PhysicsCategory.paddle | PhysicsCategory.brick | PhysicsCategory.wall
         
         self.physicsBody = physicsBody
         
