@@ -53,6 +53,8 @@ class BallController: SKSpriteNode {
         physicsBody.categoryBitMask = PhysicsCategory.ball
         physicsBody.contactTestBitMask = PhysicsCategory.paddle | PhysicsCategory.brick | PhysicsCategory.wall
         physicsBody.collisionBitMask = PhysicsCategory.paddle | PhysicsCategory.brick | PhysicsCategory.wall
+        physicsBody.linearDamping = 0
+        physicsBody.angularDamping = 0
         
         self.physicsBody = physicsBody
         
