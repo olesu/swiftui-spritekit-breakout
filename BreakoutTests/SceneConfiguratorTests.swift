@@ -23,4 +23,5 @@ struct SceneConfiguratorTests {
         #expect(physicsBody.contactTestBitMask == PhysicsCategory.ball)
         #expect(physicsBody.collisionBitMask == PhysicsCategory.ball)
     }
+    
 }

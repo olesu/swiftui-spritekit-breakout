@@ -18,4 +18,8 @@ struct SceneConfigurator {
 
         scene.physicsBody = physicsBody
     }
+    
+    static func configureMouse(_ view: SKView) {
+        view.window?.acceptsMouseMovedEvents = true
+    }
 }
