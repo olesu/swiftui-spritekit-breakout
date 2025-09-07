@@ -72,8 +72,11 @@ class GameScene: SKScene {
     
     func updateForState() {
         stateLabel?.removeFromParent()
-        
-        switch gameService.state {
+        handleGameStateChange(gameService.state)
+    }
+    
+    private func handleGameStateChange(_ newState: GameState) {
+        switch newState {
         case .ready:
             showOverlay(text: "Tap to start")
         case .playing:
