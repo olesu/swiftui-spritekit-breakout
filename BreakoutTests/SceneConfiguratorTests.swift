@@ -1,15 +1,13 @@
-import XCTest
+import Testing
+import SpriteKit
+@testable import Breakout
 
-class SceneConfiguratorTests: XCTestCase {
-    func testPhysicsWorldGravityConfiguration() {
-        // Given
-        let sceneConfigurator = SceneConfigurator()
-        let expectedGravity = CGVector(dx: 0.0, dy: -9.8)
-
-        // When
-        sceneConfigurator.configurePhysicsWorld()
-
-        // Then
-        XCTAssertNotEqual(sceneConfigurator.physicsWorld.gravity, expectedGravity, "Gravity should be configured to the expected value, but it isn't.")
+struct SceneConfiguratorTests {
+    @Test func configuresPhysicsWorldWithZeroGravity() {
+        let scene = SKScene(size: CGSize(width: 400, height: 600))
+        
+        SceneConfigurator.configurePhysicsWorld(scene)
+        
+        #expect(scene.physicsWorld.gravity == CGVector(dx: 0, dy: 0))
     }
 }
