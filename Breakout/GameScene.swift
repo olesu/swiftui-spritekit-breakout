@@ -36,10 +36,9 @@ class GameScene: SKScene {
     }
     
     func setupPaddle() {
-        paddleController = PaddleController(gameAreaWidth: size.width)
-        if let paddleController = paddleController {
-            addChild(paddleController)
-        }
+        let paddle = PaddleController(gameAreaWidth: size.width)
+        addChild(paddle)
+        paddleController = paddle
     }
     
     func setupBall() {
