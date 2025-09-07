@@ -42,13 +42,13 @@ class GameScene: SKScene {
     }
     
     func setupBall() {
-        if let paddleController = paddleController {
-            ballController = BallController(paddlePosition: paddleController.position)
-            if let ballController = ballController {
-                paddleController.addChild(ballController)
-                ballController.position = CGPoint(x: 0, y: GameConstants.ballOffset)
-            }
-        }
+        guard let paddle = paddleController else { return }
+        
+        let ball = BallController(paddlePosition: paddle.position)
+        paddle.addChild(ball)
+        ball.position = CGPoint(x: 0, y: GameConstants.ballOffset)
+        
+        ballController = ball
     }
     
     func setupBricks() {
