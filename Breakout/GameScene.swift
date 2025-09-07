@@ -47,15 +47,18 @@ class GameScene: SKScene {
             ballController = BallController(paddlePosition: paddleController.position)
             if let ballController = ballController {
                 paddleController.addChild(ballController)
-                ballController.position = CGPoint(x: 0, y: 20)
+                ballController.position = CGPoint(x: 0, y: GameConstants.ballOffset)
             }
         }
     }
     
     func setupBricks() {
         for brick in gameService.bricks {
-            let brickNode = SKSpriteNode(color: .red, size: CGSize(width: 50, height: 20))
-            brickNode.position = CGPoint(x: CGFloat.random(in: 50...350), y: CGFloat.random(in: 400...550))
+            let brickNode = SKSpriteNode(color: .red, size: GameConstants.brickSize)
+            brickNode.position = CGPoint(
+                x: CGFloat.random(in: GameConstants.brickXRange),
+                y: CGFloat.random(in: GameConstants.brickYRange),
+            )
             brickNode.name = brick.id.uuidString
             addChild(brickNode)
         }
@@ -79,10 +82,10 @@ class GameScene: SKScene {
     func showOverlay(text: String) {
         let label = SKLabelNode(text: text)
         label.fontName = "AvenirNext-Bold"
-        label.fontSize = 40
+        label.fontSize = GameConstants.overlayFontSize
         label.fontColor = .white
         label.position = CGPoint(x: size.width / 2, y: size.height / 2)
-        label.zPosition = 10
+        label.zPosition = GameConstants.overlayZPosition
         addChild(label)
         stateLabel = label
     }
