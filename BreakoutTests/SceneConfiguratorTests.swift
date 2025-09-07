@@ -10,4 +10,5 @@ struct SceneConfiguratorTests {
         
         #expect(scene.physicsWorld.gravity == CGVector(dx: 0, dy: 0))
     }
+    
 }

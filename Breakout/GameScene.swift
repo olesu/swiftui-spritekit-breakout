@@ -24,7 +24,7 @@ class GameScene: SKScene {
     }
     
     override func didMove(to view: SKView) {
-        backgroundColor = .black
+        SceneConfigurator.configureBackground(self)
         SceneConfigurator.configurePhysicsWorld(self)
         
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: CGRect(origin: .zero, size: self.size))
