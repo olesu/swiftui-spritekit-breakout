@@ -32,8 +32,6 @@ class GameScene: SKScene {
         setupBall()
         setupBricks()
         updateForState()
-
-        view.window?.acceptsMouseMovedEvents = true
     }
     
     func setupPaddle() {
