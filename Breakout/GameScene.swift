@@ -25,7 +25,7 @@ class GameScene: SKScene {
     
     override func didMove(to view: SKView) {
         backgroundColor = .black
-        setupPhysicsWorld()
+        SceneConfigurator.configurePhysicsWorld(self)
         
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: CGRect(origin: .zero, size: self.size))
         self.physicsBody?.categoryBitMask = PhysicsCategory.wall
@@ -38,12 +38,6 @@ class GameScene: SKScene {
         updateForState()
 
         view.window?.acceptsMouseMovedEvents = true
-    }
-    
-    func setupPhysicsWorld() {
-        // Just basic physics world setup for the paddle
-        physicsWorld.gravity = CGVector(dx: 0, dy: 0) // No gravity for breakout
-        
     }
     
     func setupPaddle() {
