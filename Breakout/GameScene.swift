@@ -26,11 +26,7 @@ class GameScene: SKScene {
     override func didMove(to view: SKView) {
         SceneConfigurator.configureBackground(self)
         SceneConfigurator.configurePhysicsWorld(self)
-        
-        self.physicsBody = SKPhysicsBody(edgeLoopFrom: CGRect(origin: .zero, size: self.size))
-        self.physicsBody?.categoryBitMask = PhysicsCategory.wall
-        self.physicsBody?.contactTestBitMask = PhysicsCategory.ball
-        self.physicsBody?.collisionBitMask = PhysicsCategory.ball
+        SceneConfigurator.configurePhysicsBody(self, bounds: CGRect(origin: .zero, size: self.size))
         
         setupPaddle()
         setupBall()

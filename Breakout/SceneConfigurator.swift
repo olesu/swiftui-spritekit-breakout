@@ -8,4 +8,14 @@ struct SceneConfigurator {
     static func configureBackground(_ scene: SKScene) {
         scene.backgroundColor = .black
     }
+    
+    static func configurePhysicsBody(_ scene: SKScene, bounds: CGRect) {
+        let physicsBody = SKPhysicsBody(edgeLoopFrom: bounds)
+        
+        physicsBody.categoryBitMask = PhysicsCategory.wall
+        physicsBody.contactTestBitMask = PhysicsCategory.ball
+        physicsBody.collisionBitMask = PhysicsCategory.ball
+
+        scene.physicsBody = physicsBody
+    }
 }
