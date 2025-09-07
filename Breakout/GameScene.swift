@@ -100,12 +100,12 @@ class GameScene: SKScene {
     }
     
     override func mouseDown(with event: NSEvent) {
-        if gameService.state == .ready {
-            let clickLocation = event.location(in: self)
-            launchBall(toward: clickLocation)
-            gameService.launchBall()
-            updateForState()
-        }
+        guard gameService.state == .ready else { return }
+        
+        let clickLocation = event.location(in: self)
+        launchBall(toward: clickLocation)
+        gameService.launchBall()
+        handleGameStateChange(gameService.state)
     }
     
     override func mouseMoved(with event: NSEvent) {
