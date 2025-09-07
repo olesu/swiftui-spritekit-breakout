@@ -1,8 +1,9 @@
 import SpriteKit
 
 struct SceneConfigurator {
-    private static func configurePhysicsWorld(_ scene: SKScene) {
+    private static func configurePhysicsWorld(_ scene: SKScene, delegate: SKPhysicsContactDelegate? = nil) {
         scene.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
+        scene.physicsWorld.contactDelegate = delegate
     }
     
     private static func configureBackground(_ scene: SKScene) {
@@ -23,9 +24,9 @@ struct SceneConfigurator {
         view?.window?.acceptsMouseMovedEvents = true
     }
     
-    static func configureScene(_ scene: SKScene, bounds: CGRect, view: SKView? = nil) {
+    static func configureScene(_ scene: SKScene, bounds: CGRect, view: SKView? = nil, delegate: SKPhysicsContactDelegate? = nil) {
         configureBackground(scene)
-        configurePhysicsWorld(scene)
+        configurePhysicsWorld(scene, delegate: delegate)
         configurePhysicsBody(scene, bounds: bounds)
         configureMouse(view)
     }

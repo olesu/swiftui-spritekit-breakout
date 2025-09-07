@@ -27,7 +27,9 @@ class GameScene: SKScene {
         SceneConfigurator.configureScene(
             self,
             bounds: CGRect(origin: .zero, size: self.size),
-            view: view)
+            view: view,
+            delegate: self,
+        )
         
         setupPaddle()
         setupBall()
@@ -120,5 +122,11 @@ class GameScene: SKScene {
         if let ballController = ballController {
             ballController.launch(to: self, toward: target)
         }
+    }
+}
+
+extension GameScene: SKPhysicsContactDelegate {
+    func didBegin(_ contact: SKPhysicsContact) {
+        // Handle physics contacts here instead of in controllers
     }
 }
