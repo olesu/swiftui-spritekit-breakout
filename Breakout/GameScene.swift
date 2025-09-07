@@ -24,9 +24,10 @@ class GameScene: SKScene {
     }
     
     override func didMove(to view: SKView) {
-        SceneConfigurator.configureBackground(self)
-        SceneConfigurator.configurePhysicsWorld(self)
-        SceneConfigurator.configurePhysicsBody(self, bounds: CGRect(origin: .zero, size: self.size))
+        SceneConfigurator.configureScene(
+            self,
+            bounds: CGRect(origin: .zero, size: self.size),
+            view: view)
         
         setupPaddle()
         setupBall()

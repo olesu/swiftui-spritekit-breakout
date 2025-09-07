@@ -1,15 +1,15 @@
 import SpriteKit
 
 struct SceneConfigurator {
-    static func configurePhysicsWorld(_ scene: SKScene) {
+    private static func configurePhysicsWorld(_ scene: SKScene) {
         scene.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
     }
     
-    static func configureBackground(_ scene: SKScene) {
+    private static func configureBackground(_ scene: SKScene) {
         scene.backgroundColor = .black
     }
     
-    static func configurePhysicsBody(_ scene: SKScene, bounds: CGRect) {
+    private static func configurePhysicsBody(_ scene: SKScene, bounds: CGRect) {
         let physicsBody = SKPhysicsBody(edgeLoopFrom: bounds)
         
         physicsBody.categoryBitMask = PhysicsCategory.wall
@@ -19,7 +19,14 @@ struct SceneConfigurator {
         scene.physicsBody = physicsBody
     }
     
-    static func configureMouse(_ view: SKView) {
-        view.window?.acceptsMouseMovedEvents = true
+    private static func configureMouse(_ view: SKView? = nil) {
+        view?.window?.acceptsMouseMovedEvents = true
+    }
+    
+    static func configureScene(_ scene: SKScene, bounds: CGRect, view: SKView? = nil) {
+        configureBackground(scene)
+        configurePhysicsWorld(scene)
+        configurePhysicsBody(scene, bounds: bounds)
+        configureMouse(view)
     }
 }

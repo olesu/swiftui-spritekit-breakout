@@ -4,15 +4,16 @@ import SpriteKit
 
 struct SceneConfiguratorTests {
     let scene = SKScene(size: CGSize(width: 400, height: 600))
+    let bounds = CGRect(origin: .zero, size: CGSize(width: 400, height: 600))
     
     @Test func configuresPhysicsWorldWithZeroGravity() {
-        SceneConfigurator.configurePhysicsWorld(scene)
+        SceneConfigurator.configureScene(scene, bounds: bounds)
         
         #expect(scene.physicsWorld.gravity == CGVector(dx: 0, dy: 0))
     }
 
     @Test func configuresPhysicsBody() {
-        SceneConfigurator.configurePhysicsBody(scene, bounds: CGRect(origin: .zero, size: scene.size))
+        SceneConfigurator.configureScene(scene, bounds: bounds)
         
         guard let physicsBody = scene.physicsBody else {
             Issue.record("Scene must have a physics body")
