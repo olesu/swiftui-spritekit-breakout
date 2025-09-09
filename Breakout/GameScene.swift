@@ -144,6 +144,12 @@ class GameScene: SKScene {
 
 extension GameScene: SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
-        // Handle physics contacts here instead of in controllers
+        let categoryA = contact.bodyA.categoryBitMask
+        let categoryB = contact.bodyB.categoryBitMask
+        
+        if (categoryA == PhysicsCategory.ball && categoryB == PhysicsCategory.bottomWall) ||
+            (categoryA == PhysicsCategory.bottomWall && categoryB == PhysicsCategory.ball) {
+            ballHitBottom()
+        }
     }
 }
