@@ -31,6 +31,14 @@ class GameScene: SKScene {
             delegate: self,
         )
         
+        setupBottomWall()
+        setupPaddle()
+        setupBall()
+        setupBricks()
+        updateForState()
+    }
+    
+    func setupBottomWall() {
         let bottomWall = SKNode()
         bottomWall.position = CGPoint(x: size.width / 2, y: 0)
         bottomWall.physicsBody = SKPhysicsBody(edgeLoopFrom: CGRect(origin: .zero, size: CGSize(width: size.width, height: 0)))
@@ -39,11 +47,6 @@ class GameScene: SKScene {
         bottomWall.physicsBody?.collisionBitMask = 0
         
         addChild(bottomWall)
-        
-        setupPaddle()
-        setupBall()
-        setupBricks()
-        updateForState()
     }
     
     func setupPaddle() {
