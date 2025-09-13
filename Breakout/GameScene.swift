@@ -39,30 +39,21 @@ class GameScene: SKScene {
     }
     
     func setupBottomWall() {
-        let bottomWall = SKNode()
-        bottomWall.position = CGPoint(x: size.width / 2, y: 0)
-        bottomWall.physicsBody = SKPhysicsBody(edgeLoopFrom: CGRect(origin: .zero, size: CGSize(width: size.width, height: 0)))
-        bottomWall.physicsBody?.categoryBitMask = PhysicsCategory.bottomWall
-        bottomWall.physicsBody?.contactTestBitMask = PhysicsCategory.ball
-        bottomWall.physicsBody?.collisionBitMask = 0
-        
-        addChild(bottomWall)
+        addChild(BottomWallController(worldSize: size))
     }
     
     func setupPaddle() {
-        let paddle = PaddleController(gameAreaWidth: size.width)
-        addChild(paddle)
-        paddleController = paddle
+        paddleController = PaddleController(gameAreaWidth: size.width)
+        addChild(paddleController!)
     }
     
     func setupBall() {
         guard let paddle = paddleController else { return }
         
-        let ball = BallController(paddlePosition: paddle.position)
-        paddle.addChild(ball)
-        ball.position = CGPoint(x: 0, y: GameConstants.ballOffset)
-        
-        ballController = ball
+        ballController = BallController(paddlePosition: paddle.position)
+        ballController!.position = CGPoint(x: 0, y: GameConstants.ballOffset)
+
+        paddle.addChild(ballController!)
     }
     
     func setupBricks() {
