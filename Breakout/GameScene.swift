@@ -58,19 +58,8 @@ class GameScene: SKScene {
     
     func setupBricks() {
         gameService.bricks
-            .map(createBrick)
+            .map(BrickController.init(model:))
             .forEach(addChild)
-    }
-    
-    private func createBrick(for brick: Brick) -> SKSpriteNode {
-        let brickNode = SKSpriteNode(color: .red, size: GameConstants.brickSize)
-        brickNode.position = CGPoint(
-            x: CGFloat.random(in: GameConstants.brickXRange),
-            y: CGFloat.random(in: GameConstants.brickYRange),
-        )
-        brickNode.name = brick.id.uuidString
-        
-        return brickNode
     }
     
     func updateForState() {
