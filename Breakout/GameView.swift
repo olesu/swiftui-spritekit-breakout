@@ -14,6 +14,7 @@ enum NodeNames: String {
     case brickLayout
     case scoreLabel
     case livesLabel
+    case ball
 }
 
 class PaddleSprite: SKSpriteNode {
@@ -30,7 +31,16 @@ class PaddleSprite: SKSpriteNode {
 }
 
 class BallSprite: SKSpriteNode {
+    init(position: CGPoint) {
+        let ballSize = CGSize(width: 8, height: 8)
+        super.init(texture: nil, color: .white, size: ballSize)
+        self.name = NodeNames.ball.rawValue
+        self.position = position
+    }
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 struct BrickData {
@@ -237,7 +247,8 @@ class BreakoutScene: SKScene {
         .paddle: PaddleSprite(position: CGPoint(x: 160, y: 40)),
         .brickLayout: ClassicBricksLayout(),
         .scoreLabel: ScoreLabel(position: CGPoint(x: 40, y: 460)),
-        .livesLabel: LivesLabel(position: CGPoint(x: 280, y: 460))
+        .livesLabel: LivesLabel(position: CGPoint(x: 280, y: 460)),
+        .ball: BallSprite(position: CGPoint(x: 160, y: 50))
     ]
     
     override init() {
