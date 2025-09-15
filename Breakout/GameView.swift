@@ -13,6 +13,7 @@ enum NodeNames: String {
     case paddle
     case brickLayout
     case scoreLabel
+    case livesLabel
 }
 
 class PaddleSprite: SKSpriteNode {
@@ -207,7 +208,19 @@ class ScoreLabel: SKLabelNode {
 }
 
 class LivesLabel: SKLabelNode {
+    init(position: CGPoint) {
+        super.init()
+        self.text = "3"
+        self.fontName = "Courier-Bold"
+        self.fontSize = 20
+        self.fontColor = .white
+        self.position = position
+        self.name = NodeNames.livesLabel.rawValue
+    }
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 class WallNode: SKNode {
@@ -223,7 +236,8 @@ class BreakoutScene: SKScene {
     let sprites: [NodeNames: SKNode] = [
         .paddle: PaddleSprite(position: CGPoint(x: 160, y: 40)),
         .brickLayout: ClassicBricksLayout(),
-        .scoreLabel: ScoreLabel(position: CGPoint(x: 40, y: 460))
+        .scoreLabel: ScoreLabel(position: CGPoint(x: 40, y: 460)),
+        .livesLabel: LivesLabel(position: CGPoint(x: 280, y: 460))
     ]
     
     override init() {
