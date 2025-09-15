@@ -294,6 +294,8 @@ class BreakoutScene: SKScene {
     }
     
     override func didMove(to view: SKView) {
+        view.showsPhysics = true
+        view.showsFPS = true
         sprites.values.forEach { addChild($0) }
     }
 }
