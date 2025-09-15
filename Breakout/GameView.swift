@@ -18,6 +18,7 @@ enum NodeNames: String {
     case topWall
     case leftWall
     case rightWall
+    case gutter
 }
 
 class PaddleSprite: SKSpriteNode {
@@ -254,7 +255,20 @@ class WallNode: SKNode {
 }
 
 class GutterNode: SKNode {
+    init(position: CGPoint, size: CGSize) {
+        super.init()
+        let gutter = SKSpriteNode(color: .clear, size: size)
+        gutter.physicsBody = SKPhysicsBody(rectangleOf: size)
+        gutter.physicsBody?.isDynamic = false
+        gutter.physicsBody?.categoryBitMask = 2
+        gutter.position = position
+        addChild(gutter)
+        self.name = NodeNames.gutter.rawValue
+    }
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 class BreakoutScene: SKScene {
@@ -267,7 +281,8 @@ class BreakoutScene: SKScene {
         .ball: BallSprite(position: CGPoint(x: 160, y: 50)),
         .topWall: WallNode(position: CGPoint(x: 160, y: 430), size: CGSize(width: 320, height: 10)),
         .leftWall: WallNode(position: CGPoint(x: 0, y: 240), size: CGSize(width: 10, height: 480)),
-        .rightWall: WallNode(position: CGPoint(x: 320, y: 240), size: CGSize(width: 10, height: 480))
+        .rightWall: WallNode(position: CGPoint(x: 320, y: 240), size: CGSize(width: 10, height: 480)),
+        .gutter: GutterNode(position: CGPoint(x: 160, y: 0), size: CGSize(width: 320, height: 10))
     ]
     
     override init() {
