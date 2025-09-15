@@ -10,7 +10,15 @@ import SwiftUI
 import SpriteKit
 
 class PaddleSprite: SKSpriteNode {
+    init() {
+        let paddleSize = CGSize(width: 60, height: 12)
+        super.init(texture: nil, color: .white, size: paddleSize)
+        self.name = "paddle"
+    }
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 class BallSprite: SKSpriteNode {
@@ -39,9 +47,17 @@ class GutterNode: SKNode {
 
 class BreakoutScene: SKScene {
     let gameSize = CGSize(width: 320, height: 480)
+    var paddle: PaddleSprite!
     
     override func didMove(to view: SKView) {
         size = gameSize
+        setupPaddle()
+    }
+    
+    private func setupPaddle() {
+        paddle = PaddleSprite()
+        paddle.position = CGPoint(x: gameSize.width / 2, y: 40)
+        addChild(paddle)
     }
 }
 
