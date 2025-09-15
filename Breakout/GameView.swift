@@ -72,6 +72,12 @@ class BrickSprite: SKSpriteNode {
         let brickSize = CGSize(width: 22, height: 10)
         super.init(texture: nil, color: color, size: brickSize)
         self.position = position
+        
+        // Add physics body
+        self.physicsBody = SKPhysicsBody(rectangleOf: brickSize)
+        self.physicsBody?.isDynamic = false
+        self.physicsBody?.categoryBitMask = 8
+        self.physicsBody?.contactTestBitMask = 4
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -286,7 +292,7 @@ class GutterNode: SKNode {
     }
 }
 
-class BreakoutScene: SKScene {
+class BreakoutScene: SKScene, SKPhysicsContactDelegate {
     let gameSize = CGSize(width: 320, height: 480)
     let sprites: [NodeNames: SKNode] = [
         .paddle: PaddleSprite(position: CGPoint(x: 160, y: 40)),
@@ -313,8 +319,21 @@ class BreakoutScene: SKScene {
         view.showsFPS = true
         
         physicsWorld.gravity = CGVector(dx: 0, dy: 0)
+        physicsWorld.contactDelegate = self
         
         sprites.values.forEach { addChild($0) }
+    }
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+        let nodeA = contact.bodyA.node
+        let nodeB = contact.bodyB.node
+        
+        // Check if one of the nodes is a ball and the other is a brick
+        if let ball = nodeA as? BallSprite, let brick = nodeB as? BrickSprite {
+            print("brick hit at (\(brick.position.x), \(brick.position.y))")
+        } else if let ball = nodeB as? BallSprite, let brick = nodeA as? BrickSprite {
+            print("brick hit at (\(brick.position.x), \(brick.position.y))")
+        }
     }
 }
 
