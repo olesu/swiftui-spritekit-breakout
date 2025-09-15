@@ -12,6 +12,7 @@ import SpriteKit
 enum NodeNames: String {
     case paddle
     case brickLayout
+    case scoreLabel
 }
 
 class PaddleSprite: SKSpriteNode {
@@ -190,7 +191,19 @@ class ClassicBricksLayout: SKNode {
 }
 
 class ScoreLabel: SKLabelNode {
+    init(position: CGPoint) {
+        super.init()
+        self.text = "00"
+        self.fontName = "Courier-Bold"
+        self.fontSize = 20
+        self.fontColor = .white
+        self.position = position
+        self.name = NodeNames.scoreLabel.rawValue
+    }
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 class LivesLabel: SKLabelNode {
@@ -209,7 +222,8 @@ class BreakoutScene: SKScene {
     let gameSize = CGSize(width: 320, height: 480)
     let sprites: [NodeNames: SKNode] = [
         .paddle: PaddleSprite(position: CGPoint(x: 160, y: 40)),
-        .brickLayout: ClassicBricksLayout()
+        .brickLayout: ClassicBricksLayout(),
+        .scoreLabel: ScoreLabel(position: CGPoint(x: 40, y: 460))
     ]
     
     override init() {
@@ -236,7 +250,6 @@ struct GameView: View {
     var body: some View {
         SpriteView(scene: breakoutScene)
             .frame(width: 320, height: 480)
-            .ignoresSafeArea()
     }
 }
 
