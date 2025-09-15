@@ -15,6 +15,7 @@ enum NodeNames: String {
     case scoreLabel
     case livesLabel
     case ball
+    case topWall
 }
 
 class PaddleSprite: SKSpriteNode {
@@ -234,7 +235,20 @@ class LivesLabel: SKLabelNode {
 }
 
 class WallNode: SKNode {
+    init(position: CGPoint, size: CGSize) {
+        super.init()
+        let wall = SKSpriteNode(color: .clear, size: size)
+        wall.physicsBody = SKPhysicsBody(rectangleOf: size)
+        wall.physicsBody?.isDynamic = false
+        wall.physicsBody?.categoryBitMask = 1
+        wall.position = position
+        addChild(wall)
+        self.name = NodeNames.topWall.rawValue
+    }
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 class GutterNode: SKNode {
@@ -248,7 +262,8 @@ class BreakoutScene: SKScene {
         .brickLayout: ClassicBricksLayout(),
         .scoreLabel: ScoreLabel(position: CGPoint(x: 40, y: 460)),
         .livesLabel: LivesLabel(position: CGPoint(x: 280, y: 460)),
-        .ball: BallSprite(position: CGPoint(x: 160, y: 50))
+        .ball: BallSprite(position: CGPoint(x: 160, y: 50)),
+        .topWall: WallNode(position: CGPoint(x: 160, y: 430), size: CGSize(width: 320, height: 10))
     ]
     
     override init() {
