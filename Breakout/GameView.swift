@@ -16,6 +16,7 @@ enum NodeNames: String {
     case livesLabel
     case ball
     case topWall
+    case leftWall
 }
 
 class PaddleSprite: SKSpriteNode {
@@ -263,7 +264,8 @@ class BreakoutScene: SKScene {
         .scoreLabel: ScoreLabel(position: CGPoint(x: 40, y: 460)),
         .livesLabel: LivesLabel(position: CGPoint(x: 280, y: 460)),
         .ball: BallSprite(position: CGPoint(x: 160, y: 50)),
-        .topWall: WallNode(position: CGPoint(x: 160, y: 430), size: CGSize(width: 320, height: 10))
+        .topWall: WallNode(position: CGPoint(x: 160, y: 430), size: CGSize(width: 320, height: 10)),
+        .leftWall: WallNode(position: CGPoint(x: 0, y: 240), size: CGSize(width: 10, height: 480))
     ]
     
     override init() {
