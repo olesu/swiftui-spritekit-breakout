@@ -11,6 +11,7 @@ import SpriteKit
 
 enum NodeNames: String {
     case paddle
+    case brickLayout
 }
 
 class PaddleSprite: SKSpriteNode {
@@ -31,7 +32,46 @@ class BallSprite: SKSpriteNode {
 }
 
 class BrickSprite: SKSpriteNode {
+    init(position: CGPoint, color: NSColor) {
+        let brickSize = CGSize(width: 30, height: 12)
+        super.init(texture: nil, color: color, size: brickSize)
+        self.position = position
+    }
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+class ClassicBricksLayout: SKNode {
+    override init() {
+        super.init()
+        setupBricks()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupBricks() {
+        let brickColors: [NSColor] = [.red, .orange, .yellow, .green, .blue, .purple]
+        let bricksPerRow = 10
+        let brickWidth: CGFloat = 30
+        let brickHeight: CGFloat = 12
+        let spacing: CGFloat = 2
+        let totalWidth = CGFloat(bricksPerRow) * brickWidth + CGFloat(bricksPerRow - 1) * spacing
+        let startX = (320 - totalWidth) / 2 + brickWidth / 2
+        
+        for row in 0..<6 {
+            let color = brickColors[row]
+            for col in 0..<bricksPerRow {
+                let x = startX + CGFloat(col) * (brickWidth + spacing)
+                let y = CGFloat(row) * (brickHeight + spacing) + 350
+                let brick = BrickSprite(position: CGPoint(x: x, y: y), color: color)
+                addChild(brick)
+            }
+        }
+    }
 }
 
 class ScoreLabel: SKLabelNode {
@@ -52,8 +92,9 @@ class GutterNode: SKNode {
 
 class BreakoutScene: SKScene {
     let gameSize = CGSize(width: 320, height: 480)
-    let sprites: [NodeNames: SKSpriteNode] = [
-        .paddle: PaddleSprite(position: CGPoint(x: 160, y: 40))
+    let sprites: [NodeNames: SKNode] = [
+        .paddle: PaddleSprite(position: CGPoint(x: 160, y: 40)),
+        .brickLayout: ClassicBricksLayout()
     ]
     
     override init() {
@@ -80,6 +121,7 @@ struct GameView: View {
     var body: some View {
         SpriteView(scene: breakoutScene)
             .frame(width: 320, height: 480)
+            .ignoresSafeArea()
     }
 }
 
