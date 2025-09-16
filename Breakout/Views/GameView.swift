@@ -35,16 +35,23 @@ class BreakoutScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        let nodeA = contact.bodyA.node
-        let nodeB = contact.bodyB.node
-        
-        if let _ = nodeA as? BallSprite, let brick = nodeB as? BrickSprite {
-            print("brick hit at (\(brick.position.x), \(brick.position.y))")
-            brick.removeFromParent()
-        } else if let _ = nodeB as? BallSprite, let brick = nodeA as? BrickSprite {
+        if let brick = getHitBrick(from: contact) {
             print("brick hit at (\(brick.position.x), \(brick.position.y))")
             brick.removeFromParent()
         }
+    }
+    
+    private func getHitBrick(from contact: SKPhysicsContact) -> BrickSprite? {
+        let nodeA = contact.bodyA.node
+        let nodeB = contact.bodyB.node
+        
+        if nodeA is BallSprite, let brick = nodeB as? BrickSprite {
+            return brick
+        } else if nodeB is BallSprite, let brick = nodeA as? BrickSprite {
+            return brick
+        }
+        
+        return nil
     }
 }
 
