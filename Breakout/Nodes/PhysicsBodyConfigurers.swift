@@ -7,8 +7,13 @@ struct BallPhysicsBodyConfigurer {
         physicsBody = SKPhysicsBody(circleOfRadius: size.width / 2)
         physicsBody.isDynamic = true
         physicsBody.categoryBitMask = CollisionCategory.ball.mask
-        physicsBody.contactTestBitMask = 1 | 2 | CollisionCategory.brick.mask | CollisionCategory.paddle.mask
-        physicsBody.collisionBitMask = 1 | CollisionCategory.brick.mask | CollisionCategory.paddle.mask
+        physicsBody.contactTestBitMask = CollisionCategory.wall.mask
+        | CollisionCategory.gutter.mask
+        | CollisionCategory.brick.mask
+        | CollisionCategory.paddle.mask
+        physicsBody.collisionBitMask = CollisionCategory.wall.mask
+        | CollisionCategory.brick.mask
+        | CollisionCategory.paddle.mask
         physicsBody.restitution = 1.0
         physicsBody.friction = 0
         physicsBody.linearDamping = 0
@@ -49,5 +54,15 @@ struct GutterPhysicsBodyConfigurer {
         physicsBody = SKPhysicsBody(rectangleOf: size)
         physicsBody.isDynamic = false
         physicsBody.categoryBitMask = CollisionCategory.gutter.mask
+    }
+}
+
+struct WallPhysicsBodyConfigurer {
+    let physicsBody: SKPhysicsBody
+    
+    init(size: CGSize) {
+        physicsBody = SKPhysicsBody(rectangleOf: size)
+        physicsBody.isDynamic = false
+        physicsBody.categoryBitMask = CollisionCategory.wall.mask
     }
 }
