@@ -14,7 +14,7 @@ class BallSprite: SKSpriteNode {
         let physicsBody = SKPhysicsBody(circleOfRadius: size.width / 2)
 
         physicsBody.isDynamic = true
-        physicsBody.categoryBitMask = PhysicsCategories.ball.rawValue
+        physicsBody.categoryBitMask = CollisionCategory.ball.rawValue
         physicsBody.contactTestBitMask = 1 | 2 | 8 | 16
         physicsBody.collisionBitMask = 1 | 8 | 16
         physicsBody.restitution = 1.0
