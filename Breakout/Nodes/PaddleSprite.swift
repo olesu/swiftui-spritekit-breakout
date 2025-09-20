@@ -12,9 +12,9 @@ class PaddleSprite: SKSpriteNode {
     func setupPhysics(paddleSize: CGSize) -> SKPhysicsBody {
         let physicsBody = SKPhysicsBody(rectangleOf: paddleSize)
         physicsBody.isDynamic = false
-        physicsBody.categoryBitMask = CollisionCategory.paddle.rawValue
-        physicsBody.contactTestBitMask = CollisionCategory.ball.rawValue
-        physicsBody.collisionBitMask = CollisionCategory.ball.rawValue
+        physicsBody.categoryBitMask = CollisionCategory.paddle.mask
+        physicsBody.contactTestBitMask = CollisionCategory.ball.mask
+        physicsBody.collisionBitMask = CollisionCategory.ball.mask
         return physicsBody
     }
     
