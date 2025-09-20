@@ -41,3 +41,13 @@ struct BrickPhysicsBodyConfigurer {
         physicsBody.contactTestBitMask = CollisionCategory.ball.mask
     }
 }
+
+struct GutterPhysicsBodyConfigurer {
+    let physicsBody: SKPhysicsBody
+    
+    init(size: CGSize) {
+        physicsBody = SKPhysicsBody(rectangleOf: size)
+        physicsBody.isDynamic = false
+        physicsBody.categoryBitMask = CollisionCategory.gutter.mask
+    }
+}

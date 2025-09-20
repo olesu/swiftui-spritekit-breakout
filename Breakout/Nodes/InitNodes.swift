@@ -11,7 +11,7 @@ func initNodes() -> [NodeNames: SKNode] {
         .topWall: WallNode(position: CGPoint(x: 160, y: 430), size: CGSize(width: 320, height: 10)),
         .leftWall: WallNode(position: CGPoint(x: 0, y: 240), size: CGSize(width: 10, height: 480)),
         .rightWall: WallNode(position: CGPoint(x: 320, y: 240), size: CGSize(width: 10, height: 480)),
-        .gutter: GutterNode(position: CGPoint(x: 160, y: 0), size: CGSize(width: 320, height: 10))
+        .gutter: GutterSprite(position: CGPoint(x: 160, y: 0), size: CGSize(width: 320, height: 10))
     ]
 }
 
