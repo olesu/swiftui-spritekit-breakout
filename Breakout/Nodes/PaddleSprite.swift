@@ -6,13 +6,16 @@ class PaddleSprite: SKSpriteNode {
         super.init(texture: nil, color: .white, size: paddleSize)
         self.name = NodeNames.paddle.rawValue
         self.position = position
-        
-        // Add physics body
-        self.physicsBody = SKPhysicsBody(rectangleOf: paddleSize)
-        self.physicsBody?.isDynamic = false
-        self.physicsBody?.categoryBitMask = 16
-        self.physicsBody?.contactTestBitMask = 4
-        self.physicsBody?.collisionBitMask = 4
+        self.physicsBody = setupPhysics(paddleSize: paddleSize)
+    }
+
+    func setupPhysics(paddleSize: CGSize) -> SKPhysicsBody {
+        let physicsBody = SKPhysicsBody(rectangleOf: paddleSize)
+        physicsBody.isDynamic = false
+        physicsBody.categoryBitMask = 16
+        physicsBody.contactTestBitMask = 4
+        physicsBody.collisionBitMask = 4
+        return physicsBody
     }
     
     required init?(coder aDecoder: NSCoder) {
