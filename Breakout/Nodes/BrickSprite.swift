@@ -10,15 +10,7 @@ class BrickSprite: SKSpriteNode {
         let brickSize = CGSize(width: 22, height: 10)
         super.init(texture: nil, color: color, size: brickSize)
         self.position = position
-        self.physicsBody = setupPhysics(brickSize: brickSize)
-    }
-    
-    func setupPhysics(brickSize: CGSize) -> SKPhysicsBody {
-        let physicsBody = SKPhysicsBody(rectangleOf: brickSize)
-        physicsBody.isDynamic = false
-        physicsBody.categoryBitMask = CollisionCategory.brick.mask
-        physicsBody.contactTestBitMask = CollisionCategory.ball.mask
-        return physicsBody
+        self.physicsBody = BrickPhysicsBodyConfigurer(brickSize: brickSize).physicsBody
     }
     
     required init?(coder aDecoder: NSCoder) {

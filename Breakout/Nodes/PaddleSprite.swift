@@ -6,18 +6,9 @@ class PaddleSprite: SKSpriteNode {
         super.init(texture: nil, color: .white, size: paddleSize)
         self.name = NodeNames.paddle.rawValue
         self.position = position
-        self.physicsBody = setupPhysics(paddleSize: paddleSize)
+        self.physicsBody = PaddlePhysicsBodyConfigurer(paddleSize: paddleSize).physicsBody
     }
 
-    func setupPhysics(paddleSize: CGSize) -> SKPhysicsBody {
-        let physicsBody = SKPhysicsBody(rectangleOf: paddleSize)
-        physicsBody.isDynamic = false
-        physicsBody.categoryBitMask = CollisionCategory.paddle.mask
-        physicsBody.contactTestBitMask = CollisionCategory.ball.mask
-        physicsBody.collisionBitMask = CollisionCategory.ball.mask
-        return physicsBody
-    }
-    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
