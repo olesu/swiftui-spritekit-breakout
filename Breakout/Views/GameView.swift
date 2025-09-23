@@ -6,7 +6,10 @@ class BreakoutScene: SKScene, SKPhysicsContactDelegate {
     let gameSize = CGSize(width: 320, height: 480)
     let sprites: [NodeNames: SKNode] = initNodes()
     let autoPaddle: AutoPaddle
-    
+
+    // Callback to notify when a brick is removed
+    var onBrickRemoved: (() -> Void)?
+
     override init() {
         self.autoPaddle = AutoPaddle(
             paddle: sprites[.paddle] as! PaddleSprite,
@@ -29,6 +32,11 @@ class BreakoutScene: SKScene, SKPhysicsContactDelegate {
         sprites.values.forEach { addChild($0) }
     }
     
+    func updateScoreLabel(to value: Int) {
+        if let label = sprites[.scoreLabel] as? SKLabelNode {
+            label.text = "\(value)"
+        }
+    }
     
     override func update(_ currentTime: TimeInterval) {
         autoPaddle.move()
@@ -52,22 +60,35 @@ class BreakoutScene: SKScene, SKPhysicsContactDelegate {
         // If the other body is a brick, remove its node
         if (otherBody.categoryBitMask & brickMask) != 0 {
             otherBody.node?.removeFromParent()
+            // Notify SwiftUI that a brick was removed
+            onBrickRemoved?()
         }
     }
     
 }
 
 struct GameView: View {
-    var breakoutScene: SKScene {
-        let scene = BreakoutScene()
-        scene.scaleMode = .aspectFit
-        scene.backgroundColor = .black
-        return scene
-    }
+    @State private var scoreCard = ScoreCard()
+    @State private var scene = BreakoutScene()
     
     var body: some View {
-        SpriteView(scene: breakoutScene)
+        SpriteView(scene: scene)
             .frame(width: 320, height: 480)
+            .onAppear {
+                scene.scaleMode = .aspectFit
+                scene.backgroundColor = .black
+
+                scene.onBrickRemoved = {
+                    DispatchQueue.main.async {
+                        // Increment by 1 each time a brick is removed
+                        scoreCard.score(1)
+                        // Update the in-scene HUD label
+                        scene.updateScoreLabel(to: scoreCard.total)
+                    }
+                }
+                // Initialize HUD with current score
+                scene.updateScoreLabel(to: scoreCard.total)
+            }
     }
 }
 
