@@ -35,24 +35,26 @@ class BreakoutScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        if let brick = getHitBrick(from: contact) {
-            print("brick hit at (\(brick.position.x), \(brick.position.y))")
-            brick.removeFromParent()
+        let ballMask = CollisionCategory.ball.mask
+        let brickMask = CollisionCategory.brick.mask
+
+        let a = contact.bodyA
+        let b = contact.bodyB
+
+        // Ensure one of the bodies is the ball
+        let isBallA = (a.categoryBitMask & ballMask) != 0
+        let isBallB = (b.categoryBitMask & ballMask) != 0
+        guard isBallA || isBallB else { return }
+
+        // Determine the non-ball body
+        let otherBody = isBallA ? b : a
+
+        // If the other body is a brick, remove its node
+        if (otherBody.categoryBitMask & brickMask) != 0 {
+            otherBody.node?.removeFromParent()
         }
     }
     
-    private func getHitBrick(from contact: SKPhysicsContact) -> BrickSprite? {
-        let nodeA = contact.bodyA.node
-        let nodeB = contact.bodyB.node
-        
-        if nodeA is BallSprite, let brick = nodeB as? BrickSprite {
-            return brick
-        } else if nodeB is BallSprite, let brick = nodeA as? BrickSprite {
-            return brick
-        }
-        
-        return nil
-    }
 }
 
 struct GameView: View {
