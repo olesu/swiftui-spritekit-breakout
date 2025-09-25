@@ -4,24 +4,49 @@ struct AutoPaddle {
     let paddle: PaddleSprite
     let ball: BallSprite
 
-    init(paddle: PaddleSprite, ball: BallSprite) {
+    // Tuning parameters for imperfect auto play
+    let paddleSpeed: CGFloat
+    let jitterRangeX: ClosedRange<CGFloat>
+    let reactionTimeRange: ClosedRange<CGFloat>
+    let skipMoveProbability: CGFloat
+
+    init(
+        paddle: PaddleSprite,
+        ball: BallSprite,
+        paddleSpeed: CGFloat = 450,
+        jitterRangeX: ClosedRange<CGFloat> = (-18)...(18),
+        reactionTimeRange: ClosedRange<CGFloat> = 0.0...0.09,
+        skipMoveProbability: CGFloat = 0.03
+    ) {
         self.paddle = paddle
         self.ball = ball
+        self.paddleSpeed = paddleSpeed
+        self.jitterRangeX = jitterRangeX
+        self.reactionTimeRange = reactionTimeRange
+        self.skipMoveProbability = skipMoveProbability
     }
     
     func move() {
         guard let ballPhysics = ball.physicsBody else { return }
         let ballVelocity = ballPhysics.velocity
         
+        // Occasionally skip movement to simulate hesitation
+        if Double.random(in: 0...1) < Double(skipMoveProbability) {
+            return
+        }
+
         // Only move paddle if ball is moving downward
         if ballVelocity.dy < 0 {
-            // Calculate where ball will be when it reaches paddle y-level
+            // Calculate where ball will be when it reaches paddle y-level,
+            // but add a small reaction delay and horizontal jitter to make it imperfect
             let timeToReachPaddle = (ball.position.y - paddle.position.y) / abs(ballVelocity.dy)
-            let futureX = ball.position.x + (ballVelocity.dx * timeToReachPaddle)
+            let reactionDelay = CGFloat.random(in: reactionTimeRange)
+            let predictedTime = timeToReachPaddle + reactionDelay
+            let futureX = ball.position.x + (ballVelocity.dx * predictedTime)
+            let jitterX = CGFloat.random(in: jitterRangeX)
             
-            // Move paddle towards predicted ball position
-            let paddleSpeed: CGFloat = 450
-            let targetX = max(30, min(290, futureX)) // Keep paddle within bounds
+            // Move paddle towards a slightly noisy target position
+            let targetX = max(30, min(290, futureX + jitterX)) // Keep paddle within bounds
             let currentX = paddle.position.x
             
             if abs(targetX - currentX) > 5 {
@@ -32,3 +57,4 @@ struct AutoPaddle {
         }
     }
 }
+
