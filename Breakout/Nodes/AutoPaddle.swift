@@ -1,5 +1,12 @@
 import Foundation
 
+struct AutoPaddleConfig {
+    let paddleSpeed: CGFloat = 450.0
+    let jitterRangeX: ClosedRange<CGFloat> = (-18.0)...(18.0)
+    let reactionTimeRange: ClosedRange<CGFloat> = 0.0...0.09
+    let skipMoveProbability: CGFloat = 0.03
+}
+
 struct AutoPaddle {
     let paddle: PaddleSprite
     let ball: BallSprite
@@ -24,6 +31,16 @@ struct AutoPaddle {
         self.jitterRangeX = jitterRangeX
         self.reactionTimeRange = reactionTimeRange
         self.skipMoveProbability = skipMoveProbability
+    }
+    
+    init(paddle: PaddleSprite, ball: BallSprite, config: AutoPaddleConfig) {
+        self.paddle = paddle
+        self.ball = ball
+        self.paddleSpeed = config.paddleSpeed
+        self.jitterRangeX = config.jitterRangeX
+        self.reactionTimeRange = config.reactionTimeRange
+        self.skipMoveProbability = config.skipMoveProbability
+
     }
     
     func move() {

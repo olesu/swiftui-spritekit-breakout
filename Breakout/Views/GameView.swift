@@ -6,6 +6,7 @@ class BreakoutScene: SKScene, SKPhysicsContactDelegate {
     let gameSize = CGSize(width: 320, height: 480)
     let sprites: [NodeNames: SKNode] = initNodes()
     let autoPaddle: AutoPaddle
+    let autoPaddleConfig = AutoPaddleConfig()
 
     // Callback to notify when a brick is removed
     var onBrickRemoved: (() -> Void)?
@@ -13,7 +14,8 @@ class BreakoutScene: SKScene, SKPhysicsContactDelegate {
     override init() {
         self.autoPaddle = AutoPaddle(
             paddle: sprites[.paddle] as! PaddleSprite,
-            ball: sprites[.ball] as! BallSprite
+            ball: sprites[.ball] as! BallSprite,
+            config: autoPaddleConfig
         )
         super.init(size: CGSize(width: 320, height: 480))
     }
