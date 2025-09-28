@@ -101,7 +101,7 @@ struct GameView: View {
     var initialAutoPaddleConfig: AutoPaddleConfig
 
     @State private var scoreCard = ScoreCard()
-    @State private var remainingLives: Int = 3
+    @State private var livesCard = LivesCard(3)
     @State private var scene: BreakoutScene
     @State private var autoPaddleConfig: AutoPaddleConfig
 
@@ -129,13 +129,13 @@ struct GameView: View {
 
                 // Initialize HUD with current score and lives
                 scene.updateScoreLabel(to: scoreCard.total)
-                scene.updateLivesLabel(to: remainingLives)
+                scene.updateLivesLabel(to: livesCard.remaining)
 
                 scene.onBallMissed = {
                     DispatchQueue.main.async {
                         // Decrement remaining lives and update HUD
-                        if remainingLives > 0 { remainingLives -= 1 }
-                        scene.updateLivesLabel(to: remainingLives)
+                        livesCard.lifeWasLost()
+                        scene.updateLivesLabel(to: livesCard.remaining)
                     }
                 }
             }
