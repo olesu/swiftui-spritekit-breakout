@@ -5,13 +5,14 @@ import SpriteKit
 class BreakoutScene: SKScene, SKPhysicsContactDelegate {
     let gameSize = CGSize(width: 320, height: 480)
     let sprites: [NodeNames: SKNode] = initNodes()
-    let autoPaddle: AutoPaddle
-    let autoPaddleConfig = AutoPaddleConfig()
+    var autoPaddle: AutoPaddle
+    private(set) var autoPaddleConfig: AutoPaddleConfig
 
     // Callback to notify when a brick is removed
     var onBrickRemoved: (() -> Void)?
 
-    override init() {
+    init(autoPaddleConfig: AutoPaddleConfig = .init()) {
+        self.autoPaddleConfig = autoPaddleConfig
         self.autoPaddle = AutoPaddle(
             paddle: sprites[.paddle] as! PaddleSprite,
             ball: sprites[.ball] as! BallSprite,
@@ -69,9 +70,23 @@ class BreakoutScene: SKScene, SKPhysicsContactDelegate {
     
 }
 
+extension BreakoutScene {
+    func apply(autoPaddleConfig: AutoPaddleConfig) {
+        self.autoPaddleConfig = autoPaddleConfig
+        self.autoPaddle.update(config: autoPaddleConfig)
+    }
+}
+
 struct GameView: View {
     @State private var scoreCard = ScoreCard()
     @State private var scene = BreakoutScene()
+    @State private var autoPaddleConfig = AutoPaddleConfig()
+    
+    init () {
+        let initialAutoPaddleConfig = AutoPaddleConfig()
+        _autoPaddleConfig = State(initialValue: initialAutoPaddleConfig)
+        _scene = State(initialValue: BreakoutScene(autoPaddleConfig: initialAutoPaddleConfig))
+    }
     
     var body: some View {
         SpriteView(scene: scene)
@@ -91,9 +106,13 @@ struct GameView: View {
                 // Initialize HUD with current score
                 scene.updateScoreLabel(to: scoreCard.total)
             }
+            .onChange(of: autoPaddleConfig) { _, newValue in
+                scene.apply(autoPaddleConfig: newValue)
+            }
     }
 }
 
 #Preview {
     GameView()
 }
+
