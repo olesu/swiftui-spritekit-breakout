@@ -9,7 +9,8 @@ class BreakoutScene: SKScene, SKPhysicsContactDelegate {
     private(set) var autoPaddleConfig: AutoPaddleConfig
 
     // Callback to notify when a brick is removed
-    var onBrickRemoved: (() -> Void)?
+    var onBrickRemoved: (() -> Void) = {}
+    var onBallMissed: (() -> Void) = {}
 
     init(autoPaddleConfig: AutoPaddleConfig = .init()) {
         self.autoPaddleConfig = autoPaddleConfig
@@ -41,6 +42,19 @@ class BreakoutScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    func updateLivesLabel(to value: Int) {
+        if let label = sprites[.livesLabel] as? SKLabelNode {
+            label.text = "\(value)"
+        }
+    }
+    
+    func resetBall() {
+        guard let ball = sprites[.ball] as? BallSprite, let body = ball.physicsBody else { return }
+        // Reset to initial spawn and relaunch upward
+        ball.position = CGPoint(x: 160, y: 50)
+        body.velocity = CGVector(dx: 200, dy: 300)
+    }
+    
     override func update(_ currentTime: TimeInterval) {
         autoPaddle.move()
     }
@@ -48,6 +62,7 @@ class BreakoutScene: SKScene, SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
         let ballMask = CollisionCategory.ball.mask
         let brickMask = CollisionCategory.brick.mask
+        let gutterMask = CollisionCategory.gutter.mask
 
         let a = contact.bodyA
         let b = contact.bodyB
@@ -64,7 +79,11 @@ class BreakoutScene: SKScene, SKPhysicsContactDelegate {
         if (otherBody.categoryBitMask & brickMask) != 0 {
             otherBody.node?.removeFromParent()
             // Notify SwiftUI that a brick was removed
-            onBrickRemoved?()
+            onBrickRemoved()
+        } else if (otherBody.categoryBitMask & gutterMask) != 0 {
+            // Ball missed the paddle and hit the gutter
+            resetBall()
+            onBallMissed()
         }
     }
     
@@ -82,6 +101,7 @@ struct GameView: View {
     var initialAutoPaddleConfig: AutoPaddleConfig
 
     @State private var scoreCard = ScoreCard()
+    @State private var remainingLives: Int = 3
     @State private var scene: BreakoutScene
     @State private var autoPaddleConfig: AutoPaddleConfig
 
@@ -106,8 +126,18 @@ struct GameView: View {
                         scene.updateScoreLabel(to: scoreCard.total)
                     }
                 }
-                // Initialize HUD with current score
+
+                // Initialize HUD with current score and lives
                 scene.updateScoreLabel(to: scoreCard.total)
+                scene.updateLivesLabel(to: remainingLives)
+
+                scene.onBallMissed = {
+                    DispatchQueue.main.async {
+                        // Decrement remaining lives and update HUD
+                        if remainingLives > 0 { remainingLives -= 1 }
+                        scene.updateLivesLabel(to: remainingLives)
+                    }
+                }
             }
             .onChange(of: autoPaddleConfig) { _, newValue in
                 scene.apply(autoPaddleConfig: newValue)
