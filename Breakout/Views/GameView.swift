@@ -81,9 +81,10 @@ class BreakoutScene: SKScene, SKPhysicsContactDelegate {
             // Notify SwiftUI that a brick was removed
             onBrickRemoved()
         } else if (otherBody.categoryBitMask & gutterMask) != 0 {
-            // Ball missed the paddle and hit the gutter
-            resetBall()
-            onBallMissed()
+            DispatchQueue.main.async { [weak self] in
+                self?.resetBall()
+                self?.onBallMissed()
+            }
         }
     }
     
