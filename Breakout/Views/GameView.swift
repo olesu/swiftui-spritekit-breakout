@@ -78,12 +78,15 @@ extension BreakoutScene {
 }
 
 struct GameView: View {
+    // External source-of-truth value for preferences
+    var initialAutoPaddleConfig: AutoPaddleConfig
+
     @State private var scoreCard = ScoreCard()
-    @State private var scene = BreakoutScene()
-    @State private var autoPaddleConfig = AutoPaddleConfig()
-    
-    init () {
-        let initialAutoPaddleConfig = AutoPaddleConfig()
+    @State private var scene: BreakoutScene
+    @State private var autoPaddleConfig: AutoPaddleConfig
+
+    init(initialAutoPaddleConfig: AutoPaddleConfig) {
+        self.initialAutoPaddleConfig = initialAutoPaddleConfig
         _autoPaddleConfig = State(initialValue: initialAutoPaddleConfig)
         _scene = State(initialValue: BreakoutScene(autoPaddleConfig: initialAutoPaddleConfig))
     }
@@ -109,10 +112,14 @@ struct GameView: View {
             .onChange(of: autoPaddleConfig) { _, newValue in
                 scene.apply(autoPaddleConfig: newValue)
             }
+            .onChange(of: initialAutoPaddleConfig) { _, newValue in
+                // Keep internal state in sync with app-level preferences
+                autoPaddleConfig = newValue
+                scene.apply(autoPaddleConfig: newValue)
+            }
     }
 }
 
 #Preview {
-    GameView()
+    GameView(initialAutoPaddleConfig: AutoPaddleConfig())
 }
-

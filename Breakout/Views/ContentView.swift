@@ -9,11 +9,14 @@ import SwiftUI
 import SpriteKit
 
 struct ContentView: View {
+    @Binding var autoPaddleConfig: AutoPaddleConfig
+
     var body: some View {
-        GameView()
+        GameView(initialAutoPaddleConfig: autoPaddleConfig)
     }
 }
 
 #Preview {
-    ContentView()
+    @Previewable @State var cfg = AutoPaddleConfig()
+    ContentView(autoPaddleConfig: $cfg)
 }
