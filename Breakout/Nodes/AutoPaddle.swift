@@ -1,10 +1,10 @@
 import Foundation
 
 struct AutoPaddleConfig: Equatable {
-    let paddleSpeed: CGFloat = 450.0
-    let jitterRangeX: ClosedRange<CGFloat> = (-18.0)...(18.0)
-    let reactionTimeRange: ClosedRange<CGFloat> = 0.0...0.09
-    let skipMoveProbability: CGFloat = 0.03
+    var paddleSpeed: CGFloat = 450.0
+    var jitterRangeX: ClosedRange<CGFloat> = (-18.0)...(18.0)
+    var reactionTimeRange: ClosedRange<CGFloat> = 0.0...0.09
+    var skipMoveProbability: CGFloat = 0.03
 }
 
 struct AutoPaddle {
