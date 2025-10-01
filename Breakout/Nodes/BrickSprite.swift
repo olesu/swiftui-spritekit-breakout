@@ -1,14 +1,16 @@
 import SpriteKit
 
 struct BrickData {
+    let id: UUID = UUID()
     let position: CGPoint
     let color: NSColor
 }
 
 class BrickSprite: SKSpriteNode {
-    init(position: CGPoint, color: NSColor) {
+    init(id: UUID, position: CGPoint, color: NSColor) {
         let brickSize = CGSize(width: 22, height: 10)
         super.init(texture: nil, color: color, size: brickSize)
+        self.name = id.uuidString
         self.position = position
         self.physicsBody = BrickPhysicsBodyConfigurer(brickSize: brickSize).physicsBody
     }
@@ -153,7 +155,11 @@ class ClassicBricksLayout: SKNode {
     
     private func setupBricks() {
         brickLayout.forEach { brickData in
-            let brick = BrickSprite(position: brickData.position, color: brickData.color)
+            let brick = BrickSprite(
+                id: brickData.id,
+                position: brickData.position,
+                color: brickData.color
+            )
             addChild(brick)
         }
     }
