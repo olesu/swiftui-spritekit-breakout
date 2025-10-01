@@ -144,16 +144,16 @@ class ClassicBricksLayout: SKNode {
         BrickData(position: CGPoint(x: 310, y: 336), color: .green)
     ]
     
-    override init() {
+    init(onBrickAdded: (String) -> ()) {
         super.init()
-        setupBricks()
+        setupBricks(onBrickAdded: onBrickAdded)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupBricks() {
+    private func setupBricks(onBrickAdded: (String) -> ()) {
         brickLayout.forEach { brickData in
             let brick = BrickSprite(
                 id: brickData.id,
@@ -161,6 +161,8 @@ class ClassicBricksLayout: SKNode {
                 color: brickData.color
             )
             addChild(brick)
+            onBrickAdded(brickData.id.uuidString)
         }
     }
+    
 }

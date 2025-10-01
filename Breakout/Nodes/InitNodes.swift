@@ -1,10 +1,10 @@
 import Foundation
 import SpriteKit
 
-func initNodes() -> [NodeNames: SKNode] {
+func initNodes(onBrickAdded: (String) -> ()) -> [NodeNames: SKNode] {
     [
         .paddle: PaddleSprite(position: CGPoint(x: 160, y: 40)),
-        .brickLayout: ClassicBricksLayout(),
+        .brickLayout: ClassicBricksLayout(onBrickAdded: onBrickAdded),
         .scoreLabel: ScoreLabel(position: CGPoint(x: 40, y: 460)),
         .livesLabel: LivesLabel(position: CGPoint(x: 280, y: 460)),
         .ball: BallSprite(position: CGPoint(x: 160, y: 50)),

@@ -4,7 +4,7 @@ import SpriteKit
 
 class BreakoutScene: SKScene, SKPhysicsContactDelegate {
     let gameSize = CGSize(width: 320, height: 480)
-    let sprites: [NodeNames: SKNode] = initNodes()
+    let sprites: [NodeNames: SKNode]
     var autoPaddle: AutoPaddle
     private(set) var autoPaddleConfig: AutoPaddleConfig
 
@@ -12,13 +12,20 @@ class BreakoutScene: SKScene, SKPhysicsContactDelegate {
     var onBrickRemoved: (() -> Void) = {}
     var onBallMissed: (() -> Void) = {}
 
-    init(autoPaddleConfig: AutoPaddleConfig = .init()) {
+    init(autoPaddleConfig: AutoPaddleConfig = .init(), onBrickAdded: (String) -> ()) {
         self.autoPaddleConfig = autoPaddleConfig
+
+        // Initialize nodes first so we can safely construct AutoPaddle
+        let nodes = initNodes(onBrickAdded: onBrickAdded)
+        self.sprites = nodes
+
+        // Now that sprites are ready, initialize the auto paddle
         self.autoPaddle = AutoPaddle(
-            paddle: sprites[.paddle] as! PaddleSprite,
-            ball: sprites[.ball] as! BallSprite,
+            paddle: nodes[.paddle] as! PaddleSprite,
+            ball: nodes[.ball] as! BallSprite,
             config: autoPaddleConfig
         )
+
         super.init(size: CGSize(width: 320, height: 480))
     }
     
@@ -105,11 +112,20 @@ struct GameView: View {
     @State private var livesCard = LivesCard(3)
     @State private var scene: BreakoutScene
     @State private var autoPaddleConfig: AutoPaddleConfig
+    @State private var bricks: Bricks
 
     init(initialAutoPaddleConfig: AutoPaddleConfig) {
         self.initialAutoPaddleConfig = initialAutoPaddleConfig
         _autoPaddleConfig = State(initialValue: initialAutoPaddleConfig)
-        _scene = State(initialValue: BreakoutScene(autoPaddleConfig: initialAutoPaddleConfig))
+
+        // Collect bricks during scene creation without capturing self
+        var collectedBricks = Bricks()
+        let initialScene = BreakoutScene(autoPaddleConfig: initialAutoPaddleConfig, onBrickAdded: { brickName in
+            collectedBricks.add(Brick(id: BrickId(of: brickName)))
+        })
+
+        _scene = State(initialValue: initialScene)
+        _bricks = State(initialValue: collectedBricks)
     }
     
     var body: some View {
