@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		37DDA1B12E97ABBB00E6E517 /* GameConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37DDA1B02E97ABBB00E6E517 /* GameConfig.plist */; };
+		37DDA1B12E97ABBB00E6E517 /* GameConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37DDA1B02E97ABBB00E6E517 /* GameConfiguration.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,7 +31,7 @@
 		379ACDDA2E598E0300E23C13 /* Breakout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Breakout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		379ACDE82E598E0300E23C13 /* BreakoutTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BreakoutTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		379ACDF22E598E0300E23C13 /* BreakoutUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BreakoutUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		37DDA1B02E97ABBB00E6E517 /* GameConfig.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = GameConfig.plist; sourceTree = "<group>"; };
+		37DDA1B02E97ABBB00E6E517 /* GameConfiguration.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = GameConfiguration.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -80,7 +80,7 @@
 		379ACDD12E598E0200E23C13 = {
 			isa = PBXGroup;
 			children = (
-				37DDA1B02E97ABBB00E6E517 /* GameConfig.plist */,
+				37DDA1B02E97ABBB00E6E517 /* GameConfiguration.plist */,
 				379ACDDC2E598E0300E23C13 /* Breakout */,
 				379ACDEB2E598E0300E23C13 /* BreakoutTests */,
 				379ACDF52E598E0300E23C13 /* BreakoutUITests */,
@@ -218,7 +218,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37DDA1B12E97ABBB00E6E517 /* GameConfig.plist in Resources */,
+				37DDA1B12E97ABBB00E6E517 /* GameConfiguration.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

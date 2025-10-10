@@ -2,9 +2,9 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>SceneWidth</key>
+	<key>sceneWidth</key>
 	<integer>320</integer>
-	<key>SceneHeight</key>
+	<key>sceneHeight</key>
 	<integer>480</integer>
 </dict>
 </plist>

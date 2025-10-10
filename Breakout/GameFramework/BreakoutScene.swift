@@ -2,7 +2,7 @@ import Foundation
 import SpriteKit
 
 class BreakoutScene: SKScene, SKPhysicsContactDelegate {
-    let gameSize = CGSize(width: 320, height: 480)
+    let gameSize = CGSize(width: GameConfiguration.shared.sceneWidth, height: GameConfiguration.shared.sceneHeight)
     let sprites: [NodeNames: SKNode]
     var autoPaddle: AutoPaddle
     private(set) var autoPaddleConfig: AutoPaddleConfig
@@ -25,7 +25,7 @@ class BreakoutScene: SKScene, SKPhysicsContactDelegate {
             config: autoPaddleConfig
         )
 
-        super.init(size: CGSize(width: 320, height: 480))
+        super.init(size: gameSize)
     }
     
     required init?(coder aDecoder: NSCoder) {
