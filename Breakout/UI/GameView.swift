@@ -7,7 +7,6 @@ struct GameView: View {
     
     @Environment(\.gameConfiguration) private var gameConfiguration
 
-    @Binding var scoreCard: ScoreCard
     @Binding var livesCard: LivesCard
     @State private var gameViewModel = GameViewModel()
 
@@ -25,14 +24,13 @@ struct GameView: View {
 
                         scene.onBrickRemoved = {
                             DispatchQueue.main.async {
-                                gameViewModel.someFunc()
-                                scoreCard.score(1)
-                                scene.updateScoreLabel(to: scoreCard.total)
+                                gameViewModel.score(1)
+                                scene.updateScoreLabel(to: gameViewModel.score())
                             }
                         }
 
                         gameViewModel.someFunc()
-                        scene.updateScoreLabel(to: scoreCard.total)
+                        scene.updateScoreLabel(to: gameViewModel.score())
                         scene.updateLivesLabel(to: livesCard.remaining)
 
                         scene.onBallMissed = {
@@ -77,12 +75,10 @@ struct GameView: View {
 
 #Preview {
     @Previewable @State var autoPaddleConfig = AutoPaddleConfig()
-    @Previewable @State var scoreCard = ScoreCard()
     @Previewable @State var livesCard = LivesCard(3)
     
     GameView(
         autoPaddleConfig: $autoPaddleConfig,
-        scoreCard: $scoreCard,
         livesCard: $livesCard
     )
 }
