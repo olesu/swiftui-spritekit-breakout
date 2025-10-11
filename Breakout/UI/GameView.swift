@@ -4,10 +4,13 @@ import SwiftUI
 
 struct GameView: View {
     @Binding var autoPaddleConfig: AutoPaddleConfig
+    
     @Environment(\.gameConfiguration) private var gameConfiguration
 
-    @State private var scoreCard = ScoreCard()
-    @State private var livesCard = LivesCard(3)
+    @Binding var scoreCard: ScoreCard
+    @Binding var livesCard: LivesCard
+    @State private var gameViewModel = GameViewModel()
+
     @State private var scene: BreakoutScene?
     @State private var bricks: Bricks?
 
@@ -22,16 +25,19 @@ struct GameView: View {
 
                         scene.onBrickRemoved = {
                             DispatchQueue.main.async {
+                                gameViewModel.someFunc()
                                 scoreCard.score(1)
                                 scene.updateScoreLabel(to: scoreCard.total)
                             }
                         }
 
+                        gameViewModel.someFunc()
                         scene.updateScoreLabel(to: scoreCard.total)
                         scene.updateLivesLabel(to: livesCard.remaining)
 
                         scene.onBallMissed = {
                             DispatchQueue.main.async {
+                                gameViewModel.someFunc()
                                 livesCard.lifeWasLost()
                                 scene.updateLivesLabel(to: livesCard.remaining)
                             }
@@ -50,10 +56,15 @@ struct GameView: View {
                     .onAppear {
                         var collectedBricks = Bricks()
                         let newScene = BreakoutScene(
-                            gameSize: CGSize(width: gameConfiguration.sceneWidth, height: gameConfiguration.sceneHeight),
+                            gameSize: CGSize(
+                                width: gameConfiguration.sceneWidth,
+                                height: gameConfiguration.sceneHeight
+                            ),
                             autoPaddleConfig: autoPaddleConfig,
                             onBrickAdded: { brickName in
-                                collectedBricks.add(Brick(id: BrickId(of: brickName)))
+                                collectedBricks.add(
+                                    Brick(id: BrickId(of: brickName))
+                                )
                             }
                         )
                         scene = newScene
@@ -66,5 +77,12 @@ struct GameView: View {
 
 #Preview {
     @Previewable @State var autoPaddleConfig = AutoPaddleConfig()
-    GameView(autoPaddleConfig: $autoPaddleConfig)
+    @Previewable @State var scoreCard = ScoreCard()
+    @Previewable @State var livesCard = LivesCard(3)
+    
+    GameView(
+        autoPaddleConfig: $autoPaddleConfig,
+        scoreCard: $scoreCard,
+        livesCard: $livesCard
+    )
 }

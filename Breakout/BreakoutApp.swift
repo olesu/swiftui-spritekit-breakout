@@ -11,16 +11,22 @@ import SwiftUI
 @main
 struct BreakoutApp: App {
     @State private var autoPaddleConfig = AutoPaddleConfig()
+    @State private var scoreCard = ScoreCard()
+    @State private var livesCard = LivesCard(3)
 
     var body: some Scene {
         WindowGroup {
-            ContentView(autoPaddleConfig: $autoPaddleConfig)
-                .environment(\.gameConfiguration, GameConfiguration.shared)
+            GameView(
+                autoPaddleConfig: $autoPaddleConfig,
+                scoreCard: $scoreCard,
+                livesCard: $livesCard
+            )
+            .environment(\.gameConfiguration, GameConfiguration.shared)
         }
         #if os(macOS)
-        Settings {
-            GamePreferencesView(autoPaddleConfig: $autoPaddleConfig)
-        }
+            Settings {
+                GamePreferencesView(autoPaddleConfig: $autoPaddleConfig)
+            }
         #endif
     }
 }
