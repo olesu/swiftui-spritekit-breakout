@@ -3,13 +3,11 @@ import SpriteKit
 import SwiftUI
 
 struct GameView: View {
-    @Binding var autoPaddleConfig: AutoPaddleConfig
-    
     @Environment(\.gameConfiguration) private var gameConfiguration
-
-    @Binding var livesCard: LivesCard
     @State private var gameViewModel = GameViewModel()
+    @Binding var autoPaddleConfig: AutoPaddleConfig
 
+    // TODO Is this really the best way? Scene as State?!?
     @State private var scene: BreakoutScene?
     @State private var bricks: Bricks?
 
@@ -29,17 +27,16 @@ struct GameView: View {
                             }
                         }
 
-                        gameViewModel.someFunc()
-                        scene.updateScoreLabel(to: gameViewModel.score())
-                        scene.updateLivesLabel(to: livesCard.remaining)
-
                         scene.onBallMissed = {
                             DispatchQueue.main.async {
-                                gameViewModel.someFunc()
-                                livesCard.lifeWasLost()
-                                scene.updateLivesLabel(to: livesCard.remaining)
+                                gameViewModel.lifeWasLost()
+                                scene.updateLivesLabel(to: gameViewModel.lives())
                             }
                         }
+
+                        scene.updateScoreLabel(to: gameViewModel.score())
+                        scene.updateLivesLabel(to: gameViewModel.lives())
+
                     }
                     .onChange(of: autoPaddleConfig) { _, newValue in
                         scene.apply(autoPaddleConfig: newValue)
@@ -75,10 +72,6 @@ struct GameView: View {
 
 #Preview {
     @Previewable @State var autoPaddleConfig = AutoPaddleConfig()
-    @Previewable @State var livesCard = LivesCard(3)
     
-    GameView(
-        autoPaddleConfig: $autoPaddleConfig,
-        livesCard: $livesCard
-    )
+    GameView(autoPaddleConfig: $autoPaddleConfig)
 }
