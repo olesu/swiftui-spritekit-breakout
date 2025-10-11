@@ -2,7 +2,7 @@ import Foundation
 import SpriteKit
 
 class BreakoutScene: SKScene, SKPhysicsContactDelegate {
-    let gameSize = CGSize(width: GameConfiguration.shared.sceneWidth, height: GameConfiguration.shared.sceneHeight)
+    let gameSize: CGSize
     let sprites: [NodeNames: SKNode]
     var autoPaddle: AutoPaddle
     private(set) var autoPaddleConfig: AutoPaddleConfig
@@ -11,7 +11,7 @@ class BreakoutScene: SKScene, SKPhysicsContactDelegate {
     var onBrickRemoved: (() -> Void) = {}
     var onBallMissed: (() -> Void) = {}
 
-    init(autoPaddleConfig: AutoPaddleConfig = .init(), onBrickAdded: (String) -> ()) {
+    init(gameSize: CGSize, autoPaddleConfig: AutoPaddleConfig = .init(), onBrickAdded: (String) -> ()) {
         self.autoPaddleConfig = autoPaddleConfig
 
         // Initialize nodes first so we can safely construct AutoPaddle
@@ -25,6 +25,7 @@ class BreakoutScene: SKScene, SKPhysicsContactDelegate {
             config: autoPaddleConfig
         )
 
+        self.gameSize = gameSize
         super.init(size: gameSize)
     }
     

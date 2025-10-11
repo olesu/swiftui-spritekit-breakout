@@ -15,6 +15,7 @@ struct BreakoutApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView(autoPaddleConfig: $autoPaddleConfig)
+                .environment(\.gameConfiguration, GameConfiguration.shared)
         }
         #if os(macOS)
         Settings {
