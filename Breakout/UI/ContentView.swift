@@ -12,11 +12,11 @@ struct ContentView: View {
     @Binding var autoPaddleConfig: AutoPaddleConfig
 
     var body: some View {
-        GameView(initialAutoPaddleConfig: autoPaddleConfig)
+        GameView(autoPaddleConfig: $autoPaddleConfig)
     }
 }
 
 #Preview {
-    @Previewable @State var cfg = AutoPaddleConfig()
-    ContentView(autoPaddleConfig: $cfg)
+    @Previewable @State var autoPaddleConfig = AutoPaddleConfig()
+    ContentView(autoPaddleConfig: $autoPaddleConfig)
 }
