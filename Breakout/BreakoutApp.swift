@@ -13,7 +13,6 @@ struct BreakoutApp: App {
     var body: some Scene {
         WindowGroup {
             GameView()
-                .environment(\.gameConfiguration, GameConfiguration.shared)
         }
     }
 }
