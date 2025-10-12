@@ -3,75 +3,51 @@ import SpriteKit
 import SwiftUI
 
 struct GameView: View {
-    @Environment(\.gameConfiguration) private var gameConfiguration
-    @State private var gameViewModel = GameViewModel()
-    @Binding var autoPaddleConfig: AutoPaddleConfig
+    @Environment(\.gameConfiguration)
+    private var gameConfiguration
 
-    // TODO Is this really the best way? Scene as State?!?
-    @State private var scene: BreakoutScene?
-    @State private var bricks: Bricks?
+    @State
+    private var gameViewModel = GameViewModel()
+
+    private var sceneSize: CGSize {
+        CGSize(
+            width: gameConfiguration.sceneWidth,
+            height: gameConfiguration.sceneHeight
+        )
+    }
+    
+    private var brickArea: CGRect {
+        CGRect(x: 20, y: 330, width: 280, height: 120)
+    }
+
+    private var frameWidth: CGFloat {
+        gameConfiguration.sceneWidth
+    }
+
+    private var frameHeight: CGFloat {
+        gameConfiguration.sceneHeight
+    }
 
     var body: some View {
-        Group {
-            if let scene = scene {
-                SpriteView(scene: scene)
-                    .frame(width: 320, height: 480)
-                    .onAppear {
-                        scene.scaleMode = .aspectFit
-                        scene.backgroundColor = .black
-
-                        scene.onBrickRemoved = {
-                            DispatchQueue.main.async {
-                                gameViewModel.score(1)
-                                scene.updateScoreLabel(to: gameViewModel.score())
-                            }
-                        }
-
-                        scene.onBallMissed = {
-                            DispatchQueue.main.async {
-                                gameViewModel.lifeWasLost()
-                                scene.updateLivesLabel(to: gameViewModel.lives())
-                            }
-                        }
-
-                        scene.updateScoreLabel(to: gameViewModel.score())
-                        scene.updateLivesLabel(to: gameViewModel.lives())
-
-                    }
-                    .onChange(of: autoPaddleConfig) { _, newValue in
-                        scene.apply(autoPaddleConfig: newValue)
-                    }
-                    .onChange(of: autoPaddleConfig) { _, newValue in
-                        autoPaddleConfig = newValue
-                        scene.apply(autoPaddleConfig: newValue)
-                    }
-            } else {
-                Color.clear
-                    .frame(width: 320, height: 480)
-                    .onAppear {
-                        var collectedBricks = Bricks()
-                        let newScene = BreakoutScene(
-                            gameSize: CGSize(
-                                width: gameConfiguration.sceneWidth,
-                                height: gameConfiguration.sceneHeight
-                            ),
-                            autoPaddleConfig: autoPaddleConfig,
-                            onBrickAdded: { brickName in
-                                collectedBricks.add(
-                                    Brick(id: BrickId(of: brickName))
-                                )
-                            }
-                        )
-                        scene = newScene
-                        bricks = collectedBricks
-                    }
-            }
+        VStack {
+            SpriteView(
+                scene: GameScene(
+                    size: sceneSize,
+                    brickArea: brickArea
+                )
+            )
+            .frame(width: frameWidth, height: frameHeight)
         }
     }
 }
 
 #Preview {
-    @Previewable @State var autoPaddleConfig = AutoPaddleConfig()
-    
-    GameView(autoPaddleConfig: $autoPaddleConfig)
+    GameView()
+        .environment(
+            \.gameConfiguration,
+             GameConfiguration(
+                sceneWidth: 320,
+                sceneHeight: 480,
+             )
+        )
 }

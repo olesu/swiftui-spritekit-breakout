@@ -6,5 +6,7 @@
 	<integer>320</integer>
 	<key>sceneHeight</key>
 	<integer>480</integer>
+	<key>brickArea</key>
+	<string>{{20, 330}, {280, 120}}</string>
 </dict>
 </plist>

@@ -4,6 +4,8 @@ struct GameConfiguration: Codable, Equatable {
     let sceneWidth: CGFloat
     let sceneHeight: CGFloat
     
+//    let brickArea: CGRect
+    
     static let shared: GameConfiguration = {
         let resourceName = "GameConfiguration"
         let resourceExt = "plist"

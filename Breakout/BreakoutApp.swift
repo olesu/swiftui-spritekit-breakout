@@ -10,17 +10,10 @@ import SwiftUI
 
 @main
 struct BreakoutApp: App {
-    @State private var autoPaddleConfig = AutoPaddleConfig()
-
     var body: some Scene {
         WindowGroup {
-            GameView(autoPaddleConfig: $autoPaddleConfig)
+            GameView()
                 .environment(\.gameConfiguration, GameConfiguration.shared)
         }
-        #if os(macOS)
-            Settings {
-                GamePreferencesView(autoPaddleConfig: $autoPaddleConfig)
-            }
-        #endif
     }
 }

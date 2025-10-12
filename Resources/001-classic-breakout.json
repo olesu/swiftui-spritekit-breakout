@@ -1,0 +1,43 @@
+{
+  "levelName": "Classic Breakout Level 1",
+  "mapCols": 14,
+  "mapRows": 8,
+  
+  "brickTypes": [
+    {
+      "id": 1,
+      "colorName": "Blue",
+      "scoreValue": 1,
+      "hitsToBreak": 1
+    },
+    {
+      "id": 2,
+      "colorName": "Green",
+      "scoreValue": 3,
+      "hitsToBreak": 1
+    },
+    {
+      "id": 3,
+      "colorName": "Yellow",
+      "scoreValue": 5,
+      "hitsToBreak": 1
+    },
+    {
+      "id": 4,
+      "colorName": "Red",
+      "scoreValue": 7,
+      "hitsToBreak": 1
+    }
+  ],
+  
+  "layout": [
+    4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+    4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+    3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  ]
+}
