@@ -14,12 +14,6 @@ class GameScene: SKScene {
     }
     
     override func didMove(to view: SKView) {
-        let brickOverlayNode = SKShapeNode(rect: brickArea)
-        
-        brickOverlayNode.fillColor = .darkGray
-        brickOverlayNode.strokeColor = .darkGray
-        brickOverlayNode.alpha = 0.5
-        
-        self.addChild(brickOverlayNode)
+        self.addChild(SKShapeNode.brickOverlay(in: brickArea))
     }
 }
