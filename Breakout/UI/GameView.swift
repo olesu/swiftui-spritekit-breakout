@@ -3,6 +3,9 @@ import SpriteKit
 import SwiftUI
 
 struct GameView: View {
+    @Environment(\.gameScale)
+    private var scale
+    
     @State
     private var gameViewModel = GameViewModel(
         gameConfigurationService: GameConfigurationService(loader: JsonGameConfigurationLoader())
@@ -16,11 +19,16 @@ struct GameView: View {
                     brickArea: gameViewModel.brickArea
                 )
             )
-            .frame(width: 320, height: 480)
+            .frame(
+                width: gameViewModel.sceneSize.width * scale,
+                height: gameViewModel.sceneSize.height * scale
+            )
         }
     }
 }
 
 #Preview {
     GameView()
+        .environment(\.gameScale, 1.0)
 }
+
