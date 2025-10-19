@@ -10,25 +10,23 @@ struct GameView: View {
     @Environment(\.gameScale)
     private var scale
     
+    @Environment(ConfigurationModel.self)
+    private var config: ConfigurationModel
+    
     @AppStorage("areaOverlaysEnabled")
     private var areaOverlaysEnabled = false
     
-    @State
-    private var gameViewModel = GameViewModel(
-        gameConfigurationService: GameConfigurationService(loader: JsonGameConfigurationLoader())
-    )
-
     var body: some View {
         VStack {
             SpriteView(
                 scene: GameScene(
-                    size: gameViewModel.sceneSize,
-                    brickArea: gameViewModel.brickArea
+                    size: config.sceneSize,
+                    brickArea: config.brickArea
                 )
             )
             .frame(
-                width: gameViewModel.sceneSize.width * scale,
-                height: gameViewModel.sceneSize.height * scale
+                width: config.sceneSize.width * scale,
+                height: config.sceneSize.height * scale
             )
             .onChange(of: areaOverlaysEnabled, initial: true) { oldValue, newValue in
                 postAreaOverlaysEnabledDidChangeNotification(oldValue: oldValue, newValue: newValue)
@@ -50,5 +48,15 @@ extension GameView {
 #Preview {
     GameView()
         .environment(\.gameScale, 1.0)
+        .environment(ConfigurationModel(using: MockConfigurationService()))
 }
 
+class MockConfigurationService: GameConfigurationService {
+    func getGameConfiguration() -> GameConfiguration {
+        GameConfiguration(
+            sceneWidth: 320,
+            sceneHeight: 480,
+            brickArea: BrickArea(x: 20, y: 330, width: 280, height: 120))
+    }
+    
+}

@@ -21,7 +21,7 @@ struct GameConfigurationServiceTest {
 
     @Test func getsTheGameConfiguration() async throws {
         let loader = FakeGameConfigurationLoader()
-        let service = GameConfigurationService(loader: loader)
+        let service = RealGameConfigurationService(loader: loader)
         let configuration = service.getGameConfiguration()
 
         #expect(configuration == GameConfiguration.createValid())

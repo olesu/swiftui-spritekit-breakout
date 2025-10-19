@@ -1,6 +1,10 @@
 import Foundation
 
-class GameConfigurationService {
+protocol GameConfigurationService {
+    func getGameConfiguration() -> GameConfiguration
+}
+
+class RealGameConfigurationService: GameConfigurationService {
     let loader: GameConfigurationLoader
     
     init(loader: GameConfigurationLoader) {
