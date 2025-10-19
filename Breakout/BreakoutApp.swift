@@ -1,10 +1,3 @@
-//
-//  BreakoutApp.swift
-//  Breakout
-//
-//  Created by Ole Kristian Sunde on 23/08/2025.
-//
-
 import Foundation
 import SwiftUI
 
@@ -22,6 +15,11 @@ struct BreakoutApp: App {
         WindowGroup {
             GameView()
                 .environment(\.gameScale, calculatedScale)
+        }
+        
+        Settings {
+            DevSettingsView()
+                .frame(minWidth: 300, minHeight: 300)
         }
     }
 }
