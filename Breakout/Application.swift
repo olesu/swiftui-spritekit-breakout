@@ -10,16 +10,21 @@ struct Application: App {
             return UIDevice.current.userInterfaceIdiom == .pad ? 3.0 : 2.0
         #endif
     }()
-
-    let configurationModel = ConfigurationModel(
-        using: RealGameConfigurationService(
-            loader: JsonGameConfigurationLoader()
-        )
-    )
+    
+    private let gameConfigurationLoader: GameConfigurationLoader
+    private let gameConfigurationService: GameConfigurationService
+    private let configurationModel: ConfigurationModel
+    
+    init() {
+        gameConfigurationLoader = JsonGameConfigurationLoader()
+        gameConfigurationService = RealGameConfigurationService(loader: gameConfigurationLoader)
+        
+        configurationModel = ConfigurationModel(using: gameConfigurationService)
+    }
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentViewWrapper()
                 .environment(\.gameScale, calculatedScale)
                 .environment(configurationModel)
         }
