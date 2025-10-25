@@ -6,15 +6,14 @@ extension Notification.Name {
     static let areaOverlaysEnabledDidChange = Notification.Name("areaOverlaysEnabledDidChange")
 }
 
-struct GameView: View {
+struct ContentView: View {
     @Environment(\.gameScale)
     private var scale
     
     @Environment(ConfigurationModel.self)
     private var config: ConfigurationModel
     
-    @AppStorage("areaOverlaysEnabled")
-    private var areaOverlaysEnabled = false
+    @State private var viewModel: ViewModel = ViewModel()
     
     var body: some View {
         VStack {
@@ -28,14 +27,11 @@ struct GameView: View {
                 width: config.sceneSize.width * scale,
                 height: config.sceneSize.height * scale
             )
-            .onChange(of: areaOverlaysEnabled, initial: true) { oldValue, newValue in
-                postAreaOverlaysEnabledDidChangeNotification(oldValue: oldValue, newValue: newValue)
-            }
         }
     }
 }
 
-extension GameView {
+extension ContentView {
     private func postAreaOverlaysEnabledDidChangeNotification(oldValue: Bool, newValue: Bool) {
         NotificationCenter.default.post(
             name: .areaOverlaysEnabledDidChange,
@@ -46,7 +42,7 @@ extension GameView {
 }
 
 #Preview {
-    GameView()
+    ContentView()
         .environment(\.gameScale, 1.0)
         .environment(ConfigurationModel(using: MockConfigurationService()))
 }

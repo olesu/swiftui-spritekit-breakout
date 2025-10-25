@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 
 @main
-struct BreakoutApp: App {
+struct Application: App {
     let calculatedScale: CGFloat = {
         #if os(macOS)
             return 2.0
@@ -19,7 +19,7 @@ struct BreakoutApp: App {
 
     var body: some Scene {
         WindowGroup {
-            GameView()
+            ContentView()
                 .environment(\.gameScale, calculatedScale)
                 .environment(configurationModel)
         }
