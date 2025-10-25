@@ -3,8 +3,7 @@ import SpriteKit
 
 class GameScene: SKScene {
     private let userDefaultsKey = "areaOverlaysEnabled"
-    private var changeObserver: NSObjectProtocol?
-
+    private var settingsMonitor: UserDefaultsMonitor? = nil
     private var isOverlaysEnabled: Bool = false {
         didSet {
             updateSceneOverlays()
@@ -23,35 +22,38 @@ class GameScene: SKScene {
     }
 
     override func didMove(to view: SKView) {
-        isOverlaysEnabled = UserDefaults.standard.bool(forKey: userDefaultsKey)
-
-        changeObserver = NotificationCenter.default.addObserver(
-            forName: UserDefaults.didChangeNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            guard let self else { return }
-            
-            let newValue = UserDefaults.standard.bool(forKey: self.userDefaultsKey)
-            if isOverlaysEnabled != newValue {
-                isOverlaysEnabled = newValue
-            }
-
-        }
+        monitorUserDefaults()
     }
 
     override func willMove(from view: SKView) {
-        NotificationCenter.default.removeObserver(self)
+        unmonitorUserDefaults()
     }
 
 }
 
 extension GameScene {
+    private func monitorUserDefaults() {
+        settingsMonitor = UserDefaultsMonitor(
+            key: userDefaultsKey,
+            initialValue: UserDefaults.standard.bool(forKey: userDefaultsKey)
+        ) { [weak self] newValue in
+            self?.isOverlaysEnabled = newValue
+        }
+    }
+    
+    private func unmonitorUserDefaults() {
+        settingsMonitor = nil
+    }
+    
     private func updateSceneOverlays() {
         if isOverlaysEnabled {
-            addChild(brickAreaOverlay)
+            if brickAreaOverlay.parent == nil {
+                addChild(brickAreaOverlay)
+            }
         } else {
-            removeChildren(in: [brickAreaOverlay])
+            if brickAreaOverlay.parent != nil {
+                brickAreaOverlay.removeFromParent()
+            }
         }
     }
 }
