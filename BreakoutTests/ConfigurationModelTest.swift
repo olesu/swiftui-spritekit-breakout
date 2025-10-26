@@ -28,4 +28,8 @@ class FakeGameConfigurationService: GameConfigurationService {
         )
     }
     
+    func getGameScale() -> CGFloat {
+        0
+    }
+    
 }
