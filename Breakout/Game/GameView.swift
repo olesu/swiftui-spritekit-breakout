@@ -28,10 +28,6 @@ struct GameView: View {
                     brickArea: viewModel.brickArea
                 )
             )
-            .frame(
-                width: viewModel.frameWidth,
-                height: viewModel.frameHeight
-            )
         }
     }
 }
@@ -40,6 +36,10 @@ struct GameView: View {
     let configurationModel = GameConfigurationModel(service: PreviewGameConfigurationService())
     GameViewWrapper()
         .environment(configurationModel)
+        .frame(
+            width: configurationModel.frameWidth,
+            height: configurationModel.frameHeight
+        )
 }
 
 class PreviewGameConfigurationService: GameConfigurationService {

@@ -1,9 +1,19 @@
 import Foundation
 import SwiftUI
 
+enum GameState {
+    case idle
+    case playing
+}
+
+struct GameManager {
+    let state = GameState.idle
+}
+
 @main
 struct Application: App {
     private let gameConfigurationModel: GameConfigurationModel
+    private let gameManager = GameManager()
     
     init() {
         let gameConfigurationLoader = JsonGameConfigurationLoader()
@@ -14,8 +24,19 @@ struct Application: App {
 
     var body: some Scene {
         WindowGroup {
-            GameViewWrapper()
-                .environment(gameConfigurationModel)
+            ZStack {
+                switch gameManager.state {
+                case .idle:
+                    IdleViewWrapper()
+                case .playing:
+                    GameViewWrapper()
+                        .environment(gameConfigurationModel)
+                }
+            }
+            .frame(
+                width: gameConfigurationModel.frameWidth,
+                height: gameConfigurationModel.frameHeight
+            )
         }
 
         Settings {
