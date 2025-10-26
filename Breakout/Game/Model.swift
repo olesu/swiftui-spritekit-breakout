@@ -18,7 +18,15 @@ import Foundation
         return CGSize(width: r.sceneWidth, height: r.sceneHeight)
     }
     
-    var calculatedScale: CGFloat {
+    var frameWidth: CGFloat {
+        sceneSize.width * calculatedScale
+    }
+    
+    var frameHeight: CGFloat {
+        sceneSize.height * calculatedScale
+    }
+    
+    private var calculatedScale: CGFloat {
         service.getGameScale()
     }
     
