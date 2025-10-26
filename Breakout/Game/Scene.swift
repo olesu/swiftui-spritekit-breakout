@@ -2,7 +2,7 @@ import Foundation
 import SpriteKit
 
 class GameScene: SKScene {
-    private let userDefaultsKey = "areaOverlaysEnabled"
+    private let userDefaultsKey = UserDefaultsKeys.areaOverlaysEnabled
     private var settingsMonitor: UserDefaultsMonitor? = nil
     private var isOverlaysEnabled: Bool = false {
         didSet {

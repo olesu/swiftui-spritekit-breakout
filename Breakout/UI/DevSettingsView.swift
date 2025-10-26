@@ -2,8 +2,9 @@ import Foundation
 import SwiftUI
 
 struct DevSettingsView: View {
-    @AppStorage("areaOverlaysEnabled") private var areaOverlaysEnabled: Bool = false
-    
+    @AppStorage(UserDefaultsKeys.areaOverlaysEnabled)
+    private var areaOverlaysEnabled: Bool = false
+
     var body: some View {
         Form {
             Section {
