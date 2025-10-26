@@ -18,6 +18,10 @@ import Foundation
         return CGSize(width: r.sceneWidth, height: r.sceneHeight)
     }
     
+    var calculatedScale: CGFloat {
+        service.getGameScale()
+    }
+    
     init(using service: GameConfigurationService) {
         self.service = service
     }

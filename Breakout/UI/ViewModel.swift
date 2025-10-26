@@ -12,8 +12,16 @@ import SwiftUI
         configurationModel.sceneSize
     }
     
+    var frameWidth: CGFloat {
+        configurationModel.sceneSize.width * configurationModel.calculatedScale
+    }
+    
+    var frameHeight: CGFloat {
+        configurationModel.sceneSize.height * configurationModel.calculatedScale
+    }
+    
     var brickArea: CGRect {
         configurationModel.brickArea
     }
-
+    
 }

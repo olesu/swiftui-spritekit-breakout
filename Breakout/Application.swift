@@ -3,14 +3,6 @@ import SwiftUI
 
 @main
 struct Application: App {
-    let calculatedScale: CGFloat = {
-        #if os(macOS)
-            return 2.0
-        #else
-            return UIDevice.current.userInterfaceIdiom == .pad ? 3.0 : 2.0
-        #endif
-    }()
-    
     private let gameConfigurationLoader: GameConfigurationLoader
     private let gameConfigurationService: GameConfigurationService
     private let configurationModel: ConfigurationModel
@@ -24,8 +16,7 @@ struct Application: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentViewWrapper()
-                .environment(\.gameScale, calculatedScale)
+            GameViewWrapper()
                 .environment(configurationModel)
         }
 

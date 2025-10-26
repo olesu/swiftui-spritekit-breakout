@@ -2,19 +2,16 @@ import Foundation
 import SpriteKit
 import SwiftUI
 
-struct ContentViewWrapper: View {
+struct GameViewWrapper: View {
     @Environment(ConfigurationModel.self)
     private var configurationModel: ConfigurationModel
 
     var body: some View {
-        ContentView(configurationModel: configurationModel)
+        GameView(configurationModel: configurationModel)
     }
 }
 
-struct ContentView: View {
-    @Environment(\.gameScale)
-    private var scale
-
+struct GameView: View {
     @State private var viewModel: ViewModel
 
     init(configurationModel: ConfigurationModel) {
@@ -32,16 +29,17 @@ struct ContentView: View {
                 )
             )
             .frame(
-                width: viewModel.sceneSize.width * scale,
-                height: viewModel.sceneSize.height * scale
+                width: viewModel.frameWidth,
+                height: viewModel.frameHeight
             )
         }
     }
 }
 
 #Preview {
-    ContentView(configurationModel: ConfigurationModel(using: PreviewGameConfigurationService()))
-        .environment(\.gameScale, 1.0)
+    let configurationModel = ConfigurationModel(using: PreviewGameConfigurationService())
+    GameViewWrapper()
+        .environment(configurationModel)
 }
 
 class PreviewGameConfigurationService: GameConfigurationService {
@@ -57,5 +55,10 @@ class PreviewGameConfigurationService: GameConfigurationService {
             )
         )
     }
+
+    func getGameScale() -> CGFloat {
+        0.5
+    }
+    
 }
 
