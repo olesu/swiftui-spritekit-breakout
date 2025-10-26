@@ -3,8 +3,8 @@ import SpriteKit
 import SwiftUI
 
 struct GameViewWrapper: View {
-    @Environment(ConfigurationModel.self)
-    private var configurationModel: ConfigurationModel
+    @Environment(GameConfigurationModel.self)
+    private var configurationModel: GameConfigurationModel
 
     var body: some View {
         GameView(configurationModel: configurationModel)
@@ -12,11 +12,11 @@ struct GameViewWrapper: View {
 }
 
 struct GameView: View {
-    @State private var viewModel: ViewModel
+    @State private var viewModel: GameViewModel
 
-    init(configurationModel: ConfigurationModel) {
+    init(configurationModel: GameConfigurationModel) {
         _viewModel = State(
-            initialValue: ViewModel(configurationModel: configurationModel)
+            initialValue: GameViewModel(configurationModel: configurationModel)
         )
     }
 
@@ -37,7 +37,7 @@ struct GameView: View {
 }
 
 #Preview {
-    let configurationModel = ConfigurationModel(using: PreviewGameConfigurationService())
+    let configurationModel = GameConfigurationModel(service: PreviewGameConfigurationService())
     GameViewWrapper()
         .environment(configurationModel)
 }

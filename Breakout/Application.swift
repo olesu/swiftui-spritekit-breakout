@@ -3,21 +3,19 @@ import SwiftUI
 
 @main
 struct Application: App {
-    private let gameConfigurationLoader: GameConfigurationLoader
-    private let gameConfigurationService: GameConfigurationService
-    private let configurationModel: ConfigurationModel
+    private let gameConfigurationModel: GameConfigurationModel
     
     init() {
-        gameConfigurationLoader = JsonGameConfigurationLoader()
-        gameConfigurationService = RealGameConfigurationService(loader: gameConfigurationLoader)
+        let gameConfigurationLoader = JsonGameConfigurationLoader()
+        let gameConfigurationService = RealGameConfigurationService(loader: gameConfigurationLoader)
         
-        configurationModel = ConfigurationModel(using: gameConfigurationService)
+        gameConfigurationModel = GameConfigurationModel(service: gameConfigurationService)
     }
 
     var body: some Scene {
         WindowGroup {
             GameViewWrapper()
-                .environment(configurationModel)
+                .environment(gameConfigurationModel)
         }
 
         Settings {

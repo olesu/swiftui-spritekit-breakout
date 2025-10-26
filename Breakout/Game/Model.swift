@@ -1,6 +1,6 @@
 import Foundation
 
-@Observable class ConfigurationModel {
+@Observable class GameConfigurationModel {
     let service: GameConfigurationService
 
     var brickArea: CGRect {
@@ -30,7 +30,7 @@ import Foundation
         service.getGameScale()
     }
     
-    init(using service: GameConfigurationService) {
+    init(service: GameConfigurationService) {
         self.service = service
     }
 

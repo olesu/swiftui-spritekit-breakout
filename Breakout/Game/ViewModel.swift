@@ -1,10 +1,10 @@
 import Foundation
 import SwiftUI
 
-@Observable class ViewModel {
-    let configurationModel: ConfigurationModel
+@Observable class GameViewModel {
+    let configurationModel: GameConfigurationModel
     
-    init(configurationModel: ConfigurationModel) {
+    init(configurationModel: GameConfigurationModel) {
         self.configurationModel = configurationModel
     }
 
