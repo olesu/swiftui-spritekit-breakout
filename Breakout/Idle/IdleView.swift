@@ -1,15 +1,28 @@
 import Foundation
 import SwiftUI
 
+@Observable class IdleViewModel {
+    let startGameButtonText = "Start Game"
+
+    func startGame() {
+        print("start game...")
+    }
+}
+
 struct IdleViewWrapper: View {
     var body: some View {
         IdleView()
     }
+    
 }
 
 struct IdleView: View {
+    @State private var viewModel = IdleViewModel()
+    
     var body: some View {
-        Text("Hello, world!")
+        Button(viewModel.startGameButtonText) {
+            viewModel.startGame()
+        }
     }
 }
 

@@ -13,7 +13,7 @@ import Foundation
 struct ConfigurationModelTest {
 
     @Test func holdsTheModel() async throws {
-        let m = ConfigurationModel(using: FakeGameConfigurationService())
+        let m = GameConfigurationModel(service: FakeGameConfigurationService())
         
         #expect(m.sceneSize == CGSize(width: 0, height: 0))
         #expect(m.brickArea == CGRect(x: 0, y: 0, width: 0, height: 0))
