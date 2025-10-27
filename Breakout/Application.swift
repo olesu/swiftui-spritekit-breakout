@@ -14,12 +14,17 @@ struct GameManager {
 struct Application: App {
     private let gameConfigurationModel: GameConfigurationModel
     private let gameManager = GameManager()
+    private let idleModel: IdleModel
     
     init() {
         let gameConfigurationLoader = JsonGameConfigurationLoader()
         let gameConfigurationService = RealGameConfigurationService(loader: gameConfigurationLoader)
         
         gameConfigurationModel = GameConfigurationModel(service: gameConfigurationService)
+        
+        idleModel = IdleModel(
+            gameStateService: RealGameStateService()
+        )
     }
 
     var body: some Scene {
@@ -28,6 +33,7 @@ struct Application: App {
                 switch gameManager.state {
                 case .idle:
                     IdleViewWrapper()
+                        .environment(idleModel)
                 case .playing:
                     GameViewWrapper()
                         .environment(gameConfigurationModel)

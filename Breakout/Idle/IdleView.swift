@@ -1,27 +1,27 @@
 import Foundation
 import SwiftUI
 
-@Observable class IdleViewModel {
-    let startGameButtonText = "Start Game"
-
-    func startGame() {
-        print("start game...")
-    }
-}
-
 struct IdleViewWrapper: View {
+    @Environment(IdleModel.self) private var idleModel: IdleModel
+
     var body: some View {
-        IdleView()
+        IdleView(viewModel: idleModel)
     }
-    
+
 }
 
 struct IdleView: View {
-    @State private var viewModel = IdleViewModel()
-    
+    private var viewModel: IdleViewModel
+
+    init(viewModel: IdleModel) {
+        self.viewModel = IdleViewModel(model: viewModel)
+    }
+
     var body: some View {
         Button(viewModel.startGameButtonText) {
-            viewModel.startGame()
+            Task {
+                await viewModel.startGameButtonPressed()
+            }
         }
     }
 }
@@ -29,4 +29,21 @@ struct IdleView: View {
 #Preview {
     IdleViewWrapper()
         .frame(width: 320 * 0.5, height: 480 * 0.5)
+        .environment(
+            IdleModel(
+                gameStateService: PreviewGameStateService()
+            )
+        )
+}
+
+private class PreviewGameStateService: GameStateService {
+    func transitionToPlaying() {
+        
+    }
+    
+    func getState() -> GameState {
+        .idle
+    }
+    
+
 }
