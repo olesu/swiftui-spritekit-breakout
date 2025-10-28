@@ -1,47 +1,48 @@
 import Foundation
 import SwiftUI
 
-enum GameState {
-    case idle
-    case playing
-}
-
-struct GameManager {
-    let state = GameState.idle
+@Observable class InMemoryStorage {
+    var state = GameState.idle
 }
 
 @main
 struct Application: App {
-    private let gameConfigurationModel: GameConfigurationModel
-    private let gameManager = GameManager()
+    private let gameModel: GameConfigurationModel
     private let idleModel: IdleModel
     
+    private var storage: InMemoryStorage
+
     init() {
-        let gameConfigurationLoader = JsonGameConfigurationLoader()
-        let gameConfigurationService = RealGameConfigurationService(loader: gameConfigurationLoader)
-        
-        gameConfigurationModel = GameConfigurationModel(service: gameConfigurationService)
+        storage = InMemoryStorage()
+
+        gameModel = GameConfigurationModel(
+            service: RealGameConfigurationService(
+                loader: JsonGameConfigurationLoader()
+            )
+        )
         
         idleModel = IdleModel(
-            gameStateService: RealGameStateService()
+            gameStateService: RealGameStateService(
+                adapter: InMemoryGameStateAdapter(storage: storage)
+            )
         )
     }
 
     var body: some Scene {
         WindowGroup {
             ZStack {
-                switch gameManager.state {
+                switch storage.state {
                 case .idle:
                     IdleViewWrapper()
                         .environment(idleModel)
                 case .playing:
                     GameViewWrapper()
-                        .environment(gameConfigurationModel)
+                        .environment(gameModel)
                 }
             }
             .frame(
-                width: gameConfigurationModel.frameWidth,
-                height: gameConfigurationModel.frameHeight
+                width: gameModel.frameWidth,
+                height: gameModel.frameHeight
             )
         }
 
