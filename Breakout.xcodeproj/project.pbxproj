@@ -29,9 +29,30 @@
 		379ACDF22E598E0300E23C13 /* BreakoutUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BreakoutUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		37DDA3BF2EB9403A00E6E517 /* Exceptions for "Breakout" folder in "Breakout" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Domain/GameEvent.swift,
+			);
+			target = 379ACDD92E598E0200E23C13 /* Breakout */;
+		};
+		37DDA3C02EB9403A00E6E517 /* Exceptions for "Breakout" folder in "BreakoutTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Domain/GameEvent.swift,
+			);
+			target = 379ACDE72E598E0300E23C13 /* BreakoutTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		379ACDDC2E598E0300E23C13 /* Breakout */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				37DDA3BF2EB9403A00E6E517 /* Exceptions for "Breakout" folder in "Breakout" target */,
+				37DDA3C02EB9403A00E6E517 /* Exceptions for "Breakout" folder in "BreakoutTests" target */,
+			);
 			path = Breakout;
 			sourceTree = "<group>";
 		};
