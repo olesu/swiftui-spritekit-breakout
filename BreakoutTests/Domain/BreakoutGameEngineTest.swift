@@ -9,8 +9,8 @@ struct BreakoutGameEngineTest {
      TDD Task List for BreakoutGameEngine:
 
      Core Event Processing:
-     [ ] Can process .brickHit event and remove brick from registry
-     [ ] Can process .brickHit event and update score
+     [x] Can process .brickHit event and remove brick from registry
+     [x] Can process .brickHit event and update score
      [ ] Can process .ballLost event and decrement lives
      [ ] Ignores events when game is not in .playing state
 
@@ -30,9 +30,9 @@ struct BreakoutGameEngineTest {
      [ ] Game over condition is checked after ball loss
 
      Game State Queries:
-     [ ] Can query current score
+     [x] Can query current score
      [ ] Can query remaining lives
-     [ ] Can query remaining brick count
+     [x] Can query remaining brick count
      [ ] Can query current game status
 
      Game Initialization:
@@ -78,6 +78,14 @@ struct BreakoutGameEngineTest {
         engine.process(event: .brickHit(brickID: brickId))
 
         #expect(engine.currentScore > 0)
+    }
+
+    @Test func processBallLostEventDecrementsLives() async throws {
+        let engine = BreakoutGameEngine(bricks: Bricks(), lives: 3)
+
+        engine.process(event: .ballLost)
+
+        #expect(engine.remainingLives == 2)
     }
 
 }

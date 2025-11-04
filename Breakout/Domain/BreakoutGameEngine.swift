@@ -3,6 +3,7 @@ import Foundation
 class BreakoutGameEngine {
     private var bricks: Bricks
     private var scoreCard: ScoreCard
+    private var livesCard: LivesCard
 
     var remainingBrickCount: Int {
         bricks.someRemaining ? 1 : 0
@@ -12,9 +13,14 @@ class BreakoutGameEngine {
         scoreCard.total
     }
 
-    init(bricks: Bricks) {
+    var remainingLives: Int {
+        livesCard.remaining
+    }
+
+    init(bricks: Bricks, lives: Int = 3) {
         self.bricks = bricks
         self.scoreCard = ScoreCard()
+        self.livesCard = LivesCard(lives)
     }
 
     func process(event: GameEvent) {
@@ -23,7 +29,7 @@ class BreakoutGameEngine {
             bricks.remove(withId: BrickId(of: brickID.uuidString))
             scoreCard.score(1)
         case .ballLost:
-            break
+            livesCard.lifeWasLost()
         }
     }
 }
