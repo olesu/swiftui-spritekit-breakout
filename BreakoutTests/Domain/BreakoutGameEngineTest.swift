@@ -11,7 +11,7 @@ struct BreakoutGameEngineTest {
      Core Event Processing:
      [x] Can process .brickHit event and remove brick from registry
      [x] Can process .brickHit event and update score
-     [ ] Can process .ballLost event and decrement lives
+     [x] Can process .ballLost event and decrement lives
      [ ] Ignores events when game is not in .playing state
 
      Scoring Integration:
@@ -31,14 +31,14 @@ struct BreakoutGameEngineTest {
 
      Game State Queries:
      [x] Can query current score
-     [ ] Can query remaining lives
+     [x] Can query remaining lives
      [x] Can query remaining brick count
      [ ] Can query current game status
 
      Game Initialization:
-     [ ] New game starts with specified number of lives (default 3)
-     [ ] New game starts with score of 0
-     [ ] New game starts with provided brick set
+     [x] New game starts with specified number of lives (default 3)
+     [x] New game starts with score of 0
+     [x] New game starts with provided brick set
      [ ] New game starts in .ready or .idle state
 
      State Transitions:
