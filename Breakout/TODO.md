@@ -29,13 +29,13 @@
   - [ ] `.gameStarted`
   - [ ] `.gamePaused`
   - [ ] `.gameResumed`
-- [ ] Event processing pipeline in domain
+- [x] Event processing pipeline in domain (BreakoutGameEngine implemented)
 - [ ] Event validation (ignore events in wrong game state)
 
 ### 2. Game State Management 🎮
 **Current state of the game session**
 
-- [x] `GameStatus` enum: `.idle`, `.playing` (partial - missing `.paused`, `.gameOver`, `.won`)
+- [x] `GameStatus` enum: `.idle`, `.playing`, `.won`, `.gameOver` (complete - missing `.paused`)
 - [ ] `GameState` struct containing:
   - [ ] Current status
   - [ ] Current score
@@ -77,10 +77,10 @@
 ### 6. Game Engine Coordination 🎯
 **The main coordinator that processes events and updates state**
 
-- [ ] `BreakoutGameEngine` class
-- [ ] Process incoming events from SpriteKit
-- [ ] Update game state based on events
-- [ ] Return state changes/commands back to SpriteKit
+- [x] `BreakoutGameEngine` class
+- [x] Process incoming events from SpriteKit (.brickHit, .ballLost)
+- [x] Update game state based on events (score, lives, win/gameOver)
+- [x] Return state changes/commands back to SpriteKit (via query methods)
 - [ ] Thread safety considerations
 
 ---
