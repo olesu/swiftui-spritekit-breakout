@@ -45,8 +45,8 @@ struct BreakoutGameEngineTest {
      [ ] Can start game (transition from .idle to .playing)
      [ ] Can pause game (transition from .playing to .paused)
      [ ] Can resume game (transition from .paused to .playing)
-     [ ] Cannot process game events when .gameOver
-     [ ] Cannot process game events when .won
+     [x] Cannot process game events when .gameOver
+     [x] Cannot process game events when .won
 
      Edge Cases:
      [ ] Processing .brickHit for non-existent brick is handled gracefully
@@ -106,6 +106,37 @@ struct BreakoutGameEngineTest {
         engine.process(event: .ballLost)
 
         #expect(engine.currentStatus == .gameOver)
+    }
+
+    @Test func cannotProcessEventsWhenGameOver() async throws {
+        let brickId = UUID()
+        var bricks = Bricks()
+        bricks.add(Brick(id: BrickId(of: brickId.uuidString)))
+
+        let engine = BreakoutGameEngine(bricks: bricks, lives: 1)
+
+        engine.process(event: .ballLost)
+
+        engine.process(event: .brickHit(brickID: brickId))
+
+        #expect(engine.currentScore == 0)
+        #expect(engine.remainingBrickCount == 1)
+        #expect(engine.currentStatus == .gameOver)
+    }
+
+    @Test func cannotProcessEventsWhenWon() async throws {
+        let brickId = UUID()
+        var bricks = Bricks()
+        bricks.add(Brick(id: BrickId(of: brickId.uuidString)))
+
+        let engine = BreakoutGameEngine(bricks: bricks, lives: 3)
+
+        engine.process(event: .brickHit(brickID: brickId))
+
+        engine.process(event: .ballLost)
+
+        #expect(engine.remainingLives == 3)
+        #expect(engine.currentStatus == .won)
     }
 
 }

@@ -30,6 +30,10 @@ class BreakoutGameEngine {
     }
 
     func process(event: GameEvent) {
+        guard gameState == .playing else {
+            return
+        }
+
         switch event {
         case .brickHit(let brickID):
             bricks.remove(withId: BrickId(of: brickID.uuidString))
