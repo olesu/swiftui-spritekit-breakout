@@ -68,4 +68,16 @@ struct BreakoutGameEngineTest {
         #expect(engine.remainingBrickCount == 0)
     }
 
+    @Test func processBrickHitEventUpdatesScore() async throws {
+        let brickId = UUID()
+        var bricks = Bricks()
+        bricks.add(Brick(id: BrickId(of: brickId.uuidString)))
+
+        let engine = BreakoutGameEngine(bricks: bricks)
+
+        engine.process(event: .brickHit(brickID: brickId))
+
+        #expect(engine.currentScore > 0)
+    }
+
 }
