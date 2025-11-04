@@ -25,7 +25,7 @@ struct BreakoutGameEngineTest {
      [ ] Win condition is checked after each brick hit
 
      Game Over Condition:
-     [ ] Game transitions to .gameOver when last life is lost
+     [x] Game transitions to .gameOver when last life is lost
      [ ] Game stays .playing when lives remain after ball loss
      [ ] Game over condition is checked after ball loss
 
