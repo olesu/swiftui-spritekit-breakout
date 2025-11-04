@@ -20,7 +20,7 @@ struct BreakoutGameEngineTest {
      [ ] Score starts at zero for new game
 
      Win Condition:
-     [ ] Game transitions to .won when last brick is destroyed
+     [x] Game transitions to .won when last brick is destroyed
      [ ] Game stays .playing when bricks remain after hit
      [ ] Win condition is checked after each brick hit
 
@@ -33,7 +33,7 @@ struct BreakoutGameEngineTest {
      [x] Can query current score
      [x] Can query remaining lives
      [x] Can query remaining brick count
-     [ ] Can query current game status
+     [x] Can query current game status
 
      Game Initialization:
      [x] New game starts with specified number of lives (default 3)
@@ -98,6 +98,14 @@ struct BreakoutGameEngineTest {
         engine.process(event: .brickHit(brickID: brickId))
 
         #expect(engine.currentStatus == .won)
+    }
+
+    @Test func gameTransitionsToGameOverWhenLastLifeLost() async throws {
+        let engine = BreakoutGameEngine(bricks: Bricks(), lives: 1)
+
+        engine.process(event: .ballLost)
+
+        #expect(engine.currentStatus == .gameOver)
     }
 
 }

@@ -40,6 +40,10 @@ class BreakoutGameEngine {
             }
         case .ballLost:
             livesCard.lifeWasLost()
+
+            if livesCard.gameOver {
+                gameState = .gameOver
+            }
         }
     }
 }
