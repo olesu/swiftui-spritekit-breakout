@@ -23,55 +23,55 @@
 ### 1. Game Events 📨
 **Messages sent from SpriteKit to domain when things happen**
 
-- [ ] `GameEvent` enum with cases:
-  - `.brickHit(brickID: UUID)`
-  - `.ballLost`
-  - `.gameStarted`
-  - `.gamePaused`
-  - `.gameResumed`
+- [x] `GameEvent` enum with cases:
+  - [x] `.brickHit(brickID: UUID)`
+  - [x] `.ballLost`
+  - [ ] `.gameStarted`
+  - [ ] `.gamePaused`
+  - [ ] `.gameResumed`
 - [ ] Event processing pipeline in domain
 - [ ] Event validation (ignore events in wrong game state)
 
 ### 2. Game State Management 🎮
 **Current state of the game session**
 
-- [ ] `GameStatus` enum: `.ready`, `.playing`, `.paused`, `.gameOver`, `.won`
+- [x] `GameStatus` enum: `.idle`, `.playing` (partial - missing `.paused`, `.gameOver`, `.won`)
 - [ ] `GameState` struct containing:
-  - Current status
-  - Current score
-  - Lives remaining
-  - Active brick IDs
-- [ ] State transition rules (when can game move between states)
+  - [ ] Current status
+  - [ ] Current score
+  - [ ] Lives remaining
+  - [ ] Active brick IDs
+- [x] State transition rules (basic transitions working via GameStateService)
 - [ ] Game initialization and reset logic
 
 ### 3. Brick Management 🧱
 **Tracking which bricks exist and their properties**
 
-- [ ] `BrickInfo` struct: ID, color, point value, destroyed status
-- [ ] `BrickRegistry` to track all bricks in current level
+- [x] `Brick` struct with ID (basic - no color/point value yet)
+- [x] `Bricks` registry to track all bricks in current level
 - [ ] Brick type/color to point value mapping
-- [ ] Brick destruction logic (remove from active set)
-- [ ] Query methods (all bricks destroyed? how many remain?)
+- [x] Brick destruction logic (remove from active set)
+- [x] Query methods (all bricks destroyed? how many remain?)
 
 ### 4. Scoring System 🏆
 **Rules for calculating and tracking score**
 
 - [ ] Point values for different brick colors:
   - Red: 7 points
-  - Orange: 7 points  
+  - Orange: 7 points
   - Yellow: 4 points
   - Green: 1 point
-- [ ] Score calculation when brick is hit
+- [x] Score calculation (generic scoring working with ScoreCard)
 - [ ] Bonus scoring rules (if any)
 - [ ] High score tracking (optional)
 
 ### 5. Lives & Game Progression ❤️
 **Managing player lives and win/lose conditions**
 
-- [ ] Lives management (start with 3)
-- [ ] Ball loss handling (decrement lives)
-- [ ] Game over detection (lives = 0)
-- [ ] Win condition detection (no bricks remaining)
+- [x] Lives management (LivesCard implemented)
+- [x] Ball loss handling (decrement lives)
+- [x] Game over detection (lives = 0)
+- [x] Win condition detection (no bricks remaining via Bricks.someRemaining)
 - [ ] Level progression (optional for MVP)
 
 ### 6. Game Engine Coordination 🎯
