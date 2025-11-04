@@ -88,4 +88,16 @@ struct BreakoutGameEngineTest {
         #expect(engine.remainingLives == 2)
     }
 
+    @Test func gameTransitionsToWonWhenLastBrickDestroyed() async throws {
+        let brickId = UUID()
+        var bricks = Bricks()
+        bricks.add(Brick(id: BrickId(of: brickId.uuidString)))
+
+        let engine = BreakoutGameEngine(bricks: bricks)
+
+        engine.process(event: .brickHit(brickID: brickId))
+
+        #expect(engine.currentStatus == .won)
+    }
+
 }

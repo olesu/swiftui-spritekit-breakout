@@ -3,6 +3,8 @@ import Foundation
 enum GameState {
     case idle
     case playing
+    case won
+    case gameOver
 }
 
 protocol GameStateService {

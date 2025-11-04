@@ -38,6 +38,9 @@ struct Application: App {
                 case .playing:
                     GameViewWrapper()
                         .environment(gameModel)
+                case .won, .gameOver:
+                    GameViewWrapper()
+                        .environment(gameModel)
                 }
             }
             .frame(
