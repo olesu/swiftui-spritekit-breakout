@@ -171,4 +171,40 @@ struct BreakoutGameEngineTest {
         #expect(engine.remainingLives == 0)
     }
 
+    @Test func fullGameFlowWithMultipleBricksAndLives() async throws {
+        let brick1Id = UUID()
+        let brick2Id = UUID()
+        let brick3Id = UUID()
+        var bricks = Bricks()
+        bricks.add(Brick(id: BrickId(of: brick1Id.uuidString)))
+        bricks.add(Brick(id: BrickId(of: brick2Id.uuidString)))
+        bricks.add(Brick(id: BrickId(of: brick3Id.uuidString)))
+
+        let engine = BreakoutGameEngine(bricks: bricks, lives: 2)
+
+        #expect(engine.currentStatus == .playing)
+        #expect(engine.remainingLives == 2)
+        #expect(engine.currentScore == 0)
+
+        engine.process(event: .brickHit(brickID: brick1Id))
+        #expect(engine.currentScore == 1)
+        #expect(engine.remainingBrickCount == 2)
+        #expect(engine.currentStatus == .playing)
+
+        engine.process(event: .ballLost)
+        #expect(engine.remainingLives == 1)
+        #expect(engine.currentStatus == .playing)
+
+        engine.process(event: .brickHit(brickID: brick2Id))
+        #expect(engine.currentScore == 2)
+        #expect(engine.remainingBrickCount == 1)
+        #expect(engine.currentStatus == .playing)
+
+        engine.process(event: .brickHit(brickID: brick3Id))
+        #expect(engine.currentScore == 3)
+        #expect(engine.remainingBrickCount == 0)
+        #expect(engine.currentStatus == .won)
+        #expect(engine.remainingLives == 1)
+    }
+
 }

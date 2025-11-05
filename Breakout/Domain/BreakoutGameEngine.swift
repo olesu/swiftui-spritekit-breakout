@@ -7,7 +7,7 @@ class BreakoutGameEngine {
     private var gameState: GameState
 
     var remainingBrickCount: Int {
-        bricks.someRemaining ? 1 : 0
+        bricks.bricks.count
     }
 
     var currentScore: Int {
