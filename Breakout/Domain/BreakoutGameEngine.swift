@@ -26,7 +26,14 @@ class BreakoutGameEngine {
         self.bricks = bricks
         self.scoreCard = ScoreCard()
         self.livesCard = LivesCard(lives)
-        self.gameState = .playing
+        self.gameState = .idle
+    }
+
+    func start() {
+        guard gameState == .idle else {
+            return
+        }
+        gameState = .playing
     }
 
     func process(event: GameEvent) {

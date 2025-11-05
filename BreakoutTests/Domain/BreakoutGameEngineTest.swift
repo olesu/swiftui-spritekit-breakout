@@ -39,10 +39,10 @@ struct BreakoutGameEngineTest {
      [x] New game starts with specified number of lives (default 3)
      [x] New game starts with score of 0
      [x] New game starts with provided brick set
-     [ ] New game starts in .ready or .idle state
+     [x] New game starts in .idle state
 
      State Transitions:
-     [ ] Can start game (transition from .idle to .playing)
+     [x] Can start game (transition from .idle to .playing via start())
      [ ] Can pause game (transition from .playing to .paused)
      [ ] Can resume game (transition from .paused to .playing)
      [x] Cannot process game events when .gameOver
@@ -62,6 +62,7 @@ struct BreakoutGameEngineTest {
         bricks.add(Brick(id: BrickId(of: brickId.uuidString)))
 
         let engine = BreakoutGameEngine(bricks: bricks)
+        engine.start()
 
         engine.process(event: .brickHit(brickID: brickId))
 
@@ -74,6 +75,7 @@ struct BreakoutGameEngineTest {
         bricks.add(Brick(id: BrickId(of: brickId.uuidString)))
 
         let engine = BreakoutGameEngine(bricks: bricks)
+        engine.start()
 
         engine.process(event: .brickHit(brickID: brickId))
 
@@ -82,6 +84,7 @@ struct BreakoutGameEngineTest {
 
     @Test func processBallLostEventDecrementsLives() async throws {
         let engine = BreakoutGameEngine(bricks: Bricks(), lives: 3)
+        engine.start()
 
         engine.process(event: .ballLost)
 
@@ -94,6 +97,7 @@ struct BreakoutGameEngineTest {
         bricks.add(Brick(id: BrickId(of: brickId.uuidString)))
 
         let engine = BreakoutGameEngine(bricks: bricks)
+        engine.start()
 
         engine.process(event: .brickHit(brickID: brickId))
 
@@ -102,6 +106,7 @@ struct BreakoutGameEngineTest {
 
     @Test func gameTransitionsToGameOverWhenLastLifeLost() async throws {
         let engine = BreakoutGameEngine(bricks: Bricks(), lives: 1)
+        engine.start()
 
         engine.process(event: .ballLost)
 
@@ -114,6 +119,7 @@ struct BreakoutGameEngineTest {
         bricks.add(Brick(id: BrickId(of: brickId.uuidString)))
 
         let engine = BreakoutGameEngine(bricks: bricks, lives: 1)
+        engine.start()
 
         engine.process(event: .ballLost)
 
@@ -130,6 +136,7 @@ struct BreakoutGameEngineTest {
         bricks.add(Brick(id: BrickId(of: brickId.uuidString)))
 
         let engine = BreakoutGameEngine(bricks: bricks, lives: 3)
+        engine.start()
 
         engine.process(event: .brickHit(brickID: brickId))
 
@@ -149,6 +156,7 @@ struct BreakoutGameEngineTest {
         bricks.add(Brick(id: BrickId(of: brick3Id.uuidString)))
 
         let engine = BreakoutGameEngine(bricks: bricks)
+        engine.start()
 
         engine.process(event: .brickHit(brickID: brick1Id))
         #expect(engine.currentScore == 1)
@@ -162,6 +170,7 @@ struct BreakoutGameEngineTest {
 
     @Test func livesCannotGoBelowZero() async throws {
         let engine = BreakoutGameEngine(bricks: Bricks(), lives: 1)
+        engine.start()
 
         engine.process(event: .ballLost)
         #expect(engine.remainingLives == 0)
@@ -181,6 +190,7 @@ struct BreakoutGameEngineTest {
         bricks.add(Brick(id: BrickId(of: brick3Id.uuidString)))
 
         let engine = BreakoutGameEngine(bricks: bricks, lives: 2)
+        engine.start()
 
         #expect(engine.currentStatus == .playing)
         #expect(engine.remainingLives == 2)
@@ -214,6 +224,7 @@ struct BreakoutGameEngineTest {
         bricks.add(Brick(id: BrickId(of: existingBrickId.uuidString)))
 
         let engine = BreakoutGameEngine(bricks: bricks, lives: 3)
+        engine.start()
 
         engine.process(event: .brickHit(brickID: nonExistentBrickId))
 
@@ -232,6 +243,7 @@ struct BreakoutGameEngineTest {
         bricks.add(Brick(id: BrickId(of: brick3Id.uuidString)))
 
         let engine = BreakoutGameEngine(bricks: bricks, lives: 3)
+        engine.start()
 
         engine.process(event: .brickHit(brickID: brick1Id))
 
@@ -241,6 +253,7 @@ struct BreakoutGameEngineTest {
 
     @Test func gameStaysPlayingWhenLivesRemainAfterBallLoss() async throws {
         let engine = BreakoutGameEngine(bricks: Bricks(), lives: 3)
+        engine.start()
 
         engine.process(event: .ballLost)
 
@@ -261,6 +274,7 @@ struct BreakoutGameEngineTest {
         bricks.add(Brick(id: BrickId(of: greenBrickId.uuidString), color: .green))
 
         let engine = BreakoutGameEngine(bricks: bricks)
+        engine.start()
 
         engine.process(event: .brickHit(brickID: redBrickId))
         #expect(engine.currentScore == 7)
@@ -273,6 +287,12 @@ struct BreakoutGameEngineTest {
 
         engine.process(event: .brickHit(brickID: greenBrickId))
         #expect(engine.currentScore == 19)
+    }
+
+    @Test func newGameStartsInIdleState() async throws {
+        let engine = BreakoutGameEngine(bricks: Bricks(), lives: 3)
+
+        #expect(engine.currentStatus == .idle)
     }
 
 }
