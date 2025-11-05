@@ -30,18 +30,14 @@
   - [ ] `.gamePaused`
   - [ ] `.gameResumed`
 - [x] Event processing pipeline in domain (BreakoutGameEngine implemented)
-- [ ] Event validation (ignore events in wrong game state)
+- [x] Event validation (ignore events in wrong game state)
 
 ### 2. Game State Management 🎮
 **Current state of the game session**
 
 - [x] `GameStatus` enum: `.idle`, `.playing`, `.won`, `.gameOver` (complete - missing `.paused`)
-- [ ] `GameState` struct containing:
-  - [ ] Current status
-  - [ ] Current score
-  - [ ] Lives remaining
-  - [ ] Active brick IDs
-- [x] State transition rules (basic transitions working via GameStateService)
+- [x] Game state tracking (BreakoutGameEngine tracks status, score, lives, active bricks)
+- [x] State transition rules (.playing -> .won/.gameOver transitions working)
 - [ ] Game initialization and reset logic
 
 ### 3. Brick Management 🧱
@@ -81,6 +77,8 @@
 - [x] Process incoming events from SpriteKit (.brickHit, .ballLost)
 - [x] Update game state based on events (score, lives, win/gameOver)
 - [x] Return state changes/commands back to SpriteKit (via query methods)
+- [x] Event validation (ignore events when not in .playing state)
+- [x] Comprehensive test coverage (10 passing tests including integration test)
 - [ ] Thread safety considerations
 
 ---
