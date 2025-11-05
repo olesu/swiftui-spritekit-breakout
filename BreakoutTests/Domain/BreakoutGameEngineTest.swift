@@ -49,7 +49,7 @@ struct BreakoutGameEngineTest {
      [x] Cannot process game events when .won
 
      Edge Cases:
-     [ ] Processing .brickHit for non-existent brick is handled gracefully
+     [x] Processing .brickHit for non-existent brick is handled gracefully
      [x] Lives cannot go below zero
      [ ] Multiple ball losses in quick succession handled correctly
 
@@ -205,6 +205,21 @@ struct BreakoutGameEngineTest {
         #expect(engine.remainingBrickCount == 0)
         #expect(engine.currentStatus == .won)
         #expect(engine.remainingLives == 1)
+    }
+
+    @Test func processingBrickHitForNonExistentBrickDoesNotChangeGameState() async throws {
+        let existingBrickId = UUID()
+        let nonExistentBrickId = UUID()
+        var bricks = Bricks()
+        bricks.add(Brick(id: BrickId(of: existingBrickId.uuidString)))
+
+        let engine = BreakoutGameEngine(bricks: bricks, lives: 3)
+
+        engine.process(event: .brickHit(brickID: nonExistentBrickId))
+
+        #expect(engine.currentScore == 0)
+        #expect(engine.remainingBrickCount == 1)
+        #expect(engine.currentStatus == .playing)
     }
 
 }

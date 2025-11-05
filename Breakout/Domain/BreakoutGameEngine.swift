@@ -36,7 +36,13 @@ class BreakoutGameEngine {
 
         switch event {
         case .brickHit(let brickID):
-            bricks.remove(withId: BrickId(of: brickID.uuidString))
+            let brickId = BrickId(of: brickID.uuidString)
+
+            guard bricks.contains(brickId) else {
+                return
+            }
+
+            bricks.remove(withId: brickId)
             scoreCard.score(1)
 
             if !bricks.someRemaining {
