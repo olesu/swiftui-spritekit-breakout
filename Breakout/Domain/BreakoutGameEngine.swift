@@ -38,12 +38,12 @@ class BreakoutGameEngine {
         case .brickHit(let brickID):
             let brickId = BrickId(of: brickID.uuidString)
 
-            guard bricks.contains(brickId) else {
+            guard let brick = bricks.bricks[brickId] else {
                 return
             }
 
             bricks.remove(withId: brickId)
-            scoreCard.score(1)
+            scoreCard.score(brick.color.pointValue)
 
             if !bricks.someRemaining {
                 gameState = .won

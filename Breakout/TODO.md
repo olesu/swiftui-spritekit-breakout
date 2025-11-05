@@ -43,21 +43,21 @@
 ### 3. Brick Management 🧱
 **Tracking which bricks exist and their properties**
 
-- [x] `Brick` struct with ID (basic - no color/point value yet)
+- [x] `Brick` struct with ID and color
 - [x] `Bricks` registry to track all bricks in current level
-- [ ] Brick type/color to point value mapping
+- [x] Brick type/color to point value mapping (BrickColor enum with pointValue)
 - [x] Brick destruction logic (remove from active set)
 - [x] Query methods (all bricks destroyed? how many remain?)
 
 ### 4. Scoring System 🏆
 **Rules for calculating and tracking score**
 
-- [ ] Point values for different brick colors:
+- [x] Point values for different brick colors:
   - Red: 7 points
   - Orange: 7 points
   - Yellow: 4 points
   - Green: 1 point
-- [x] Score calculation (generic scoring working with ScoreCard)
+- [x] Score calculation based on brick color (ScoreCard + BrickColor.pointValue)
 - [ ] Bonus scoring rules (if any)
 - [ ] High score tracking (optional)
 

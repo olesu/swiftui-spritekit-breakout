@@ -15,7 +15,7 @@ struct BreakoutGameEngineTest {
      [x] Ignores events when game is not in .playing state
 
      Scoring Integration:
-     [ ] .brickHit awards correct points based on brick color/type
+     [x] .brickHit awards correct points based on brick color/type
      [x] Score persists across multiple brick hits
      [x] Score starts at zero for new game
 
@@ -246,6 +246,33 @@ struct BreakoutGameEngineTest {
 
         #expect(engine.currentStatus == .playing)
         #expect(engine.remainingLives == 2)
+    }
+
+    @Test func brickHitAwardsPointsBasedOnBrickColor() async throws {
+        let redBrickId = UUID()
+        let orangeBrickId = UUID()
+        let yellowBrickId = UUID()
+        let greenBrickId = UUID()
+
+        var bricks = Bricks()
+        bricks.add(Brick(id: BrickId(of: redBrickId.uuidString), color: .red))
+        bricks.add(Brick(id: BrickId(of: orangeBrickId.uuidString), color: .orange))
+        bricks.add(Brick(id: BrickId(of: yellowBrickId.uuidString), color: .yellow))
+        bricks.add(Brick(id: BrickId(of: greenBrickId.uuidString), color: .green))
+
+        let engine = BreakoutGameEngine(bricks: bricks)
+
+        engine.process(event: .brickHit(brickID: redBrickId))
+        #expect(engine.currentScore == 7)
+
+        engine.process(event: .brickHit(brickID: orangeBrickId))
+        #expect(engine.currentScore == 14)
+
+        engine.process(event: .brickHit(brickID: yellowBrickId))
+        #expect(engine.currentScore == 18)
+
+        engine.process(event: .brickHit(brickID: greenBrickId))
+        #expect(engine.currentScore == 19)
     }
 
 }
