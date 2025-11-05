@@ -50,7 +50,7 @@ struct BreakoutGameEngineTest {
 
      Edge Cases:
      [ ] Processing .brickHit for non-existent brick is handled gracefully
-     [ ] Lives cannot go below zero
+     [x] Lives cannot go below zero
      [ ] Multiple ball losses in quick succession handled correctly
 
      Next: Start with simplest - process .brickHit removes brick
@@ -158,6 +158,17 @@ struct BreakoutGameEngineTest {
 
         engine.process(event: .brickHit(brickID: brick3Id))
         #expect(engine.currentScore == 3)
+    }
+
+    @Test func livesCannotGoBelowZero() async throws {
+        let engine = BreakoutGameEngine(bricks: Bricks(), lives: 1)
+
+        engine.process(event: .ballLost)
+        #expect(engine.remainingLives == 0)
+        #expect(engine.currentStatus == .gameOver)
+
+        engine.process(event: .ballLost)
+        #expect(engine.remainingLives == 0)
     }
 
 }
