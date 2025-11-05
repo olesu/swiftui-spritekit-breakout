@@ -51,10 +51,6 @@ struct Bricks {
     mutating func add(_ brick: Brick) {
         bricks[brick.id] = brick
     }
-    
-    func contains(_ id: BrickId) -> Bool {
-        bricks[id] != nil
-    }
 
     mutating func remove(withId id: BrickId) {
         bricks.removeValue(forKey: id)
