@@ -12,12 +12,12 @@ struct BreakoutGameEngineTest {
      [x] Can process .brickHit event and remove brick from registry
      [x] Can process .brickHit event and update score
      [x] Can process .ballLost event and decrement lives
-     [ ] Ignores events when game is not in .playing state
+     [x] Ignores events when game is not in .playing state
 
      Scoring Integration:
      [ ] .brickHit awards correct points based on brick color/type
      [ ] Score persists across multiple brick hits
-     [ ] Score starts at zero for new game
+     [x] Score starts at zero for new game
 
      Win Condition:
      [x] Game transitions to .won when last brick is destroyed
