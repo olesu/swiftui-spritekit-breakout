@@ -16,7 +16,7 @@ struct BreakoutGameEngineTest {
 
      Scoring Integration:
      [ ] .brickHit awards correct points based on brick color/type
-     [ ] Score persists across multiple brick hits
+     [x] Score persists across multiple brick hits
      [x] Score starts at zero for new game
 
      Win Condition:
@@ -137,6 +137,27 @@ struct BreakoutGameEngineTest {
 
         #expect(engine.remainingLives == 3)
         #expect(engine.currentStatus == .won)
+    }
+
+    @Test func scorePersistsAcrossMultipleBrickHits() async throws {
+        let brick1Id = UUID()
+        let brick2Id = UUID()
+        let brick3Id = UUID()
+        var bricks = Bricks()
+        bricks.add(Brick(id: BrickId(of: brick1Id.uuidString)))
+        bricks.add(Brick(id: BrickId(of: brick2Id.uuidString)))
+        bricks.add(Brick(id: BrickId(of: brick3Id.uuidString)))
+
+        let engine = BreakoutGameEngine(bricks: bricks)
+
+        engine.process(event: .brickHit(brickID: brick1Id))
+        #expect(engine.currentScore == 1)
+
+        engine.process(event: .brickHit(brickID: brick2Id))
+        #expect(engine.currentScore == 2)
+
+        engine.process(event: .brickHit(brickID: brick3Id))
+        #expect(engine.currentScore == 3)
     }
 
 }
