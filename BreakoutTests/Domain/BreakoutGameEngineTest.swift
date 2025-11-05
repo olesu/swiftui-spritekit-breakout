@@ -21,13 +21,13 @@ struct BreakoutGameEngineTest {
 
      Win Condition:
      [x] Game transitions to .won when last brick is destroyed
-     [ ] Game stays .playing when bricks remain after hit
-     [ ] Win condition is checked after each brick hit
+     [x] Game stays .playing when bricks remain after hit
+     [x] Win condition is checked after each brick hit
 
      Game Over Condition:
      [x] Game transitions to .gameOver when last life is lost
-     [ ] Game stays .playing when lives remain after ball loss
-     [ ] Game over condition is checked after ball loss
+     [x] Game stays .playing when lives remain after ball loss
+     [x] Game over condition is checked after ball loss
 
      Game State Queries:
      [x] Can query current score
@@ -220,6 +220,32 @@ struct BreakoutGameEngineTest {
         #expect(engine.currentScore == 0)
         #expect(engine.remainingBrickCount == 1)
         #expect(engine.currentStatus == .playing)
+    }
+
+    @Test func gameStaysPlayingWhenBricksRemainAfterHit() async throws {
+        let brick1Id = UUID()
+        let brick2Id = UUID()
+        let brick3Id = UUID()
+        var bricks = Bricks()
+        bricks.add(Brick(id: BrickId(of: brick1Id.uuidString)))
+        bricks.add(Brick(id: BrickId(of: brick2Id.uuidString)))
+        bricks.add(Brick(id: BrickId(of: brick3Id.uuidString)))
+
+        let engine = BreakoutGameEngine(bricks: bricks, lives: 3)
+
+        engine.process(event: .brickHit(brickID: brick1Id))
+
+        #expect(engine.currentStatus == .playing)
+        #expect(engine.remainingBrickCount == 2)
+    }
+
+    @Test func gameStaysPlayingWhenLivesRemainAfterBallLoss() async throws {
+        let engine = BreakoutGameEngine(bricks: Bricks(), lives: 3)
+
+        engine.process(event: .ballLost)
+
+        #expect(engine.currentStatus == .playing)
+        #expect(engine.remainingLives == 2)
     }
 
 }
