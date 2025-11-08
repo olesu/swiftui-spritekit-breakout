@@ -11,9 +11,11 @@ class GameScene: SKScene {
     }
 
     private let brickAreaOverlay: SKNode
+    private let gameNodes: [NodeNames: SKNode]
 
-    init(size: CGSize, brickArea: CGRect) {
+    init(size: CGSize, brickArea: CGRect, nodes: [NodeNames: SKNode]) {
         self.brickAreaOverlay = SKShapeNode.brickOverlay(in: brickArea)
+        self.gameNodes = nodes
         super.init(size: size)
     }
 
@@ -23,6 +25,7 @@ class GameScene: SKScene {
 
     override func didMove(to view: SKView) {
         monitorUserDefaults()
+        gameNodes.values.forEach(addChild)
     }
 
     override func willMove(from view: SKView) {

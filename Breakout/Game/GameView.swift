@@ -25,7 +25,8 @@ struct GameView: View {
             SpriteView(
                 scene: GameScene(
                     size: viewModel.sceneSize,
-                    brickArea: viewModel.brickArea
+                    brickArea: viewModel.brickArea,
+                    nodes: viewModel.createNodes()
                 )
             )
         }
