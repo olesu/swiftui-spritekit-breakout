@@ -4,24 +4,6 @@ import SpriteKit
 
 struct GameViewModelTest {
 
-    /*
-     TDD Task List for GameViewModel:
-
-     Node Creation:
-     [x] Creates nodes via NodeCreator when createNodes() is called
-     [x] Collects brick IDs during node creation
-     [x] Returns nodes from NodeCreator
-
-     Engine Management:
-     [x] Creates engine with collected bricks
-     [x] Starts engine after initialization
-     [x] Engine receives all bricks from node creation
-
-     Configuration:
-     [x] Exposes sceneSize from configuration
-     [x] Exposes brickArea from configuration
-     */
-
     @Test func createsNodesViaNodeCreator() async throws {
         let fakeNodeCreator = FakeNodeCreator()
         let fakeEngine = FakeGameEngine()
