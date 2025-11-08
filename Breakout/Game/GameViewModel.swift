@@ -5,11 +5,17 @@ import SpriteKit
 @Observable class GameViewModel {
     let configurationModel: GameConfigurationModel
     private let nodeCreator: NodeCreator
-    private var engine: GameEngine?
+    private let engineFactory: (Bricks) -> GameEngine
+    private(set) var engine: GameEngine?
 
-    init(configurationModel: GameConfigurationModel, nodeCreator: NodeCreator = SpriteKitNodeCreator()) {
+    init(
+        configurationModel: GameConfigurationModel,
+        nodeCreator: NodeCreator = SpriteKitNodeCreator(),
+        engineFactory: @escaping (Bricks) -> GameEngine = { bricks in BreakoutGameEngine(bricks: bricks) }
+    ) {
         self.configurationModel = configurationModel
         self.nodeCreator = nodeCreator
+        self.engineFactory = engineFactory
     }
 
     var sceneSize: CGSize {
@@ -35,7 +41,7 @@ import SpriteKit
             bricks.add(Brick(id: BrickId(of: brickId)))
         }
 
-        engine = BreakoutGameEngine(bricks: bricks)
+        engine = engineFactory(bricks)
         engine?.start()
 
         return nodes
