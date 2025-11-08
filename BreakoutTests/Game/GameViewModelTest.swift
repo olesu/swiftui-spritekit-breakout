@@ -18,8 +18,8 @@ struct GameViewModelTest {
      [x] Engine receives all bricks from node creation
 
      Configuration:
-     [ ] Exposes sceneSize from configuration
-     [ ] Exposes brickArea from configuration
+     [x] Exposes sceneSize from configuration
+     [x] Exposes brickArea from configuration
      */
 
     @Test func createsNodesViaNodeCreator() async throws {
@@ -87,6 +87,20 @@ struct GameViewModelTest {
         _ = viewModel.createNodes()
 
         #expect(viewModel.engine != nil)
+    }
+
+    @Test func exposesSceneSizeFromConfiguration() async throws {
+        let config = GameConfigurationModel(service: PreviewGameConfigurationService())
+        let viewModel = GameViewModel(configurationModel: config)
+
+        #expect(viewModel.sceneSize == CGSize(width: 320, height: 480))
+    }
+
+    @Test func exposesBrickAreaFromConfiguration() async throws {
+        let config = GameConfigurationModel(service: PreviewGameConfigurationService())
+        let viewModel = GameViewModel(configurationModel: config)
+
+        #expect(viewModel.brickArea == CGRect(x: 20, y: 330, width: 280, height: 120))
     }
 }
 
