@@ -1,6 +1,6 @@
 import Foundation
 
-class BreakoutGameEngine {
+class BreakoutGameEngine: GameEngine {
     private var bricks: Bricks
     private var scoreCard: ScoreCard
     private var livesCard: LivesCard
