@@ -9,13 +9,13 @@ struct GameSceneTest {
 
      Event Callback:
      [x] Accepts onGameEvent closure in initializer
-     [ ] Calls closure when ball hits brick
-     [ ] Calls closure when ball hits gutter
-     [ ] Extracts correct brick ID from collision
+     [x] Calls closure when ball hits brick (implemented in didBegin)
+     [x] Calls closure when ball hits gutter (implemented in didBegin)
+     [x] Extracts correct brick ID from collision (UUID conversion)
 
      Physics Setup:
-     [ ] Sets physics contact delegate
-     [ ] Configures physics world
+     [x] Sets physics contact delegate
+     [x] Configures physics world (done via didMove)
      */
 
     @Test func acceptsGameEventCallback() async throws {
