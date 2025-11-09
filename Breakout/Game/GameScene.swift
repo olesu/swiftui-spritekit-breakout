@@ -1,7 +1,7 @@
 import Foundation
 import SpriteKit
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     private let userDefaultsKey = UserDefaultsKeys.areaOverlaysEnabled
     private var settingsMonitor: UserDefaultsMonitor? = nil
     private var isOverlaysEnabled: Bool = false {
@@ -26,6 +26,7 @@ class GameScene: SKScene {
     }
 
     override func didMove(to view: SKView) {
+        physicsWorld.contactDelegate = self
         monitorUserDefaults()
         gameNodes.values.forEach(addChild)
     }
@@ -36,6 +37,29 @@ class GameScene: SKScene {
 
 }
 
+// MARK: - Physics Contact Delegate
+extension GameScene {
+    func didBegin(_ contact: SKPhysicsContact) {
+        let contactMask = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
+
+        // Ball + Brick collision
+        if contactMask == (CollisionCategory.ball.mask | CollisionCategory.brick.mask) {
+            let brickNode = contact.bodyA.categoryBitMask == CollisionCategory.brick.mask ? contact.bodyA.node : contact.bodyB.node
+
+            if let brickIdString = brickNode?.name,
+               let brickId = UUID(uuidString: brickIdString) {
+                onGameEvent(.brickHit(brickID: brickId))
+            }
+        }
+
+        // Ball + Gutter collision
+        if contactMask == (CollisionCategory.ball.mask | CollisionCategory.gutter.mask) {
+            onGameEvent(.ballLost)
+        }
+    }
+}
+
+// MARK: - User Defaults Monitoring
 extension GameScene {
     private func monitorUserDefaults() {
         settingsMonitor = UserDefaultsMonitor(
@@ -45,11 +69,11 @@ extension GameScene {
             self?.isOverlaysEnabled = newValue
         }
     }
-    
+
     private func unmonitorUserDefaults() {
         settingsMonitor = nil
     }
-    
+
     private func updateSceneOverlays() {
         if isOverlaysEnabled {
             if brickAreaOverlay.parent == nil {
