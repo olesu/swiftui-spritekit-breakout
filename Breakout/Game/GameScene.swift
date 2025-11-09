@@ -12,10 +12,12 @@ class GameScene: SKScene {
 
     private let brickAreaOverlay: SKNode
     private let gameNodes: [NodeNames: SKNode]
+    private let onGameEvent: (GameEvent) -> Void
 
-    init(size: CGSize, brickArea: CGRect, nodes: [NodeNames: SKNode]) {
+    init(size: CGSize, brickArea: CGRect, nodes: [NodeNames: SKNode], onGameEvent: @escaping (GameEvent) -> Void) {
         self.brickAreaOverlay = SKShapeNode.brickOverlay(in: brickArea)
         self.gameNodes = nodes
+        self.onGameEvent = onGameEvent
         super.init(size: size)
     }
 

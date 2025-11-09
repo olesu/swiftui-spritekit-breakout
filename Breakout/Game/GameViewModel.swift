@@ -47,4 +47,8 @@ import SpriteKit
         return nodes
     }
 
+    func handleGameEvent(_ event: GameEvent) {
+        engine?.process(event: event)
+    }
+
 }

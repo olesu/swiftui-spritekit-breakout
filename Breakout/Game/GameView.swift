@@ -26,7 +26,10 @@ struct GameView: View {
                 scene: GameScene(
                     size: viewModel.sceneSize,
                     brickArea: viewModel.brickArea,
-                    nodes: viewModel.createNodes()
+                    nodes: viewModel.createNodes(),
+                    onGameEvent: { [viewModel] event in
+                        viewModel.handleGameEvent(event)
+                    }
                 )
             )
         }
