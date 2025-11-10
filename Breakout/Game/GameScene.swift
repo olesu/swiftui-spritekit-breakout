@@ -29,15 +29,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.contactDelegate = self
         monitorUserDefaults()
         monitorPaddleControl()
+        monitorGameState()
         gameNodes.values.forEach(addChild)
     }
 
     override func willMove(from view: SKView) {
         unmonitorUserDefaults()
         unmonitorPaddleControl()
+        unmonitorGameState()
     }
 
     private var paddleObserver: NSObjectProtocol?
+    private var gameStateObserver: NSObjectProtocol?
 
     private func monitorPaddleControl() {
         paddleObserver = NotificationCenter.default.addObserver(
@@ -58,6 +61,42 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
 
+    private func monitorGameState() {
+        gameStateObserver = NotificationCenter.default.addObserver(
+            forName: .gameStateChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            if let score = notification.userInfo?["score"] as? Int,
+               let lives = notification.userInfo?["lives"] as? Int {
+                self?.updateScore(score)
+                self?.updateLives(lives)
+            }
+        }
+    }
+
+    private func unmonitorGameState() {
+        if let observer = gameStateObserver {
+            NotificationCenter.default.removeObserver(observer)
+            gameStateObserver = nil
+        }
+    }
+
+}
+
+// MARK: - UI Updates
+extension GameScene {
+    func updateScore(_ score: Int) {
+        if let scoreLabel = gameNodes[.scoreLabel] as? ScoreLabel {
+            scoreLabel.text = String(format: "%02d", score)
+        }
+    }
+
+    func updateLives(_ lives: Int) {
+        if let livesLabel = gameNodes[.livesLabel] as? LivesLabel {
+            livesLabel.text = "\(lives)"
+        }
+    }
 }
 
 // MARK: - Physics Contact Delegate

@@ -1,8 +1,9 @@
 import Foundation
 import SpriteKit
+import AppKit
 
 struct SpriteKitNodeCreator: NodeCreator {
-    func createNodes(onBrickAdded: @escaping (String) -> Void) -> [NodeNames: SKNode] {
+    func createNodes(onBrickAdded: @escaping (String, NSColor) -> Void) -> [NodeNames: SKNode] {
         [
             .paddle: PaddleSprite(position: CGPoint(x: 160, y: 40)),
             .brickLayout: ClassicBricksLayout(onBrickAdded: onBrickAdded),

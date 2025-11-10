@@ -18,7 +18,7 @@ class RealGameConfigurationService: GameConfigurationService {
 
     func getGameScale() -> CGFloat {
         #if os(macOS)
-            return 2.0
+            return 1.5
         #else
             return UIDevice.current.userInterfaceIdiom == .pad ? 3.0 : 2.0
         #endif

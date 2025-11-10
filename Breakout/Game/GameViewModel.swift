@@ -37,8 +37,9 @@ import SpriteKit
     func createNodes() -> [NodeNames: SKNode] {
         var bricks = Bricks()
 
-        let nodes = nodeCreator.createNodes { brickId in
-            bricks.add(Brick(id: BrickId(of: brickId)))
+        let nodes = nodeCreator.createNodes { brickId, nsColor in
+            let color = BrickColor(from: nsColor) ?? .green
+            bricks.add(Brick(id: BrickId(of: brickId), color: color))
         }
 
         engine = engineFactory(bricks)
@@ -49,6 +50,18 @@ import SpriteKit
 
     func handleGameEvent(_ event: GameEvent) {
         engine?.process(event: event)
+
+        // Notify scene of state changes
+        if let engine = engine {
+            NotificationCenter.default.post(
+                name: .gameStateChanged,
+                object: nil,
+                userInfo: [
+                    "score": engine.currentScore,
+                    "lives": engine.remainingLives
+                ]
+            )
+        }
     }
 
 }

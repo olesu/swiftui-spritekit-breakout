@@ -1,5 +1,6 @@
 import Testing
 import SpriteKit
+import AppKit
 @testable import Breakout
 
 struct GameViewModelTest {
@@ -89,13 +90,13 @@ struct GameViewModelTest {
 class FakeNodeCreator: NodeCreator {
     var createNodesWasCalled = false
 
-    func createNodes(onBrickAdded: @escaping (String) -> Void) -> [NodeNames: SKNode] {
+    func createNodes(onBrickAdded: @escaping (String, NSColor) -> Void) -> [NodeNames: SKNode] {
         createNodesWasCalled = true
 
         // Simulate adding some bricks
-        onBrickAdded("brick1")
-        onBrickAdded("brick2")
-        onBrickAdded("brick3")
+        onBrickAdded("brick1", .red)
+        onBrickAdded("brick2", .yellow)
+        onBrickAdded("brick3", .green)
 
         return [:]
     }

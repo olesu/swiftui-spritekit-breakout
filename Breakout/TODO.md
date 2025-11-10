@@ -183,6 +183,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 - **Clear separation**: Graphics vs logic concerns separated
 - **Easy to reason about**: Pure functions for state transitions
 
+## Known Issues & Improvements
+
+### Scoring System
+- [x] Fixed: All bricks were scoring 1 point regardless of color
+  - Issue: `onBrickAdded` callback only passed brick ID, not color
+  - Solution: Updated callback to pass both ID and NSColor, added BrickColor.init(from: NSColor)
+  - Now correctly awards: Red=7, Orange=7, Yellow=4, Green=1 points
+
+### Physics & Gameplay
+- [ ] Prevent ball from moving in 90-degree trajectory (straight up) from paddle
+  - When ball hits paddle at certain angles, it can bounce straight up and get stuck
+  - Need to adjust ball velocity after paddle collision to ensure minimum horizontal component
+
 ## Next Steps
 1. Start with `GameEvent` enum and basic validation
 2. Build `GameState` struct with initialization
