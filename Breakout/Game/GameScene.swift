@@ -49,6 +49,7 @@ extension GameScene {
             if let brickIdString = brickNode?.name,
                let brickId = UUID(uuidString: brickIdString) {
                 onGameEvent(.brickHit(brickID: brickId))
+                removeBrick(id: brickId)
             }
         }
 
@@ -56,6 +57,16 @@ extension GameScene {
         if contactMask == (CollisionCategory.ball.mask | CollisionCategory.gutter.mask) {
             onGameEvent(.ballLost)
         }
+    }
+}
+
+// MARK: - Brick Management
+extension GameScene {
+    func removeBrick(id: UUID) {
+        guard let brickLayout = gameNodes[.brickLayout] else { return }
+
+        let idString = id.uuidString
+        brickLayout.children.first { $0.name == idString }?.removeFromParent()
     }
 }
 
