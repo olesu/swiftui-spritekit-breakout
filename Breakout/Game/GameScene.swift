@@ -28,11 +28,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
         monitorUserDefaults()
+        monitorPaddleControl()
         gameNodes.values.forEach(addChild)
     }
 
     override func willMove(from view: SKView) {
         unmonitorUserDefaults()
+        unmonitorPaddleControl()
+    }
+
+    private var paddleObserver: NSObjectProtocol?
+
+    private func monitorPaddleControl() {
+        paddleObserver = NotificationCenter.default.addObserver(
+            forName: .paddlePositionChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            if let location = notification.userInfo?["location"] as? CGPoint {
+                self?.movePaddle(to: location)
+            }
+        }
+    }
+
+    private func unmonitorPaddleControl() {
+        if let observer = paddleObserver {
+            NotificationCenter.default.removeObserver(observer)
+            paddleObserver = nil
+        }
     }
 
 }
@@ -67,6 +90,21 @@ extension GameScene {
 
         let idString = id.uuidString
         brickLayout.children.first { $0.name == idString }?.removeFromParent()
+    }
+}
+
+// MARK: - Paddle Control
+extension GameScene {
+    func movePaddle(to location: CGPoint) {
+        guard let paddle = gameNodes[.paddle] else { return }
+
+        // Clamp paddle position to stay within scene bounds
+        // Assuming paddle width is ~40, keep it within reasonable bounds
+        let minX: CGFloat = 20
+        let maxX: CGFloat = size.width - 20
+        let clampedX = max(minX, min(maxX, location.x))
+
+        paddle.position.x = clampedX
     }
 }
 

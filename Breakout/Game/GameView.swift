@@ -32,6 +32,16 @@ struct GameView: View {
                     }
                 )
             )
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { value in
+                        NotificationCenter.default.post(
+                            name: .paddlePositionChanged,
+                            object: nil,
+                            userInfo: ["location": value.location]
+                        )
+                    }
+            )
         }
     }
 }
