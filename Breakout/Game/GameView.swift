@@ -29,7 +29,8 @@ struct GameView: View {
                     nodes: viewModel.createNodes(),
                     onGameEvent: { [viewModel] event in
                         viewModel.handleGameEvent(event)
-                    }
+                    },
+                    viewModel: viewModel
                 )
             )
             .gesture(

@@ -13,11 +13,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private let brickAreaOverlay: SKNode
     private let gameNodes: [NodeNames: SKNode]
     private let onGameEvent: (GameEvent) -> Void
+    
+    // Weak reference to view model for closure-based communication
+    private weak var viewModel: GameViewModel?
 
-    init(size: CGSize, brickArea: CGRect, nodes: [NodeNames: SKNode], onGameEvent: @escaping (GameEvent) -> Void) {
+    init(
+        size: CGSize,
+        brickArea: CGRect,
+        nodes: [NodeNames: SKNode],
+        onGameEvent: @escaping (GameEvent) -> Void,
+        viewModel: GameViewModel? = nil
+    ) {
         self.brickAreaOverlay = SKShapeNode.brickOverlay(in: brickArea)
         self.gameNodes = nodes
         self.onGameEvent = onGameEvent
+        self.viewModel = viewModel
         super.init(size: size)
     }
 
@@ -29,18 +39,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.contactDelegate = self
         monitorUserDefaults()
         monitorPaddleControl()
-        monitorGameState()
+        setupViewModelCallbacks()
         gameNodes.values.forEach(addChild)
     }
 
     override func willMove(from view: SKView) {
         unmonitorUserDefaults()
         unmonitorPaddleControl()
-        unmonitorGameState()
     }
 
     private var paddleObserver: NSObjectProtocol?
-    private var gameStateObserver: NSObjectProtocol?
 
     private func monitorPaddleControl() {
         paddleObserver = NotificationCenter.default.addObserver(
@@ -61,24 +69,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
 
-    private func monitorGameState() {
-        gameStateObserver = NotificationCenter.default.addObserver(
-            forName: .gameStateChanged,
-            object: nil,
-            queue: .main
-        ) { [weak self] notification in
-            if let score = notification.userInfo?["score"] as? Int,
-               let lives = notification.userInfo?["lives"] as? Int {
-                self?.updateScore(score)
-                self?.updateLives(lives)
-            }
+    private func setupViewModelCallbacks() {
+        // Set up closure-based callbacks if viewModel is available
+        viewModel?.onScoreChanged = { [weak self] score in
+            self?.updateScore(score)
         }
-    }
-
-    private func unmonitorGameState() {
-        if let observer = gameStateObserver {
-            NotificationCenter.default.removeObserver(observer)
-            gameStateObserver = nil
+        viewModel?.onLivesChanged = { [weak self] lives in
+            self?.updateLives(lives)
         }
     }
 

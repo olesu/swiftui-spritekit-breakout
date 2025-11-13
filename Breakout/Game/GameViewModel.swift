@@ -7,6 +7,10 @@ import SpriteKit
     private let nodeCreator: NodeCreator
     private let engineFactory: (Bricks) -> GameEngine
     private(set) var engine: GameEngine?
+    
+    // Closure-based callbacks for game state changes
+    var onScoreChanged: ((Int) -> Void)?
+    var onLivesChanged: ((Int) -> Void)?
 
     init(
         configurationModel: GameConfigurationModel,
@@ -51,16 +55,10 @@ import SpriteKit
     func handleGameEvent(_ event: GameEvent) {
         engine?.process(event: event)
 
-        // Notify scene of state changes
+        // Notify scene of state changes via closures
         if let engine = engine {
-            NotificationCenter.default.post(
-                name: .gameStateChanged,
-                object: nil,
-                userInfo: [
-                    "score": engine.currentScore,
-                    "lives": engine.remainingLives
-                ]
-            )
+            onScoreChanged?(engine.currentScore)
+            onLivesChanged?(engine.remainingLives)
         }
     }
 
