@@ -11,6 +11,7 @@ import SpriteKit
     // Closure-based callbacks for game state changes
     var onScoreChanged: ((Int) -> Void)?
     var onLivesChanged: ((Int) -> Void)?
+    var onGameStatusChanged: ((GameState) -> Void)?
 
     init(
         configurationModel: GameConfigurationModel,
@@ -59,6 +60,7 @@ import SpriteKit
         if let engine = engine {
             onScoreChanged?(engine.currentScore)
             onLivesChanged?(engine.remainingLives)
+            onGameStatusChanged?(engine.currentStatus)
         }
     }
 
