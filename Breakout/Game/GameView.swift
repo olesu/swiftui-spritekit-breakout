@@ -39,12 +39,12 @@ struct GameView: View {
         }
         .onAppear {
             if scene == nil {
-                setupGame()
+                scene = setupGame()
             }
         }
     }
 
-    private func setupGame() {
+    private func setupGame() -> GameScene {
         // Create nodes and collect bricks
         var bricks = Bricks()
         let nodeCreator = SpriteKitNodeCreator()
@@ -74,7 +74,7 @@ struct GameView: View {
             gameScene?.updateLives(lives)
         }
 
-        scene = gameScene
+        return gameScene
     }
 }
 
