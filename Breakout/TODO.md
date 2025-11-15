@@ -160,30 +160,76 @@ class BreakoutGameEngine {
 }
 ```
 
-## Integration with SpriteKit
+## Integration with SpriteKit ✅ IMPLEMENTED
+
+The integration between SpriteKit and the domain layer is complete:
 
 ```swift
-// SpriteKit sends events to domain
+// GameScene detects collisions and sends events to GameViewModel
 class GameScene: SKScene, SKPhysicsContactDelegate {
-    private let gameEngine = BreakoutGameEngine()
-    
+    private let onGameEvent: (GameEvent) -> Void
+    private var brickNodeManager: BrickNodeManager?
+
     func didBegin(_ contact: SKPhysicsContact) {
-        if let brickID = extractBrickID(from: contact) {
-            let newState = gameEngine.process(event: .brickHit(brickID: brickID))
-            applyStateChanges(newState)
+        // Ball + Brick collision
+        if contactMask == (CollisionCategory.ball.mask | CollisionCategory.brick.mask) {
+            if let brickId = extractBrickID(from: contact) {
+                onGameEvent(.brickHit(brickID: brickId))
+                removeBrick(id: brickId)  // Delegates to BrickNodeManager
+            }
         }
+
+        // Ball + Gutter collision
+        if contactMask == (CollisionCategory.ball.mask | CollisionCategory.gutter.mask) {
+            onGameEvent(.ballLost)
+        }
+    }
+}
+
+// GameViewModel coordinates between scene and engine
+class GameViewModel {
+    private var engine: GameEngine?
+    var onScoreChanged: ((Int) -> Void)?
+    var onLivesChanged: ((Int) -> Void)?
+
+    func handleGameEvent(_ event: GameEvent) {
+        engine?.process(event: event)
+
+        // Notify scene of state changes via closures
+        if let engine = engine {
+            onScoreChanged?(engine.currentScore)
+            onLivesChanged?(engine.remainingLives)
+        }
+    }
+}
+
+// BrickNodeManager handles brick node removal in isolation
+class BrickNodeManager {
+    func remove(brickId: UUID) {
+        // Removes brick sprite from scene
     }
 }
 ```
 
-## Key TDD Benefits
+## Key TDD Benefits ✅ ACHIEVED
 - **Focused domain**: Only game rules, no physics complexity
 - **Event-driven**: Clear input/output for tests
-- **Fast tests**: No SpriteKit dependencies in domain
+- **Fast tests**: No SpriteKit dependencies in domain tests
 - **Clear separation**: Graphics vs logic concerns separated
-- **Easy to reason about**: Pure functions for state transitions
+  - `BrickNodeManager`: Isolated brick node management (testable without SKView)
+  - `BreakoutGameEngine`: Pure game logic (no SpriteKit dependencies)
+  - `GameScene`: Only handles SpriteKit physics and rendering
+  - `GameViewModel`: Coordinates between scene and engine via closures
+- **Easy to reason about**: Event processing and state updates via callbacks
 
-## Known Issues & Improvements
+## Code Cleanup & Refactoring History
+
+### Recent Refactorings (2025-01)
+- [x] Removed unused production code (AutoPaddle, LevelLoaderService, Level, BrickType)
+- [x] Removed test-only production APIs from GameEngine protocol
+- [x] Removed weak tests that checked implementation details
+- [x] Extracted BrickNodeManager for isolated brick removal testing
+- [x] Simplified GameScene to delegate brick management
 
 ### Scoring System
 - [x] Fixed: All bricks were scoring 1 point regardless of color
@@ -191,15 +237,36 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
   - Solution: Updated callback to pass both ID and NSColor, added BrickColor.init(from: NSColor)
   - Now correctly awards: Red=7, Orange=7, Yellow=4, Green=1 points
 
+### Communication Architecture
+- [x] Migrated from NotificationCenter to closure-based callbacks
+  - GameViewModel uses `onScoreChanged` and `onLivesChanged` closures
+  - GameScene sets up callbacks in `setupViewModelCallbacks()`
+  - Cleaner, more testable architecture
+
+## Known Issues & Future Improvements
+
 ### Physics & Gameplay
 - [ ] Prevent ball from moving in 90-degree trajectory (straight up) from paddle
   - When ball hits paddle at certain angles, it can bounce straight up and get stuck
   - Need to adjust ball velocity after paddle collision to ensure minimum horizontal component
+- [ ] Ball respawn logic after ballLost event
+  - Currently, ball needs to be manually respawned
+  - Should reset ball to paddle position automatically
 
-## Next Steps
-1. Start with `GameEvent` enum and basic validation
-2. Build `GameState` struct with initialization
-3. Add simple event processing logic
-4. Gradually build up the complete engine
+## Current Test Coverage
 
-Ready to begin with the first domain concept?
+**12 passing tests:**
+- Domain/BreakoutGameEngineTest (5 tests)
+- Domain/BricksTest
+- Domain/ScoreCardTest
+- Domain/LivesCardTest
+- Domain/GameEventTest
+- Game/GameViewModelTest (3 tests)
+- Nodes/BrickNodeManagerTest (1 test)
+- ConfigurationModelTest
+- And others...
+
+**Architecture Benefits:**
+- No SpriteKit dependencies in domain tests
+- Fast, focused unit tests
+- Clear separation of concerns
