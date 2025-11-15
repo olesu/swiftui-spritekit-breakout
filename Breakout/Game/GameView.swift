@@ -13,6 +13,7 @@ struct GameViewWrapper: View {
 
 struct GameView: View {
     @State private var viewModel: GameViewModel
+    @State private var scene: GameScene?
 
     init(configurationModel: GameConfigurationModel) {
         _viewModel = State(
@@ -22,8 +23,23 @@ struct GameView: View {
 
     var body: some View {
         VStack {
-            SpriteView(
-                scene: GameScene(
+            if let scene = scene {
+                SpriteView(scene: scene)
+                    .gesture(
+                        DragGesture(minimumDistance: 0)
+                            .onChanged { value in
+                                NotificationCenter.default.post(
+                                    name: .paddlePositionChanged,
+                                    object: nil,
+                                    userInfo: ["location": value.location]
+                                )
+                            }
+                    )
+            }
+        }
+        .onAppear {
+            if scene == nil {
+                scene = GameScene(
                     size: viewModel.sceneSize,
                     brickArea: viewModel.brickArea,
                     nodes: viewModel.createNodes(),
@@ -32,17 +48,7 @@ struct GameView: View {
                     },
                     viewModel: viewModel
                 )
-            )
-            .gesture(
-                DragGesture(minimumDistance: 0)
-                    .onChanged { value in
-                        NotificationCenter.default.post(
-                            name: .paddlePositionChanged,
-                            object: nil,
-                            userInfo: ["location": value.location]
-                        )
-                    }
-            )
+            }
         }
     }
 }
