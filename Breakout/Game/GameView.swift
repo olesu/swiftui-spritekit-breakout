@@ -47,9 +47,7 @@ struct GameView: View {
     private func setupGame() -> GameScene {
         let (nodes, bricks) = createNodesAndCollectBricks()
         initializeEngine(with: bricks)
-        let gameScene = createScene(with: nodes)
-        wireUpCallbacks(to: gameScene)
-        return gameScene
+        return createScene(with: nodes)
     }
 
     private func createNodesAndCollectBricks() -> ([NodeNames: SKNode], Bricks) {
@@ -67,7 +65,7 @@ struct GameView: View {
     }
 
     private func createScene(with nodes: [NodeNames: SKNode]) -> GameScene {
-        GameScene(
+        let gameScene = GameScene(
             size: viewModel.sceneSize,
             brickArea: viewModel.brickArea,
             nodes: nodes,
@@ -75,15 +73,16 @@ struct GameView: View {
                 viewModel.handleGameEvent(event)
             }
         )
-    }
 
-    private func wireUpCallbacks(to gameScene: GameScene) {
+        // Wire up ViewModel callbacks to Scene
         viewModel.onScoreChanged = { [weak gameScene] score in
             gameScene?.updateScore(score)
         }
         viewModel.onLivesChanged = { [weak gameScene] lives in
             gameScene?.updateLives(lives)
         }
+
+        return gameScene
     }
 }
 
