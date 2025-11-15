@@ -13,7 +13,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private let brickAreaOverlay: SKNode
     private let gameNodes: [NodeNames: SKNode]
     private let onGameEvent: (GameEvent) -> Void
-    
+    private var brickNodeManager: BrickNodeManager?
+
     // Weak reference to view model for closure-based communication
     private weak var viewModel: GameViewModel?
 
@@ -41,6 +42,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         monitorPaddleControl()
         setupViewModelCallbacks()
         gameNodes.values.forEach(addChild)
+
+        if let brickLayout = gameNodes[.brickLayout] {
+            brickNodeManager = BrickNodeManager(brickLayout: brickLayout)
+        }
     }
 
     override func willMove(from view: SKView) {
@@ -122,10 +127,7 @@ extension GameScene {
 // MARK: - Brick Management
 extension GameScene {
     func removeBrick(id: UUID) {
-        guard let brickLayout = gameNodes[.brickLayout] else { return }
-
-        let idString = id.uuidString
-        brickLayout.children.first { $0.name == idString }?.removeFromParent()
+        brickNodeManager?.remove(brickId: id)
     }
 }
 
