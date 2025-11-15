@@ -245,28 +245,40 @@ class BrickNodeManager {
 
 ## Known Issues & Future Improvements
 
+### Recent Improvements (2025-01-15)
+Three critical architecture issues have been fixed:
+- ✅ **GameScene Recreation Bug**: Fixed critical performance issue where scene was recreated on every SwiftUI render
+- ✅ **Configuration Caching**: Eliminated repeated service calls by caching configuration values
+- ✅ **@Observable Pattern**: Properly implemented SwiftUI observation with exposed properties
+
+All tests continue to pass after these refactorings.
+
 ### Architecture & Modularity (High Priority)
 
-#### GameView.swift - GameScene Recreation Bug
-- [ ] **CRITICAL**: GameScene recreated on every SwiftUI render (GameView.swift:26-34)
+#### GameView.swift - GameScene Recreation Bug ✅ FIXED
+- [x] **CRITICAL**: GameScene recreated on every SwiftUI render (GameView.swift:26-34)
   - Problem: Scene created in view body, causing recreation on any SwiftUI update
   - Impact: Performance degradation, game state loss, memory leaks
-  - Solution: Move scene creation to @State or create once in ViewModel
+  - Solution: Moved scene creation to @State, created once in onAppear
   - Files affected: GameView.swift
+  - Commit: 6135bcc
 
-#### GameConfigurationModel - Performance Issue
-- [ ] Cache GameConfiguration instead of calling service repeatedly (GameModel.swift:6-31)
+#### GameConfigurationModel - Performance Issue ✅ FIXED
+- [x] Cache GameConfiguration instead of calling service repeatedly (GameModel.swift:6-31)
   - Problem: Every computed property calls `getGameConfiguration()` which may be expensive
   - Impact: Unnecessary repeated computation
-  - Solution: Cache configuration in init and use cached value
+  - Solution: Cache configuration and scale in init, use cached values
   - Files affected: GameModel.swift
+  - Commit: 501ed5a
 
-#### GameViewModel - SwiftUI Pattern Violations
-- [ ] Fix @Observable usage - expose properties instead of callbacks (GameViewModel.swift:5, 12-13)
+#### GameViewModel - SwiftUI Pattern Violations ✅ FIXED
+- [x] Fix @Observable usage - expose properties instead of callbacks (GameViewModel.swift:5, 12-13)
   - Problem: Mixing @Observable with manual callbacks (onScoreChanged, onLivesChanged)
   - Impact: Confusing observation mechanism, not idiomatic SwiftUI
-  - Solution: Expose currentScore/remainingLives as @Observable properties
-  - Files affected: GameViewModel.swift, GameView.swift, GameScene.swift
+  - Solution: Exposed currentScore/remainingLives as @Observable properties
+  - Files affected: GameViewModel.swift
+  - Commit: 09614b5
+  - Note: Callbacks retained for GameScene (non-SwiftUI) communication
 
 #### GameViewModel - Tight Coupling to SpriteKit
 - [ ] Remove SpriteKit dependencies from ViewModel (GameViewModel.swift:41-52)
@@ -274,6 +286,7 @@ class BrickNodeManager {
   - Impact: Violates separation of concerns, hard to test
   - Solution: Extract to SceneConfigurator/Factory, pass domain models
   - Files affected: GameViewModel.swift, GameView.swift
+  - Note: Larger refactoring, deferred to future iteration
 
 ### Architecture & Modularity (Medium Priority)
 
