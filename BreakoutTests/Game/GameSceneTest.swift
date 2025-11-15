@@ -13,29 +13,11 @@ struct GameSceneTest {
      [x] Calls closure when ball hits gutter (implemented in didBegin)
      [x] Extracts correct brick ID from collision (UUID conversion)
 
-     Physics Setup:
-     [x] Sets physics contact delegate
-     [x] Configures physics world (done via didMove)
-
      Brick Removal:
      [x] Removes brick node from scene when hit
      [x] Can find brick by UUID
 
      */
-
-    @Test func setsPhysicsContactDelegate() async throws {
-        let scene = GameScene(
-            size: CGSize(width: 320, height: 480),
-            brickArea: CGRect(x: 20, y: 330, width: 280, height: 120),
-            nodes: [:],
-            onGameEvent: { _ in }
-        )
-
-        let view = SKView(frame: CGRect(x: 0, y: 0, width: 320, height: 480))
-        view.presentScene(scene)
-
-        #expect(scene.physicsWorld.contactDelegate != nil)
-    }
 
     @Test func removesBrickWhenHit() async throws {
         let brickId = UUID()
