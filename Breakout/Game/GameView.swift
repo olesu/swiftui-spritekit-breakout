@@ -51,7 +51,7 @@ struct GameView: View {
                 viewModel.initializeEngine(with: bricks)
 
                 // Create scene
-                scene = GameScene(
+                let gameScene = GameScene(
                     size: viewModel.sceneSize,
                     brickArea: viewModel.brickArea,
                     nodes: nodes,
@@ -59,6 +59,16 @@ struct GameView: View {
                         viewModel.handleGameEvent(event)
                     }
                 )
+
+                // Wire up ViewModel callbacks to Scene update methods
+                viewModel.onScoreChanged = { [weak gameScene] score in
+                    gameScene?.updateScore(score)
+                }
+                viewModel.onLivesChanged = { [weak gameScene] lives in
+                    gameScene?.updateLives(lives)
+                }
+
+                scene = gameScene
             }
         }
     }
