@@ -56,6 +56,11 @@ import SpriteKit
         return nodes
     }
 
+    func initializeEngine(with bricks: Bricks) {
+        engine = engineFactory(bricks)
+        engine?.start()
+    }
+
     func handleGameEvent(_ event: GameEvent) {
         engine?.process(event: event)
 

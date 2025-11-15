@@ -68,6 +68,29 @@ struct GameViewModelTest {
 
         #expect(viewModel.brickArea == CGRect(x: 20, y: 330, width: 280, height: 120))
     }
+
+    @Test func initializesEngineWithBricks() async throws {
+        let fakeEngine = FakeGameEngine()
+        var capturedBricks: Bricks?
+        let config = GameConfigurationModel(service: PreviewGameConfigurationService())
+
+        let viewModel = GameViewModel(
+            configurationModel: config,
+            engineFactory: { bricks in
+                capturedBricks = bricks
+                return fakeEngine
+            }
+        )
+
+        var bricks = Bricks()
+        bricks.add(Brick(id: BrickId(of: "brick1"), color: .red))
+        bricks.add(Brick(id: BrickId(of: "brick2"), color: .yellow))
+
+        viewModel.initializeEngine(with: bricks)
+
+        #expect(capturedBricks?.bricks.count == 2)
+        #expect(fakeEngine.startWasCalled)
+    }
 }
 
 class FakeNodeCreator: NodeCreator {
