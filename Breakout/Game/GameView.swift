@@ -39,10 +39,22 @@ struct GameView: View {
         }
         .onAppear {
             if scene == nil {
+                // Create nodes and collect bricks
+                var bricks = Bricks()
+                let nodeCreator = SpriteKitNodeCreator()
+                let nodes = nodeCreator.createNodes { brickId, nsColor in
+                    let color = BrickColor(from: nsColor) ?? .green
+                    bricks.add(Brick(id: BrickId(of: brickId), color: color))
+                }
+
+                // Initialize engine with collected bricks
+                viewModel.initializeEngine(with: bricks)
+
+                // Create scene
                 scene = GameScene(
                     size: viewModel.sceneSize,
                     brickArea: viewModel.brickArea,
-                    nodes: viewModel.createNodes(),
+                    nodes: nodes,
                     onGameEvent: { [viewModel] event in
                         viewModel.handleGameEvent(event)
                     },
