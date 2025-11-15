@@ -39,38 +39,42 @@ struct GameView: View {
         }
         .onAppear {
             if scene == nil {
-                // Create nodes and collect bricks
-                var bricks = Bricks()
-                let nodeCreator = SpriteKitNodeCreator()
-                let nodes = nodeCreator.createNodes { brickId, nsColor in
-                    let color = BrickColor(from: nsColor) ?? .green
-                    bricks.add(Brick(id: BrickId(of: brickId), color: color))
-                }
-
-                // Initialize engine with collected bricks
-                viewModel.initializeEngine(with: bricks)
-
-                // Create scene
-                let gameScene = GameScene(
-                    size: viewModel.sceneSize,
-                    brickArea: viewModel.brickArea,
-                    nodes: nodes,
-                    onGameEvent: { [viewModel] event in
-                        viewModel.handleGameEvent(event)
-                    }
-                )
-
-                // Wire up ViewModel callbacks to Scene update methods
-                viewModel.onScoreChanged = { [weak gameScene] score in
-                    gameScene?.updateScore(score)
-                }
-                viewModel.onLivesChanged = { [weak gameScene] lives in
-                    gameScene?.updateLives(lives)
-                }
-
-                scene = gameScene
+                setupGame()
             }
         }
+    }
+
+    private func setupGame() {
+        // Create nodes and collect bricks
+        var bricks = Bricks()
+        let nodeCreator = SpriteKitNodeCreator()
+        let nodes = nodeCreator.createNodes { brickId, nsColor in
+            let color = BrickColor(from: nsColor) ?? .green
+            bricks.add(Brick(id: BrickId(of: brickId), color: color))
+        }
+
+        // Initialize engine with collected bricks
+        viewModel.initializeEngine(with: bricks)
+
+        // Create scene
+        let gameScene = GameScene(
+            size: viewModel.sceneSize,
+            brickArea: viewModel.brickArea,
+            nodes: nodes,
+            onGameEvent: { [viewModel] event in
+                viewModel.handleGameEvent(event)
+            }
+        )
+
+        // Wire up ViewModel callbacks to Scene update methods
+        viewModel.onScoreChanged = { [weak gameScene] score in
+            gameScene?.updateScore(score)
+        }
+        viewModel.onLivesChanged = { [weak gameScene] lives in
+            gameScene?.updateLives(lives)
+        }
+
+        scene = gameScene
     }
 }
 
