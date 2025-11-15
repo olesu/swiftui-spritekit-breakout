@@ -57,8 +57,7 @@ struct GameView: View {
                     nodes: nodes,
                     onGameEvent: { [viewModel] event in
                         viewModel.handleGameEvent(event)
-                    },
-                    viewModel: viewModel
+                    }
                 )
             }
         }

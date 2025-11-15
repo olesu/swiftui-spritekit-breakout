@@ -15,20 +15,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private let onGameEvent: (GameEvent) -> Void
     private var brickNodeManager: BrickNodeManager?
 
-    // Weak reference to view model for closure-based communication
-    private weak var viewModel: GameViewModel?
-
     init(
         size: CGSize,
         brickArea: CGRect,
         nodes: [NodeNames: SKNode],
-        onGameEvent: @escaping (GameEvent) -> Void,
-        viewModel: GameViewModel? = nil
+        onGameEvent: @escaping (GameEvent) -> Void
     ) {
         self.brickAreaOverlay = SKShapeNode.brickOverlay(in: brickArea)
         self.gameNodes = nodes
         self.onGameEvent = onGameEvent
-        self.viewModel = viewModel
         super.init(size: size)
     }
 
@@ -40,7 +35,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.contactDelegate = self
         monitorUserDefaults()
         monitorPaddleControl()
-        setupViewModelCallbacks()
         gameNodes.values.forEach(addChild)
 
         if let brickLayout = gameNodes[.brickLayout] {
@@ -71,16 +65,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if let observer = paddleObserver {
             NotificationCenter.default.removeObserver(observer)
             paddleObserver = nil
-        }
-    }
-
-    private func setupViewModelCallbacks() {
-        // Set up closure-based callbacks if viewModel is available
-        viewModel?.onScoreChanged = { [weak self] score in
-            self?.updateScore(score)
-        }
-        viewModel?.onLivesChanged = { [weak self] lives in
-            self?.updateLives(lives)
         }
     }
 
