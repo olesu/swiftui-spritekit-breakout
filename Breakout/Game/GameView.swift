@@ -45,19 +45,29 @@ struct GameView: View {
     }
 
     private func setupGame() -> GameScene {
-        // Create nodes and collect bricks
+        let (nodes, bricks) = createNodesAndCollectBricks()
+        initializeEngine(with: bricks)
+        let gameScene = createScene(with: nodes)
+        wireUpCallbacks(to: gameScene)
+        return gameScene
+    }
+
+    private func createNodesAndCollectBricks() -> ([NodeNames: SKNode], Bricks) {
         var bricks = Bricks()
         let nodeCreator = SpriteKitNodeCreator()
         let nodes = nodeCreator.createNodes { brickId, nsColor in
             let color = BrickColor(from: nsColor) ?? .green
             bricks.add(Brick(id: BrickId(of: brickId), color: color))
         }
+        return (nodes, bricks)
+    }
 
-        // Initialize engine with collected bricks
+    private func initializeEngine(with bricks: Bricks) {
         viewModel.initializeEngine(with: bricks)
+    }
 
-        // Create scene
-        let gameScene = GameScene(
+    private func createScene(with nodes: [NodeNames: SKNode]) -> GameScene {
+        GameScene(
             size: viewModel.sceneSize,
             brickArea: viewModel.brickArea,
             nodes: nodes,
@@ -65,16 +75,15 @@ struct GameView: View {
                 viewModel.handleGameEvent(event)
             }
         )
+    }
 
-        // Wire up ViewModel callbacks to Scene update methods
+    private func wireUpCallbacks(to gameScene: GameScene) {
         viewModel.onScoreChanged = { [weak gameScene] score in
             gameScene?.updateScore(score)
         }
         viewModel.onLivesChanged = { [weak gameScene] lives in
             gameScene?.updateLives(lives)
         }
-
-        return gameScene
     }
 }
 
