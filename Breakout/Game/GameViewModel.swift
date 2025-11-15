@@ -7,8 +7,12 @@ import SpriteKit
     private let nodeCreator: NodeCreator
     private let engineFactory: (Bricks) -> GameEngine
     private var engine: GameEngine?
-    
-    // Closure-based callbacks for game state changes
+
+    // Observable properties for SwiftUI
+    private(set) var currentScore: Int = 0
+    private(set) var remainingLives: Int = 3
+
+    // Closure-based callbacks for GameScene (non-SwiftUI communication)
     var onScoreChanged: ((Int) -> Void)?
     var onLivesChanged: ((Int) -> Void)?
 
@@ -55,10 +59,14 @@ import SpriteKit
     func handleGameEvent(_ event: GameEvent) {
         engine?.process(event: event)
 
-        // Notify scene of state changes via closures
+        // Update observable properties and notify callbacks
         if let engine = engine {
-            onScoreChanged?(engine.currentScore)
-            onLivesChanged?(engine.remainingLives)
+            currentScore = engine.currentScore
+            remainingLives = engine.remainingLives
+
+            // Notify GameScene via callbacks (for non-SwiftUI updates)
+            onScoreChanged?(currentScore)
+            onLivesChanged?(remainingLives)
         }
     }
 
