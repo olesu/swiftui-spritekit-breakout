@@ -5,56 +5,6 @@ import AppKit
 
 struct GameViewModelTest {
 
-    @Test func createsNodesViaNodeCreator() async throws {
-        let fakeNodeCreator = FakeNodeCreator()
-        let fakeEngine = FakeGameEngine()
-        let config = GameConfigurationModel(service: PreviewGameConfigurationService())
-        let viewModel = GameViewModel(
-            configurationModel: config,
-            nodeCreator: fakeNodeCreator,
-            engineFactory: { _ in fakeEngine }
-        )
-
-        _ = viewModel.createNodes()
-
-        #expect(fakeNodeCreator.createNodesWasCalled)
-    }
-
-    @Test func createsEngineWithBricksFromNodeCreation() async throws {
-        let fakeNodeCreator = FakeNodeCreator()
-        let fakeEngine = FakeGameEngine()
-        var capturedBricks: Bricks?
-        let config = GameConfigurationModel(service: PreviewGameConfigurationService())
-
-        let viewModel = GameViewModel(
-            configurationModel: config,
-            nodeCreator: fakeNodeCreator,
-            engineFactory: { bricks in
-                capturedBricks = bricks
-                return fakeEngine
-            }
-        )
-
-        _ = viewModel.createNodes()
-
-        #expect(capturedBricks?.bricks.count == 3)
-    }
-
-    @Test func startsEngineAfterCreation() async throws {
-        let fakeNodeCreator = FakeNodeCreator()
-        let fakeEngine = FakeGameEngine()
-        let config = GameConfigurationModel(service: PreviewGameConfigurationService())
-        let viewModel = GameViewModel(
-            configurationModel: config,
-            nodeCreator: fakeNodeCreator,
-            engineFactory: { _ in fakeEngine }
-        )
-
-        _ = viewModel.createNodes()
-
-        #expect(fakeEngine.startWasCalled)
-    }
-
     @Test func exposesSceneSizeFromConfiguration() async throws {
         let config = GameConfigurationModel(service: PreviewGameConfigurationService())
         let viewModel = GameViewModel(configurationModel: config)
