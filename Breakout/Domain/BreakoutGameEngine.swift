@@ -6,20 +6,12 @@ class BreakoutGameEngine: GameEngine {
     private var livesCard: LivesCard
     private var gameState: GameState
 
-    var remainingBrickCount: Int {
-        bricks.bricks.count
-    }
-
     var currentScore: Int {
         scoreCard.total
     }
 
     var remainingLives: Int {
         livesCard.remaining
-    }
-
-    var currentStatus: GameState {
-        gameState
     }
 
     init(bricks: Bricks, lives: Int = 3) {

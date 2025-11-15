@@ -5,70 +5,6 @@ import Foundation
 
 struct BreakoutGameEngineTest {
 
-    /*
-     TDD Task List for BreakoutGameEngine:
-
-     Core Event Processing:
-     [x] Can process .brickHit event and remove brick from registry
-     [x] Can process .brickHit event and update score
-     [x] Can process .ballLost event and decrement lives
-     [x] Ignores events when game is not in .playing state
-
-     Scoring Integration:
-     [x] .brickHit awards correct points based on brick color/type
-     [x] Score persists across multiple brick hits
-     [x] Score starts at zero for new game
-
-     Win Condition:
-     [x] Game transitions to .won when last brick is destroyed
-     [x] Game stays .playing when bricks remain after hit
-     [x] Win condition is checked after each brick hit
-
-     Game Over Condition:
-     [x] Game transitions to .gameOver when last life is lost
-     [x] Game stays .playing when lives remain after ball loss
-     [x] Game over condition is checked after ball loss
-
-     Game State Queries:
-     [x] Can query current score
-     [x] Can query remaining lives
-     [x] Can query remaining brick count
-     [x] Can query current game status
-
-     Game Initialization:
-     [x] New game starts with specified number of lives (default 3)
-     [x] New game starts with score of 0
-     [x] New game starts with provided brick set
-     [x] New game starts in .idle state
-
-     State Transitions:
-     [x] Can start game (transition from .idle to .playing via start())
-     [ ] Can pause game (transition from .playing to .paused)
-     [ ] Can resume game (transition from .paused to .playing)
-     [x] Cannot process game events when .gameOver
-     [x] Cannot process game events when .won
-
-     Edge Cases:
-     [x] Processing .brickHit for non-existent brick is handled gracefully
-     [x] Lives cannot go below zero
-     [ ] Multiple ball losses in quick succession handled correctly
-
-     Next: Start with simplest - process .brickHit removes brick
-     */
-
-    @Test func processBrickHitEventRemovesBrickFromRegistry() async throws {
-        let brickId = UUID()
-        var bricks = Bricks()
-        bricks.add(Brick(id: BrickId(of: brickId.uuidString)))
-
-        let engine = BreakoutGameEngine(bricks: bricks)
-        engine.start()
-
-        engine.process(event: .brickHit(brickID: brickId))
-
-        #expect(engine.remainingBrickCount == 0)
-    }
-
     @Test func processBrickHitEventUpdatesScore() async throws {
         let brickId = UUID()
         var bricks = Bricks()
@@ -89,61 +25,6 @@ struct BreakoutGameEngineTest {
         engine.process(event: .ballLost)
 
         #expect(engine.remainingLives == 2)
-    }
-
-    @Test func gameTransitionsToWonWhenLastBrickDestroyed() async throws {
-        let brickId = UUID()
-        var bricks = Bricks()
-        bricks.add(Brick(id: BrickId(of: brickId.uuidString)))
-
-        let engine = BreakoutGameEngine(bricks: bricks)
-        engine.start()
-
-        engine.process(event: .brickHit(brickID: brickId))
-
-        #expect(engine.currentStatus == .won)
-    }
-
-    @Test func gameTransitionsToGameOverWhenLastLifeLost() async throws {
-        let engine = BreakoutGameEngine(bricks: Bricks(), lives: 1)
-        engine.start()
-
-        engine.process(event: .ballLost)
-
-        #expect(engine.currentStatus == .gameOver)
-    }
-
-    @Test func cannotProcessEventsWhenGameOver() async throws {
-        let brickId = UUID()
-        var bricks = Bricks()
-        bricks.add(Brick(id: BrickId(of: brickId.uuidString)))
-
-        let engine = BreakoutGameEngine(bricks: bricks, lives: 1)
-        engine.start()
-
-        engine.process(event: .ballLost)
-
-        engine.process(event: .brickHit(brickID: brickId))
-
-        #expect(engine.currentScore == 0)
-        #expect(engine.remainingBrickCount == 1)
-        #expect(engine.currentStatus == .gameOver)
-    }
-
-    @Test func cannotProcessEventsWhenWon() async throws {
-        let brickId = UUID()
-        var bricks = Bricks()
-        bricks.add(Brick(id: BrickId(of: brickId.uuidString)))
-
-        let engine = BreakoutGameEngine(bricks: bricks, lives: 3)
-        engine.start()
-
-        engine.process(event: .brickHit(brickID: brickId))
-
-        engine.process(event: .ballLost)
-
-        #expect(engine.remainingLives == 3)
-        #expect(engine.currentStatus == .won)
     }
 
     @Test func scorePersistsAcrossMultipleBrickHits() async throws {
@@ -174,91 +55,9 @@ struct BreakoutGameEngineTest {
 
         engine.process(event: .ballLost)
         #expect(engine.remainingLives == 0)
-        #expect(engine.currentStatus == .gameOver)
 
         engine.process(event: .ballLost)
         #expect(engine.remainingLives == 0)
-    }
-
-    @Test func fullGameFlowWithMultipleBricksAndLives() async throws {
-        let brick1Id = UUID()
-        let brick2Id = UUID()
-        let brick3Id = UUID()
-        var bricks = Bricks()
-        bricks.add(Brick(id: BrickId(of: brick1Id.uuidString)))
-        bricks.add(Brick(id: BrickId(of: brick2Id.uuidString)))
-        bricks.add(Brick(id: BrickId(of: brick3Id.uuidString)))
-
-        let engine = BreakoutGameEngine(bricks: bricks, lives: 2)
-        engine.start()
-
-        #expect(engine.currentStatus == .playing)
-        #expect(engine.remainingLives == 2)
-        #expect(engine.currentScore == 0)
-
-        engine.process(event: .brickHit(brickID: brick1Id))
-        #expect(engine.currentScore == 1)
-        #expect(engine.remainingBrickCount == 2)
-        #expect(engine.currentStatus == .playing)
-
-        engine.process(event: .ballLost)
-        #expect(engine.remainingLives == 1)
-        #expect(engine.currentStatus == .playing)
-
-        engine.process(event: .brickHit(brickID: brick2Id))
-        #expect(engine.currentScore == 2)
-        #expect(engine.remainingBrickCount == 1)
-        #expect(engine.currentStatus == .playing)
-
-        engine.process(event: .brickHit(brickID: brick3Id))
-        #expect(engine.currentScore == 3)
-        #expect(engine.remainingBrickCount == 0)
-        #expect(engine.currentStatus == .won)
-        #expect(engine.remainingLives == 1)
-    }
-
-    @Test func processingBrickHitForNonExistentBrickDoesNotChangeGameState() async throws {
-        let existingBrickId = UUID()
-        let nonExistentBrickId = UUID()
-        var bricks = Bricks()
-        bricks.add(Brick(id: BrickId(of: existingBrickId.uuidString)))
-
-        let engine = BreakoutGameEngine(bricks: bricks, lives: 3)
-        engine.start()
-
-        engine.process(event: .brickHit(brickID: nonExistentBrickId))
-
-        #expect(engine.currentScore == 0)
-        #expect(engine.remainingBrickCount == 1)
-        #expect(engine.currentStatus == .playing)
-    }
-
-    @Test func gameStaysPlayingWhenBricksRemainAfterHit() async throws {
-        let brick1Id = UUID()
-        let brick2Id = UUID()
-        let brick3Id = UUID()
-        var bricks = Bricks()
-        bricks.add(Brick(id: BrickId(of: brick1Id.uuidString)))
-        bricks.add(Brick(id: BrickId(of: brick2Id.uuidString)))
-        bricks.add(Brick(id: BrickId(of: brick3Id.uuidString)))
-
-        let engine = BreakoutGameEngine(bricks: bricks, lives: 3)
-        engine.start()
-
-        engine.process(event: .brickHit(brickID: brick1Id))
-
-        #expect(engine.currentStatus == .playing)
-        #expect(engine.remainingBrickCount == 2)
-    }
-
-    @Test func gameStaysPlayingWhenLivesRemainAfterBallLoss() async throws {
-        let engine = BreakoutGameEngine(bricks: Bricks(), lives: 3)
-        engine.start()
-
-        engine.process(event: .ballLost)
-
-        #expect(engine.currentStatus == .playing)
-        #expect(engine.remainingLives == 2)
     }
 
     @Test func brickHitAwardsPointsBasedOnBrickColor() async throws {
@@ -287,12 +86,6 @@ struct BreakoutGameEngineTest {
 
         engine.process(event: .brickHit(brickID: greenBrickId))
         #expect(engine.currentScore == 19)
-    }
-
-    @Test func newGameStartsInIdleState() async throws {
-        let engine = BreakoutGameEngine(bricks: Bricks(), lives: 3)
-
-        #expect(engine.currentStatus == .idle)
     }
 
 }

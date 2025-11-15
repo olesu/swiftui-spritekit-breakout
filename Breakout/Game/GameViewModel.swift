@@ -6,7 +6,7 @@ import SpriteKit
     let configurationModel: GameConfigurationModel
     private let nodeCreator: NodeCreator
     private let engineFactory: (Bricks) -> GameEngine
-    private(set) var engine: GameEngine?
+    private var engine: GameEngine?
     
     // Closure-based callbacks for game state changes
     var onScoreChanged: ((Int) -> Void)?

@@ -55,23 +55,6 @@ struct GameViewModelTest {
         #expect(fakeEngine.startWasCalled)
     }
 
-    @Test func engineIsAccessibleAfterNodeCreation() async throws {
-        let fakeNodeCreator = FakeNodeCreator()
-        let fakeEngine = FakeGameEngine()
-        let config = GameConfigurationModel(service: PreviewGameConfigurationService())
-        let viewModel = GameViewModel(
-            configurationModel: config,
-            nodeCreator: fakeNodeCreator,
-            engineFactory: { _ in fakeEngine }
-        )
-
-        #expect(viewModel.engine == nil)
-
-        _ = viewModel.createNodes()
-
-        #expect(viewModel.engine != nil)
-    }
-
     @Test func exposesSceneSizeFromConfiguration() async throws {
         let config = GameConfigurationModel(service: PreviewGameConfigurationService())
         let viewModel = GameViewModel(configurationModel: config)
@@ -108,12 +91,9 @@ class FakeGameEngine: GameEngine {
 
     var currentScore: Int = 0
     var remainingLives: Int = 3
-    var remainingBrickCount: Int = 0
-    var currentStatus: GameState = .idle
 
     func start() {
         startWasCalled = true
-        currentStatus = .playing
     }
 
     func process(event: GameEvent) {

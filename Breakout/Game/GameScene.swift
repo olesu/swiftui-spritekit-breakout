@@ -129,15 +129,6 @@ extension GameScene {
     }
 }
 
-// MARK: - Ball Management
-extension GameScene {
-    func resetBall() {
-        guard let ball = gameNodes[.ball] else { return }
-
-        ball.position = CGPoint(x: 160, y: 50)
-        ball.physicsBody?.velocity = CGVector(dx: 200, dy: 300)
-    }
-}
 
 // MARK: - Paddle Control
 extension GameScene {
