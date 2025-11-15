@@ -245,6 +245,93 @@ class BrickNodeManager {
 
 ## Known Issues & Future Improvements
 
+### Architecture & Modularity (High Priority)
+
+#### GameView.swift - GameScene Recreation Bug
+- [ ] **CRITICAL**: GameScene recreated on every SwiftUI render (GameView.swift:26-34)
+  - Problem: Scene created in view body, causing recreation on any SwiftUI update
+  - Impact: Performance degradation, game state loss, memory leaks
+  - Solution: Move scene creation to @State or create once in ViewModel
+  - Files affected: GameView.swift
+
+#### GameConfigurationModel - Performance Issue
+- [ ] Cache GameConfiguration instead of calling service repeatedly (GameModel.swift:6-31)
+  - Problem: Every computed property calls `getGameConfiguration()` which may be expensive
+  - Impact: Unnecessary repeated computation
+  - Solution: Cache configuration in init and use cached value
+  - Files affected: GameModel.swift
+
+#### GameViewModel - SwiftUI Pattern Violations
+- [ ] Fix @Observable usage - expose properties instead of callbacks (GameViewModel.swift:5, 12-13)
+  - Problem: Mixing @Observable with manual callbacks (onScoreChanged, onLivesChanged)
+  - Impact: Confusing observation mechanism, not idiomatic SwiftUI
+  - Solution: Expose currentScore/remainingLives as @Observable properties
+  - Files affected: GameViewModel.swift, GameView.swift, GameScene.swift
+
+#### GameViewModel - Tight Coupling to SpriteKit
+- [ ] Remove SpriteKit dependencies from ViewModel (GameViewModel.swift:41-52)
+  - Problem: Returns `[NodeNames: SKNode]` - ViewModel knows about SpriteKit
+  - Impact: Violates separation of concerns, hard to test
+  - Solution: Extract to SceneConfigurator/Factory, pass domain models
+  - Files affected: GameViewModel.swift, GameView.swift
+
+### Architecture & Modularity (Medium Priority)
+
+#### Inconsistent ViewModel Pattern
+- [ ] Standardize ViewModel pattern across app
+  - Problem: GameViewModel is @Observable class, IdleViewModel is struct wrapper
+  - Impact: Architectural confusion, inconsistent patterns
+  - Solution: Make both @Observable classes OR both struct wrappers
+  - Files affected: GameViewModel.swift, IdleViewModel.swift
+
+#### NotificationCenter in SwiftUI
+- [ ] Replace NotificationCenter with direct callbacks/bindings (GameView.swift:36-45)
+  - Problem: Using NotificationCenter for paddle control is outdated
+  - Impact: Loose coupling, no type safety, hard to trace
+  - Solution: Pass callback/binding to ViewModel directly
+  - Files affected: GameView.swift, GameScene.swift, NotificationNames.swift
+
+#### Circular Dependencies
+- [ ] Remove circular dependency between GameView/GameScene/GameViewModel
+  - Problem: GameScene has both onGameEvent callback AND viewModel reference
+  - Impact: Bidirectional dependency is a code smell
+  - Solution: Communicate only through callbacks, remove viewModel param
+  - Files affected: GameView.swift, GameScene.swift
+
+#### GameScene - Too Many Responsibilities
+- [ ] Extract UserDefaults monitoring from GameScene (GameScene.swift:151-176)
+  - Problem: GameScene handles physics, paddle, UI updates, UserDefaults, bricks
+  - Impact: Violates Single Responsibility Principle
+  - Solution: Extract to separate controllers/managers
+  - Files affected: GameScene.swift
+
+#### Application.swift - Direct State Management
+- [ ] Create NavigationCoordinator for state-based routing (Application.swift:33-44)
+  - Problem: App directly switches on storage.state, bypasses service layer
+  - Impact: Tight coupling, hard to test routing logic
+  - Solution: Use GameStateService consistently, create coordinator
+  - Files affected: Application.swift
+
+### Architecture & Modularity (Low Priority)
+
+#### Force Unwrapping in Service
+- [ ] Add error handling in GameConfigurationService (GameConfigurationService.swift:16)
+  - Problem: `try!` will crash on config loading failure
+  - Solution: Provide fallback or propagate error properly
+  - Files affected: GameConfigurationService.swift
+
+#### Duplicated GameState Enum
+- [ ] Rename engine's GameState to avoid confusion with service's GameState
+  - Problem: Two enums with same name in different contexts
+  - Solution: Rename to EngineState or consolidate if same concept
+  - Files affected: BreakoutGameEngine.swift, GameStateService.swift
+
+#### Storage Abstraction
+- [ ] Move InMemoryStorage to own file, use via service layer
+  - Problem: Defined in Application.swift, accessed directly
+  - Solution: Move to own file, access through GameStateService
+  - Files affected: Application.swift
+
 ### Physics & Gameplay
 - [ ] Prevent ball from moving in 90-degree trajectory (straight up) from paddle
   - When ball hits paddle at certain angles, it can bounce straight up and get stuck
