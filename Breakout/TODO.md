@@ -280,29 +280,31 @@ All tests continue to pass after these refactorings.
   - Commit: 09614b5
   - Note: Callbacks retained for GameScene (non-SwiftUI) communication
 
-#### GameViewModel - Tight Coupling to SpriteKit
-- [ ] Remove SpriteKit dependencies from ViewModel (GameViewModel.swift:41-52)
+#### GameViewModel - Tight Coupling to SpriteKit ✅ FIXED
+- [x] Remove SpriteKit dependencies from ViewModel
   - Problem: Returns `[NodeNames: SKNode]` - ViewModel knows about SpriteKit
   - Impact: Violates separation of concerns, hard to test
   - Solution: Move scene creation to GameView, ViewModel only handles domain models
   - Files affected: GameViewModel.swift, GameView.swift, GameScene.swift
+  - Commits: ee0c2a2, 2da877c, 43bfc76, 4cc7a7d, 2e0677c, ed0dfb5
 
-  **Refined Approach (TDD):**
-  1. Add `initializeEngine(with: Bricks)` method to GameViewModel
-  2. Update tests to use new method
-  3. Move scene creation logic from ViewModel to GameView
-  4. Remove `nodeCreator` property from GameViewModel
-  5. Remove `createNodes()` method from GameViewModel
-  6. Remove `import SpriteKit` from GameViewModel
-  7. Remove `viewModel` parameter from GameScene (fixes circular dependency)
-  8. Update GameScene to have direct `updateScore()`/`updateLives()` methods
-  9. Update GameView to call scene methods via ViewModel callbacks
+  **Implementation (TDD):**
+  1. ✅ Add `initializeEngine(with: Bricks)` method to GameViewModel
+  2. ✅ Update tests to use new method (removed obsolete tests)
+  3. ✅ Move scene creation logic from ViewModel to GameView
+  4. ✅ Remove `nodeCreator` property from GameViewModel
+  5. ✅ Remove `createNodes()` method from GameViewModel
+  6. ✅ Remove `import SpriteKit` from GameViewModel
+  7. ✅ Remove `viewModel` parameter from GameScene (fixes circular dependency)
+  8. ✅ GameScene already had direct `updateScore()`/`updateLives()` methods
+  9. ✅ Update GameView to call scene methods via ViewModel callbacks
 
   **Result:**
-  - GameViewModel: Only domain models, no SpriteKit
-  - GameView: Handles all SpriteKit scene setup
-  - GameScene: Receives updates via direct method calls
-  - Clear dependency flow: View → ViewModel → Domain
+  - GameViewModel: Only domain models, no SpriteKit ✅
+  - GameView: Handles all SpriteKit scene setup ✅
+  - GameScene: Receives updates via direct method calls ✅
+  - Clear dependency flow: View → ViewModel → Domain ✅
+  - No circular dependencies ✅
 
 ### Architecture & Modularity (Medium Priority)
 
