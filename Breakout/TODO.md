@@ -370,7 +370,7 @@ All tests continue to pass after these refactorings.
     - Application.swift now switches on navigationCoordinator.currentScreen
     - 6 tests added to verify all state → screen mappings
   - Files affected: NavigationCoordinator.swift (new), NavigationCoordinatorTest.swift (new), Application.swift
-  - Commit: [pending]
+  - Commit: eceeeda
 
 #### Missing Access Control
 - [ ] Add proper access control to domain models
