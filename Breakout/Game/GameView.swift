@@ -12,13 +12,11 @@ struct GameViewWrapper: View {
 }
 
 struct GameView: View {
-    @State private var viewModel: GameViewModel
+    var viewModel: GameViewModel
     @State private var scene: GameScene?
 
     init(configurationModel: GameConfigurationModel) {
-        _viewModel = State(
-            initialValue: GameViewModel(configurationModel: configurationModel)
-        )
+        self.viewModel = GameViewModel(configurationModel: configurationModel)
     }
 
     var body: some View {
@@ -61,12 +59,13 @@ struct GameView: View {
     }
 
     private func createScene(with nodes: [NodeNames: SKNode]) -> GameScene {
+        let viewModel = self.viewModel
         let gameScene = GameScene(
             size: viewModel.sceneSize,
             brickArea: viewModel.brickArea,
             nodes: nodes,
-            onGameEvent: { [viewModel] event in
-                viewModel.handleGameEvent(event)
+            onGameEvent: { [weak viewModel] event in
+                viewModel?.handleGameEvent(event)
             }
         )
 
