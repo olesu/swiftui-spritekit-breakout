@@ -390,19 +390,93 @@ All tests continue to pass after these refactorings.
   - Files affected: ScoreCard.swift, LivesCard.swift, Bricks.swift, BreakoutGameEngine.swift, GameViewModelTest.swift
   - Commit: f74d724
 
-#### Hardcoded Brick Layout
-- [ ] Extract hardcoded brick layout to data-driven configuration (BrickSprite.swift:23-168)
-  - Problem: 84+ hardcoded brick positions in ClassicBricksLayout class
+#### Hardcoded Brick Layout → Data-Driven JSON Loading
+- [ ] Extract hardcoded brick layout to data-driven JSON configuration (BrickSprite.swift:23-168)
+  - Problem: 112 hardcoded brick positions in ClassicBricksLayout class
   - Impact:
     - Violates Single Responsibility Principle
     - Hard to change brick patterns (requires modifying class)
     - Not reusable for different layouts
-  - Solution:
-    - Extract brick layout to JSON configuration file
-    - Create BrickLayoutLoader protocol
-    - Implement ConfigFileBrickLayoutLoader and ClassicBrickLayoutProvider
-    - Make ClassicBricksLayout data-driven
-  - Files affected: BrickSprite.swift
+    - Cannot create new levels without code changes
+  - Current State:
+    - JSON file exists at Resources/001-classic-breakout.json but is unused
+    - JSON uses grid-based layout (14 cols × 8 rows = 112 bricks)
+    - Current hardcoded layout IS grid-based (x spacing: 23, y spacing: 12)
+    - Color/scoring mismatch: JSON needs updating to match current game
+
+  **Implementation Plan (TDD):**
+
+  **Phase 1: Update JSON to match current game**
+  - [ ] Update 001-classic-breakout.json with correct colors and scoring:
+    - Type 1: Green (1 point)
+    - Type 2: Yellow (4 points)
+    - Type 3: Orange (7 points)
+    - Type 4: Red (7 points)
+  - [ ] Add grid positioning metadata:
+    - startX: 11, startY: 420
+    - brickWidth: 20, brickHeight: 10
+    - spacing: 3, rowSpacing: 12
+  - [ ] Verify layout matches: 2 red rows, 2 orange rows, 2 yellow rows, 2 green rows
+
+  **Phase 2: Create domain models (TDD)**
+  - [ ] Create `BrickLayoutConfig` struct (Codable)
+    - Properties: levelName, mapCols, mapRows, grid positioning, brickTypes, layout
+  - [ ] Create `BrickType` struct (Codable)
+    - Properties: id, colorName, scoreValue
+  - [ ] Add `BrickType.toNSColor()` method with tests
+    - Maps "Red" → .red, "Orange" → .orange, etc.
+  - [ ] Add `BrickLayoutConfig.generateBricks() -> [BrickData]` with tests
+    - Converts grid layout to positioned BrickData array
+    - Calculates x/y from grid index and positioning metadata
+  - Files: Domain/BrickLayoutConfig.swift (new)
+
+  **Phase 3: Create JSON loader (TDD)**
+  - [ ] Create `BrickLayoutLoader` protocol
+    - Method: `func loadLayout(named: String) throws -> BrickLayoutConfig`
+  - [ ] Create `JsonBrickLayoutLoader` implementation
+    - Loads JSON from Resources bundle
+    - Throws error if file missing or invalid
+  - [ ] Write tests for JsonBrickLayoutLoader
+    - Test successful loading
+    - Test missing file error
+    - Test invalid JSON error
+  - Files: Domain/BrickLayoutLoader.swift (new)
+
+  **Phase 4: Integrate with ClassicBricksLayout (TDD)**
+  - [ ] Update `ClassicBricksLayout` to accept `[BrickData]` in init
+  - [ ] Remove hardcoded `brickLayout` array (lines 24-145)
+  - [ ] Update tests to verify layout loads from injected data
+  - [ ] Create factory/convenience init that loads from JSON:
+    - `ClassicBricksLayout.fromJSON(named:loader:onBrickAdded:)`
+  - Files: Nodes/BrickSprite.swift
+
+  **Phase 5: Wire up in production code**
+  - [ ] Update code that creates `ClassicBricksLayout` to use JSON loader
+  - [ ] Add error handling with fallback (if JSON fails, use default layout)
+  - [ ] Verify game still works correctly
+  - Files: Nodes/SpriteKitNodeCreator.swift (likely)
+
+  **Phase 6: Cleanup and documentation**
+  - [ ] Remove old hardcoded layout code
+  - [ ] Run all tests - verify everything passes
+  - [ ] Update TODO.md to mark complete
+
+  **Benefits After Implementation:**
+  - ✅ Can create new levels by editing JSON (no code changes)
+  - ✅ Separation of data (JSON) and presentation (SpriteKit)
+  - ✅ Can support empty spaces in grid (use 0 for no brick)
+  - ✅ Easier to test - can inject test layouts
+  - ✅ ~120 lines of hardcoded positions removed
+
+  **Files Affected:**
+  - Resources/001-classic-breakout.json (update)
+  - Domain/BrickLayoutConfig.swift (new)
+  - Domain/BrickLayoutLoader.swift (new)
+  - Domain/BrickLayoutLoaderTest.swift (new)
+  - Nodes/BrickSprite.swift (refactor)
+  - Nodes/SpriteKitNodeCreator.swift (update to use loader)
+
+  **Estimated Effort:** Medium (2-3 hours with TDD)
 
 ### Architecture & Modularity (Low Priority)
 
