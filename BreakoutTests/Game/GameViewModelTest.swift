@@ -38,7 +38,8 @@ struct GameViewModelTest {
 
         viewModel.initializeEngine(with: bricks)
 
-        #expect(capturedBricks?.bricks.count == 2)
+        #expect(capturedBricks?.get(byId: BrickId(of: "brick1")) != nil)
+        #expect(capturedBricks?.get(byId: BrickId(of: "brick2")) != nil)
         #expect(fakeEngine.startWasCalled)
     }
 }

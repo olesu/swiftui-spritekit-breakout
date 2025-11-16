@@ -6,13 +6,13 @@
 //
 
 struct LivesCard {
-    var remaining: Int
+    private(set) var remaining: Int
     var gameOver: Bool { remaining <= 0 }
-    
+
     init(_ livesToBeginWith: Int) {
         self.remaining = livesToBeginWith
     }
-    
+
     mutating func lifeWasLost() {
         self.remaining -= 1
     }

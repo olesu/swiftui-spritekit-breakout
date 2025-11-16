@@ -37,7 +37,7 @@ class BreakoutGameEngine: GameEngine {
         case .brickHit(let brickID):
             let brickId = BrickId(of: brickID.uuidString)
 
-            guard let brick = bricks.bricks[brickId] else {
+            guard let brick = bricks.get(byId: brickId) else {
                 return
             }
 

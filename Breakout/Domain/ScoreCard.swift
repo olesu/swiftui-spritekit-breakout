@@ -1,5 +1,5 @@
 struct ScoreCard {
-    var scores: [Int] = []
+    private(set) var scores: [Int] = []
 
     var total: Int {
         scores.reduce(0, +)

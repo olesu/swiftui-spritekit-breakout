@@ -53,12 +53,16 @@ struct Brick {
 }
 
 struct Bricks {
-    var bricks: [BrickId: Brick] = [:]
-    
+    private var bricks: [BrickId: Brick] = [:]
+
     var someRemaining: Bool {
         bricks.count > 0
     }
-    
+
+    func get(byId id: BrickId) -> Brick? {
+        bricks[id]
+    }
+
     mutating func add(_ brick: Brick) {
         bricks[brick.id] = brick
     }

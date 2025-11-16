@@ -372,15 +372,23 @@ All tests continue to pass after these refactorings.
   - Files affected: NavigationCoordinator.swift (new), NavigationCoordinatorTest.swift (new), Application.swift
   - Commit: eceeeda
 
-#### Missing Access Control
-- [ ] Add proper access control to domain models
+#### Missing Access Control ✅ FIXED
+- [x] Add proper access control to domain models
   - Problems:
     - ScoreCard.scores is public mutable (should be private)
     - LivesCard.remaining is public mutable (should be private)
     - Bricks.bricks dictionary is exposed (should be private)
   - Impact: Breaks encapsulation, allows direct state mutation
-  - Solution: Add private(set) or completely private modifiers
-  - Files affected: ScoreCard.swift, LivesCard.swift, Bricks.swift
+  - Solution: Added private(set) and private modifiers, created proper APIs
+  - Implementation:
+    - ScoreCard.scores: Changed to `private(set)` (read-only from outside)
+    - LivesCard.remaining: Changed to `private(set)` (read-only from outside)
+    - Bricks.bricks: Changed to `private` (completely hidden)
+    - Added Bricks.get(byId:) method for safe brick access
+    - Updated BreakoutGameEngine to use new API
+    - Fixed test to use public API instead of accessing internals
+  - Files affected: ScoreCard.swift, LivesCard.swift, Bricks.swift, BreakoutGameEngine.swift, GameViewModelTest.swift
+  - Commit: [pending]
 
 #### Hardcoded Brick Layout
 - [ ] Extract hardcoded brick layout to data-driven configuration (BrickSprite.swift:23-168)
