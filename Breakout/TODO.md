@@ -306,50 +306,123 @@ All tests continue to pass after these refactorings.
   - Clear dependency flow: View → ViewModel → Domain ✅
   - No circular dependencies ✅
 
+### Architecture & Modularity (High Priority)
+
+#### Force Unwrapping in Service ⚠️ CRITICAL
+- [ ] Add error handling in GameConfigurationService (GameConfigurationService.swift:16)
+  - Problem: `try!` will crash on config loading failure
+  - Impact: App crash if configuration file is missing or malformed
+  - Solution: Provide fallback configuration or propagate error properly
+  - Files affected: GameConfigurationService.swift
+
+#### SwiftUI State Management Issues ⚠️ HIGH
+- [ ] Fix @State/@Observable pattern inconsistencies (GameView.swift:15-16)
+  - Problems:
+    1. GameViewModel is @Observable but wrapped in @State (confusing)
+    2. GameScene stored in @State (SpriteKit objects shouldn't be @State)
+    3. Strong capture of viewModel in closures (potential memory leak at lines 68-70)
+  - Impact: Memory leaks, unclear observation mechanism, non-idiomatic SwiftUI
+  - Solution:
+    - Review @Observable pattern - may not need @State wrapper in SwiftUI 2024+
+    - Use [weak viewModel] in onGameEvent closure
+    - Don't store GameScene in @State - create on demand or use different pattern
+  - Files affected: GameView.swift
+
+#### GameScene - Too Many Responsibilities (God Object)
+- [ ] Extract concerns from GameScene (GameScene.swift)
+  - Current responsibilities (lines 4-48):
+    1. Physics contact delegate (lines 66-86)
+    2. UI updates (lines 51-63)
+    3. UserDefaults monitoring (lines 112-137)
+    4. Paddle control (lines 97-109)
+    5. Brick node management (lines 89-93)
+  - Impact: Violates Single Responsibility Principle, hard to test
+  - Solution: Extract to separate controllers:
+    - Extract UserDefaults observation to separate controller
+    - Consider PaddleController if paddle logic grows
+    - Keep GameScene focused on physics and collision detection
+  - Files affected: GameScene.swift
+
 ### Architecture & Modularity (Medium Priority)
 
 #### Inconsistent ViewModel Pattern
 - [ ] Standardize ViewModel pattern across app
-  - Problem: GameViewModel is @Observable class, IdleViewModel is struct wrapper
-  - Impact: Architectural confusion, inconsistent patterns
+  - Problem: GameViewModel is @Observable class, IdleViewModel is struct wrapper around IdleModel
+  - Impact: Architectural confusion, inconsistent patterns across codebase
   - Solution: Make both @Observable classes OR both struct wrappers
-  - Files affected: GameViewModel.swift, IdleViewModel.swift
+  - Files affected: GameViewModel.swift (line 4), IdleViewModel.swift (lines 4-16)
 
-#### NotificationCenter in SwiftUI
-- [ ] Replace NotificationCenter with direct callbacks/bindings (GameView.swift:36-45)
+#### NotificationCenter Cleanup ✅ PARTIAL
+- [x] Replaced NotificationCenter with direct callbacks for paddle control (GameView.swift)
   - Problem: Using NotificationCenter for paddle control is outdated
-  - Impact: Loose coupling, no type safety, hard to trace
-  - Solution: Pass callback/binding to ViewModel directly
-  - Files affected: GameView.swift, GameScene.swift, NotificationNames.swift
-
-#### Circular Dependencies
-- [ ] Remove circular dependency between GameView/GameScene/GameViewModel
-  - Problem: GameScene has both onGameEvent callback AND viewModel reference
-  - Impact: Bidirectional dependency is a code smell
-  - Solution: Communicate only through callbacks, remove viewModel param
+  - Solution: GameView now calls scene.movePaddle(to:) directly
   - Files affected: GameView.swift, GameScene.swift
-
-#### GameScene - Too Many Responsibilities
-- [ ] Extract UserDefaults monitoring from GameScene (GameScene.swift:151-176)
-  - Problem: GameScene handles physics, paddle, UI updates, UserDefaults, bricks
-  - Impact: Violates Single Responsibility Principle
-  - Solution: Extract to separate controllers/managers
-  - Files affected: GameScene.swift
+- [ ] Remove unused NotificationNames.paddlePositionChanged (NotificationNames.swift:4)
+  - Problem: Dead code, defined but never used
+  - Solution: Delete the unused notification
+  - Files affected: NotificationNames.swift
 
 #### Application.swift - Direct State Management
 - [ ] Create NavigationCoordinator for state-based routing (Application.swift:33-44)
-  - Problem: App directly switches on storage.state, bypasses service layer
-  - Impact: Tight coupling, hard to test routing logic
-  - Solution: Use GameStateService consistently, create coordinator
+  - Problem: App directly switches on storage.state, bypasses GameStateService layer
+  - Impact: Tight coupling, hard to test routing logic, inconsistent with architecture
+  - Solution: Create NavigationCoordinator that observes GameStateService to drive transitions
   - Files affected: Application.swift
+
+#### Missing Access Control
+- [ ] Add proper access control to domain models
+  - Problems:
+    - ScoreCard.scores is public mutable (should be private)
+    - LivesCard.remaining is public mutable (should be private)
+    - Bricks.bricks dictionary is exposed (should be private)
+  - Impact: Breaks encapsulation, allows direct state mutation
+  - Solution: Add private(set) or completely private modifiers
+  - Files affected: ScoreCard.swift, LivesCard.swift, Bricks.swift
+
+#### Hardcoded Brick Layout
+- [ ] Extract hardcoded brick layout to data-driven configuration (BrickSprite.swift:23-168)
+  - Problem: 84+ hardcoded brick positions in ClassicBricksLayout class
+  - Impact:
+    - Violates Single Responsibility Principle
+    - Hard to change brick patterns (requires modifying class)
+    - Not reusable for different layouts
+  - Solution:
+    - Extract brick layout to JSON configuration file
+    - Create BrickLayoutLoader protocol
+    - Implement ConfigFileBrickLayoutLoader and ClassicBrickLayoutProvider
+    - Make ClassicBricksLayout data-driven
+  - Files affected: BrickSprite.swift
 
 ### Architecture & Modularity (Low Priority)
 
-#### Force Unwrapping in Service
-- [ ] Add error handling in GameConfigurationService (GameConfigurationService.swift:16)
-  - Problem: `try!` will crash on config loading failure
-  - Solution: Provide fallback or propagate error properly
-  - Files affected: GameConfigurationService.swift
+#### File Organization
+- [ ] Improve file/folder organization
+  - Problems:
+    - UserDefaultsKeys.swift at root (should be in Infrastructure)
+    - NotificationNames.swift at root (should be in Infrastructure)
+    - JsonGameConfigurationLoader.swift misplaced (should be in Domain/Adapters)
+  - Solution:
+    - Create Infrastructure folder for shared utilities
+    - Move configuration loaders to appropriate folders
+  - Files affected: UserDefaultsKeys.swift, NotificationNames.swift, JsonGameConfigurationLoader.swift
+
+#### Physics Configuration Duplication
+- [ ] Refactor PhysicsBodyConfigurers to reduce duplication (PhysicsBodyConfigurers.swift)
+  - Problem: Five configurers in one file with repetitive implementations
+  - Current: Lines 3-69 contain nearly identical patterns for Brick/Gutter/Wall
+  - Impact: Code duplication reduces maintainability
+  - Solution:
+    - Extract common pattern to protocol with default implementation
+    - OR separate files per configurer type
+  - Files affected: PhysicsBodyConfigurers.swift
+
+#### Magic Numbers
+- [ ] Extract hardcoded magic numbers to constants
+  - Problems:
+    - Sprite sizes hardcoded (BrickSprite.swift:10-11, PaddleSprite.swift:5, BallSprite.swift:5)
+    - Paddle boundaries hardcoded (GameScene.swift:103-104)
+  - Solution: Create GameDimensions enum with all size constants
+  - Files affected: Multiple sprite files, GameScene.swift
 
 #### Duplicated GameState Enum
 - [ ] Rename engine's GameState to avoid confusion with service's GameState
@@ -380,6 +453,7 @@ All tests continue to pass after these refactorings.
 - Domain/LivesCardTest
 - Domain/GameEventTest
 - Game/GameViewModelTest (3 tests)
+- Game/GameSceneTest (1 test)
 - Nodes/BrickNodeManagerTest (1 test)
 - ConfigurationModelTest
 - And others...
@@ -388,3 +462,70 @@ All tests continue to pass after these refactorings.
 - No SpriteKit dependencies in domain tests
 - Fast, focused unit tests
 - Clear separation of concerns
+
+---
+
+## Comprehensive Architecture Review (2025-01-16)
+
+A full codebase review was conducted focusing on modularization, separation of concerns, cohesion, and Swift/SwiftUI/SpriteKit best practices.
+
+### Overall Assessment
+
+**Strengths:**
+- ✅ Excellent domain/UI separation - pure game logic has zero UI dependencies
+- ✅ Event-driven architecture with clean GameEvent-based decoupling
+- ✅ Strong TDD discipline with comprehensive test coverage
+- ✅ Protocol-oriented design with good abstractions
+- ✅ Clear layering: Domain → Presentation → Coordination → Application
+
+**Key Architectural Wins:**
+1. Domain layer is completely independent of SpriteKit
+2. Event-driven communication prevents tight coupling
+3. Proper lifecycle management (UserDefaultsMonitor cleanup)
+4. Good use of value types (struct) for domain models
+
+### Critical Issues Identified
+
+See "High Priority" section above for:
+- ⚠️ Force unwrapping in GameConfigurationService (crash risk)
+- ⚠️ SwiftUI state management inconsistencies (memory leaks)
+- ⚠️ GameScene God Object (too many responsibilities)
+
+### Medium Priority Improvements
+
+See "Medium Priority" section above for:
+- Inconsistent ViewModel patterns
+- Missing access control in domain models
+- Hardcoded brick layout (should be data-driven)
+- Application.swift bypassing service layer
+
+### Low Priority Cleanups
+
+See "Low Priority" section above for:
+- File organization improvements
+- Physics configuration duplication
+- Magic numbers extraction
+- Dead code removal
+
+### Best Practices Summary
+
+**What's Working Well:**
+- Value types for immutable domain entities (Brick, BrickId, ScoreCard)
+- Reference types where needed (GameScene, GameViewModel)
+- Protocol usage for abstractions (GameEngine, GameConfigurationService)
+- Extension usage for organization (GameScene MARK sections)
+
+**Needs Improvement:**
+- SwiftUI observation patterns (@Observable + @State confusion)
+- Access control modifiers (too much public mutability)
+- Separation of concerns (GameScene doing too much)
+- Consistency (ViewModel pattern differs between screens)
+
+### Next Steps
+
+Recommended priority order:
+1. Fix force unwrapping (CRITICAL - crash risk)
+2. Fix SwiftUI state management (HIGH - memory leaks)
+3. Refactor GameScene (HIGH - maintainability)
+4. Add access control (MEDIUM - encapsulation)
+5. Remove dead code and cleanup (LOW - code hygiene)
