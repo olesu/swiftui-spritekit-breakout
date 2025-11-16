@@ -8,8 +8,8 @@ import SwiftUI
 @main
 struct Application: App {
     private let gameModel: GameConfigurationModel
-    private let idleModel: IdleModel
-    
+    private let idleViewModel: IdleViewModel
+
     private var storage: InMemoryStorage
 
     init() {
@@ -20,8 +20,8 @@ struct Application: App {
                 loader: JsonGameConfigurationLoader()
             )
         )
-        
-        idleModel = IdleModel(
+
+        idleViewModel = IdleViewModel(
             gameStateService: RealGameStateService(
                 adapter: InMemoryGameStateAdapter(storage: storage)
             )
@@ -34,7 +34,7 @@ struct Application: App {
                 switch storage.state {
                 case .idle:
                     IdleViewWrapper()
-                        .environment(idleModel)
+                        .environment(idleViewModel)
                 case .playing:
                     GameViewWrapper()
                         .environment(gameModel)

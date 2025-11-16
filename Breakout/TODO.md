@@ -340,12 +340,13 @@ All tests continue to pass after these refactorings.
 
 ### Architecture & Modularity (Medium Priority)
 
-#### Inconsistent ViewModel Pattern
-- [ ] Standardize ViewModel pattern across app
+#### Inconsistent ViewModel Pattern ✅ FIXED
+- [x] Standardize ViewModel pattern across app
   - Problem: GameViewModel is @Observable class, IdleViewModel is struct wrapper around IdleModel
   - Impact: Architectural confusion, inconsistent patterns across codebase
-  - Solution: Make both @Observable classes OR both struct wrappers
-  - Files affected: GameViewModel.swift (line 4), IdleViewModel.swift (lines 4-16)
+  - Solution: Removed wrapper layer, renamed IdleModel → IdleViewModel for consistency
+  - Files affected: IdleViewModel.swift (renamed from IdleModel.swift), IdleView.swift, IdleViewWrapper, Application.swift, IdleViewModelTest.swift
+  - Commit: [pending]
 
 #### NotificationCenter Cleanup ✅ COMPLETE
 - [x] Replaced NotificationCenter with direct callbacks for paddle control (GameView.swift)

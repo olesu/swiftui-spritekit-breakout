@@ -1,17 +1,13 @@
 import Foundation
-import SwiftUI
 
-struct IdleViewModel {
-    private let model: IdleModel
-    
-    let startGameButtonText = "Start Game"
-    
-    init(model: IdleModel) {
-        self.model = model
+@Observable class IdleViewModel {
+    private let gameStateService: GameStateService
+
+    init(gameStateService: GameStateService) {
+        self.gameStateService = gameStateService
     }
 
-    func startGameButtonPressed() async {
-        await model.startNewGame()
+    func startNewGame() async {
+        gameStateService.transitionToPlaying()
     }
 }
-

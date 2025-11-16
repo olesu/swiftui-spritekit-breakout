@@ -2,25 +2,21 @@ import Foundation
 import SwiftUI
 
 struct IdleViewWrapper: View {
-    @Environment(IdleModel.self) private var idleModel: IdleModel
+    @Environment(IdleViewModel.self) private var viewModel: IdleViewModel
 
     var body: some View {
-        IdleView(viewModel: idleModel)
+        IdleView(viewModel: viewModel)
     }
 
 }
 
 struct IdleView: View {
-    private var viewModel: IdleViewModel
-
-    init(viewModel: IdleModel) {
-        self.viewModel = IdleViewModel(model: viewModel)
-    }
+    var viewModel: IdleViewModel
 
     var body: some View {
-        Button(viewModel.startGameButtonText) {
+        Button("Start Game") {
             Task {
-                await viewModel.startGameButtonPressed()
+                await viewModel.startNewGame()
             }
         }
     }
@@ -30,7 +26,7 @@ struct IdleView: View {
     IdleViewWrapper()
         .frame(width: 320 * 0.5, height: 480 * 0.5)
         .environment(
-            IdleModel(
+            IdleViewModel(
                 gameStateService: PreviewGameStateService()
             )
         )
