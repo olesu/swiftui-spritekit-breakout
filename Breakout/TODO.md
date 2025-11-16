@@ -346,7 +346,7 @@ All tests continue to pass after these refactorings.
   - Impact: Architectural confusion, inconsistent patterns across codebase
   - Solution: Removed wrapper layer, renamed IdleModel → IdleViewModel for consistency
   - Files affected: IdleViewModel.swift (renamed from IdleModel.swift), IdleView.swift, IdleViewWrapper, Application.swift, IdleViewModelTest.swift
-  - Commit: [pending]
+  - Commit: 116fa35
 
 #### NotificationCenter Cleanup ✅ COMPLETE
 - [x] Replaced NotificationCenter with direct callbacks for paddle control (GameView.swift)
