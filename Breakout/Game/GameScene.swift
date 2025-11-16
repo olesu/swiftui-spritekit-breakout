@@ -13,17 +13,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private let brickAreaOverlay: SKNode
     private let gameNodes: [NodeNames: SKNode]
     private let onGameEvent: (GameEvent) -> Void
+    private let onPaddleMoved: (CGPoint) -> Void
     private var brickNodeManager: BrickNodeManager?
 
     init(
         size: CGSize,
         brickArea: CGRect,
         nodes: [NodeNames: SKNode],
-        onGameEvent: @escaping (GameEvent) -> Void
+        onGameEvent: @escaping (GameEvent) -> Void,
+        onPaddleMoved: @escaping (CGPoint) -> Void
     ) {
         self.brickAreaOverlay = SKShapeNode.brickOverlay(in: brickArea)
         self.gameNodes = nodes
         self.onGameEvent = onGameEvent
+        self.onPaddleMoved = onPaddleMoved
         super.init(size: size)
     }
 
@@ -34,7 +37,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
         monitorUserDefaults()
-        monitorPaddleControl()
         gameNodes.values.forEach(addChild)
 
         if let brickLayout = gameNodes[.brickLayout] {
@@ -44,28 +46,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     override func willMove(from view: SKView) {
         unmonitorUserDefaults()
-        unmonitorPaddleControl()
-    }
-
-    private var paddleObserver: NSObjectProtocol?
-
-    private func monitorPaddleControl() {
-        paddleObserver = NotificationCenter.default.addObserver(
-            forName: .paddlePositionChanged,
-            object: nil,
-            queue: .main
-        ) { [weak self] notification in
-            if let location = notification.userInfo?["location"] as? CGPoint {
-                self?.movePaddle(to: location)
-            }
-        }
-    }
-
-    private func unmonitorPaddleControl() {
-        if let observer = paddleObserver {
-            NotificationCenter.default.removeObserver(observer)
-            paddleObserver = nil
-        }
     }
 
 }
@@ -128,6 +108,7 @@ extension GameScene {
         let clampedX = max(minX, min(maxX, location.x))
 
         paddle.position.x = clampedX
+        onPaddleMoved(location)
     }
 }
 

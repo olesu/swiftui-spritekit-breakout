@@ -28,11 +28,7 @@ struct GameView: View {
                     .gesture(
                         DragGesture(minimumDistance: 0)
                             .onChanged { value in
-                                NotificationCenter.default.post(
-                                    name: .paddlePositionChanged,
-                                    object: nil,
-                                    userInfo: ["location": value.location]
-                                )
+                                scene.movePaddle(to: value.location)
                             }
                     )
             }
@@ -71,6 +67,9 @@ struct GameView: View {
             nodes: nodes,
             onGameEvent: { [viewModel] event in
                 viewModel.handleGameEvent(event)
+            },
+            onPaddleMoved: { location in
+                // Callback for paddle movement
             }
         )
 
