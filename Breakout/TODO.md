@@ -347,15 +347,16 @@ All tests continue to pass after these refactorings.
   - Solution: Make both @Observable classes OR both struct wrappers
   - Files affected: GameViewModel.swift (line 4), IdleViewModel.swift (lines 4-16)
 
-#### NotificationCenter Cleanup ✅ PARTIAL
+#### NotificationCenter Cleanup ✅ COMPLETE
 - [x] Replaced NotificationCenter with direct callbacks for paddle control (GameView.swift)
   - Problem: Using NotificationCenter for paddle control is outdated
   - Solution: GameView now calls scene.movePaddle(to:) directly
   - Files affected: GameView.swift, GameScene.swift
-- [ ] Remove unused NotificationNames.paddlePositionChanged (NotificationNames.swift:4)
-  - Problem: Dead code, defined but never used
-  - Solution: Delete the unused notification
-  - Files affected: NotificationNames.swift
+- [x] Remove unused NotificationNames.paddlePositionChanged (NotificationNames.swift)
+  - Problem: Dead code, entire file contained only unused notification
+  - Solution: Deleted entire NotificationNames.swift file
+  - Files affected: NotificationNames.swift (deleted)
+  - Commit: 11dfed3
 
 #### Application.swift - Direct State Management
 - [ ] Create NavigationCoordinator for state-based routing (Application.swift:33-44)
@@ -501,7 +502,9 @@ See "Medium Priority" section above for:
 - Missing access control in domain models
 - Hardcoded brick layout (should be data-driven)
 - Application.swift bypassing service layer
-- Dead code cleanup (NotificationNames.paddlePositionChanged)
+
+**Completed:**
+- ✅ Dead code cleanup (NotificationNames.swift removed - Commit 11dfed3)
 
 ### Low Priority Cleanups
 
