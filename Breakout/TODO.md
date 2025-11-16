@@ -308,40 +308,35 @@ All tests continue to pass after these refactorings.
 
 ### Architecture & Modularity (High Priority)
 
-#### Force Unwrapping in Service ⚠️ CRITICAL
-- [ ] Add error handling in GameConfigurationService (GameConfigurationService.swift:16)
+#### Force Unwrapping in Service ⚠️ CRITICAL ✅ FIXED
+- [x] Add error handling in GameConfigurationService (GameConfigurationService.swift:16)
   - Problem: `try!` will crash on config loading failure
   - Impact: App crash if configuration file is missing or malformed
-  - Solution: Provide fallback configuration or propagate error properly
-  - Files affected: GameConfigurationService.swift
+  - Solution: Added do-catch with fallback configuration, replaced fatalError with throw
+  - Files affected: GameConfigurationService.swift, JsonGameConfigurationLoader.swift
+  - Commit: 368c6aa
 
-#### SwiftUI State Management Issues ⚠️ HIGH
-- [ ] Fix @State/@Observable pattern inconsistencies (GameView.swift:15-16)
+#### SwiftUI State Management Issues ⚠️ HIGH ✅ FIXED
+- [x] Fix @State/@Observable pattern inconsistencies (GameView.swift:15-16)
   - Problems:
     1. GameViewModel is @Observable but wrapped in @State (confusing)
-    2. GameScene stored in @State (SpriteKit objects shouldn't be @State)
-    3. Strong capture of viewModel in closures (potential memory leak at lines 68-70)
-  - Impact: Memory leaks, unclear observation mechanism, non-idiomatic SwiftUI
+    2. Strong capture of viewModel in closures (potential memory leak at lines 68-70)
   - Solution:
-    - Review @Observable pattern - may not need @State wrapper in SwiftUI 2024+
-    - Use [weak viewModel] in onGameEvent closure
-    - Don't store GameScene in @State - create on demand or use different pattern
+    - Removed @State wrapper from viewModel (now uses @Observable directly)
+    - Changed [viewModel] to [weak viewModel] in onGameEvent closure
+    - Note: @State for scene is acceptable - scene created once in lifecycle, managed by SpriteView
   - Files affected: GameView.swift
+  - Commit: 92f8f8f
 
-#### GameScene - Too Many Responsibilities (God Object)
-- [ ] Extract concerns from GameScene (GameScene.swift)
-  - Current responsibilities (lines 4-48):
-    1. Physics contact delegate (lines 66-86)
-    2. UI updates (lines 51-63)
-    3. UserDefaults monitoring (lines 112-137)
-    4. Paddle control (lines 97-109)
-    5. Brick node management (lines 89-93)
-  - Impact: Violates Single Responsibility Principle, hard to test
-  - Solution: Extract to separate controllers:
-    - Extract UserDefaults observation to separate controller
-    - Consider PaddleController if paddle logic grows
-    - Keep GameScene focused on physics and collision detection
-  - Files affected: GameScene.swift
+#### Debug Overlay Removal (Future Work)
+- [ ] Remove debug overlay functionality from GameScene (GameScene.swift:5-11, 111-137)
+  - Current: UserDefaults monitoring for showing/hiding brick area overlay
+  - Reason: Development tool that adds complexity to production code
+  - Solution: Remove in future session when debug features are consolidated
+  - Files affected: GameScene.swift, UserDefaultsMonitor.swift
+  - Note: GameScene is well-structured for a SpriteKit scene (138 lines, clear MARK sections,
+    uses BrickNodeManager for delegation). Not a God Object - responsibilities are cohesive
+    around scene management. Only questionable part is debug overlay.
 
 ### Architecture & Modularity (Medium Priority)
 
@@ -484,12 +479,20 @@ A full codebase review was conducted focusing on modularization, separation of c
 3. Proper lifecycle management (UserDefaultsMonitor cleanup)
 4. Good use of value types (struct) for domain models
 
-### Critical Issues Identified
+### Critical Issues - RESOLVED ✅
 
-See "High Priority" section above for:
-- ⚠️ Force unwrapping in GameConfigurationService (crash risk)
-- ⚠️ SwiftUI state management inconsistencies (memory leaks)
-- ⚠️ GameScene God Object (too many responsibilities)
+- ✅ **Force unwrapping in GameConfigurationService** (crash risk) - FIXED (Commit: 368c6aa)
+  - Added proper error handling with fallback configuration
+  - Replaced fatalError() with throw statements
+
+- ✅ **SwiftUI state management inconsistencies** (memory leaks) - FIXED (Commit: 92f8f8f)
+  - Removed @State wrapper from @Observable viewModel
+  - Fixed strong capture → weak capture in closures
+  - Clarified that @State for scene is acceptable pattern
+
+### High Priority Items Remaining
+
+- Debug overlay removal (deferred to future session when consolidating debug features)
 
 ### Medium Priority Improvements
 
@@ -498,6 +501,7 @@ See "Medium Priority" section above for:
 - Missing access control in domain models
 - Hardcoded brick layout (should be data-driven)
 - Application.swift bypassing service layer
+- Dead code cleanup (NotificationNames.paddlePositionChanged)
 
 ### Low Priority Cleanups
 
@@ -505,27 +509,32 @@ See "Low Priority" section above for:
 - File organization improvements
 - Physics configuration duplication
 - Magic numbers extraction
-- Dead code removal
 
 ### Best Practices Summary
 
 **What's Working Well:**
-- Value types for immutable domain entities (Brick, BrickId, ScoreCard)
-- Reference types where needed (GameScene, GameViewModel)
-- Protocol usage for abstractions (GameEngine, GameConfigurationService)
-- Extension usage for organization (GameScene MARK sections)
+- ✅ Value types for immutable domain entities (Brick, BrickId, ScoreCard)
+- ✅ Reference types where needed (GameScene, GameViewModel)
+- ✅ Protocol usage for abstractions (GameEngine, GameConfigurationService)
+- ✅ Extension usage for organization (GameScene MARK sections)
+- ✅ Proper error handling (no more force unwrapping)
+- ✅ Idiomatic SwiftUI observation patterns (@Observable without @State)
+- ✅ Memory-safe closures (weak captures where needed)
+- ✅ GameScene well-structured for SpriteKit (cohesive responsibilities)
 
-**Needs Improvement:**
-- SwiftUI observation patterns (@Observable + @State confusion)
+**Still Needs Improvement:**
 - Access control modifiers (too much public mutability)
-- Separation of concerns (GameScene doing too much)
 - Consistency (ViewModel pattern differs between screens)
+- Dead code removal
 
-### Next Steps
+### Progress Summary (2025-01-16)
 
-Recommended priority order:
-1. Fix force unwrapping (CRITICAL - crash risk)
-2. Fix SwiftUI state management (HIGH - memory leaks)
-3. Refactor GameScene (HIGH - maintainability)
-4. Add access control (MEDIUM - encapsulation)
-5. Remove dead code and cleanup (LOW - code hygiene)
+**Completed Today:**
+1. ✅ Fixed CRITICAL force unwrapping issue
+2. ✅ Fixed HIGH priority SwiftUI state management
+3. ✅ Clarified GameScene architecture (not a God Object)
+
+**Key Learnings:**
+- @State for SpriteKit scene is acceptable when created once in lifecycle
+- GameScene responsibilities are cohesive around scene management (138 lines, well-organized)
+- Debug overlay is the only questionable concern - will remove in future session
