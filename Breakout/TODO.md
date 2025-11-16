@@ -388,7 +388,7 @@ All tests continue to pass after these refactorings.
     - Updated BreakoutGameEngine to use new API
     - Fixed test to use public API instead of accessing internals
   - Files affected: ScoreCard.swift, LivesCard.swift, Bricks.swift, BreakoutGameEngine.swift, GameViewModelTest.swift
-  - Commit: [pending]
+  - Commit: f74d724
 
 #### Hardcoded Brick Layout
 - [ ] Extract hardcoded brick layout to data-driven configuration (BrickSprite.swift:23-168)
