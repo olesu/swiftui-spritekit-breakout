@@ -13,20 +13,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private let brickAreaOverlay: SKNode
     private let gameNodes: [NodeNames: SKNode]
     private let onGameEvent: (GameEvent) -> Void
-    private let onPaddleMoved: (CGPoint) -> Void
     private var brickNodeManager: BrickNodeManager?
 
     init(
         size: CGSize,
         brickArea: CGRect,
         nodes: [NodeNames: SKNode],
-        onGameEvent: @escaping (GameEvent) -> Void,
-        onPaddleMoved: @escaping (CGPoint) -> Void
+        onGameEvent: @escaping (GameEvent) -> Void
     ) {
         self.brickAreaOverlay = SKShapeNode.brickOverlay(in: brickArea)
         self.gameNodes = nodes
         self.onGameEvent = onGameEvent
-        self.onPaddleMoved = onPaddleMoved
         super.init(size: size)
     }
 
@@ -108,7 +105,6 @@ extension GameScene {
         let clampedX = max(minX, min(maxX, location.x))
 
         paddle.position.x = clampedX
-        onPaddleMoved(location)
     }
 }
 

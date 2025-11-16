@@ -5,10 +5,8 @@ import SpriteKit
 @Suite("GameScene Tests")
 struct GameSceneTest {
 
-    @Test("Calls onPaddleMoved callback when paddle is moved")
-    func callsOnPaddleMovedCallback() {
-        var capturedLocation: CGPoint?
-
+    @Test("Updates paddle position when moved")
+    func updatesPaddlePositionWhenMoved() {
         let paddleNode = SKSpriteNode()
         let nodes: [NodeNames: SKNode] = [.paddle: paddleNode]
 
@@ -16,15 +14,12 @@ struct GameSceneTest {
             size: CGSize(width: 320, height: 480),
             brickArea: CGRect(x: 20, y: 330, width: 280, height: 120),
             nodes: nodes,
-            onGameEvent: { _ in },
-            onPaddleMoved: { location in
-                capturedLocation = location
-            }
+            onGameEvent: { _ in }
         )
 
         let testLocation = CGPoint(x: 100, y: 50)
         scene.movePaddle(to: testLocation)
 
-        #expect(capturedLocation == testLocation)
+        #expect(paddleNode.position.x == testLocation.x)
     }
 }

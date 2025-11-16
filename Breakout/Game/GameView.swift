@@ -67,9 +67,6 @@ struct GameView: View {
             nodes: nodes,
             onGameEvent: { [viewModel] event in
                 viewModel.handleGameEvent(event)
-            },
-            onPaddleMoved: { location in
-                // Callback for paddle movement
             }
         )
 
