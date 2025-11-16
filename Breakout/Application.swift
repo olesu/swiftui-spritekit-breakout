@@ -7,13 +7,16 @@ import SwiftUI
 
 @main
 struct Application: App {
+    private let navigationCoordinator: NavigationCoordinator
     private let gameModel: GameConfigurationModel
     private let idleViewModel: IdleViewModel
 
-    private var storage: InMemoryStorage
-
     init() {
-        storage = InMemoryStorage()
+        let storage = InMemoryStorage()
+        let adapter = InMemoryGameStateAdapter(storage: storage)
+        let gameStateService = RealGameStateService(adapter: adapter)
+
+        navigationCoordinator = NavigationCoordinator(storage: storage)
 
         gameModel = GameConfigurationModel(
             service: RealGameConfigurationService(
@@ -21,24 +24,17 @@ struct Application: App {
             )
         )
 
-        idleViewModel = IdleViewModel(
-            gameStateService: RealGameStateService(
-                adapter: InMemoryGameStateAdapter(storage: storage)
-            )
-        )
+        idleViewModel = IdleViewModel(gameStateService: gameStateService)
     }
 
     var body: some Scene {
         WindowGroup {
             ZStack {
-                switch storage.state {
+                switch navigationCoordinator.currentScreen {
                 case .idle:
                     IdleViewWrapper()
                         .environment(idleViewModel)
-                case .playing:
-                    GameViewWrapper()
-                        .environment(gameModel)
-                case .won, .gameOver:
+                case .game:
                     GameViewWrapper()
                         .environment(gameModel)
                 }

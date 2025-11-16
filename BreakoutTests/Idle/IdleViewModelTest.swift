@@ -14,16 +14,3 @@ struct IdleViewModelTest {
     }
 
 }
-
-class FakeGameStateService: GameStateService {
-    var stateTransitionedToPlaying: Bool = false
-    
-    func transitionToPlaying() {
-        stateTransitionedToPlaying = true
-    }
-
-    func getState() -> Breakout.GameState {
-        .idle
-    }
-    
-}

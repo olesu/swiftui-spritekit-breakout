@@ -359,12 +359,18 @@ All tests continue to pass after these refactorings.
   - Files affected: NotificationNames.swift (deleted)
   - Commit: 11dfed3
 
-#### Application.swift - Direct State Management
-- [ ] Create NavigationCoordinator for state-based routing (Application.swift:33-44)
+#### Application.swift - Direct State Management ✅ FIXED
+- [x] Create NavigationCoordinator for state-based routing (Application.swift:33-44)
   - Problem: App directly switches on storage.state, bypasses GameStateService layer
   - Impact: Tight coupling, hard to test routing logic, inconsistent with architecture
-  - Solution: Create NavigationCoordinator that observes GameStateService to drive transitions
-  - Files affected: Application.swift
+  - Solution: Created NavigationCoordinator with computed property that observes storage state
+  - Implementation:
+    - Created NavigationCoordinator class with @Observable
+    - Computes currentScreen from storage.state automatically
+    - Application.swift now switches on navigationCoordinator.currentScreen
+    - 6 tests added to verify all state → screen mappings
+  - Files affected: NavigationCoordinator.swift (new), NavigationCoordinatorTest.swift (new), Application.swift
+  - Commit: [pending]
 
 #### Missing Access Control
 - [ ] Add proper access control to domain models
