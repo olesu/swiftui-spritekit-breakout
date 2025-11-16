@@ -1,6 +1,11 @@
 import Foundation
 
 class JsonGameConfigurationLoader : GameConfigurationLoader {
+    enum LoaderError: Error {
+        case resourceNotFound(String, String)
+        case decodingFailed(Error)
+    }
+
     func load() throws -> GameConfiguration {
         let resourceName = "GameConfiguration"
         let resourceExt = "json"
@@ -11,7 +16,7 @@ class JsonGameConfigurationLoader : GameConfigurationLoader {
                 withExtension: resourceExt
             )
         else {
-            fatalError("Could not find \(resourceName).\(resourceExt) file.")
+            throw LoaderError.resourceNotFound(resourceName, resourceExt)
         }
 
         do {
@@ -22,8 +27,7 @@ class JsonGameConfigurationLoader : GameConfigurationLoader {
             )
             return config
         } catch {
-            print("Failed to decode GameConfiguration: \(error)")
-            fatalError("Could not load \(resourceName).\(resourceExt)!")
+            throw LoaderError.decodingFailed(error)
         }
 
     }

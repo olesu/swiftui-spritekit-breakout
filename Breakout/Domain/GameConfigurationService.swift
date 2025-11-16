@@ -13,7 +13,11 @@ class RealGameConfigurationService: GameConfigurationService {
     }
 
     func getGameConfiguration() -> GameConfiguration {
-        try! loader.load()
+        do {
+            return try loader.load()
+        } catch {
+            return createFallbackConfiguration()
+        }
     }
 
     func getGameScale() -> CGFloat {
@@ -22,6 +26,19 @@ class RealGameConfigurationService: GameConfigurationService {
         #else
             return UIDevice.current.userInterfaceIdiom == .pad ? 3.0 : 2.0
         #endif
+    }
+
+    private func createFallbackConfiguration() -> GameConfiguration {
+        GameConfiguration(
+            sceneWidth: 320,
+            sceneHeight: 480,
+            brickArea: BrickArea(
+                x: 20,
+                y: 330,
+                width: 280,
+                height: 120
+            )
+        )
     }
 
 }

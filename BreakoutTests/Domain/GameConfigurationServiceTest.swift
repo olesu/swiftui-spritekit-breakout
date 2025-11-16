@@ -27,11 +27,30 @@ struct GameConfigurationServiceTest {
         #expect(configuration == GameConfiguration.createValid())
     }
 
+    @Test func providesFallbackConfigurationWhenLoaderFails() async throws {
+        let loader = FailingGameConfigurationLoader()
+        let service = RealGameConfigurationService(loader: loader)
+        let configuration = service.getGameConfiguration()
+
+        #expect(configuration.sceneWidth == 320)
+        #expect(configuration.sceneHeight == 480)
+        #expect(configuration.brickArea.width > 0)
+    }
+
 }
 
 class FakeGameConfigurationLoader: GameConfigurationLoader {
     func load() throws -> GameConfiguration {
         GameConfiguration.createValid()
     }
+}
 
+class FailingGameConfigurationLoader: GameConfigurationLoader {
+    enum LoadError: Error {
+        case configurationNotFound
+    }
+
+    func load() throws -> GameConfiguration {
+        throw LoadError.configurationNotFound
+    }
 }
