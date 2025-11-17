@@ -4,9 +4,11 @@ import AppKit
 
 struct SpriteKitNodeCreator: NodeCreator {
     func createNodes(onBrickAdded: @escaping (String, NSColor) -> Void) -> [NodeNames: SKNode] {
-        [
+        let brickLayout = loadBrickLayout()
+
+        return [
             .paddle: PaddleSprite(position: CGPoint(x: 160, y: 40)),
-            .brickLayout: ClassicBricksLayout(onBrickAdded: onBrickAdded),
+            .brickLayout: ClassicBricksLayout(bricks: brickLayout, onBrickAdded: onBrickAdded),
             .scoreLabel: ScoreLabel(position: CGPoint(x: 40, y: 460)),
             .livesLabel: LivesLabel(position: CGPoint(x: 280, y: 460)),
             .ball: BallSprite(position: CGPoint(x: 160, y: 50)),
@@ -15,5 +17,15 @@ struct SpriteKitNodeCreator: NodeCreator {
             .rightWall: WallSprite(position: CGPoint(x: 320, y: 240), size: CGSize(width: 10, height: 480)),
             .gutter: GutterSprite(position: CGPoint(x: 160, y: 0), size: CGSize(width: 320, height: 10))
         ]
+    }
+
+    private func loadBrickLayout() -> [BrickData] {
+        let loader = JsonBrickLayoutLoader()
+        do {
+            let config = try loader.load(fileName: "001-classic-breakout")
+            return try config.generateBricks()
+        } catch {
+            return []
+        }
     }
 }
