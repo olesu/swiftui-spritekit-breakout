@@ -29,6 +29,7 @@ class ClassicBricksLayout: SKNode {
         setupBricks(onBrickAdded: onBrickAdded)
     }
 
+    @available(*, deprecated, message: "Use init(bricks:onBrickAdded:) instead. Brick layouts should be loaded from JSON files.")
     convenience init(onBrickAdded: (String, NSColor) -> ()) {
         let defaultBrickLayout: [BrickData] = [
         // Red row (top)
