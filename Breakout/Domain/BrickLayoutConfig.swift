@@ -44,11 +44,14 @@ struct BrickLayoutConfig {
                 continue
             }
 
+            let row = index / mapCols
             let col = index % mapCols
+
             let x = startX + CGFloat(col) * (brickWidth + spacing)
+            let y = startY - CGFloat(row) * rowSpacing
 
             let color = try brickType.toNSColor()
-            bricks.append(BrickData(position: CGPoint(x: x, y: startY), color: color))
+            bricks.append(BrickData(position: CGPoint(x: x, y: y), color: color))
         }
 
         return bricks

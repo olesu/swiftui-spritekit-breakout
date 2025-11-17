@@ -69,4 +69,22 @@ struct BrickLayoutConfigTest {
         #expect(bricks[1].position == CGPoint(x: 34, y: 420))
         #expect(bricks[2].position == CGPoint(x: 57, y: 420))
     }
+
+    @Test func generatesMultipleRows() throws {
+        let yellowType = BrickTypeConfig(id: 1, colorName: "Yellow", scoreValue: 4)
+        let config = BrickLayoutConfigMother.create(
+            mapCols: 2,
+            mapRows: 2,
+            brickTypes: [yellowType],
+            layout: [1, 1, 1, 1]
+        )
+
+        let bricks = try config.generateBricks()
+
+        #expect(bricks.count == 4)
+        #expect(bricks[0].position == CGPoint(x: 11, y: 420))
+        #expect(bricks[1].position == CGPoint(x: 34, y: 420))
+        #expect(bricks[2].position == CGPoint(x: 11, y: 408))
+        #expect(bricks[3].position == CGPoint(x: 34, y: 408))
+    }
 }
