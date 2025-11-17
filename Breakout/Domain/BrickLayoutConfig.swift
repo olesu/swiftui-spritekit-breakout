@@ -35,15 +35,22 @@ struct BrickLayoutConfig {
     let layout: [Int]
 
     func generateBricks() throws -> [BrickData] {
-        guard let typeId = layout.first, typeId > 0 else {
-            return []
+        var bricks: [BrickData] = []
+
+        for (index, typeId) in layout.enumerated() {
+            guard typeId > 0 else { continue }
+
+            guard let brickType = brickTypes.first(where: { $0.id == typeId }) else {
+                continue
+            }
+
+            let col = index % mapCols
+            let x = startX + CGFloat(col) * (brickWidth + spacing)
+
+            let color = try brickType.toNSColor()
+            bricks.append(BrickData(position: CGPoint(x: x, y: startY), color: color))
         }
 
-        guard let brickType = brickTypes.first(where: { $0.id == typeId }) else {
-            return []
-        }
-
-        let color = try brickType.toNSColor()
-        return [BrickData(position: CGPoint(x: startX, y: startY), color: color)]
+        return bricks
     }
 }
