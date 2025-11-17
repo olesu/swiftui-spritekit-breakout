@@ -88,4 +88,33 @@ struct BreakoutGameEngineTest {
         #expect(engine.currentScore == 19)
     }
 
+    @Test func shouldResetBallAfterBallLostWhenLivesRemain() async throws {
+        let engine = BreakoutGameEngine(bricks: Bricks(), lives: 3)
+        engine.start()
+
+        engine.process(event: .ballLost)
+
+        #expect(engine.shouldResetBall == true)
+    }
+
+    @Test func shouldNotResetBallWhenGameOver() async throws {
+        let engine = BreakoutGameEngine(bricks: Bricks(), lives: 1)
+        engine.start()
+
+        engine.process(event: .ballLost)
+
+        #expect(engine.shouldResetBall == false)
+    }
+
+    @Test func acknowledgeBallResetClearsFlag() async throws {
+        let engine = BreakoutGameEngine(bricks: Bricks(), lives: 3)
+        engine.start()
+
+        engine.process(event: .ballLost)
+        #expect(engine.shouldResetBall == true)
+
+        engine.acknowledgeBallReset()
+        #expect(engine.shouldResetBall == false)
+    }
+
 }

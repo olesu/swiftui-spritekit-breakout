@@ -5,6 +5,7 @@ class BreakoutGameEngine: GameEngine {
     private var scoreCard: ScoreCard
     private var livesCard: LivesCard
     private var gameState: GameState
+    private var ballResetNeeded: Bool = false
 
     var currentScore: Int {
         scoreCard.total
@@ -12,6 +13,14 @@ class BreakoutGameEngine: GameEngine {
 
     var remainingLives: Int {
         livesCard.remaining
+    }
+
+    var shouldResetBall: Bool {
+        ballResetNeeded
+    }
+
+    func acknowledgeBallReset() {
+        ballResetNeeded = false
     }
 
     init(bricks: Bricks, lives: Int = 3) {
@@ -52,6 +61,8 @@ class BreakoutGameEngine: GameEngine {
 
             if livesCard.gameOver {
                 gameState = .gameOver
+            } else {
+                ballResetNeeded = true
             }
         }
     }
