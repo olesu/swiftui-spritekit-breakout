@@ -42,6 +42,29 @@ struct GameViewModelTest {
         #expect(capturedBricks?.get(byId: BrickId(of: "brick2")) != nil)
         #expect(fakeEngine.startWasCalled)
     }
+
+    @Test func callsOnBallResetNeededWhenEngineRequestsReset() async throws {
+        let fakeEngine = FakeGameEngine()
+        let config = GameConfigurationModel(service: PreviewGameConfigurationService())
+
+        let viewModel = GameViewModel(
+            configurationModel: config,
+            engineFactory: { _ in fakeEngine }
+        )
+
+        var callbackWasCalled = false
+        viewModel.onBallResetNeeded = {
+            callbackWasCalled = true
+        }
+
+        viewModel.initializeEngine(with: Bricks())
+        fakeEngine.shouldResetBall = true
+
+        viewModel.handleGameEvent(.ballLost)
+
+        #expect(callbackWasCalled == true)
+        #expect(fakeEngine.acknowledgeBallResetWasCalled == true)
+    }
 }
 
 class FakeNodeCreator: NodeCreator {
@@ -62,9 +85,11 @@ class FakeNodeCreator: NodeCreator {
 class FakeGameEngine: GameEngine {
     var startWasCalled = false
     var processedEvents: [GameEvent] = []
+    var acknowledgeBallResetWasCalled = false
 
     var currentScore: Int = 0
     var remainingLives: Int = 3
+    var shouldResetBall: Bool = false
 
     func start() {
         startWasCalled = true
@@ -72,6 +97,10 @@ class FakeGameEngine: GameEngine {
 
     func process(event: GameEvent) {
         processedEvents.append(event)
+    }
+
+    func acknowledgeBallReset() {
+        acknowledgeBallResetWasCalled = true
     }
 }
 

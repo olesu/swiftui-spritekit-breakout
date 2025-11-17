@@ -13,6 +13,7 @@ import SwiftUI
     // Closure-based callbacks for GameScene (non-SwiftUI communication)
     var onScoreChanged: ((Int) -> Void)?
     var onLivesChanged: ((Int) -> Void)?
+    var onBallResetNeeded: (() -> Void)?
 
     init(
         configurationModel: GameConfigurationModel,
@@ -54,6 +55,12 @@ import SwiftUI
             // Notify GameScene via callbacks (for non-SwiftUI updates)
             onScoreChanged?(currentScore)
             onLivesChanged?(remainingLives)
+
+            // Handle ball reset
+            if engine.shouldResetBall {
+                onBallResetNeeded?()
+                engine.acknowledgeBallReset()
+            }
         }
     }
 
