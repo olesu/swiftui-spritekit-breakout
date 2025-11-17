@@ -42,6 +42,6 @@ struct GameSceneTest {
         scene.resetBall()
 
         #expect(ballNode.position == CGPoint(x: 160, y: 50))
-        #expect(ballNode.physicsBody?.velocity == CGVector(dx: 0, dy: 0))
+        #expect(ballNode.physicsBody?.velocity == CGVector(dx: 200, dy: 300))
     }
 }

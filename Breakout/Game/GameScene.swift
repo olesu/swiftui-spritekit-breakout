@@ -114,7 +114,7 @@ extension GameScene {
         guard let ball = gameNodes[.ball] else { return }
 
         ball.position = CGPoint(x: 160, y: 50)
-        ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+        ball.physicsBody?.velocity = CGVector(dx: 200, dy: 300)
     }
 }
 
