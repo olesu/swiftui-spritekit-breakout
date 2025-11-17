@@ -5,7 +5,7 @@ import AppKit
 
 struct ClassicBricksLayoutTest {
 
-    @Test func acceptsCustomBrickLayout() throws {
+    @Test @MainActor func acceptsCustomBrickLayout() throws {
         let bricks = [
             BrickData(position: CGPoint(x: 10, y: 20), color: .red)
         ]

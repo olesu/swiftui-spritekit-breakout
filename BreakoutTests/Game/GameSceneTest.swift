@@ -5,7 +5,7 @@ import SpriteKit
 @Suite("GameScene Tests")
 struct GameSceneTest {
 
-    @Test("Updates paddle position when moved")
+    @Test("Updates paddle position when moved") @MainActor
     func updatesPaddlePositionWhenMoved() {
         let paddleNode = SKSpriteNode()
         let nodes: [NodeNames: SKNode] = [.paddle: paddleNode]
