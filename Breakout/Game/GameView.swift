@@ -76,6 +76,9 @@ struct GameView: View {
         viewModel.onLivesChanged = { [weak gameScene] lives in
             gameScene?.updateLives(lives)
         }
+        viewModel.onBallResetNeeded = { [weak gameScene] in
+            gameScene?.resetBall()
+        }
 
         return gameScene
     }
