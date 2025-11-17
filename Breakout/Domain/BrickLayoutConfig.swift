@@ -1,7 +1,7 @@
 import Foundation
 import AppKit
 
-struct BrickTypeConfig {
+struct BrickTypeConfig: Codable {
     let id: Int
     let colorName: String
     let scoreValue: Int
@@ -21,7 +21,7 @@ struct BrickTypeConfig {
     }
 }
 
-struct BrickLayoutConfig {
+struct BrickLayoutConfig: Codable {
     let levelName: String
     let mapCols: Int
     let mapRows: Int
