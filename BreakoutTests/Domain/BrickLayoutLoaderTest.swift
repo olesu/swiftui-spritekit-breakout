@@ -22,4 +22,12 @@ struct BrickLayoutLoaderTest {
             try loader.load(fileName: "nonexistent-file")
         }
     }
+
+    @Test func throwsErrorForInvalidJson() {
+        let loader = JsonBrickLayoutLoader()
+
+        #expect(throws: BrickLayoutLoaderError.self) {
+            try loader.load(fileName: "invalid-json")
+        }
+    }
 }

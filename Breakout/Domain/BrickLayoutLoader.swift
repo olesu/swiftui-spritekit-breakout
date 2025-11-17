@@ -2,6 +2,7 @@ import Foundation
 
 enum BrickLayoutLoaderError: Error {
     case fileNotFound(String)
+    case invalidJson(String)
 }
 
 protocol BrickLayoutLoader {
@@ -16,6 +17,11 @@ final class JsonBrickLayoutLoader: BrickLayoutLoader {
 
         let data = try Data(contentsOf: url)
         let decoder = JSONDecoder()
-        return try decoder.decode(BrickLayoutConfig.self, from: data)
+
+        do {
+            return try decoder.decode(BrickLayoutConfig.self, from: data)
+        } catch {
+            throw BrickLayoutLoaderError.invalidJson(fileName)
+        }
     }
 }
