@@ -21,7 +21,16 @@ class BrickSprite: SKSpriteNode {
 }
 
 class ClassicBricksLayout: SKNode {
-    let brickLayout: [BrickData] = [
+    let brickLayout: [BrickData]
+
+    init(bricks: [BrickData], onBrickAdded: (String, NSColor) -> ()) {
+        self.brickLayout = bricks
+        super.init()
+        setupBricks(onBrickAdded: onBrickAdded)
+    }
+
+    convenience init(onBrickAdded: (String, NSColor) -> ()) {
+        let defaultBrickLayout: [BrickData] = [
         // Red row (top)
         BrickData(position: CGPoint(x: 11, y: 420), color: .red),
         BrickData(position: CGPoint(x: 34, y: 420), color: .red),
@@ -142,11 +151,8 @@ class ClassicBricksLayout: SKNode {
         BrickData(position: CGPoint(x: 264, y: 336), color: .green),
         BrickData(position: CGPoint(x: 287, y: 336), color: .green),
         BrickData(position: CGPoint(x: 310, y: 336), color: .green)
-    ]
-    
-    init(onBrickAdded: (String, NSColor) -> ()) {
-        super.init()
-        setupBricks(onBrickAdded: onBrickAdded)
+        ]
+        self.init(bricks: defaultBrickLayout, onBrickAdded: onBrickAdded)
     }
 
     required init?(coder aDecoder: NSCoder) {
