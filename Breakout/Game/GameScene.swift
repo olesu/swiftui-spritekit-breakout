@@ -82,6 +82,11 @@ extension GameScene {
         if contactMask == (CollisionCategory.ball.mask | CollisionCategory.gutter.mask) {
             onGameEvent(.ballLost)
         }
+
+        // Ball + Paddle collision
+        if contactMask == (CollisionCategory.ball.mask | CollisionCategory.paddle.mask) {
+            adjustBallVelocityForPaddleHit()
+        }
     }
 }
 
@@ -118,19 +123,19 @@ extension GameScene {
         ball.physicsBody?.contactTestBitMask = 0
         ball.physicsBody?.collisionBitMask = 0
         ball.alpha = 0
-        
+
         // Wait a moment before resetting (let it "fall through" visually)
         let waitAction = SKAction.wait(forDuration: 0.5)
         let resetAction = SKAction.run { [weak ball] in
             guard let ball = ball else { return }
-            
+
             // Stop the ball completely
             ball.physicsBody?.velocity = .zero
             ball.physicsBody?.angularVelocity = 0
-            
+
             // Reposition the ball
             ball.position = CGPoint(x: 160, y: 50)
-            
+
             // Restore physics properties
             ball.physicsBody?.categoryBitMask = CollisionCategory.ball.mask
             ball.physicsBody?.contactTestBitMask = CollisionCategory.wall.mask
@@ -141,12 +146,38 @@ extension GameScene {
                 | CollisionCategory.brick.mask
                 | CollisionCategory.paddle.mask
             ball.alpha = 1
-            
+
             // Set new velocity
             ball.physicsBody?.velocity = CGVector(dx: 200, dy: 300)
         }
-        
+
         ball.run(SKAction.sequence([waitAction, resetAction]))
+    }
+
+    func adjustBallVelocityForPaddleHit() {
+        guard let ball = gameNodes[.ball],
+              let paddle = gameNodes[.paddle],
+              let ballBody = ball.physicsBody,
+              let paddleBody = paddle.physicsBody else { return }
+
+        // Calculate current ball speed
+        let currentVelocity = ballBody.velocity
+        let ballSpeed = sqrt(currentVelocity.dx * currentVelocity.dx + currentVelocity.dy * currentVelocity.dy)
+
+        // Get paddle width from physics body
+        let paddleWidth = paddleBody.area / 8  // area / height approximation
+
+        // Calculate new bounce velocity
+        let calculator = PaddleBounceCalculator()
+        let newVelocity = calculator.calculateBounceVelocity(
+            ballX: ball.position.x,
+            paddleX: paddle.position.x,
+            paddleWidth: paddleWidth,
+            ballSpeed: ballSpeed
+        )
+
+        // Apply new velocity
+        ballBody.velocity = newVelocity
     }
 }
 
