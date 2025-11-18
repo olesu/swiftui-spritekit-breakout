@@ -13,8 +13,8 @@ struct PaddleBounceCalculator {
         // Clamp to paddle bounds to prevent extreme angles
         let relativeIntersectX = max(-1.0, min(1.0, rawIntersectX))
 
-        // Maximum bounce angle: 60 degrees from vertical
-        let maxBounceAngle = CGFloat.pi / 3  // 60 degrees in radians
+        // Maximum bounce angle: 45 degrees from vertical
+        let maxBounceAngle = CGFloat.pi / 4  // 45 degrees in radians
         let bounceAngle = relativeIntersectX * maxBounceAngle
 
         // Calculate velocity components

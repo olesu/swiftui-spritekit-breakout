@@ -106,4 +106,28 @@ struct PaddleBounceCalculatorTest {
         #expect(farLeftVelocity.dy > 0, "Far left bounce must go upward")
         #expect(farRightVelocity.dy > 0, "Far right bounce must go upward")
     }
+
+    @Test("Maximum bounce angle is limited to 45 degrees")
+    func maximumBounceAngleIsFortyFiveDegrees() {
+        let calculator = PaddleBounceCalculator()
+
+        let paddleX: CGFloat = 160
+        let paddleWidth: CGFloat = 40
+        let ballSpeed: CGFloat = 360
+
+        // Hit at extreme right edge (should produce max angle)
+        let edgeVelocity = calculator.calculateBounceVelocity(
+            ballX: 180,  // Right edge
+            paddleX: paddleX,
+            paddleWidth: paddleWidth,
+            ballSpeed: ballSpeed
+        )
+
+        // Calculate the actual angle from vertical
+        let angleFromVertical = atan2(abs(edgeVelocity.dx), edgeVelocity.dy)
+        let angleInDegrees = angleFromVertical * 180 / .pi
+
+        // Should not exceed 45 degrees from vertical
+        #expect(angleInDegrees <= 45.5, "Angle should be max 45°, got \(angleInDegrees)°")
+    }
 }
