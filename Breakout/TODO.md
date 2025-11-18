@@ -524,9 +524,13 @@ All tests continue to pass after these refactorings.
 - [ ] Prevent ball from moving in 90-degree trajectory (straight up) from paddle
   - When ball hits paddle at certain angles, it can bounce straight up and get stuck
   - Need to adjust ball velocity after paddle collision to ensure minimum horizontal component
-- [ ] Ball respawn logic after ballLost event
-  - Currently, ball needs to be manually respawned
-  - Should reset ball to paddle position automatically
+- [x] Ball respawn logic after ballLost event ✅ COMPLETE
+  - Implemented automatic ball reset when ballLost event occurs with lives remaining
+  - Domain: BreakoutGameEngine sets shouldResetBall flag
+  - ViewModel: Calls onBallResetNeeded callback
+  - GameScene: resetBall() method resets position (160, 50) and velocity (200, 300)
+  - Fixed gutter physics: contactTestBitMask detects ball, collisionBitMask=0 allows pass-through
+  - Delayed re-activation prevents physics interference during reset
 
 ## Current Test Coverage
 
