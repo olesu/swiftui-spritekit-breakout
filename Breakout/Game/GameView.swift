@@ -22,7 +22,7 @@ struct GameView: View {
     var body: some View {
         VStack {
             if let scene = scene {
-                SpriteView(scene: scene)
+                SpriteView(scene: scene, debugOptions: [.showsPhysics, .showsFPS, .showsNodeCount])
                     .gesture(
                         DragGesture(minimumDistance: 0)
                             .onChanged { value in

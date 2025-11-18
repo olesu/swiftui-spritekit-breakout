@@ -113,8 +113,40 @@ extension GameScene {
     func resetBall() {
         guard let ball = gameNodes[.ball] else { return }
 
-        ball.position = CGPoint(x: 160, y: 50)
-        ball.physicsBody?.velocity = CGVector(dx: 200, dy: 300)
+        // First, make the ball invisible and stop it from interacting
+        ball.physicsBody?.categoryBitMask = 0
+        ball.physicsBody?.contactTestBitMask = 0
+        ball.physicsBody?.collisionBitMask = 0
+        ball.alpha = 0
+        
+        // Wait a moment before resetting (let it "fall through" visually)
+        let waitAction = SKAction.wait(forDuration: 0.5)
+        let resetAction = SKAction.run { [weak ball] in
+            guard let ball = ball else { return }
+            
+            // Stop the ball completely
+            ball.physicsBody?.velocity = .zero
+            ball.physicsBody?.angularVelocity = 0
+            
+            // Reposition the ball
+            ball.position = CGPoint(x: 160, y: 50)
+            
+            // Restore physics properties
+            ball.physicsBody?.categoryBitMask = CollisionCategory.ball.mask
+            ball.physicsBody?.contactTestBitMask = CollisionCategory.wall.mask
+                | CollisionCategory.gutter.mask
+                | CollisionCategory.brick.mask
+                | CollisionCategory.paddle.mask
+            ball.physicsBody?.collisionBitMask = CollisionCategory.wall.mask
+                | CollisionCategory.brick.mask
+                | CollisionCategory.paddle.mask
+            ball.alpha = 1
+            
+            // Set new velocity
+            ball.physicsBody?.velocity = CGVector(dx: 200, dy: 300)
+        }
+        
+        ball.run(SKAction.sequence([waitAction, resetAction]))
     }
 }
 

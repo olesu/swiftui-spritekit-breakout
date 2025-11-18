@@ -44,6 +44,7 @@ struct BrickPhysicsBodyConfigurer {
         physicsBody.isDynamic = false
         physicsBody.categoryBitMask = CollisionCategory.brick.mask
         physicsBody.contactTestBitMask = CollisionCategory.ball.mask
+        physicsBody.collisionBitMask = CollisionCategory.ball.mask
     }
 }
 
@@ -66,5 +67,6 @@ struct WallPhysicsBodyConfigurer {
         physicsBody = SKPhysicsBody(rectangleOf: size)
         physicsBody.isDynamic = false
         physicsBody.categoryBitMask = CollisionCategory.wall.mask
+        physicsBody.collisionBitMask = CollisionCategory.ball.mask
     }
 }
