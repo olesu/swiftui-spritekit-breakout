@@ -521,9 +521,13 @@ All tests continue to pass after these refactorings.
   - Files affected: Application.swift
 
 ### Physics & Gameplay
-- [ ] Prevent ball from moving in 90-degree trajectory (straight up) from paddle
-  - When ball hits paddle at certain angles, it can bounce straight up and get stuck
-  - Need to adjust ball velocity after paddle collision to ensure minimum horizontal component
+- [x] Prevent ball from moving in 90-degree trajectory (straight up) from paddle ✅ COMPLETE
+  - Implemented position-based paddle bounce angle control
+  - PaddleBounceCalculator: Pure calculation logic (isolated, testable)
+  - Maximum 45° angle from vertical (reduced from 60° for better control)
+  - Ball always bounces upward (clamps to paddle bounds)
+  - Players can aim by hitting ball with different parts of paddle
+  - Fixed critical bug: ball could bounce downward when hitting beyond paddle edge
 - [x] Ball respawn logic after ballLost event ✅ COMPLETE
   - Implemented automatic ball reset when ballLost event occurs with lives remaining
   - Domain: BreakoutGameEngine sets shouldResetBall flag
