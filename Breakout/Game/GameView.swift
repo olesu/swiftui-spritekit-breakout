@@ -62,7 +62,6 @@ struct GameView: View {
         let viewModel = self.viewModel
         let gameScene = GameScene(
             size: viewModel.sceneSize,
-            brickArea: viewModel.brickArea,
             nodes: nodes,
             onGameEvent: { [weak viewModel] event in
                 viewModel?.handleGameEvent(event)

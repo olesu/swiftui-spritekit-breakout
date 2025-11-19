@@ -44,10 +44,5 @@ struct Application: App {
                 height: gameModel.frameHeight
             )
         }
-
-        Settings {
-            DevSettingsView()
-                .frame(minWidth: 300, minHeight: 300)
-        }
     }
 }

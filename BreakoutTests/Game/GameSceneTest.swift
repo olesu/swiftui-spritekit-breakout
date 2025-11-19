@@ -12,7 +12,6 @@ struct GameSceneTest {
 
         let scene = GameScene(
             size: CGSize(width: 320, height: 480),
-            brickArea: CGRect(x: 20, y: 330, width: 280, height: 120),
             nodes: nodes,
             onGameEvent: { _ in }
         )
@@ -34,7 +33,6 @@ struct GameSceneTest {
 
         let scene = GameScene(
             size: CGSize(width: 320, height: 480),
-            brickArea: CGRect(x: 20, y: 330, width: 280, height: 120),
             nodes: nodes,
             onGameEvent: { _ in }
         )
@@ -61,7 +59,6 @@ struct GameSceneTest {
 
         let scene = GameScene(
             size: CGSize(width: 320, height: 480),
-            brickArea: CGRect(x: 20, y: 330, width: 280, height: 120),
             nodes: nodes,
             onGameEvent: { _ in }
         )

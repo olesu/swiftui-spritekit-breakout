@@ -2,26 +2,15 @@ import Foundation
 import SpriteKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
-    private let userDefaultsKey = UserDefaultsKeys.areaOverlaysEnabled
-    private var settingsMonitor: UserDefaultsMonitor? = nil
-    private var isOverlaysEnabled: Bool = false {
-        didSet {
-            updateSceneOverlays()
-        }
-    }
-
-    private let brickAreaOverlay: SKNode
     private let gameNodes: [NodeNames: SKNode]
     private let onGameEvent: (GameEvent) -> Void
     private var brickNodeManager: BrickNodeManager?
 
     init(
         size: CGSize,
-        brickArea: CGRect,
         nodes: [NodeNames: SKNode],
         onGameEvent: @escaping (GameEvent) -> Void
     ) {
-        self.brickAreaOverlay = SKShapeNode.brickOverlay(in: brickArea)
         self.gameNodes = nodes
         self.onGameEvent = onGameEvent
         super.init(size: size)
@@ -33,16 +22,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
-        monitorUserDefaults()
         gameNodes.values.forEach(addChild)
 
         if let brickLayout = gameNodes[.brickLayout] {
             brickNodeManager = BrickNodeManager(brickLayout: brickLayout)
         }
-    }
-
-    override func willMove(from view: SKView) {
-        unmonitorUserDefaults()
     }
 
 }
@@ -181,30 +165,3 @@ extension GameScene {
     }
 }
 
-// MARK: - User Defaults Monitoring
-extension GameScene {
-    private func monitorUserDefaults() {
-        settingsMonitor = UserDefaultsMonitor(
-            key: userDefaultsKey,
-            initialValue: UserDefaults.standard.bool(forKey: userDefaultsKey)
-        ) { [weak self] newValue in
-            self?.isOverlaysEnabled = newValue
-        }
-    }
-
-    private func unmonitorUserDefaults() {
-        settingsMonitor = nil
-    }
-
-    private func updateSceneOverlays() {
-        if isOverlaysEnabled {
-            if brickAreaOverlay.parent == nil {
-                addChild(brickAreaOverlay)
-            }
-        } else {
-            if brickAreaOverlay.parent != nil {
-                brickAreaOverlay.removeFromParent()
-            }
-        }
-    }
-}
