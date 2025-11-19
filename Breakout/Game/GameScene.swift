@@ -6,6 +6,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private let onGameEvent: (GameEvent) -> Void
     private var brickNodeManager: BrickNodeManager?
     private let ballResetConfigurator = BallResetConfigurator()
+    private let paddleBounceApplier = PaddleBounceApplier()
 
     init(
         size: CGSize,
@@ -107,28 +108,9 @@ extension GameScene {
 
     func adjustBallVelocityForPaddleHit() {
         guard let ball = gameNodes[.ball],
-              let paddle = gameNodes[.paddle],
-              let ballBody = ball.physicsBody,
-              let paddleBody = paddle.physicsBody else { return }
+              let paddle = gameNodes[.paddle] else { return }
 
-        // Calculate current ball speed
-        let currentVelocity = ballBody.velocity
-        let ballSpeed = sqrt(currentVelocity.dx * currentVelocity.dx + currentVelocity.dy * currentVelocity.dy)
-
-        // Get paddle width from physics body
-        let paddleWidth = paddleBody.area / 8  // area / height approximation
-
-        // Calculate new bounce velocity
-        let calculator = PaddleBounceCalculator()
-        let newVelocity = calculator.calculateBounceVelocity(
-            ballX: ball.position.x,
-            paddleX: paddle.position.x,
-            paddleWidth: paddleWidth,
-            ballSpeed: ballSpeed
-        )
-
-        // Apply new velocity
-        ballBody.velocity = newVelocity
+        paddleBounceApplier.applyBounce(ball: ball, paddle: paddle)
     }
 }
 
