@@ -519,8 +519,10 @@ All tests continue to pass after these refactorings.
 
 ### Physics & Gameplay
 - [x] Prevent ball from moving in 90-degree trajectory (straight up) from paddle ✅ COMPLETE
-  - Implemented position-based paddle bounce angle control
-  - PaddleBounceCalculator: Pure calculation logic (isolated, testable)
+  - Implemented position-based paddle bounce angle control with extracted, testable components
+  - PaddleBounceCalculator: Pure velocity calculation logic (isolated, testable)
+  - PaddleBounceApplier: Full integration (physics extraction + calculation + velocity application)
+  - GameScene: adjustBallVelocityForPaddleHit() orchestrates, delegates to PaddleBounceApplier
   - Maximum 45° angle from vertical (reduced from 60° for better control)
   - Ball always bounces upward (clamps to paddle bounds)
   - Players can aim by hitting ball with different parts of paddle
@@ -529,28 +531,58 @@ All tests continue to pass after these refactorings.
   - Implemented automatic ball reset when ballLost event occurs with lives remaining
   - Domain: BreakoutGameEngine sets shouldResetBall flag
   - ViewModel: Calls onBallResetNeeded callback
-  - GameScene: resetBall() method resets position (160, 50) and velocity (200, 300)
+  - GameScene: resetBall() orchestrates timing (0.5s delay), delegates to BallResetConfigurator
+  - BallResetConfigurator: Handles ball configuration (prepareForReset + performReset)
+  - Extracted testable logic: position reset (160, 50), velocity (200, 300), physics properties
   - Fixed gutter physics: contactTestBitMask detects ball, collisionBitMask=0 allows pass-through
   - Delayed re-activation prevents physics interference during reset
 
 ## Current Test Coverage
 
-**12 passing tests:**
-- Domain/BreakoutGameEngineTest (5 tests)
-- Domain/BricksTest
-- Domain/ScoreCardTest
-- Domain/LivesCardTest
-- Domain/GameEventTest
-- Game/GameViewModelTest (3 tests)
-- Game/GameSceneTest (1 test)
-- Nodes/BrickNodeManagerTest (1 test)
-- ConfigurationModelTest
-- And others...
+**35+ passing tests** across comprehensive test suites:
+
+**Domain Tests:**
+- BreakoutGameEngineTest (8 tests)
+- BricksTest (2 tests)
+- ScoreCardTest (3 tests)
+- LivesCardTest (3 tests)
+- GameEventTest (3 tests)
+
+**Physics Tests:**
+- PaddleBounceCalculatorTest (5 tests) - Pure calculation logic
+- PaddleBounceApplierTest (4 tests) - Full integration testing
+- BallResetConfiguratorTest (2 tests) - Ball reset configuration
+
+**Game Layer Tests:**
+- GameViewModelTest (4 tests)
+- GameSceneTest (1 test)
+- GameStateServiceTest (1 test)
+
+**Configuration Tests:**
+- BrickLayoutConfigTest (6 tests)
+- BrickLayoutLoaderTest (3 tests)
+- BrickColorTest (5 tests)
+- GameConfigurationServiceTest (2 tests)
+- ConfigurationModelTest (1 test)
+
+**UI/Navigation Tests:**
+- NavigationCoordinatorTest (5 tests)
+- IdleViewModelTest (1 test)
+
+**Node Management:**
+- BrickNodeManagerTest (1 test)
+- PhysicsBodyConfigurersTest (2 tests)
+
+**Other:**
+- ClassicBricksLayoutTest (1 test)
+- InMemoryGameStateAdapterTest (1 test)
+- MappingTest (1 test)
 
 **Architecture Benefits:**
 - No SpriteKit dependencies in domain tests
-- Fast, focused unit tests
-- Clear separation of concerns
+- Fast, focused unit tests with instant feedback
+- Extracted configurators enable isolated testing without timing dependencies
+- Clear separation of concerns: calculation vs application vs orchestration
 
 ---
 
@@ -634,3 +666,32 @@ See "Low Priority" section above for:
 - @State for SpriteKit scene is acceptable when created once in lifecycle
 - GameScene responsibilities are cohesive around scene management (well-organized with clear MARK sections)
 - Debug overlay has been removed - GameScene now has clean, focused responsibilities
+
+### Recent Refactorings (2025-11-19)
+
+**Extracted Testable Components from GameScene:**
+
+1. ✅ **BallResetConfigurator** (Commit: 79436af)
+   - Extracted ball reset configuration logic from GameScene
+   - GameScene.resetBall() reduced from 44 to 15 lines
+   - Two comprehensive tests: prepareForReset(), performReset()
+   - GameScene now only orchestrates timing, delegates all configuration
+
+2. ✅ **PaddleBounceApplier** (Commit: 3df5ca1)
+   - Extracted paddle bounce application logic from GameScene
+   - GameScene.adjustBallVelocityForPaddleHit() reduced from 24 to 5 lines
+   - Four comprehensive tests: center/left/right hits + error handling
+   - Tests full integration: nodes → calculation → velocity application
+   - Better coverage than PaddleBounceCalculator alone
+
+**Pattern Established:**
+- GameScene = thin orchestration layer (node access + delegation)
+- Configurators/Appliers = testable logic (isolated from scene graph)
+- Calculator = pure computation (no side effects)
+
+**Benefits:**
+- Fast, synchronous tests without @MainActor complexity
+- No timing dependencies or SKAction delays in tests
+- Clear separation: orchestration vs configuration vs calculation
+- GameScene.swift reduced significantly while maintaining all functionality
+- Follows Single Responsibility Principle
