@@ -476,20 +476,20 @@ All tests continue to pass after these refactorings.
 
 ### Architecture & Modularity (Low Priority)
 
-#### File Organization
-- [ ] Improve file/folder organization
+#### File Organization ✅ COMPLETE
+- [x] Improve file/folder organization
   - Completed:
     - ✅ UserDefaultsKeys.swift removed (debug overlay cleanup)
     - ✅ NotificationNames.swift removed (dead code cleanup)
     - ✅ Shapes.swift removed (debug overlay cleanup)
     - ✅ Physics/ folder well-organized with new configurators/appliers
-  - Still needs attention:
-    - ❌ JsonGameConfigurationLoader.swift at root (should be in Domain/Adapters/)
-    - ❌ UI/ folder empty (could be removed entirely)
-  - Solution:
-    - Move JsonGameConfigurationLoader.swift to Domain/Adapters/
-    - Remove empty UI/ folder or add future UI components
-  - Files affected: JsonGameConfigurationLoader.swift
+    - ✅ JsonGameConfigurationLoader.swift moved to Domain/Adapters/
+    - ✅ UI/ folder removed (was empty after DevSettingsView cleanup)
+  - Final structure:
+    - Domain/Adapters/ contains all adapter implementations
+    - Physics/ contains all physics-related configurators/appliers
+    - No orphaned files at root level
+  - Files affected: JsonGameConfigurationLoader.swift (moved), UI/ (removed)
 
 #### Physics Configuration Duplication
 - [ ] Refactor PhysicsBodyConfigurers to reduce duplication (PhysicsBodyConfigurers.swift)
