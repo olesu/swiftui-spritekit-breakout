@@ -526,17 +526,33 @@ All tests continue to pass after these refactorings.
   - Exception: Extract only if values become duplicated or need relationships
   - Files: BrickSprite.swift, PaddleSprite.swift, BallSprite.swift, GameScene.swift
 
-#### Duplicated GameState Enum
-- [ ] Rename engine's GameState to avoid confusion with service's GameState
-  - Problem: Two enums with same name in different contexts
-  - Solution: Rename to EngineState or consolidate if same concept
-  - Files affected: BreakoutGameEngine.swift, GameStateService.swift
+#### Duplicated GameState Enum ✅ REVIEWED - NO ISSUE
+- [x] Reviewed GameState enum usage (GameStateService.swift, BreakoutGameEngine.swift)
+  - Initial concern: Two enums with same name in different contexts
+  - Investigation findings:
+    - Only ONE GameState enum exists in GameStateService.swift:3
+    - BreakoutGameEngine.swift:7 has property `gameState: GameState` (not enum definition)
+    - BreakoutGameEngine correctly imports and uses shared GameState enum
+  - Decision: **No action needed** - this is correct design
+  - Reasoning:
+    - No duplication exists - single enum definition properly shared
+    - BreakoutGameEngine uses the enum as intended
+    - This promotes consistency and type safety across the app
+  - Files: GameStateService.swift (defines enum), BreakoutGameEngine.swift (uses enum)
 
-#### Storage Abstraction
-- [ ] Move InMemoryStorage to own file, use via service layer
-  - Problem: Defined in Application.swift, accessed directly
-  - Solution: Move to own file, access through GameStateService
-  - Files affected: Application.swift
+#### Storage Abstraction ✅ COMPLETE
+- [x] Move InMemoryStorage to own file (Application.swift)
+  - Problem: InMemoryStorage class defined in Application.swift
+  - Solution: Moved to Domain/Adapters/InMemoryStorage.swift
+  - Implementation:
+    - Created new file Domain/Adapters/InMemoryStorage.swift
+    - Moved @Observable InMemoryStorage class from Application.swift
+    - Class remains simple: single source of truth for GameState
+    - NavigationCoordinator continues to observe storage directly (correct SwiftUI pattern)
+    - GameStateService uses storage via InMemoryGameStateAdapter (proper domain layer)
+  - Result: Better file organization, clear separation of concerns
+  - Files affected: Application.swift, InMemoryStorage.swift (new)
+  - Note: NavigationCoordinator accessing storage directly is correct - it needs @Observable for UI reactivity
 
 ### Physics & Gameplay
 - [x] Prevent ball from moving in 90-degree trajectory (straight up) from paddle ✅ COMPLETE

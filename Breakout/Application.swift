@@ -1,10 +1,6 @@
 import Foundation
 import SwiftUI
 
-@Observable class InMemoryStorage {
-    var state = GameState.idle
-}
-
 @main
 struct Application: App {
     private let navigationCoordinator: NavigationCoordinator
