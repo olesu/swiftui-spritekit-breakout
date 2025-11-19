@@ -478,14 +478,18 @@ All tests continue to pass after these refactorings.
 
 #### File Organization
 - [ ] Improve file/folder organization
-  - Problems:
-    - UserDefaultsKeys.swift at root (should be in Infrastructure)
-    - NotificationNames.swift at root (should be in Infrastructure)
-    - JsonGameConfigurationLoader.swift misplaced (should be in Domain/Adapters)
+  - Completed:
+    - ✅ UserDefaultsKeys.swift removed (debug overlay cleanup)
+    - ✅ NotificationNames.swift removed (dead code cleanup)
+    - ✅ Shapes.swift removed (debug overlay cleanup)
+    - ✅ Physics/ folder well-organized with new configurators/appliers
+  - Still needs attention:
+    - ❌ JsonGameConfigurationLoader.swift at root (should be in Domain/Adapters/)
+    - ❌ UI/ folder empty (could be removed entirely)
   - Solution:
-    - Create Infrastructure folder for shared utilities
-    - Move configuration loaders to appropriate folders
-  - Files affected: UserDefaultsKeys.swift, NotificationNames.swift, JsonGameConfigurationLoader.swift
+    - Move JsonGameConfigurationLoader.swift to Domain/Adapters/
+    - Remove empty UI/ folder or add future UI components
+  - Files affected: JsonGameConfigurationLoader.swift
 
 #### Physics Configuration Duplication
 - [ ] Refactor PhysicsBodyConfigurers to reduce duplication (PhysicsBodyConfigurers.swift)
@@ -501,9 +505,10 @@ All tests continue to pass after these refactorings.
 - [ ] Extract hardcoded magic numbers to constants
   - Problems:
     - Sprite sizes hardcoded (BrickSprite.swift:10-11, PaddleSprite.swift:5, BallSprite.swift:5)
-    - Paddle boundaries hardcoded (GameScene.swift:103-104)
+    - Paddle boundaries hardcoded (GameScene.swift:82-83)
   - Solution: Create GameDimensions enum with all size constants
   - Files affected: Multiple sprite files, GameScene.swift
+  - Note: GameScene significantly reduced through refactoring, line numbers updated
 
 #### Duplicated GameState Enum
 - [ ] Rename engine's GameState to avoid confusion with service's GameState
