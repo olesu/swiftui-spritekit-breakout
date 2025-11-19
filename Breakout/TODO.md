@@ -732,3 +732,198 @@ See "Low Priority" section above for:
 - Clear separation: orchestration vs configuration vs calculation
 - GameScene.swift reduced significantly while maintaining all functionality
 - Follows Single Responsibility Principle
+
+---
+
+## Final Comprehensive Architecture Review (2025-11-19)
+
+A complete codebase review was conducted examining all 41 production Swift files, focusing on Modularity, Separation of Concerns, Cohesion, and Swift/SwiftUI/SpriteKit best practices.
+
+### Overall Assessment: **Grade A-**
+
+**Strengths:**
+- ✅ Excellent separation of concerns between domain logic and UI/framework layers
+- ✅ Strong protocol-oriented design for abstraction and testability
+- ✅ Pure domain models (mostly) free from framework dependencies
+- ✅ Well-organized directory structure reflecting architectural boundaries
+- ✅ Extensive test coverage with clear TDD approach
+- ✅ Proper use of value types (structs) for data, reference types (classes) for state
+- ✅ Clean dependency injection throughout
+- ✅ Good use of Swift naming conventions and idiomatic patterns
+- ✅ Correct @Observable pattern usage in SwiftUI
+- ✅ Good memory management (weak captures in closures)
+- ✅ Excellent extension usage for code organization
+
+**SOLID Principles Assessment:**
+- ✅ Single Responsibility: Most classes have one clear purpose
+- ✅ Open/Closed: Good use of protocols for extension
+- ✅ Liskov Substitution: Protocol implementations are properly substitutable
+- ✅ Interface Segregation: Protocols are focused and minimal
+- ✅ Dependency Inversion: Good use of dependency injection and abstractions
+
+### High Priority Issues (To Address Tomorrow)
+
+#### 1. Domain Layer Contamination with AppKit/NSColor ⚠️ CRITICAL
+- [ ] Remove NSColor from domain layer (Bricks.swift, BrickLayoutConfig.swift)
+  - Problem: Domain layer imports AppKit and uses NSColor, violating framework independence
+  - Impact:
+    - Makes domain models platform-dependent (macOS-only)
+    - Cannot port to iOS or other platforms
+    - Harder to test in isolation
+  - Current issues:
+    - `/Breakout/Domain/Bricks.swift` lines 34-42: `init?(from nsColor: NSColor)`
+    - `/Breakout/Domain/BrickLayoutConfig.swift` lines 13-21, 53: Uses NSColor
+  - Recommendation: Create domain-specific color abstraction or use color identifiers (string/enum)
+  - Map from domain colors to UI colors at boundary layer (presentation/node layer)
+  - Files affected: Bricks.swift, BrickLayoutConfig.swift, BrickSprite.swift
+
+#### 2. Missing Access Control Modifiers ⚠️ HIGH
+- [ ] Add explicit access control modifiers throughout codebase
+  - Problem: Most types lack explicit public/internal/private modifiers, relying on Swift's default
+  - Impact:
+    - Less clear API boundaries
+    - Harder to understand what's intended for public use vs internal implementation
+    - Makes refactoring riskier
+  - Examples:
+    - ScoreCard.swift - struct and members have no access modifiers
+    - GameEngine.swift - protocol members have no access modifiers
+    - Bricks.swift - all types lack explicit access
+  - Recommendation: Add explicit access control:
+    - `public` for intended public APIs
+    - `internal` (or explicit) for module-internal types
+    - `private`/`fileprivate` for implementation details
+    - Mark initializers appropriately
+  - Files affected: Throughout codebase (systematic review needed)
+
+#### 3. Tight Coupling: SpriteKitNodeCreator Hardcodes Layout File ⚠️ HIGH
+- [ ] Make SpriteKitNodeCreator layout configurable via dependency injection
+  - Problem: Hardcodes layout file name "001-classic-breakout" and directly instantiates JsonBrickLayoutLoader
+  - Location: `/Breakout/Nodes/SpriteKitNodeCreator.swift` lines 22-30
+  - Code:
+    ```swift
+    private func loadBrickLayout() -> [BrickData] {
+        let loader = JsonBrickLayoutLoader()
+        do {
+            let config = try loader.load(fileName: "001-classic-breakout") // Hardcoded!
+    ```
+  - Impact:
+    - Cannot easily switch layouts or test with different configurations
+    - Violates dependency injection principle
+    - Creates hidden dependency on specific JSON file
+  - Recommendation: Inject layout configuration or loader through constructor
+  - Files affected: SpriteKitNodeCreator.swift
+
+#### 4. Inconsistent Error Handling Strategy ⚠️ HIGH
+- [ ] Standardize error handling approach across codebase
+  - Problem: Inconsistent approaches - some use try/catch with fallback defaults, others silently return empty arrays
+  - Examples:
+    - `SpriteKitNodeCreator.swift` line 28: Returns empty array on error (silent failure)
+    - `GameConfigurationService.swift` line 16: Returns fallback config (documented)
+  - Impact:
+    - Difficult to debug when layouts fail to load
+    - Inconsistent behavior across similar scenarios
+    - No way to know if fallback was used
+  - Recommendation: Define consistent error handling strategy:
+    - Either propagate errors to caller
+    - Or use Result<T, Error> type
+    - Log errors even when using fallbacks
+    - Document fallback behavior
+  - Files affected: SpriteKitNodeCreator.swift, GameConfigurationService.swift
+
+### Medium Priority Issues
+
+#### 5. BrickData Struct Has Generated ID
+- [ ] Make BrickData ID injectable rather than auto-generated
+  - Problem: `BrickData` auto-generates UUIDs in struct definition (presentation-layer concern)
+  - Location: `/Breakout/Nodes/BrickSprite.swift` lines 3-7
+  - Impact: Mixing identity generation with data structure, harder to test with predictable IDs
+  - Recommendation: Make ID a parameter of the initializer or move to factory/builder
+
+#### 6. CollisionCategory Mask Property Is Redundant
+- [ ] Remove redundant mask property or simplify implementation
+  - Problem: The `mask` computed property just returns `rawValue`, adding no value
+  - Location: `/Breakout/Nodes/CollisionCategory.swift` lines 9-15
+  - Recommendation: Either remove and use `.rawValue` directly, or simplify to `var mask: UInt32 { rawValue }`
+
+#### 7. Magic Numbers in GameScene and Node Classes
+- [ ] Extract magic numbers to named constants or configuration
+  - Problem: Hardcoded numbers for positions, sizes, velocities without named constants
+  - Locations:
+    - `GameScene.swift` lines 82-84: Paddle clamping margins (20)
+    - `SpriteKitNodeCreator.swift`: Various position/size values
+  - Impact: Harder to understand intent, difficult to maintain consistency
+  - Recommendation: Extract to named constants or configuration properties
+
+#### 8. GameViewModel Has Dual Update Mechanisms
+- [ ] Consider simplifying or better documenting dual update mechanism
+  - Problem: ViewModel maintains both @Observable properties AND callback closures for same data
+  - Location: `/Breakout/Game/GameViewModel.swift` lines 9-16
+  - Impact: Duplicate state synchronization logic, potential for inconsistency
+  - Note: This is reasonable compromise for bridging SwiftUI and SpriteKit, but needs documentation
+  - Recommendation:
+    - Add comments explaining why both mechanisms exist
+    - Consider using Combine publishers instead of closures
+    - Or investigate using observation for both SwiftUI and SpriteKit updates
+
+#### 9. WallSprite Hardcodes Node Name (Bug)
+- [ ] Fix WallSprite to use correct node name
+  - Problem: `WallSprite` always uses `.topWall` name regardless of which wall it represents
+  - Location: `/Breakout/Nodes/WallSprite.swift` line 6
+  - Impact: Bug - left, right, and gutter walls all get named "topWall", cannot distinguish walls by name
+  - Recommendation: Pass the name as parameter to initializer, or remove if not needed
+
+#### 10. Duplication in Physics Body Configurers
+- [ ] Consider extracting common physics configuration pattern
+  - Problem: Similar physics configuration code duplicated across multiple configurers
+  - Location: `/Breakout/Nodes/PhysicsBodyConfigurers.swift`
+  - Note: Previously reviewed and marked as acceptable duplication (see line 494)
+  - Recommendation: Extract common configuration into helper function or builder pattern if it becomes a maintenance burden
+
+#### 11. BrickLayoutConfig Mixes Data and Behavior
+- [ ] Extract generateBricks() to separate service/factory class
+  - Problem: `BrickLayoutConfig` is a Codable data structure but also contains `generateBricks()` business logic
+  - Location: `/Breakout/Domain/BrickLayoutConfig.swift` lines 37-58
+  - Impact: Violates Single Responsibility Principle, makes struct harder to test
+  - Recommendation: Extract to separate service/factory that takes BrickLayoutConfig as input
+
+### Low Priority Issues
+
+#### 12. Missing Documentation
+- [ ] Add documentation comments for public APIs
+  - Recommendation: Add docs for public protocols, non-obvious algorithms, complex initialization
+
+#### 13. Inconsistent Copyright Comments
+- [ ] Standardize copyright header usage across all files
+
+#### 14. Optional Chaining Could Be Simplified
+- [ ] Use guard let to reduce nesting in GameViewModel
+  - Location: `/Breakout/Game/GameViewModel.swift` lines 47-64
+
+#### 15. Test Helper Classes in Production Code
+- [ ] Move preview helpers to separate files or conditionally compile
+  - Locations: `IdleView.swift` lines 35-45, `GameView.swift` lines 96-114
+  - Recommendation: Move to preview files or wrap with `#if DEBUG`
+
+#### 16. Inconsistent Naming: "Service" vs "Adapter"
+- [ ] Clarify and document naming conventions for architectural layers
+  - Issue: Some use "Service" suffix, others use "Adapter", some use "Loader"
+  - Recommendation: Document conventions:
+    - Services: Application/domain services (orchestration, business logic)
+    - Adapters: Infrastructure adapters (I/O, persistence)
+    - Loaders: Specific to loading/reading data
+
+#### 17. GameView.setupGame Could Be Decomposed Further
+- [ ] Extract callback wiring into separate method for clarity
+  - Location: `/Breakout/Game/GameView.swift` lines 41-83
+
+### Summary
+
+**No critical blocking issues found.** The codebase demonstrates excellent software engineering practices with strong separation of concerns, clean abstractions, and proper use of Swift/SwiftUI/SpriteKit patterns.
+
+**Priority for tomorrow:**
+1. Remove NSColor from domain layer (biggest architectural improvement)
+2. Add access control modifiers (clarifies API boundaries)
+3. Make SpriteKitNodeCreator configurable (improves testability)
+4. Standardize error handling (improves debuggability)
+
+All other issues are refinements that can be addressed over time. The codebase is in excellent shape for continued development.
