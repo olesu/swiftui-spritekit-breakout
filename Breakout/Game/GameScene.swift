@@ -5,6 +5,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private let gameNodes: [NodeNames: SKNode]
     private let onGameEvent: (GameEvent) -> Void
     private var brickNodeManager: BrickNodeManager?
+    private let ballResetConfigurator = BallResetConfigurator()
 
     init(
         size: CGSize,
@@ -58,7 +59,7 @@ extension GameScene {
             if let brickIdString = brickNode?.name,
                let brickId = UUID(uuidString: brickIdString) {
                 onGameEvent(.brickHit(brickID: brickId))
-                removeBrick(id: brickId)
+                brickNodeManager?.remove(brickId: brickId)
             }
         }
 
@@ -74,26 +75,17 @@ extension GameScene {
     }
 }
 
-// MARK: - Brick Management
-extension GameScene {
-    func removeBrick(id: UUID) {
-        brickNodeManager?.remove(brickId: id)
-    }
-}
-
-
 // MARK: - Paddle Control
 extension GameScene {
-    func movePaddle(to location: CGPoint) {
-        guard let paddle = gameNodes[.paddle] else { return }
-
-        // Clamp paddle position to stay within scene bounds
-        // Assuming paddle width is ~40, keep it within reasonable bounds
+    private func paddleClampedX(location: CGPoint) -> CGFloat {
         let minX: CGFloat = 20
         let maxX: CGFloat = size.width - 20
-        let clampedX = max(minX, min(maxX, location.x))
-
-        paddle.position.x = clampedX
+        return  max(minX, min(maxX, location.x))
+    }
+    
+    func movePaddle(to location: CGPoint) {
+        guard let paddle = gameNodes[.paddle] else { return }
+        paddle.position.x = paddleClampedX(location: location)
     }
 }
 
@@ -102,37 +94,12 @@ extension GameScene {
     func resetBall() {
         guard let ball = gameNodes[.ball] else { return }
 
-        // First, make the ball invisible and stop it from interacting
-        ball.physicsBody?.categoryBitMask = 0
-        ball.physicsBody?.contactTestBitMask = 0
-        ball.physicsBody?.collisionBitMask = 0
-        ball.alpha = 0
+        ballResetConfigurator.prepareForReset(ball)
 
-        // Wait a moment before resetting (let it "fall through" visually)
         let waitAction = SKAction.wait(forDuration: 0.5)
-        let resetAction = SKAction.run { [weak ball] in
+        let resetAction = SKAction.run { [weak ball, ballResetConfigurator] in
             guard let ball = ball else { return }
-
-            // Stop the ball completely
-            ball.physicsBody?.velocity = .zero
-            ball.physicsBody?.angularVelocity = 0
-
-            // Reposition the ball
-            ball.position = CGPoint(x: 160, y: 50)
-
-            // Restore physics properties
-            ball.physicsBody?.categoryBitMask = CollisionCategory.ball.mask
-            ball.physicsBody?.contactTestBitMask = CollisionCategory.wall.mask
-                | CollisionCategory.gutter.mask
-                | CollisionCategory.brick.mask
-                | CollisionCategory.paddle.mask
-            ball.physicsBody?.collisionBitMask = CollisionCategory.wall.mask
-                | CollisionCategory.brick.mask
-                | CollisionCategory.paddle.mask
-            ball.alpha = 1
-
-            // Set new velocity
-            ball.physicsBody?.velocity = CGVector(dx: 200, dy: 300)
+            ballResetConfigurator.performReset(ball)
         }
 
         ball.run(SKAction.sequence([waitAction, resetAction]))
