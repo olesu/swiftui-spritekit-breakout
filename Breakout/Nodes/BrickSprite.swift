@@ -1,9 +1,15 @@
 import SpriteKit
 
 internal struct BrickData {
-    internal let id: UUID = UUID()
+    internal let id: UUID
     internal let position: CGPoint
     internal let color: NSColor
+
+    internal init(id: UUID, position: CGPoint, color: NSColor) {
+        self.id = id
+        self.position = position
+        self.color = color
+    }
 }
 
 internal final class BrickSprite: SKSpriteNode {

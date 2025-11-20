@@ -837,12 +837,20 @@ A complete codebase review was conducted examining all 41 production Swift files
 
 ### Medium Priority Issues
 
-#### 5. BrickData Struct Has Generated ID
-- [ ] Make BrickData ID injectable rather than auto-generated
+#### 5. BrickData Struct Has Generated ID ✅ COMPLETE
+- [x] Make BrickData ID injectable rather than auto-generated
   - Problem: `BrickData` auto-generates UUIDs in struct definition (presentation-layer concern)
-  - Location: `/Breakout/Nodes/BrickSprite.swift` lines 3-7
-  - Impact: Mixing identity generation with data structure, harder to test with predictable IDs
-  - Recommendation: Make ID a parameter of the initializer or move to factory/builder
+  - Solution (TDD approach):
+    - **RED**: Wrote 2 new tests first to drive the design
+    - **GREEN**: Made ID a required parameter in BrickData initializer
+    - Updated SpriteKitNodeCreator to generate UUID when creating BrickData
+  - Benefits achieved:
+    - ✅ ID generation separated from data structure
+    - ✅ BrickData is now a pure data container
+    - ✅ Can test with predictable IDs
+    - ✅ 2 new tests added, all tests passing
+  - Files affected: BrickSprite.swift, SpriteKitNodeCreator.swift, ClassicBricksLayoutTest.swift
+  - Commit: [to be added]
 
 #### 6. CollisionCategory Mask Property Is Redundant
 - [ ] Remove redundant mask property or simplify implementation

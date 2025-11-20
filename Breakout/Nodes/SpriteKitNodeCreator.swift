@@ -47,7 +47,11 @@ internal struct SpriteKitNodeCreator: NodeCreator {
             let config = try layoutLoader.load(fileName: layoutFileName)
             let domainBricks = try config.generateBricks()
             return domainBricks.map { brick in
-                let brickData = BrickData(position: brick.position, color: brick.color.toNSColor())
+                let brickData = BrickData(
+                    id: UUID(),
+                    position: brick.position,
+                    color: brick.color.toNSColor()
+                )
                 return (brickData, brick.color)
             }
         } catch {
