@@ -797,7 +797,7 @@ A complete codebase review was conducted examining all 41 production Swift files
     - Nodes layer: All sprites, labels, and physics body configurers
     - Game/Navigation/Idle layers: All view models and scene classes
   - Tests: All passing ✅
-  - Commit: [to be added]
+  - Commit: 0e7c9e9
 
 #### 3. Tight Coupling: SpriteKitNodeCreator Hardcodes Layout File ⚠️ HIGH
 - [ ] Make SpriteKitNodeCreator layout configurable via dependency injection
