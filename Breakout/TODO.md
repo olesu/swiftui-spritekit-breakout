@@ -799,23 +799,23 @@ A complete codebase review was conducted examining all 41 production Swift files
   - Tests: All passing ✅
   - Commit: 0e7c9e9
 
-#### 3. Tight Coupling: SpriteKitNodeCreator Hardcodes Layout File ⚠️ HIGH
-- [ ] Make SpriteKitNodeCreator layout configurable via dependency injection
+#### 3. Tight Coupling: SpriteKitNodeCreator Hardcodes Layout File ✅ COMPLETE
+- [x] Make SpriteKitNodeCreator layout configurable via dependency injection
   - Problem: Hardcodes layout file name "001-classic-breakout" and directly instantiates JsonBrickLayoutLoader
-  - Location: `/Breakout/Nodes/SpriteKitNodeCreator.swift` lines 22-30
-  - Code:
-    ```swift
-    private func loadBrickLayout() -> [BrickData] {
-        let loader = JsonBrickLayoutLoader()
-        do {
-            let config = try loader.load(fileName: "001-classic-breakout") // Hardcoded!
-    ```
-  - Impact:
-    - Cannot easily switch layouts or test with different configurations
-    - Violates dependency injection principle
-    - Creates hidden dependency on specific JSON file
-  - Recommendation: Inject layout configuration or loader through constructor
-  - Files affected: SpriteKitNodeCreator.swift
+  - Solution (TDD approach):
+    - **RED**: Wrote 4 tests first to drive the design
+    - **GREEN**: Implemented dependency injection with default parameters
+    - Added `layoutFileName` parameter (default: "001-classic-breakout")
+    - Added `layoutLoader` parameter (default: JsonBrickLayoutLoader())
+    - Existing code continues to work unchanged (backward compatible)
+  - Benefits achieved:
+    - ✅ Can now easily switch layouts for testing
+    - ✅ Follows dependency injection principle
+    - ✅ No hidden dependencies
+    - ✅ 4 comprehensive tests added
+    - ✅ All tests passing (including existing tests)
+  - Files affected: SpriteKitNodeCreator.swift, SpriteKitNodeCreatorTest.swift (new)
+  - Commit: [to be added]
 
 #### 4. Inconsistent Error Handling Strategy ⚠️ HIGH
 - [ ] Standardize error handling approach across codebase

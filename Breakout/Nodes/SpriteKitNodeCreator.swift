@@ -14,6 +14,17 @@ extension BrickColor {
 }
 
 internal struct SpriteKitNodeCreator: NodeCreator {
+    private let layoutFileName: String
+    private let layoutLoader: BrickLayoutLoader
+
+    internal init(
+        layoutFileName: String = "001-classic-breakout",
+        layoutLoader: BrickLayoutLoader = JsonBrickLayoutLoader()
+    ) {
+        self.layoutFileName = layoutFileName
+        self.layoutLoader = layoutLoader
+    }
+
     internal func createNodes(onBrickAdded: @escaping (String, BrickColor) -> Void) -> [NodeNames: SKNode] {
         let brickLayoutData = loadBrickLayout()
 
@@ -31,9 +42,8 @@ internal struct SpriteKitNodeCreator: NodeCreator {
     }
 
     private func loadBrickLayout() -> [(BrickData, BrickColor)] {
-        let loader = JsonBrickLayoutLoader()
         do {
-            let config = try loader.load(fileName: "001-classic-breakout")
+            let config = try layoutLoader.load(fileName: layoutFileName)
             let domainBricks = try config.generateBricks()
             return domainBricks.map { brick in
                 let brickData = BrickData(position: brick.position, color: brick.color.toNSColor())
