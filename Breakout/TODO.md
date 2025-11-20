@@ -850,16 +850,7 @@ A complete codebase review was conducted examining all 41 production Swift files
   - Location: `/Breakout/Nodes/CollisionCategory.swift` lines 9-15
   - Recommendation: Either remove and use `.rawValue` directly, or simplify to `var mask: UInt32 { rawValue }`
 
-#### 7. Magic Numbers in GameScene and Node Classes
-- [ ] Extract magic numbers to named constants or configuration
-  - Problem: Hardcoded numbers for positions, sizes, velocities without named constants
-  - Locations:
-    - `GameScene.swift` lines 82-84: Paddle clamping margins (20)
-    - `SpriteKitNodeCreator.swift`: Various position/size values
-  - Impact: Harder to understand intent, difficult to maintain consistency
-  - Recommendation: Extract to named constants or configuration properties
-
-#### 8. GameViewModel Has Dual Update Mechanisms
+#### 7. GameViewModel Has Dual Update Mechanisms
 - [ ] Consider simplifying or better documenting dual update mechanism
   - Problem: ViewModel maintains both @Observable properties AND callback closures for same data
   - Location: `/Breakout/Game/GameViewModel.swift` lines 9-16
@@ -870,21 +861,21 @@ A complete codebase review was conducted examining all 41 production Swift files
     - Consider using Combine publishers instead of closures
     - Or investigate using observation for both SwiftUI and SpriteKit updates
 
-#### 9. WallSprite Hardcodes Node Name (Bug)
+#### 8. WallSprite Hardcodes Node Name (Bug)
 - [ ] Fix WallSprite to use correct node name
   - Problem: `WallSprite` always uses `.topWall` name regardless of which wall it represents
   - Location: `/Breakout/Nodes/WallSprite.swift` line 6
   - Impact: Bug - left, right, and gutter walls all get named "topWall", cannot distinguish walls by name
   - Recommendation: Pass the name as parameter to initializer, or remove if not needed
 
-#### 10. Duplication in Physics Body Configurers
+#### 9. Duplication in Physics Body Configurers
 - [ ] Consider extracting common physics configuration pattern
   - Problem: Similar physics configuration code duplicated across multiple configurers
   - Location: `/Breakout/Nodes/PhysicsBodyConfigurers.swift`
   - Note: Previously reviewed and marked as acceptable duplication (see line 494)
   - Recommendation: Extract common configuration into helper function or builder pattern if it becomes a maintenance burden
 
-#### 11. BrickLayoutConfig Mixes Data and Behavior
+#### 10. BrickLayoutConfig Mixes Data and Behavior
 - [ ] Extract generateBricks() to separate service/factory class
   - Problem: `BrickLayoutConfig` is a Codable data structure but also contains `generateBricks()` business logic
   - Location: `/Breakout/Domain/BrickLayoutConfig.swift` lines 37-58
@@ -893,23 +884,23 @@ A complete codebase review was conducted examining all 41 production Swift files
 
 ### Low Priority Issues
 
-#### 12. Missing Documentation
+#### 11. Missing Documentation
 - [ ] Add documentation comments for public APIs
   - Recommendation: Add docs for public protocols, non-obvious algorithms, complex initialization
 
-#### 13. Inconsistent Copyright Comments
+#### 12. Inconsistent Copyright Comments
 - [ ] Standardize copyright header usage across all files
 
-#### 14. Optional Chaining Could Be Simplified
+#### 13. Optional Chaining Could Be Simplified
 - [ ] Use guard let to reduce nesting in GameViewModel
   - Location: `/Breakout/Game/GameViewModel.swift` lines 47-64
 
-#### 15. Test Helper Classes in Production Code
+#### 14. Test Helper Classes in Production Code
 - [ ] Move preview helpers to separate files or conditionally compile
   - Locations: `IdleView.swift` lines 35-45, `GameView.swift` lines 96-114
   - Recommendation: Move to preview files or wrap with `#if DEBUG`
 
-#### 16. Inconsistent Naming: "Service" vs "Adapter"
+#### 15. Inconsistent Naming: "Service" vs "Adapter"
 - [ ] Clarify and document naming conventions for architectural layers
   - Issue: Some use "Service" suffix, others use "Adapter", some use "Loader"
   - Recommendation: Document conventions:
