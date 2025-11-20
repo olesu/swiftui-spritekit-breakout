@@ -763,19 +763,20 @@ A complete codebase review was conducted examining all 41 production Swift files
 
 ### High Priority Issues (To Address Tomorrow)
 
-#### 1. Domain Layer Contamination with AppKit/NSColor ⚠️ CRITICAL
-- [ ] Remove NSColor from domain layer (Bricks.swift, BrickLayoutConfig.swift)
+#### 1. Domain Layer Contamination with AppKit/NSColor ✅ COMPLETE
+- [x] Remove NSColor from domain layer (Bricks.swift, BrickLayoutConfig.swift)
   - Problem: Domain layer imports AppKit and uses NSColor, violating framework independence
   - Impact:
     - Makes domain models platform-dependent (macOS-only)
     - Cannot port to iOS or other platforms
     - Harder to test in isolation
-  - Current issues:
-    - `/Breakout/Domain/Bricks.swift` lines 34-42: `init?(from nsColor: NSColor)`
-    - `/Breakout/Domain/BrickLayoutConfig.swift` lines 13-21, 53: Uses NSColor
-  - Recommendation: Create domain-specific color abstraction or use color identifiers (string/enum)
-  - Map from domain colors to UI colors at boundary layer (presentation/node layer)
+  - Solution:
+    - Created domain-specific BrickColor enum with string-based color identifiers
+    - Removed all NSColor dependencies from domain layer
+    - BrickSprite now handles NSColor mapping at the presentation boundary
+    - Domain layer now completely framework-independent
   - Files affected: Bricks.swift, BrickLayoutConfig.swift, BrickSprite.swift
+  - Commit: 1abb86f
 
 #### 2. Missing Access Control Modifiers ⚠️ HIGH
 - [ ] Add explicit access control modifiers throughout codebase
