@@ -1,5 +1,9 @@
 import Foundation
-import AppKit
+
+struct BrickLayoutData {
+    let position: CGPoint
+    let color: BrickColor
+}
 
 struct BrickTypeConfig: Codable {
     let id: Int
@@ -10,7 +14,7 @@ struct BrickTypeConfig: Codable {
         case unknownColor(String)
     }
 
-    func toNSColor() throws -> NSColor {
+    func toBrickColor() throws -> BrickColor {
         switch colorName {
         case "Red": return .red
         case "Orange": return .orange
@@ -34,8 +38,8 @@ struct BrickLayoutConfig: Codable {
     let brickTypes: [BrickTypeConfig]
     let layout: [Int]
 
-    func generateBricks() throws -> [BrickData] {
-        var bricks: [BrickData] = []
+    func generateBricks() throws -> [BrickLayoutData] {
+        var bricks: [BrickLayoutData] = []
 
         for (index, typeId) in layout.enumerated() {
             guard typeId > 0 else { continue }
@@ -50,8 +54,8 @@ struct BrickLayoutConfig: Codable {
             let x = startX + CGFloat(col) * (brickWidth + spacing)
             let y = startY - CGFloat(row) * rowSpacing
 
-            let color = try brickType.toNSColor()
-            bricks.append(BrickData(position: CGPoint(x: x, y: y), color: color))
+            let color = try brickType.toBrickColor()
+            bricks.append(BrickLayoutData(position: CGPoint(x: x, y: y), color: color))
         }
 
         return bricks

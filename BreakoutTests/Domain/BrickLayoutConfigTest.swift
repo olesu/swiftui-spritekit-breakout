@@ -1,27 +1,27 @@
 import Testing
-import AppKit
+import Foundation
 
 @testable import Breakout
 
 struct BrickLayoutConfigTest {
 
     @Test(arguments: [
-        ("Red", NSColor.red),
-        ("Orange", NSColor.orange),
-        ("Yellow", NSColor.yellow),
-        ("Green", NSColor.green)
+        ("Red", BrickColor.red),
+        ("Orange", BrickColor.orange),
+        ("Yellow", BrickColor.yellow),
+        ("Green", BrickColor.green)
     ])
-    func mapsColorNameToNSColor(colorName: String, expectedColor: NSColor) throws {
+    func mapsColorNameToBrickColor(colorName: String, expectedColor: BrickColor) throws {
         let brickType = BrickTypeConfig(id: 1, colorName: colorName, scoreValue: 1)
 
-        #expect(try brickType.toNSColor() == expectedColor)
+        #expect(try brickType.toBrickColor() == expectedColor)
     }
 
     @Test func throwsErrorForInvalidColorName() {
         let invalidType = BrickTypeConfig(id: 1, colorName: "InvalidColor", scoreValue: 1)
 
         #expect(throws: BrickTypeConfig.ColorError.self) {
-            try invalidType.toNSColor()
+            try invalidType.toBrickColor()
         }
     }
 
@@ -50,7 +50,7 @@ struct BrickLayoutConfigTest {
 
         #expect(bricks.count == 1)
         #expect(bricks[0].position == CGPoint(x: 10, y: 100))
-        #expect(bricks[0].color == .red)
+        #expect(bricks[0].color == BrickColor.red)
     }
 
     @Test func generatesMultipleBricksInRow() throws {

@@ -2,13 +2,24 @@ import Foundation
 import SpriteKit
 import AppKit
 
+extension BrickColor {
+    func toNSColor() -> NSColor {
+        switch self {
+        case .red: return .red
+        case .orange: return .orange
+        case .yellow: return .yellow
+        case .green: return .green
+        }
+    }
+}
+
 struct SpriteKitNodeCreator: NodeCreator {
-    func createNodes(onBrickAdded: @escaping (String, NSColor) -> Void) -> [NodeNames: SKNode] {
-        let brickLayout = loadBrickLayout()
+    func createNodes(onBrickAdded: @escaping (String, BrickColor) -> Void) -> [NodeNames: SKNode] {
+        let brickLayoutData = loadBrickLayout()
 
         return [
             .paddle: PaddleSprite(position: CGPoint(x: 160, y: 40)),
-            .brickLayout: ClassicBricksLayout(bricks: brickLayout, onBrickAdded: onBrickAdded),
+            .brickLayout: ClassicBricksLayout(bricks: brickLayoutData, onBrickAdded: onBrickAdded),
             .scoreLabel: ScoreLabel(position: CGPoint(x: 40, y: 460)),
             .livesLabel: LivesLabel(position: CGPoint(x: 280, y: 460)),
             .ball: BallSprite(position: CGPoint(x: 160, y: 50)),
@@ -19,11 +30,15 @@ struct SpriteKitNodeCreator: NodeCreator {
         ]
     }
 
-    private func loadBrickLayout() -> [BrickData] {
+    private func loadBrickLayout() -> [(BrickData, BrickColor)] {
         let loader = JsonBrickLayoutLoader()
         do {
             let config = try loader.load(fileName: "001-classic-breakout")
-            return try config.generateBricks()
+            let domainBricks = try config.generateBricks()
+            return domainBricks.map { brick in
+                let brickData = BrickData(position: brick.position, color: brick.color.toNSColor())
+                return (brickData, brick.color)
+            }
         } catch {
             return []
         }

@@ -47,9 +47,8 @@ struct GameView: View {
     private func createNodesAndCollectBricks() -> ([NodeNames: SKNode], Bricks) {
         var bricks = Bricks()
         let nodeCreator = SpriteKitNodeCreator()
-        let nodes = nodeCreator.createNodes { brickId, nsColor in
-            let color = BrickColor(from: nsColor) ?? .green
-            bricks.add(Brick(id: BrickId(of: brickId), color: color))
+        let nodes = nodeCreator.createNodes { brickId, brickColor in
+            bricks.add(Brick(id: BrickId(of: brickId), color: brickColor))
         }
         return (nodes, bricks)
     }

@@ -21,9 +21,9 @@ class BrickSprite: SKSpriteNode {
 }
 
 class ClassicBricksLayout: SKNode {
-    let brickLayout: [BrickData]
+    let brickLayout: [(BrickData, BrickColor)]
 
-    init(bricks: [BrickData], onBrickAdded: (String, NSColor) -> ()) {
+    init(bricks: [(BrickData, BrickColor)], onBrickAdded: (String, BrickColor) -> ()) {
         self.brickLayout = bricks
         super.init()
         setupBricks(onBrickAdded: onBrickAdded)
@@ -33,16 +33,16 @@ class ClassicBricksLayout: SKNode {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func setupBricks(onBrickAdded: (String, NSColor) -> ()) {
-        brickLayout.forEach { brickData in
+    private func setupBricks(onBrickAdded: (String, BrickColor) -> ()) {
+        brickLayout.forEach { (brickData, brickColor) in
             let brick = BrickSprite(
                 id: brickData.id,
                 position: brickData.position,
                 color: brickData.color
             )
             addChild(brick)
-            onBrickAdded(brickData.id.uuidString, brickData.color)
+            onBrickAdded(brickData.id.uuidString, brickColor)
         }
     }
-    
+
 }

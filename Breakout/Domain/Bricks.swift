@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import AppKit
 
 struct BrickId: Hashable {
     let value: String
@@ -28,16 +27,6 @@ enum BrickColor {
         case .orange: return 7
         case .yellow: return 4
         case .green: return 1
-        }
-    }
-
-    init?(from nsColor: NSColor) {
-        switch nsColor {
-        case .red: self = .red
-        case .orange: self = .orange
-        case .yellow: self = .yellow
-        case .green: self = .green
-        default: return nil
         }
     }
 }

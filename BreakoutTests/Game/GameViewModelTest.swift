@@ -70,7 +70,7 @@ struct GameViewModelTest {
 class FakeNodeCreator: NodeCreator {
     var createNodesWasCalled = false
 
-    func createNodes(onBrickAdded: @escaping (String, NSColor) -> Void) -> [NodeNames: SKNode] {
+    func createNodes(onBrickAdded: @escaping (String, BrickColor) -> Void) -> [NodeNames: SKNode] {
         createNodesWasCalled = true
 
         // Simulate adding some bricks
