@@ -1,4 +1,5 @@
 import Foundation
+import os.log
 
 internal protocol GameConfigurationService {
     func getGameConfiguration() -> GameConfiguration
@@ -16,6 +17,7 @@ internal final class RealGameConfigurationService: GameConfigurationService {
         do {
             return try loader.load()
         } catch {
+            os_log(.error, "Failed to load game configuration: %{public}@. Using fallback configuration.", error.localizedDescription)
             return createFallbackConfiguration()
         }
     }

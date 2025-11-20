@@ -1,6 +1,7 @@
 import Foundation
 import SpriteKit
 import AppKit
+import os.log
 
 extension BrickColor {
     internal func toNSColor() -> NSColor {
@@ -50,6 +51,7 @@ internal struct SpriteKitNodeCreator: NodeCreator {
                 return (brickData, brick.color)
             }
         } catch {
+            os_log(.error, "Failed to load brick layout '%{public}@': %{public}@. Using empty layout as fallback.", layoutFileName, error.localizedDescription)
             return []
         }
     }
