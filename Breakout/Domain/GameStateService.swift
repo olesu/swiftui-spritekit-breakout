@@ -1,35 +1,35 @@
 import Foundation
 
-enum GameState {
+internal enum GameState {
     case idle
     case playing
     case won
     case gameOver
 }
 
-protocol GameStateService {
+internal protocol GameStateService {
     func transitionToPlaying()
     func getState() -> GameState
 }
 
-struct RealGameStateService: GameStateService {
-    let adapter: GameStateAdapter
-    
-    init(adapter: GameStateAdapter) {
+internal struct RealGameStateService: GameStateService {
+    private let adapter: GameStateAdapter
+
+    internal init(adapter: GameStateAdapter) {
         self.adapter = adapter
     }
-    
-    func transitionToPlaying() {
+
+    internal func transitionToPlaying() {
         adapter.save(.playing)
     }
 
-    func getState() -> GameState {
+    internal func getState() -> GameState {
         adapter.read()
     }
-    
+
 }
 
-protocol GameStateAdapter {
+internal protocol GameStateAdapter {
     func save(_ state: GameState)
     func read() -> GameState
 }

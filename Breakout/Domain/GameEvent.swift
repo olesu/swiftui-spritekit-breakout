@@ -1,6 +1,6 @@
 import Foundation
 
-enum GameEvent: Equatable {
+internal enum GameEvent: Equatable {
     case brickHit(brickID: UUID)
     case ballLost
 }

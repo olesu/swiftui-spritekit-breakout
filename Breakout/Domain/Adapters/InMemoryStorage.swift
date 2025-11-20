@@ -1,5 +1,5 @@
 import Foundation
 
-@Observable class InMemoryStorage {
-    var state = GameState.idle
+@Observable internal final class InMemoryStorage {
+    internal var state = GameState.idle
 }

@@ -3,7 +3,7 @@ import SpriteKit
 import AppKit
 
 extension BrickColor {
-    func toNSColor() -> NSColor {
+    internal func toNSColor() -> NSColor {
         switch self {
         case .red: return .red
         case .orange: return .orange
@@ -13,8 +13,8 @@ extension BrickColor {
     }
 }
 
-struct SpriteKitNodeCreator: NodeCreator {
-    func createNodes(onBrickAdded: @escaping (String, BrickColor) -> Void) -> [NodeNames: SKNode] {
+internal struct SpriteKitNodeCreator: NodeCreator {
+    internal func createNodes(onBrickAdded: @escaping (String, BrickColor) -> Void) -> [NodeNames: SKNode] {
         let brickLayoutData = loadBrickLayout()
 
         return [

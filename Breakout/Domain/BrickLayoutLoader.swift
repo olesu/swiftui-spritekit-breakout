@@ -1,10 +1,10 @@
 import Foundation
 
-enum BrickLayoutLoaderError: Error {
+internal enum BrickLayoutLoaderError: Error {
     case fileNotFound(String)
     case invalidJson(String)
 }
 
-protocol BrickLayoutLoader {
+internal protocol BrickLayoutLoader {
     func load(fileName: String) throws -> BrickLayoutConfig
 }

@@ -1,7 +1,7 @@
 import SpriteKit
 
-class PaddleSprite: SKSpriteNode {
-    init(position: CGPoint) {
+internal final class PaddleSprite: SKSpriteNode {
+    internal init(position: CGPoint) {
         let paddleSize = CGSize(width: 60, height: 12)
         super.init(texture: nil, color: .white, size: paddleSize)
         self.name = NodeNames.paddle.rawValue

@@ -1,12 +1,12 @@
 import Foundation
 
-class JsonGameConfigurationLoader : GameConfigurationLoader {
-    enum LoaderError: Error {
+internal final class JsonGameConfigurationLoader: GameConfigurationLoader {
+    internal enum LoaderError: Error {
         case resourceNotFound(String, String)
         case decodingFailed(Error)
     }
 
-    func load() throws -> GameConfiguration {
+    internal func load() throws -> GameConfiguration {
         let resourceName = "GameConfiguration"
         let resourceExt = "json"
 

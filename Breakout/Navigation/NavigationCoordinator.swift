@@ -1,13 +1,13 @@
 import Foundation
 
-@Observable class NavigationCoordinator {
+@Observable internal final class NavigationCoordinator {
     private let storage: InMemoryStorage
 
-    init(storage: InMemoryStorage) {
+    internal init(storage: InMemoryStorage) {
         self.storage = storage
     }
 
-    var currentScreen: Screen {
+    internal var currentScreen: Screen {
         Self.determineScreen(from: storage.state)
     }
 
@@ -20,7 +20,7 @@ import Foundation
         }
     }
 
-    enum Screen {
+    internal enum Screen {
         case idle
         case game
     }

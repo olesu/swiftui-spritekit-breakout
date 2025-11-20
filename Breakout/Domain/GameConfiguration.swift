@@ -1,8 +1,8 @@
 import Foundation
 
-struct GameConfiguration: Codable, Equatable {
-    let sceneWidth: CGFloat
-    let sceneHeight: CGFloat
-    
-    let brickArea: BrickArea
+internal struct GameConfiguration: Codable, Equatable {
+    internal let sceneWidth: CGFloat
+    internal let sceneHeight: CGFloat
+
+    internal let brickArea: BrickArea
 }

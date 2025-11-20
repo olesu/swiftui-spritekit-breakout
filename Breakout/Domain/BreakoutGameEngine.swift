@@ -1,43 +1,43 @@
 import Foundation
 
-class BreakoutGameEngine: GameEngine {
+internal final class BreakoutGameEngine: GameEngine {
     private var bricks: Bricks
     private var scoreCard: ScoreCard
     private var livesCard: LivesCard
     private var gameState: GameState
     private var ballResetNeeded: Bool = false
 
-    var currentScore: Int {
+    internal var currentScore: Int {
         scoreCard.total
     }
 
-    var remainingLives: Int {
+    internal var remainingLives: Int {
         livesCard.remaining
     }
 
-    var shouldResetBall: Bool {
+    internal var shouldResetBall: Bool {
         ballResetNeeded
     }
 
-    func acknowledgeBallReset() {
+    internal func acknowledgeBallReset() {
         ballResetNeeded = false
     }
 
-    init(bricks: Bricks, lives: Int = 3) {
+    internal init(bricks: Bricks, lives: Int = 3) {
         self.bricks = bricks
         self.scoreCard = ScoreCard()
         self.livesCard = LivesCard(lives)
         self.gameState = .idle
     }
 
-    func start() {
+    internal func start() {
         guard gameState == .idle else {
             return
         }
         gameState = .playing
     }
 
-    func process(event: GameEvent) {
+    internal func process(event: GameEvent) {
         guard gameState == .playing else {
             return
         }

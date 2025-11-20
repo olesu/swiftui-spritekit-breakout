@@ -1,6 +1,6 @@
-struct BrickArea: Codable, Equatable {
-    let x: Double
-    let y: Double
-    let width: Double
-    let height: Double
+internal struct BrickArea: Codable, Equatable {
+    internal let x: Double
+    internal let y: Double
+    internal let width: Double
+    internal let height: Double
 }

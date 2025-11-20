@@ -1,23 +1,23 @@
 import SpriteKit
 
-struct BallResetConfigurator {
+internal struct BallResetConfigurator {
     private let resetPosition: CGPoint
     private let resetVelocity: CGVector
 
-    init(resetPosition: CGPoint = CGPoint(x: 160, y: 50),
-         resetVelocity: CGVector = CGVector(dx: 200, dy: 300)) {
+    internal init(resetPosition: CGPoint = CGPoint(x: 160, y: 50),
+                  resetVelocity: CGVector = CGVector(dx: 200, dy: 300)) {
         self.resetPosition = resetPosition
         self.resetVelocity = resetVelocity
     }
 
-    func prepareForReset(_ ball: SKNode) {
+    internal func prepareForReset(_ ball: SKNode) {
         ball.physicsBody?.categoryBitMask = 0
         ball.physicsBody?.contactTestBitMask = 0
         ball.physicsBody?.collisionBitMask = 0
         ball.alpha = 0
     }
 
-    func performReset(_ ball: SKNode) {
+    internal func performReset(_ ball: SKNode) {
         ball.physicsBody?.velocity = .zero
         ball.physicsBody?.angularVelocity = 0
 

@@ -1,18 +1,18 @@
 import Foundation
 
-protocol GameConfigurationService {
+internal protocol GameConfigurationService {
     func getGameConfiguration() -> GameConfiguration
     func getGameScale() -> CGFloat
 }
 
-class RealGameConfigurationService: GameConfigurationService {
-    let loader: GameConfigurationLoader
+internal final class RealGameConfigurationService: GameConfigurationService {
+    private let loader: GameConfigurationLoader
 
-    init(loader: GameConfigurationLoader) {
+    internal init(loader: GameConfigurationLoader) {
         self.loader = loader
     }
 
-    func getGameConfiguration() -> GameConfiguration {
+    internal func getGameConfiguration() -> GameConfiguration {
         do {
             return try loader.load()
         } catch {
@@ -20,7 +20,7 @@ class RealGameConfigurationService: GameConfigurationService {
         }
     }
 
-    func getGameScale() -> CGFloat {
+    internal func getGameScale() -> CGFloat {
         #if os(macOS)
             return 1.5
         #else

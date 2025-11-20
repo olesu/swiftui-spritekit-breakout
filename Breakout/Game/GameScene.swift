@@ -1,14 +1,14 @@
 import Foundation
 import SpriteKit
 
-class GameScene: SKScene, SKPhysicsContactDelegate {
+internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let gameNodes: [NodeNames: SKNode]
     private let onGameEvent: (GameEvent) -> Void
     private var brickNodeManager: BrickNodeManager?
     private let ballResetConfigurator = BallResetConfigurator()
     private let paddleBounceApplier = PaddleBounceApplier()
 
-    init(
+    internal init(
         size: CGSize,
         nodes: [NodeNames: SKNode],
         onGameEvent: @escaping (GameEvent) -> Void
@@ -22,7 +22,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func didMove(to view: SKView) {
+    override internal func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
         gameNodes.values.forEach(addChild)
 
@@ -35,13 +35,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
 // MARK: - UI Updates
 extension GameScene {
-    func updateScore(_ score: Int) {
+    internal func updateScore(_ score: Int) {
         if let scoreLabel = gameNodes[.scoreLabel] as? ScoreLabel {
             scoreLabel.text = String(format: "%02d", score)
         }
     }
 
-    func updateLives(_ lives: Int) {
+    internal func updateLives(_ lives: Int) {
         if let livesLabel = gameNodes[.livesLabel] as? LivesLabel {
             livesLabel.text = "\(lives)"
         }
@@ -50,7 +50,7 @@ extension GameScene {
 
 // MARK: - Physics Contact Delegate
 extension GameScene {
-    func didBegin(_ contact: SKPhysicsContact) {
+    internal func didBegin(_ contact: SKPhysicsContact) {
         let contactMask = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
 
         // Ball + Brick collision
@@ -83,8 +83,8 @@ extension GameScene {
         let maxX: CGFloat = size.width - 20
         return  max(minX, min(maxX, location.x))
     }
-    
-    func movePaddle(to location: CGPoint) {
+
+    internal func movePaddle(to location: CGPoint) {
         guard let paddle = gameNodes[.paddle] else { return }
         paddle.position.x = paddleClampedX(location: location)
     }
@@ -92,7 +92,7 @@ extension GameScene {
 
 // MARK: - Ball Control
 extension GameScene {
-    func resetBall() {
+    internal func resetBall() {
         guard let ball = gameNodes[.ball] else { return }
 
         ballResetConfigurator.prepareForReset(ball)
@@ -106,7 +106,7 @@ extension GameScene {
         ball.run(SKAction.sequence([waitAction, resetAction]))
     }
 
-    func adjustBallVelocityForPaddleHit() {
+    private func adjustBallVelocityForPaddleHit() {
         guard let ball = gameNodes[.ball],
               let paddle = gameNodes[.paddle] else { return }
 

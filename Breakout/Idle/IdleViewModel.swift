@@ -1,13 +1,13 @@
 import Foundation
 
-@Observable class IdleViewModel {
+@Observable internal final class IdleViewModel {
     private let gameStateService: GameStateService
 
-    init(gameStateService: GameStateService) {
+    internal init(gameStateService: GameStateService) {
         self.gameStateService = gameStateService
     }
 
-    func startNewGame() async {
+    internal func startNewGame() async {
         gameStateService.transitionToPlaying()
     }
 }

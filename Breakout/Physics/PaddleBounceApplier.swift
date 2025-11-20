@@ -1,9 +1,9 @@
 import SpriteKit
 
-struct PaddleBounceApplier {
+internal struct PaddleBounceApplier {
     private let calculator = PaddleBounceCalculator()
 
-    func applyBounce(ball: SKNode, paddle: SKNode) {
+    internal func applyBounce(ball: SKNode, paddle: SKNode) {
         guard let ballBody = ball.physicsBody,
               let paddleBody = paddle.physicsBody else { return }
 

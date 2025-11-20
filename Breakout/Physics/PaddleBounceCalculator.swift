@@ -1,7 +1,7 @@
 import Foundation
 
-struct PaddleBounceCalculator {
-    func calculateBounceVelocity(
+internal struct PaddleBounceCalculator {
+    internal func calculateBounceVelocity(
         ballX: CGFloat,
         paddleX: CGFloat,
         paddleWidth: CGFloat,

@@ -1,6 +1,6 @@
 import Foundation
 
-protocol GameEngine {
+internal protocol GameEngine {
     var currentScore: Int { get }
     var remainingLives: Int { get }
     var shouldResetBall: Bool { get }

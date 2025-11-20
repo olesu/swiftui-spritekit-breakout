@@ -1,29 +1,29 @@
 import SpriteKit
 
-struct BrickData {
-    let id: UUID = UUID()
-    let position: CGPoint
-    let color: NSColor
+internal struct BrickData {
+    internal let id: UUID = UUID()
+    internal let position: CGPoint
+    internal let color: NSColor
 }
 
-class BrickSprite: SKSpriteNode {
-    init(id: UUID, position: CGPoint, color: NSColor) {
+internal final class BrickSprite: SKSpriteNode {
+    internal init(id: UUID, position: CGPoint, color: NSColor) {
         let brickSize = CGSize(width: 22, height: 10)
         super.init(texture: nil, color: color, size: brickSize)
         self.name = id.uuidString
         self.position = position
         self.physicsBody = BrickPhysicsBodyConfigurer(brickSize: brickSize).physicsBody
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
-class ClassicBricksLayout: SKNode {
-    let brickLayout: [(BrickData, BrickColor)]
+internal final class ClassicBricksLayout: SKNode {
+    internal let brickLayout: [(BrickData, BrickColor)]
 
-    init(bricks: [(BrickData, BrickColor)], onBrickAdded: (String, BrickColor) -> ()) {
+    internal init(bricks: [(BrickData, BrickColor)], onBrickAdded: (String, BrickColor) -> ()) {
         self.brickLayout = bricks
         super.init()
         setupBricks(onBrickAdded: onBrickAdded)

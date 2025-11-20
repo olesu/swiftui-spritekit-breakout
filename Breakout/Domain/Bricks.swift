@@ -7,21 +7,21 @@
 
 import Foundation
 
-struct BrickId: Hashable {
-    let value: String
+internal struct BrickId: Hashable {
+    internal let value: String
 
-    init(of value: String) {
+    internal init(of value: String) {
         self.value = value
     }
 }
 
-enum BrickColor {
+internal enum BrickColor {
     case red
     case orange
     case yellow
     case green
 
-    var pointValue: Int {
+    internal var pointValue: Int {
         switch self {
         case .red: return 7
         case .orange: return 7
@@ -31,32 +31,32 @@ enum BrickColor {
     }
 }
 
-struct Brick {
-    let id: BrickId
-    let color: BrickColor
+internal struct Brick {
+    internal let id: BrickId
+    internal let color: BrickColor
 
-    init(id: BrickId, color: BrickColor = .green) {
+    internal init(id: BrickId, color: BrickColor = .green) {
         self.id = id
         self.color = color
     }
 }
 
-struct Bricks {
+internal struct Bricks {
     private var bricks: [BrickId: Brick] = [:]
 
-    var someRemaining: Bool {
+    internal var someRemaining: Bool {
         bricks.count > 0
     }
 
-    func get(byId id: BrickId) -> Brick? {
+    internal func get(byId id: BrickId) -> Brick? {
         bricks[id]
     }
 
-    mutating func add(_ brick: Brick) {
+    internal mutating func add(_ brick: Brick) {
         bricks[brick.id] = brick
     }
 
-    mutating func remove(withId id: BrickId) {
+    internal mutating func remove(withId id: BrickId) {
         bricks.removeValue(forKey: id)
     }
 }

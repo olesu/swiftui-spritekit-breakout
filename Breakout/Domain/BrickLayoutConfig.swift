@@ -1,20 +1,20 @@
 import Foundation
 
-struct BrickLayoutData {
-    let position: CGPoint
-    let color: BrickColor
+internal struct BrickLayoutData {
+    internal let position: CGPoint
+    internal let color: BrickColor
 }
 
-struct BrickTypeConfig: Codable {
-    let id: Int
-    let colorName: String
-    let scoreValue: Int
+internal struct BrickTypeConfig: Codable {
+    internal let id: Int
+    internal let colorName: String
+    internal let scoreValue: Int
 
-    enum ColorError: Error {
+    internal enum ColorError: Error {
         case unknownColor(String)
     }
 
-    func toBrickColor() throws -> BrickColor {
+    internal func toBrickColor() throws -> BrickColor {
         switch colorName {
         case "Red": return .red
         case "Orange": return .orange
@@ -25,20 +25,20 @@ struct BrickTypeConfig: Codable {
     }
 }
 
-struct BrickLayoutConfig: Codable {
-    let levelName: String
-    let mapCols: Int
-    let mapRows: Int
-    let startX: CGFloat
-    let startY: CGFloat
-    let brickWidth: CGFloat
-    let brickHeight: CGFloat
-    let spacing: CGFloat
-    let rowSpacing: CGFloat
-    let brickTypes: [BrickTypeConfig]
-    let layout: [Int]
+internal struct BrickLayoutConfig: Codable {
+    internal let levelName: String
+    internal let mapCols: Int
+    internal let mapRows: Int
+    internal let startX: CGFloat
+    internal let startY: CGFloat
+    internal let brickWidth: CGFloat
+    internal let brickHeight: CGFloat
+    internal let spacing: CGFloat
+    internal let rowSpacing: CGFloat
+    internal let brickTypes: [BrickTypeConfig]
+    internal let layout: [Int]
 
-    func generateBricks() throws -> [BrickLayoutData] {
+    internal func generateBricks() throws -> [BrickLayoutData] {
         var bricks: [BrickLayoutData] = []
 
         for (index, typeId) in layout.enumerated() {

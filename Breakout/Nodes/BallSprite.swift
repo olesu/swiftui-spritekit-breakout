@@ -1,7 +1,7 @@
 import SpriteKit
 
-class BallSprite: SKSpriteNode {
-    init(position: CGPoint) {
+internal final class BallSprite: SKSpriteNode {
+    internal init(position: CGPoint) {
         let ballSize = CGSize(width: 8, height: 8)
         super.init(texture: nil, color: .white, size: ballSize)
         self.name = NodeNames.ball.rawValue

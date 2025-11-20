@@ -1,21 +1,21 @@
 import Foundation
 import SwiftUI
 
-@Observable class GameViewModel {
-    let configurationModel: GameConfigurationModel
+@Observable internal final class GameViewModel {
+    internal let configurationModel: GameConfigurationModel
     private let engineFactory: (Bricks) -> GameEngine
     private var engine: GameEngine?
 
     // Observable properties for SwiftUI
-    private(set) var currentScore: Int = 0
-    private(set) var remainingLives: Int = 3
+    private(set) internal var currentScore: Int = 0
+    private(set) internal var remainingLives: Int = 3
 
     // Closure-based callbacks for GameScene (non-SwiftUI communication)
-    var onScoreChanged: ((Int) -> Void)?
-    var onLivesChanged: ((Int) -> Void)?
-    var onBallResetNeeded: (() -> Void)?
+    internal var onScoreChanged: ((Int) -> Void)?
+    internal var onLivesChanged: ((Int) -> Void)?
+    internal var onBallResetNeeded: (() -> Void)?
 
-    init(
+    internal init(
         configurationModel: GameConfigurationModel,
         engineFactory: @escaping (Bricks) -> GameEngine = { bricks in BreakoutGameEngine(bricks: bricks) }
     ) {
@@ -23,28 +23,28 @@ import SwiftUI
         self.engineFactory = engineFactory
     }
 
-    var sceneSize: CGSize {
+    internal var sceneSize: CGSize {
         configurationModel.sceneSize
     }
 
-    var frameWidth: CGFloat {
+    internal var frameWidth: CGFloat {
         configurationModel.frameWidth
     }
 
-    var frameHeight: CGFloat {
+    internal var frameHeight: CGFloat {
         configurationModel.frameHeight
     }
 
-    var brickArea: CGRect {
+    internal var brickArea: CGRect {
         configurationModel.brickArea
     }
 
-    func initializeEngine(with bricks: Bricks) {
+    internal func initializeEngine(with bricks: Bricks) {
         engine = engineFactory(bricks)
         engine?.start()
     }
 
-    func handleGameEvent(_ event: GameEvent) {
+    internal func handleGameEvent(_ event: GameEvent) {
         engine?.process(event: event)
 
         // Update observable properties and notify callbacks

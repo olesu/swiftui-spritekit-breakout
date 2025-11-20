@@ -1,6 +1,6 @@
 import Foundation
 
-enum NodeNames: String {
+internal enum NodeNames: String {
     case paddle
     case brickLayout
     case scoreLabel

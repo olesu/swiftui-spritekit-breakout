@@ -1,4 +1,4 @@
-enum CollisionCategory: UInt32 {
+internal enum CollisionCategory: UInt32 {
     case wall = 0b1         // 1
     case gutter = 0b10      // 2
     case ball = 0b100       // 4
@@ -7,7 +7,7 @@ enum CollisionCategory: UInt32 {
 }
 
 extension CollisionCategory {
-    var mask: UInt32 {
+    internal var mask: UInt32 {
         get {
             return self.rawValue
         }

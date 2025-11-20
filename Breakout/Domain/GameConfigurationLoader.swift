@@ -1,5 +1,5 @@
 import Foundation
 
-protocol GameConfigurationLoader {
+internal protocol GameConfigurationLoader {
     func load() throws -> GameConfiguration
 }
