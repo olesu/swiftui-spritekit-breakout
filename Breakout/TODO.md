@@ -850,7 +850,7 @@ A complete codebase review was conducted examining all 41 production Swift files
     - ✅ Can test with predictable IDs
     - ✅ 2 new tests added, all tests passing
   - Files affected: BrickSprite.swift, SpriteKitNodeCreator.swift, ClassicBricksLayoutTest.swift
-  - Commit: [to be added]
+  - Commit: f6286cb
 
 #### 6. CollisionCategory Mask Property Is Redundant
 - [ ] Remove redundant mask property or simplify implementation
