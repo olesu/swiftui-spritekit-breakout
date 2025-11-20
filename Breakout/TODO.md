@@ -852,11 +852,24 @@ A complete codebase review was conducted examining all 41 production Swift files
   - Files affected: BrickSprite.swift, SpriteKitNodeCreator.swift, ClassicBricksLayoutTest.swift
   - Commit: f6286cb
 
-#### 6. CollisionCategory Mask Property Is Redundant
-- [ ] Remove redundant mask property or simplify implementation
-  - Problem: The `mask` computed property just returns `rawValue`, adding no value
+#### 6. CollisionCategory Mask Property ✅ REVIEWED - NO ACTION NEEDED
+- [x] Reviewed mask property implementation
+  - Initial concern: The `mask` computed property just returns `rawValue`, appears redundant
+  - Analysis findings:
+    - Used in 32 call sites across codebase
+    - Provides semantic clarity: `.mask` is clearer than `.rawValue`
+    - Aligns with SpriteKit domain language (categoryBitMask, contactTestBitMask, collisionBitMask)
+    - Signals intent: "I'm getting a bitmask for collision detection"
+    - Future-proofing: Single point of change if mask calculation needs to change
+  - Decision: **Keep as is** - beneficial semantic abstraction
+  - Reasoning:
+    - Domain language alignment improves readability
+    - Clear intent communication (not just "a raw value")
+    - Low maintenance burden (stable implementation)
+    - High cost of removal (32 call sites, test updates)
+    - This is beneficial redundancy, not harmful duplication
+  - Note: Could simplify to `var mask: UInt32 { rawValue }` but current implementation is fine
   - Location: `/Breakout/Nodes/CollisionCategory.swift` lines 9-15
-  - Recommendation: Either remove and use `.rawValue` directly, or simplify to `var mask: UInt32 { rawValue }`
 
 #### 7. GameViewModel Has Dual Update Mechanisms
 - [ ] Consider simplifying or better documenting dual update mechanism
