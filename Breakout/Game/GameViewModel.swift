@@ -17,7 +17,9 @@ import SwiftUI
 
     internal init(
         configurationModel: GameConfigurationModel,
-        engineFactory: @escaping (Bricks) -> GameEngine = { bricks in BreakoutGameEngine(bricks: bricks) }
+        engineFactory: @escaping (Bricks) -> GameEngine = { bricks in
+            BreakoutGameEngine(bricks: bricks)
+        }
     ) {
         self.configurationModel = configurationModel
         self.engineFactory = engineFactory
@@ -45,22 +47,19 @@ import SwiftUI
     }
 
     internal func handleGameEvent(_ event: GameEvent) {
-        engine?.process(event: event)
+        guard let engine = engine else { return }
+        
+        engine.process(event: event)
+        
+        currentScore = engine.currentScore
+        remainingLives = engine.remainingLives
 
-        // Update observable properties and notify callbacks
-        if let engine = engine {
-            currentScore = engine.currentScore
-            remainingLives = engine.remainingLives
+        onScoreChanged?(currentScore)
+        onLivesChanged?(remainingLives)
 
-            // Notify GameScene via callbacks (for non-SwiftUI updates)
-            onScoreChanged?(currentScore)
-            onLivesChanged?(remainingLives)
-
-            // Handle ball reset
-            if engine.shouldResetBall {
-                onBallResetNeeded?()
-                engine.acknowledgeBallReset()
-            }
+        if engine.shouldResetBall {
+            onBallResetNeeded?()
+            engine.acknowledgeBallReset()
         }
     }
 
