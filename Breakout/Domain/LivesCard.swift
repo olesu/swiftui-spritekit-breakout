@@ -1,10 +1,3 @@
-//
-//  LivesCard.swift
-//  Breakout
-//
-//  Created by Ole Kristian Sunde on 28/09/2025.
-//
-
 internal struct LivesCard {
     private(set) internal var remaining: Int
     internal var gameOver: Bool { remaining <= 0 }

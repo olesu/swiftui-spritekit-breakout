@@ -1,10 +1,3 @@
-//
-//  BreakoutUITests.swift
-//  BreakoutUITests
-//
-//  Created by Ole Kristian Sunde on 23/08/2025.
-//
-
 import XCTest
 
 final class BreakoutUITests: XCTestCase {

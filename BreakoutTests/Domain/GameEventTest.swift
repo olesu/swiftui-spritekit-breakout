@@ -1,10 +1,3 @@
-//
-//  GameEventTest.swift
-//  BreakoutTests
-//
-//  Created by Ole Kristian Sunde on 03/11/2025.
-//
-
 import Testing
 import Foundation
 

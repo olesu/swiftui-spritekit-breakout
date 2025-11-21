@@ -1,10 +1,3 @@
-//
-//  Bricks.swift
-//  Breakout
-//
-//  Created by Ole Kristian Sunde on 01/10/2025.
-//
-
 import Foundation
 
 internal struct BrickId: Hashable {

@@ -1,10 +1,3 @@
-//
-//  BricksTest.swift
-//  BreakoutTests
-//
-//  Created by Ole Kristian Sunde on 01/10/2025.
-//
-
 import Foundation
 
 @testable import Breakout

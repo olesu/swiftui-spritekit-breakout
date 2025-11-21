@@ -1,10 +1,3 @@
-//
-//  InMemoryGameStateAdapterTest.swift
-//  BreakoutTests
-//
-//  Created by Ole Kristian Sunde on 28/10/2025.
-//
-
 import Testing
 
 @testable import Breakout

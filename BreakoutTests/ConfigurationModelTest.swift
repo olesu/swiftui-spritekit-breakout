@@ -1,10 +1,3 @@
-//
-//  GameViewModelTest.swift
-//  BreakoutTests
-//
-//  Created by Ole Kristian Sunde on 19/10/2025.
-//
-
 import Testing
 import Foundation
 

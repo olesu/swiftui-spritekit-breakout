@@ -1,10 +1,3 @@
-//
-//  ScoringTest.swift
-//  BreakoutTests
-//
-//  Created by Ole Kristian Sunde on 23/09/2025.
-//
-
 @testable import Breakout
 import Testing
 
