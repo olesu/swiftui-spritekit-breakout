@@ -917,13 +917,9 @@ A complete codebase review was conducted examining all 41 production Swift files
   - Locations: `IdleView.swift` lines 35-45, `GameView.swift` lines 96-114
   - Recommendation: Move to preview files or wrap with `#if DEBUG`
 
-#### 15. Inconsistent Naming: "Service" vs "Adapter"
-- [ ] Clarify and document naming conventions for architectural layers
-  - Issue: Some use "Service" suffix, others use "Adapter", some use "Loader"
-  - Recommendation: Document conventions:
-    - Services: Application/domain services (orchestration, business logic)
-    - Adapters: Infrastructure adapters (I/O, persistence)
-    - Loaders: Specific to loading/reading data
+#### 15. Inconsistent Naming: "Service" vs "Adapter" ✅ RESOLVED
+- [x] Clarify and document naming conventions for architectural layers
+  - Resolution: Renamed all "Loader" types to "Adapter" for consistency — Services for domain, Adapters for infrastructure
 
 #### 17. GameView.setupGame Could Be Decomposed Further
 - [ ] Extract callback wiring into separate method for clarity

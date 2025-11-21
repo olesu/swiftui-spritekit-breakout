@@ -16,11 +16,11 @@ extension BrickColor {
 
 internal struct SpriteKitNodeCreator: NodeCreator {
     private let layoutFileName: String
-    private let layoutLoader: BrickLayoutLoader
+    private let layoutLoader: BrickLayoutAdapter
 
     internal init(
         layoutFileName: String = "001-classic-breakout",
-        layoutLoader: BrickLayoutLoader = JsonBrickLayoutLoader()
+        layoutLoader: BrickLayoutAdapter = JsonBrickLayoutAdapter()
     ) {
         self.layoutFileName = layoutFileName
         self.layoutLoader = layoutLoader

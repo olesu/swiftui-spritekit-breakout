@@ -1,9 +1,9 @@
 import Foundation
 
-internal final class JsonBrickLayoutLoader: BrickLayoutLoader {
+internal final class JsonBrickLayoutAdapter: BrickLayoutAdapter {
     internal func load(fileName: String) throws -> BrickLayoutConfig {
         guard let url = Bundle.main.url(forResource: fileName, withExtension: "json") else {
-            throw BrickLayoutLoaderError.fileNotFound(fileName)
+            throw BrickLayoutAdapterError.fileNotFound(fileName)
         }
 
         let data = try Data(contentsOf: url)
@@ -12,7 +12,7 @@ internal final class JsonBrickLayoutLoader: BrickLayoutLoader {
         do {
             return try decoder.decode(BrickLayoutConfig.self, from: data)
         } catch {
-            throw BrickLayoutLoaderError.invalidJson(fileName)
+            throw BrickLayoutAdapterError.invalidJson(fileName)
         }
     }
 }

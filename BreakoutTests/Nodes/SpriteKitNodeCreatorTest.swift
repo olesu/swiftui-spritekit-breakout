@@ -37,7 +37,7 @@ struct SpriteKitNodeCreatorTest {
 
     @Test @MainActor func usesInjectedLoaderToLoadLayout() throws {
         // This test will pass once we add layoutLoader parameter
-        let mockLoader = MockBrickLayoutLoader()
+        let mockLoader = MockBrickLayoutAdapter()
         let creator = SpriteKitNodeCreator(
             layoutFileName: "custom-layout",
             layoutLoader: mockLoader
@@ -56,7 +56,7 @@ struct SpriteKitNodeCreatorTest {
 
     @Test @MainActor func returnsEmptyLayoutWhenLoaderFails() throws {
         // This test will pass once we handle loader failures gracefully
-        let failingLoader = FailingBrickLayoutLoader()
+        let failingLoader = FailingBrickLayoutAdapter()
         let creator = SpriteKitNodeCreator(
             layoutFileName: "will-fail",
             layoutLoader: failingLoader
@@ -74,7 +74,7 @@ struct SpriteKitNodeCreatorTest {
 
 // MARK: - Test Doubles
 
-class MockBrickLayoutLoader: BrickLayoutLoader {
+class MockBrickLayoutAdapter: BrickLayoutAdapter {
     var loadedFileName: String?
 
     func load(fileName: String) throws -> BrickLayoutConfig {
@@ -99,8 +99,8 @@ class MockBrickLayoutLoader: BrickLayoutLoader {
     }
 }
 
-class FailingBrickLayoutLoader: BrickLayoutLoader {
+class FailingBrickLayoutAdapter: BrickLayoutAdapter {
     func load(fileName: String) throws -> BrickLayoutConfig {
-        throw BrickLayoutLoaderError.fileNotFound(fileName)
+        throw BrickLayoutAdapterError.fileNotFound(fileName)
     }
 }

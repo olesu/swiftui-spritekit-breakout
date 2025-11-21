@@ -3,10 +3,10 @@ import Foundation
 
 @testable import Breakout
 
-struct BrickLayoutLoaderTest {
+struct BrickLayoutAdapterTest {
 
     @Test func loadsValidJsonFile() throws {
-        let loader = JsonBrickLayoutLoader()
+        let loader = JsonBrickLayoutAdapter()
 
         let config = try loader.load(fileName: "001-classic-breakout")
 
@@ -16,17 +16,17 @@ struct BrickLayoutLoaderTest {
     }
 
     @Test func throwsErrorForMissingFile() {
-        let loader = JsonBrickLayoutLoader()
+        let loader = JsonBrickLayoutAdapter()
 
-        #expect(throws: BrickLayoutLoaderError.self) {
+        #expect(throws: BrickLayoutAdapterError.self) {
             try loader.load(fileName: "nonexistent-file")
         }
     }
 
     @Test func throwsErrorForInvalidJson() {
-        let loader = JsonBrickLayoutLoader()
+        let loader = JsonBrickLayoutAdapter()
 
-        #expect(throws: BrickLayoutLoaderError.self) {
+        #expect(throws: BrickLayoutAdapterError.self) {
             try loader.load(fileName: "invalid-json")
         }
     }
