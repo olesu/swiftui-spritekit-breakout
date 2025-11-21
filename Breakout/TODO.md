@@ -895,14 +895,7 @@ A complete codebase review was conducted examining all 41 production Swift files
 - [x] Fix WallSprite to use correct node name
   - Resolution: Removed the hardcoded node name entirely — nothing looks up walls by name
 
-#### 9. Duplication in Physics Body Configurers
-- [ ] Consider extracting common physics configuration pattern
-  - Problem: Similar physics configuration code duplicated across multiple configurers
-  - Location: `/Breakout/Nodes/PhysicsBodyConfigurers.swift`
-  - Note: Previously reviewed and marked as acceptable duplication (see line 494)
-  - Recommendation: Extract common configuration into helper function or builder pattern if it becomes a maintenance burden
-
-#### 10. BrickLayoutConfig Mixes Data and Behavior
+#### 9. BrickLayoutConfig Mixes Data and Behavior
 - [ ] Extract generateBricks() to separate service/factory class
   - Problem: `BrickLayoutConfig` is a Codable data structure but also contains `generateBricks()` business logic
   - Location: `/Breakout/Domain/BrickLayoutConfig.swift` lines 37-58
