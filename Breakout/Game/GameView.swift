@@ -67,12 +67,12 @@ struct GameView: View {
             }
         )
 
-        setupCallbacks(in: viewModel, using: gameScene)
+        wireCallbacks(from: viewModel, to: gameScene)
 
         return gameScene
     }
     
-    private func setupCallbacks(in viewModel: GameViewModel, using scene: GameScene) {
+    private func wireCallbacks(from viewModel: GameViewModel, to scene: GameScene) {
         viewModel.onScoreChanged = { [weak scene] score in
             scene?.updateScore(score)
         }
