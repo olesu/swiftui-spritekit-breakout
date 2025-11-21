@@ -891,12 +891,9 @@ A complete codebase review was conducted examining all 41 production Swift files
   - Code already well-documented with inline comments
   - Location: `/Breakout/Game/GameViewModel.swift` lines 8-15
 
-#### 8. WallSprite Hardcodes Node Name (Bug)
-- [ ] Fix WallSprite to use correct node name
-  - Problem: `WallSprite` always uses `.topWall` name regardless of which wall it represents
-  - Location: `/Breakout/Nodes/WallSprite.swift` line 6
-  - Impact: Bug - left, right, and gutter walls all get named "topWall", cannot distinguish walls by name
-  - Recommendation: Pass the name as parameter to initializer, or remove if not needed
+#### 8. WallSprite Hardcodes Node Name (Bug) ✅ RESOLVED
+- [x] Fix WallSprite to use correct node name
+  - Resolution: Removed the hardcoded node name entirely — nothing looks up walls by name
 
 #### 9. Duplication in Physics Body Configurers
 - [ ] Consider extracting common physics configuration pattern
