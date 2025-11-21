@@ -20,7 +20,7 @@ struct BrickLayoutConfigTest {
     @Test func throwsErrorForInvalidColorName() {
         let invalidType = BrickTypeConfig(id: 1, colorName: "InvalidColor", scoreValue: 1)
 
-        #expect(throws: BrickTypeConfig.ColorError.self) {
+        #expect(throws: BrickColor.ColorError.self) {
             try invalidType.toBrickColor()
         }
     }

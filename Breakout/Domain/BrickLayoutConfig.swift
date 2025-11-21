@@ -10,19 +10,8 @@ internal struct BrickTypeConfig: Codable {
     internal let colorName: String
     internal let scoreValue: Int
 
-    internal enum ColorError: Error {
-        case unknownColor(String)
-    }
-
-    // TODO: Move to BrickColor.init(from colorName: String)
     internal func toBrickColor() throws -> BrickColor {
-        switch colorName {
-        case "Red": return .red
-        case "Orange": return .orange
-        case "Yellow": return .yellow
-        case "Green": return .green
-        default: throw ColorError.unknownColor(colorName)
-        }
+        return try BrickColor(from: colorName)
     }
 }
 

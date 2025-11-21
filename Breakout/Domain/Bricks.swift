@@ -21,6 +21,20 @@ internal enum BrickColor {
     case yellow
     case green
 
+    internal enum ColorError: Error {
+        case unknownColor(String)
+    }
+
+    init(from colorName: String) throws {
+        switch colorName {
+        case "Red": self = .red
+        case "Orange": self = .orange
+        case "Yellow": self = .yellow
+        case "Green": self = .green
+        default: throw ColorError.unknownColor(colorName)
+        }
+    }
+
     internal var pointValue: Int {
         switch self {
         case .red: return 7
