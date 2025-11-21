@@ -2,38 +2,51 @@
 
 A classic Breakout game built in Swift using SpriteKit and Test-Driven Development (TDD).
 
-## Architecture
+## Overview
 
-This project demonstrates clean architecture principles with clear separation between:
+This project demonstrates clean architecture principles with strict separation between physics simulation and game logic:
 
-- **Domain Layer**: Pure game logic (scoring, lives, brick management)
-  - `BreakoutGameEngine`: Processes game events and maintains game state
-  - `ScoreCard`, `LivesCard`, `Bricks`: Game state management
-  - No dependencies on UI frameworks
+- **SpriteKit handles physics** - Collision detection, rendering, user input
+- **Domain handles game rules** - Scoring, lives, win/lose conditions, state management
+- **Event-driven communication** - Clear boundaries between layers
 
-- **Presentation Layer**: SpriteKit rendering and physics
-  - `GameScene`: Handles physics simulation and collision detection
-  - `BrickNodeManager`: Manages brick sprite lifecycle
-  - Sends events to domain layer via callbacks
-
-- **Coordination Layer**: Connects UI and domain
-  - `GameViewModel`: Coordinates between GameScene and BreakoutGameEngine
-  - Uses closure-based callbacks for state updates
+See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed architecture documentation.
 
 ## Key Features
 
-- Event-driven architecture with clear separation of concerns
-- Comprehensive test coverage (12+ tests)
-- TDD approach throughout development
+- Clean layered architecture with zero framework dependencies in domain layer
+- Comprehensive test coverage with 35+ tests
+- TDD approach throughout development (see [CLAUDE.md](CLAUDE.md))
+- Protocol-oriented design with dependency injection
+- Data-driven brick layouts via JSON configuration
 - Color-based scoring system (Red/Orange: 7pts, Yellow: 4pts, Green: 1pt)
-- Lives management and win/lose conditions
+- Extracted testable components for complex physics calculations
 
-## Running Tests
+## Quick Start
+
+### Build and Run
+
+Open `Breakout.xcodeproj` in Xcode and run (⌘R).
+
+### Run Tests
 
 ```bash
 xcodebuild test -scheme Breakout -destination 'platform=macOS'
 ```
 
-## Development
+## Project Structure
 
-See [CLAUDE.md](CLAUDE.md) for TDD guidelines and [TODO.md](Breakout/TODO.md) for detailed implementation status.
+```
+Breakout/
+├── Domain/          # Pure game logic (framework-independent)
+├── Game/            # Main game screen (SwiftUI + SpriteKit)
+├── Nodes/           # SpriteKit sprites and physics
+├── Physics/         # Extracted physics calculations
+├── Navigation/      # State-based routing
+└── Resources/       # JSON configurations
+```
+
+## Learning Resources
+
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Detailed architecture overview
+- **[CLAUDE.md](CLAUDE.md)** - TDD guidelines and development workflow
