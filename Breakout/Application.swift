@@ -16,7 +16,7 @@ struct Application: App {
 
         gameModel = GameConfigurationModel(
             service: RealGameConfigurationService(
-                loader: JsonGameConfigurationLoader()
+                loader: JsonGameConfigurationAdapter()
             )
         )
 

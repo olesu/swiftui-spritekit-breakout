@@ -44,7 +44,6 @@ struct SpriteKitNodeCreatorTest {
         )
 
         var bricksAdded: [(String, BrickColor)] = []
-        // TODO: Should createNodes be void?
         let _ = creator.createNodes { id, color in
             bricksAdded.append((id, color))
         }

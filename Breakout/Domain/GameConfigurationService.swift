@@ -7,9 +7,9 @@ internal protocol GameConfigurationService {
 }
 
 internal final class RealGameConfigurationService: GameConfigurationService {
-    private let loader: GameConfigurationLoader
+    private let loader: GameConfigurationAdapter
 
-    internal init(loader: GameConfigurationLoader) {
+    internal init(loader: GameConfigurationAdapter) {
         self.loader = loader
     }
 

@@ -1,6 +1,6 @@
 import Foundation
 
-internal final class JsonGameConfigurationLoader: GameConfigurationLoader {
+internal final class JsonGameConfigurationAdapter: GameConfigurationAdapter {
     internal enum LoaderError: Error {
         case resourceNotFound(String, String)
         case decodingFailed(Error)

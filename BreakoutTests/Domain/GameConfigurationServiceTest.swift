@@ -20,7 +20,7 @@ extension GameConfiguration {
 struct GameConfigurationServiceTest {
 
     @Test func getsTheGameConfiguration() async throws {
-        let loader = FakeGameConfigurationLoader()
+        let loader = FakeGameConfigurationAdapter()
         let service = RealGameConfigurationService(loader: loader)
         let configuration = service.getGameConfiguration()
 
@@ -28,7 +28,7 @@ struct GameConfigurationServiceTest {
     }
 
     @Test func providesFallbackConfigurationWhenLoaderFails() async throws {
-        let loader = FailingGameConfigurationLoader()
+        let loader = FailingGameConfigurationAdapter()
         let service = RealGameConfigurationService(loader: loader)
         let configuration = service.getGameConfiguration()
 
@@ -39,13 +39,13 @@ struct GameConfigurationServiceTest {
 
 }
 
-class FakeGameConfigurationLoader: GameConfigurationLoader {
+class FakeGameConfigurationAdapter: GameConfigurationAdapter {
     func load() throws -> GameConfiguration {
         GameConfiguration.createValid()
     }
 }
 
-class FailingGameConfigurationLoader: GameConfigurationLoader {
+class FailingGameConfigurationAdapter: GameConfigurationAdapter {
     enum LoadError: Error {
         case configurationNotFound
     }
