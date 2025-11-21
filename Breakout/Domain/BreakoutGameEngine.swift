@@ -1,5 +1,10 @@
 import Foundation
 
+/// The concrete implementation of the Breakout game engine.
+///
+/// Manages the core game loop by processing events from the SpriteKit layer
+/// and updating game state accordingly. Maintains score, lives, and brick
+/// registry. Enforces state transitions (.idle → .playing → .won/.gameOver).
 internal final class BreakoutGameEngine: GameEngine {
     private var bricks: Bricks
     private var scoreCard: ScoreCard
@@ -23,6 +28,10 @@ internal final class BreakoutGameEngine: GameEngine {
         ballResetNeeded = false
     }
 
+    /// Initializes a new game engine with the specified brick configuration.
+    /// - Parameters:
+    ///   - bricks: The brick registry containing all bricks for this game session.
+    ///   - lives: The starting number of lives for the player (default: 3).
     internal init(bricks: Bricks, lives: Int = 3) {
         self.bricks = bricks
         self.scoreCard = ScoreCard()
