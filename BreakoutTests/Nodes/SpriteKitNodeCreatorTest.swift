@@ -1,5 +1,5 @@
-import Testing
 import SpriteKit
+import Testing
 
 @testable import Breakout
 
@@ -17,7 +17,7 @@ struct SpriteKitNodeCreatorTest {
         #expect(nodes[NodeNames.paddle] != nil)
         #expect(nodes[NodeNames.ball] != nil)
         #expect(nodes[NodeNames.brickLayout] != nil)
-        #expect(bricksAdded.count > 0) // Should have loaded default layout
+        #expect(bricksAdded.count > 0)  // Should have loaded default layout
     }
 
     @Test @MainActor func loadsCustomLayoutWhenFileNameProvided() throws {
@@ -44,12 +44,13 @@ struct SpriteKitNodeCreatorTest {
         )
 
         var bricksAdded: [(String, BrickColor)] = []
-        let nodes = creator.createNodes { id, color in
+        // TODO: Should createNodes be void?
+        let _ = creator.createNodes { id, color in
             bricksAdded.append((id, color))
         }
 
         #expect(mockLoader.loadedFileName == "custom-layout")
-        #expect(bricksAdded.count == 2) // MockLoader returns 2 bricks
+        #expect(bricksAdded.count == 2)  // MockLoader returns 2 bricks
         #expect(bricksAdded[0].1 == .red)
         #expect(bricksAdded[1].1 == .green)
     }
@@ -67,8 +68,8 @@ struct SpriteKitNodeCreatorTest {
             bricksAdded.append((id, color))
         }
 
-        #expect(nodes[NodeNames.paddle] != nil) // Other nodes should still be created
-        #expect(bricksAdded.count == 0) // No bricks loaded due to failure
+        #expect(nodes[NodeNames.paddle] != nil)  // Other nodes should still be created
+        #expect(bricksAdded.count == 0)  // No bricks loaded due to failure
     }
 }
 
@@ -92,7 +93,7 @@ class MockBrickLayoutLoader: BrickLayoutLoader {
             rowSpacing: 12,
             brickTypes: [
                 BrickTypeConfig(id: 1, colorName: "Red", scoreValue: 7),
-                BrickTypeConfig(id: 2, colorName: "Green", scoreValue: 1)
+                BrickTypeConfig(id: 2, colorName: "Green", scoreValue: 1),
             ],
             layout: [1, 2]
         )

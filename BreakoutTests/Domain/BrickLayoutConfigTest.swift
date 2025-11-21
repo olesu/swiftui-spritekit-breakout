@@ -30,7 +30,7 @@ struct BrickLayoutConfigTest {
             layout: [0, 0, 0, 0]
         )
 
-        let bricks = try config.generateBricks()
+        let bricks = try BrickLayoutConfig.generateBricks(from: config)
 
         #expect(bricks.isEmpty)
     }
@@ -46,7 +46,7 @@ struct BrickLayoutConfigTest {
             layout: [1]
         )
 
-        let bricks = try config.generateBricks()
+        let bricks = try BrickLayoutConfig.generateBricks(from: config)
 
         #expect(bricks.count == 1)
         #expect(bricks[0].position == CGPoint(x: 10, y: 100))
@@ -62,7 +62,7 @@ struct BrickLayoutConfigTest {
             layout: [1, 1, 1]
         )
 
-        let bricks = try config.generateBricks()
+        let bricks = try BrickLayoutConfig.generateBricks(from: config)
 
         #expect(bricks.count == 3)
         #expect(bricks[0].position == CGPoint(x: 11, y: 420))
@@ -79,7 +79,7 @@ struct BrickLayoutConfigTest {
             layout: [1, 1, 1, 1]
         )
 
-        let bricks = try config.generateBricks()
+        let bricks = try BrickLayoutConfig.generateBricks(from: config)
 
         #expect(bricks.count == 4)
         #expect(bricks[0].position == CGPoint(x: 11, y: 420))

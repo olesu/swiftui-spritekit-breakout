@@ -14,6 +14,7 @@ internal struct BrickTypeConfig: Codable {
         case unknownColor(String)
     }
 
+    // TODO: Move to BrickColor.init(from colorName: String)
     internal func toBrickColor() throws -> BrickColor {
         switch colorName {
         case "Red": return .red
@@ -37,22 +38,24 @@ internal struct BrickLayoutConfig: Codable {
     internal let rowSpacing: CGFloat
     internal let brickTypes: [BrickTypeConfig]
     internal let layout: [Int]
+}
 
-    internal func generateBricks() throws -> [BrickLayoutData] {
+extension BrickLayoutConfig {
+    static internal func generateBricks(from config: BrickLayoutConfig) throws -> [BrickLayoutData] {
         var bricks: [BrickLayoutData] = []
 
-        for (index, typeId) in layout.enumerated() {
+        for (index, typeId) in config.layout.enumerated() {
             guard typeId > 0 else { continue }
 
-            guard let brickType = brickTypes.first(where: { $0.id == typeId }) else {
+            guard let brickType = config.brickTypes.first(where: { $0.id == typeId }) else {
                 continue
             }
 
-            let row = index / mapCols
-            let col = index % mapCols
+            let row = index / config.mapCols
+            let col = index % config.mapCols
 
-            let x = startX + CGFloat(col) * (brickWidth + spacing)
-            let y = startY - CGFloat(row) * rowSpacing
+            let x = config.startX + CGFloat(col) * (config.brickWidth + config.spacing)
+            let y = config.startY - CGFloat(row) * config.rowSpacing
 
             let color = try brickType.toBrickColor()
             bricks.append(BrickLayoutData(position: CGPoint(x: x, y: y), color: color))

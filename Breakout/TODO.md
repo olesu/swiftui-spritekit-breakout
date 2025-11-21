@@ -895,12 +895,9 @@ A complete codebase review was conducted examining all 41 production Swift files
 - [x] Fix WallSprite to use correct node name
   - Resolution: Removed the hardcoded node name entirely — nothing looks up walls by name
 
-#### 9. BrickLayoutConfig Mixes Data and Behavior
-- [ ] Extract generateBricks() to separate service/factory class
-  - Problem: `BrickLayoutConfig` is a Codable data structure but also contains `generateBricks()` business logic
-  - Location: `/Breakout/Domain/BrickLayoutConfig.swift` lines 37-58
-  - Impact: Violates Single Responsibility Principle, makes struct harder to test
-  - Recommendation: Extract to separate service/factory that takes BrickLayoutConfig as input
+#### 9. BrickLayoutConfig Mixes Data and Behavior ✅ RESOLVED
+- [x] Extract generateBricks() to separate service/factory class
+  - Resolution: Made generateBricks() a static method in an extension, separating data from behavior
 
 ### Low Priority Issues
 

@@ -41,7 +41,7 @@ struct ClassicBricksLayoutTest {
         ]
 
         var addedBrickIds: [String] = []
-        let layout = ClassicBricksLayout(bricks: bricks, onBrickAdded: { idString, _ in
+        let _ = ClassicBricksLayout(bricks: bricks, onBrickAdded: { idString, _ in
             addedBrickIds.append(idString)
         })
 
