@@ -67,21 +67,25 @@ struct GameView: View {
             }
         )
 
-        // Wire up ViewModel callbacks to Scene
-        viewModel.onScoreChanged = { [weak gameScene] score in
-            gameScene?.updateScore(score)
-        }
-        viewModel.onLivesChanged = { [weak gameScene] lives in
-            gameScene?.updateLives(lives)
-        }
-        viewModel.onBallResetNeeded = { [weak gameScene] in
-            gameScene?.resetBall()
-        }
+        setupCallbacks(in: viewModel, using: gameScene)
 
         return gameScene
     }
+    
+    private func setupCallbacks(in viewModel: GameViewModel, using scene: GameScene) {
+        viewModel.onScoreChanged = { [weak scene] score in
+            scene?.updateScore(score)
+        }
+        viewModel.onLivesChanged = { [weak scene] lives in
+            scene?.updateLives(lives)
+        }
+        viewModel.onBallResetNeeded = { [weak scene] in
+            scene?.resetBall()
+        }
+    }
 }
 
+#if DEBUG
 #Preview {
     let configurationModel = GameConfigurationModel(service: PreviewGameConfigurationService())
     GameViewWrapper()
@@ -112,3 +116,4 @@ class PreviewGameConfigurationService: GameConfigurationService {
     
 }
 
+#endif

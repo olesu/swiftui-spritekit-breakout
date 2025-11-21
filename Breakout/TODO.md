@@ -912,10 +912,9 @@ A complete codebase review was conducted examining all 41 production Swift files
 - [x] Use guard let to reduce nesting in GameViewModel
   - Resolution: Replaced optional chaining with early return guard statement
 
-#### 14. Test Helper Classes in Production Code
-- [ ] Move preview helpers to separate files or conditionally compile
-  - Locations: `IdleView.swift` lines 35-45, `GameView.swift` lines 96-114
-  - Recommendation: Move to preview files or wrap with `#if DEBUG`
+#### 14. Test Helper Classes in Production Code ✅ RESOLVED
+- [x] Move preview helpers to separate files or conditionally compile
+  - Resolution: Wrapped preview code with #if DEBUG to exclude from release builds
 
 #### 15. Inconsistent Naming: "Service" vs "Adapter" ✅ RESOLVED
 - [x] Clarify and document naming conventions for architectural layers

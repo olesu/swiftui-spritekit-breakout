@@ -22,6 +22,7 @@ struct IdleView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     IdleViewWrapper()
         .frame(width: 320 * 0.5, height: 480 * 0.5)
@@ -43,3 +44,4 @@ private class PreviewGameStateService: GameStateService {
     
 
 }
+#endif
