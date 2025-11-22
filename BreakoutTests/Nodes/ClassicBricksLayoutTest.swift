@@ -7,7 +7,7 @@ struct ClassicBricksLayoutTest {
 
     @Test @MainActor func acceptsCustomBrickLayout() throws {
         let bricks = [
-            (BrickData(id: UUID(), position: CGPoint(x: 10, y: 20), color: .red), BrickColor.red)
+            (BrickData(id: UUID().uuidString, position: CGPoint(x: 10, y: 20), color: .red), BrickColor.red)
         ]
 
         let layout = ClassicBricksLayout(bricks: bricks, onBrickAdded: { _, _ in })
@@ -19,7 +19,7 @@ struct ClassicBricksLayoutTest {
     }
 
     @Test func brickDataAcceptsPredictableID() throws {
-        let expectedId = UUID(uuidString: "12345678-1234-1234-1234-123456789012")!
+        let expectedId = "12345678-1234-1234-1234-123456789012"
         let brickData = BrickData(
             id: expectedId,
             position: CGPoint(x: 5, y: 10),
@@ -32,8 +32,8 @@ struct ClassicBricksLayoutTest {
     }
 
     @Test @MainActor func layoutUsesBrickDataIDs() throws {
-        let id1 = UUID(uuidString: "11111111-1111-1111-1111-111111111111")!
-        let id2 = UUID(uuidString: "22222222-2222-2222-2222-222222222222")!
+        let id1 = "11111111-1111-1111-1111-111111111111"
+        let id2 = "22222222-2222-2222-2222-222222222222"
 
         let bricks = [
             (BrickData(id: id1, position: CGPoint(x: 10, y: 20), color: .red), BrickColor.red),
@@ -46,7 +46,7 @@ struct ClassicBricksLayoutTest {
         })
 
         #expect(addedBrickIds.count == 2)
-        #expect(addedBrickIds[0] == id1.uuidString)
-        #expect(addedBrickIds[1] == id2.uuidString)
+        #expect(addedBrickIds[0] == id1)
+        #expect(addedBrickIds[1] == id2)
     }
 }

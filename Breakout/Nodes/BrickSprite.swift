@@ -1,11 +1,16 @@
 import SpriteKit
 
+/// Represents sprite-level brick information for SpriteKit rendering.
+///
+/// BrickData is part of the presentation layer and uses string IDs
+/// for compatibility with SpriteKit's node naming system.
 internal struct BrickData {
-    internal let id: UUID
+    /// String identifier for SpriteKit node naming.
+    internal let id: String
     internal let position: CGPoint
     internal let color: NSColor
 
-    internal init(id: UUID, position: CGPoint, color: NSColor) {
+    internal init(id: String, position: CGPoint, color: NSColor) {
         self.id = id
         self.position = position
         self.color = color
@@ -13,10 +18,10 @@ internal struct BrickData {
 }
 
 internal final class BrickSprite: SKSpriteNode {
-    internal init(id: UUID, position: CGPoint, color: NSColor) {
+    internal init(id: String, position: CGPoint, color: NSColor) {
         let brickSize = CGSize(width: 22, height: 10)
         super.init(texture: nil, color: color, size: brickSize)
-        self.name = id.uuidString
+        self.name = id
         self.position = position
         self.physicsBody = BrickPhysicsBodyConfigurer(brickSize: brickSize).physicsBody
     }
@@ -47,7 +52,7 @@ internal final class ClassicBricksLayout: SKNode {
                 color: brickData.color
             )
             addChild(brick)
-            onBrickAdded(brickData.id.uuidString, brickColor)
+            onBrickAdded(brickData.id, brickColor)
         }
     }
 

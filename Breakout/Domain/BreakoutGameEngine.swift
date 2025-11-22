@@ -65,13 +65,13 @@ internal final class BreakoutGameEngine: GameEngine {
 
         switch event {
         case .brickHit(let brickID):
-            let brickId = BrickId(of: brickID.uuidString)
+            let id = brickID
 
-            guard let brick = bricks.get(byId: brickId) else {
+            guard let brick = bricks.get(byId: id) else {
                 return
             }
 
-            bricks.remove(withId: brickId)
+            bricks.remove(withId: id)
             scoreCard.score(brick.color.pointValue)
 
             if !bricks.someRemaining {

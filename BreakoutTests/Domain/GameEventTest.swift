@@ -32,7 +32,7 @@ struct GameEventTest {
     
     @Test func canCreateBrickHitEvent() async throws {
         // Arrange
-        let brickID = UUID()
+        let brickID = BrickId(of: UUID().uuidString)
         
         // Act
         let event = GameEvent.brickHit(brickID: brickID)
@@ -51,7 +51,7 @@ struct GameEventTest {
     
     @Test func eventsWithSameDataAreEqual() async throws {
         // Arrange
-        let brickID = UUID()
+        let brickID = BrickId(of: UUID().uuidString)
         let event1 = GameEvent.brickHit(brickID: brickID)
         let event2 = GameEvent.brickHit(brickID: brickID)
         

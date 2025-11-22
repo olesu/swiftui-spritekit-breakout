@@ -1,57 +1,102 @@
-import Testing
 import Foundation
+import Testing
 
 @testable import Breakout
 
 struct BreakoutGameEngineTest {
 
-    @Test func processBrickHitEventUpdatesScore() async throws {
-        let brickId = UUID()
-        var bricks = Bricks()
-        bricks.add(Brick(id: BrickId(of: brickId.uuidString)))
+    // MARK: - State Transitions
 
-        let engine = BreakoutGameEngine(bricks: bricks, stateAdapter: FakeGameStateAdapter())
-        engine.start()
+    @Test func engineTransitionsToGameOverStateWhenLivesReachZero() async throws
+    {
+        let engine = GameEngineMother.makeEngineNearGameOver(autoStart: true)
+
+        engine.process(event: .ballLost)
+
+        #expect(engine.currentState == .gameOver)
+    }
+
+    @Test func engineTransitionsToWonStateWhenAllBricksAreBroken() async throws
+    {
+        let (engine, brickId) = GameEngineMother.makeEngineWithSingleBrick(
+            autoStart: true
+        )
+
+        engine.process(event: .brickHit(brickID: brickId))
+
+        #expect(engine.currentState == .won)
+    }
+
+    @Test func engineStopsProcessingEventsAfterGameOver() async throws {
+        var bricks = Bricks()
+        bricks.add(Brick(id: BrickId(of: "test-brick-1"), color: .green))
+        let engine = GameEngineMother.makeEngineNearGameOver(bricks: bricks, autoStart: true)
+
+        engine.process(event: .ballLost)
+        engine.process(event: .brickHit(brickID: BrickId(of: "test-brick-1")))
+
+        #expect(engine.currentState == .gameOver)
+    }
+
+    // MARK: - Score Management
+
+    @Test func processBrickHitEventUpdatesScore() async throws {
+        let (engine, brickId) = GameEngineMother.makeEngineWithSingleBrick(
+            autoStart: true
+        )
 
         engine.process(event: .brickHit(brickID: brickId))
 
         #expect(engine.currentScore > 0)
     }
 
+    @Test func scorePersistsAcrossMultipleBrickHits() async throws {
+        let (engine, brickIds) = GameEngineMother.makeEngineWithBricks(
+            colors: [.green, .green, .green],
+            autoStart: true
+        )
+
+        engine.process(event: .brickHit(brickID: brickIds[0]))
+        #expect(engine.currentScore == 1)
+
+        engine.process(event: .brickHit(brickID: brickIds[1]))
+        #expect(engine.currentScore == 2)
+
+        engine.process(event: .brickHit(brickID: brickIds[2]))
+        #expect(engine.currentScore == 3)
+    }
+
+    @Test func brickHitAwardsPointsBasedOnBrickColor() async throws {
+        let (engine, brickIds) = GameEngineMother.makeEngineWithBricks(
+            colors: [.red, .orange, .yellow, .green],
+            autoStart: true
+        )
+
+        engine.process(event: .brickHit(brickID: brickIds[0]))
+        #expect(engine.currentScore == 7)
+
+        engine.process(event: .brickHit(brickID: brickIds[1]))
+        #expect(engine.currentScore == 14)
+
+        engine.process(event: .brickHit(brickID: brickIds[2]))
+        #expect(engine.currentScore == 18)
+
+        engine.process(event: .brickHit(brickID: brickIds[3]))
+        #expect(engine.currentScore == 19)
+    }
+
+    // MARK: - Lives Management
+
     @Test func processBallLostEventDecrementsLives() async throws {
-        let engine = BreakoutGameEngine(bricks: Bricks(), stateAdapter: FakeGameStateAdapter(), lives: 3)
-        engine.start()
+        let engine = GameEngineMother.makeEngine(lives: 3, autoStart: true)
 
         engine.process(event: .ballLost)
 
         #expect(engine.remainingLives == 2)
     }
 
-    @Test func scorePersistsAcrossMultipleBrickHits() async throws {
-        let brick1Id = UUID()
-        let brick2Id = UUID()
-        let brick3Id = UUID()
-        var bricks = Bricks()
-        bricks.add(Brick(id: BrickId(of: brick1Id.uuidString)))
-        bricks.add(Brick(id: BrickId(of: brick2Id.uuidString)))
-        bricks.add(Brick(id: BrickId(of: brick3Id.uuidString)))
-
-        let engine = BreakoutGameEngine(bricks: bricks, stateAdapter: FakeGameStateAdapter())
-        engine.start()
-
-        engine.process(event: .brickHit(brickID: brick1Id))
-        #expect(engine.currentScore == 1)
-
-        engine.process(event: .brickHit(brickID: brick2Id))
-        #expect(engine.currentScore == 2)
-
-        engine.process(event: .brickHit(brickID: brick3Id))
-        #expect(engine.currentScore == 3)
-    }
-
     @Test func livesCannotGoBelowZero() async throws {
-        let engine = BreakoutGameEngine(bricks: Bricks(), stateAdapter: FakeGameStateAdapter(), lives: 1)
-        engine.start()
+        let engine = GameEngineMother.makeEngineNearGameOver(autoStart: true)
 
         engine.process(event: .ballLost)
         #expect(engine.remainingLives == 0)
@@ -60,37 +105,10 @@ struct BreakoutGameEngineTest {
         #expect(engine.remainingLives == 0)
     }
 
-    @Test func brickHitAwardsPointsBasedOnBrickColor() async throws {
-        let redBrickId = UUID()
-        let orangeBrickId = UUID()
-        let yellowBrickId = UUID()
-        let greenBrickId = UUID()
-
-        var bricks = Bricks()
-        bricks.add(Brick(id: BrickId(of: redBrickId.uuidString), color: .red))
-        bricks.add(Brick(id: BrickId(of: orangeBrickId.uuidString), color: .orange))
-        bricks.add(Brick(id: BrickId(of: yellowBrickId.uuidString), color: .yellow))
-        bricks.add(Brick(id: BrickId(of: greenBrickId.uuidString), color: .green))
-
-        let engine = BreakoutGameEngine(bricks: bricks, stateAdapter: FakeGameStateAdapter())
-        engine.start()
-
-        engine.process(event: .brickHit(brickID: redBrickId))
-        #expect(engine.currentScore == 7)
-
-        engine.process(event: .brickHit(brickID: orangeBrickId))
-        #expect(engine.currentScore == 14)
-
-        engine.process(event: .brickHit(brickID: yellowBrickId))
-        #expect(engine.currentScore == 18)
-
-        engine.process(event: .brickHit(brickID: greenBrickId))
-        #expect(engine.currentScore == 19)
-    }
+    // MARK: - Ball Reset Logic
 
     @Test func shouldResetBallAfterBallLostWhenLivesRemain() async throws {
-        let engine = BreakoutGameEngine(bricks: Bricks(), stateAdapter: FakeGameStateAdapter(), lives: 3)
-        engine.start()
+        let engine = GameEngineMother.makeEngine(lives: 3, autoStart: true)
 
         engine.process(event: .ballLost)
 
@@ -98,8 +116,7 @@ struct BreakoutGameEngineTest {
     }
 
     @Test func shouldNotResetBallWhenGameOver() async throws {
-        let engine = BreakoutGameEngine(bricks: Bricks(), stateAdapter: FakeGameStateAdapter(), lives: 1)
-        engine.start()
+        let engine = GameEngineMother.makeEngineNearGameOver(autoStart: true)
 
         engine.process(event: .ballLost)
 
@@ -107,8 +124,7 @@ struct BreakoutGameEngineTest {
     }
 
     @Test func acknowledgeBallResetClearsFlag() async throws {
-        let engine = BreakoutGameEngine(bricks: Bricks(), stateAdapter: FakeGameStateAdapter(), lives: 3)
-        engine.start()
+        let engine = GameEngineMother.makeEngine(lives: 3, autoStart: true)
 
         engine.process(event: .ballLost)
         #expect(engine.shouldResetBall == true)

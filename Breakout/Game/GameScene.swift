@@ -57,8 +57,8 @@ extension GameScene {
         if contactMask == (CollisionCategory.ball.mask | CollisionCategory.brick.mask) {
             let brickNode = contact.bodyA.categoryBitMask == CollisionCategory.brick.mask ? contact.bodyA.node : contact.bodyB.node
 
-            if let brickIdString = brickNode?.name,
-               let brickId = UUID(uuidString: brickIdString) {
+            if let brickIdString = brickNode?.name {
+                let brickId = BrickId(of: brickIdString)
                 onGameEvent(.brickHit(brickID: brickId))
                 brickNodeManager?.remove(brickId: brickId)
             }

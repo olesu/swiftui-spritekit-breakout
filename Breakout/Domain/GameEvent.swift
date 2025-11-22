@@ -7,7 +7,7 @@ import Foundation
 internal enum GameEvent: Equatable {
     /// A brick was hit by the ball.
     /// - Parameter brickID: The unique identifier of the brick that was hit.
-    case brickHit(brickID: UUID)
+    case brickHit(brickID: BrickId)
 
     /// The ball fell into the gutter (player lost a life).
     case ballLost
