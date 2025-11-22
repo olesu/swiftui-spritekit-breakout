@@ -89,6 +89,7 @@ class FakeGameEngine: GameEngine {
 
     var currentScore: Int = 0
     var remainingLives: Int = 3
+    var currentState: GameState = .idle
     var shouldResetBall: Bool = false
 
     func start() {

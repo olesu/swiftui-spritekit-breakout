@@ -15,17 +15,3 @@ struct GameStateServiceTest {
     }
 
 }
-
-class FakeGameStateAdapter: GameStateAdapter {
-    private var currentState: Breakout.GameState = .idle
-    
-    func save(_ state: Breakout.GameState) {
-        currentState = state
-    }
-    
-    func read() -> Breakout.GameState {
-        currentState
-    }
-    
-    
-}

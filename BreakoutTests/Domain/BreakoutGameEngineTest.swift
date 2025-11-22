@@ -10,7 +10,7 @@ struct BreakoutGameEngineTest {
         var bricks = Bricks()
         bricks.add(Brick(id: BrickId(of: brickId.uuidString)))
 
-        let engine = BreakoutGameEngine(bricks: bricks)
+        let engine = BreakoutGameEngine(bricks: bricks, stateAdapter: FakeGameStateAdapter())
         engine.start()
 
         engine.process(event: .brickHit(brickID: brickId))
@@ -19,7 +19,7 @@ struct BreakoutGameEngineTest {
     }
 
     @Test func processBallLostEventDecrementsLives() async throws {
-        let engine = BreakoutGameEngine(bricks: Bricks(), lives: 3)
+        let engine = BreakoutGameEngine(bricks: Bricks(), stateAdapter: FakeGameStateAdapter(), lives: 3)
         engine.start()
 
         engine.process(event: .ballLost)
@@ -36,7 +36,7 @@ struct BreakoutGameEngineTest {
         bricks.add(Brick(id: BrickId(of: brick2Id.uuidString)))
         bricks.add(Brick(id: BrickId(of: brick3Id.uuidString)))
 
-        let engine = BreakoutGameEngine(bricks: bricks)
+        let engine = BreakoutGameEngine(bricks: bricks, stateAdapter: FakeGameStateAdapter())
         engine.start()
 
         engine.process(event: .brickHit(brickID: brick1Id))
@@ -50,7 +50,7 @@ struct BreakoutGameEngineTest {
     }
 
     @Test func livesCannotGoBelowZero() async throws {
-        let engine = BreakoutGameEngine(bricks: Bricks(), lives: 1)
+        let engine = BreakoutGameEngine(bricks: Bricks(), stateAdapter: FakeGameStateAdapter(), lives: 1)
         engine.start()
 
         engine.process(event: .ballLost)
@@ -72,7 +72,7 @@ struct BreakoutGameEngineTest {
         bricks.add(Brick(id: BrickId(of: yellowBrickId.uuidString), color: .yellow))
         bricks.add(Brick(id: BrickId(of: greenBrickId.uuidString), color: .green))
 
-        let engine = BreakoutGameEngine(bricks: bricks)
+        let engine = BreakoutGameEngine(bricks: bricks, stateAdapter: FakeGameStateAdapter())
         engine.start()
 
         engine.process(event: .brickHit(brickID: redBrickId))
@@ -89,7 +89,7 @@ struct BreakoutGameEngineTest {
     }
 
     @Test func shouldResetBallAfterBallLostWhenLivesRemain() async throws {
-        let engine = BreakoutGameEngine(bricks: Bricks(), lives: 3)
+        let engine = BreakoutGameEngine(bricks: Bricks(), stateAdapter: FakeGameStateAdapter(), lives: 3)
         engine.start()
 
         engine.process(event: .ballLost)
@@ -98,7 +98,7 @@ struct BreakoutGameEngineTest {
     }
 
     @Test func shouldNotResetBallWhenGameOver() async throws {
-        let engine = BreakoutGameEngine(bricks: Bricks(), lives: 1)
+        let engine = BreakoutGameEngine(bricks: Bricks(), stateAdapter: FakeGameStateAdapter(), lives: 1)
         engine.start()
 
         engine.process(event: .ballLost)
@@ -107,7 +107,7 @@ struct BreakoutGameEngineTest {
     }
 
     @Test func acknowledgeBallResetClearsFlag() async throws {
-        let engine = BreakoutGameEngine(bricks: Bricks(), lives: 3)
+        let engine = BreakoutGameEngine(bricks: Bricks(), stateAdapter: FakeGameStateAdapter(), lives: 3)
         engine.start()
 
         engine.process(event: .ballLost)

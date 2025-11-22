@@ -28,7 +28,7 @@ import SwiftUI
     internal init(
         configurationModel: GameConfigurationModel,
         engineFactory: @escaping (Bricks) -> GameEngine = { bricks in
-            BreakoutGameEngine(bricks: bricks)
+            BreakoutGameEngine(bricks: bricks, stateAdapter: InMemoryGameStateAdapter(storage: InMemoryStorage()))
         }
     ) {
         self.configurationModel = configurationModel
