@@ -10,7 +10,9 @@ struct GameView: View {
     init(configurationService: GameConfigurationService, storage: InMemoryStorage) {
         self.storage = storage
         self.viewModel = GameViewModel(
-            configurationService: configurationService
+            configurationService: configurationService,
+            // TODO: Inject screenNavigationService
+            screenNavigationService: RealScreenNavigationService(navigationState: NavigationState())
         )
     }
 

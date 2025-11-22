@@ -1,25 +1,44 @@
-import Testing
-import SpriteKit
 import AppKit
+import SpriteKit
+import Testing
+
 @testable import Breakout
 
 struct GameViewModelTest {
 
+    @Test func receivesScreenNavigationService() async throws {
+        let _ = GameViewModelMother.makeGameViewModel()
+    }
+
+    @Test func navigatesToGameEndWhenEngineTransitionsToGameOver() async throws
+    {
+        let (viewModel, fakeScreenNavigationService) =
+            GameViewModelMother.makeGameViewModelAndScreenNavigationService()
+        let engine = GameEngineMother.makeEngineNearGameOver(autoStart: true)
+        viewModel.setEngine(engine)
+        viewModel.handleGameEvent(.ballLost)
+        
+        #expect(fakeScreenNavigationService.navigatedTo == .gameEnd)
+    }
+
     @Test func exposesSceneSizeFromConfiguration() async throws {
-        let viewModel = GameViewModel(configurationService: FakeGameConfigurationService())
+        let viewModel = GameViewModelMother.makeGameViewModel()
 
         #expect(viewModel.sceneSize == CGSize(width: 320, height: 480))
     }
 
     @Test func exposesBrickAreaFromConfiguration() async throws {
-        let viewModel = GameViewModel(configurationService: FakeGameConfigurationService())
+        let viewModel = GameViewModelMother.makeGameViewModel()
 
-        #expect(viewModel.brickArea == CGRect(x: 20, y: 330, width: 280, height: 120))
+        #expect(
+            viewModel.brickArea
+                == CGRect(x: 20, y: 330, width: 280, height: 120)
+        )
     }
 
     @Test func setsEngineCorrectly() async throws {
         let fakeEngine = FakeGameEngine()
-        let viewModel = GameViewModel(configurationService: FakeGameConfigurationService())
+        let viewModel = GameViewModelMother.makeGameViewModel()
 
         viewModel.setEngine(fakeEngine)
 
@@ -31,7 +50,7 @@ struct GameViewModelTest {
 
     @Test func callsOnBallResetNeededWhenEngineRequestsReset() async throws {
         let fakeEngine = FakeGameEngine()
-        let viewModel = GameViewModel(configurationService: FakeGameConfigurationService())
+        let viewModel = GameViewModelMother.makeGameViewModel()
 
         var callbackWasCalled = false
         viewModel.onBallResetNeeded = {
@@ -51,7 +70,9 @@ struct GameViewModelTest {
 class FakeNodeCreator: NodeCreator {
     var createNodesWasCalled = false
 
-    func createNodes(onBrickAdded: @escaping (String, BrickColor) -> Void) -> [NodeNames: SKNode] {
+    func createNodes(onBrickAdded: @escaping (String, BrickColor) -> Void)
+        -> [NodeNames: SKNode]
+    {
         createNodesWasCalled = true
 
         // Simulate adding some bricks

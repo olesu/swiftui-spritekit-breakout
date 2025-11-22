@@ -7,6 +7,8 @@ import SwiftUI
 /// SpriteKit GameScene updates. Bridges the gap between declarative SwiftUI
 /// and imperative SpriteKit.
 @Observable internal final class GameViewModel {
+    private let screenNavigationService: ScreenNavigationService
+    
     // Configuration (loaded once at initialization)
     internal let sceneSize: CGSize
     internal let brickArea: CGRect
@@ -24,15 +26,22 @@ import SwiftUI
     /// Initializes the view model with configuration service.
     /// - Parameters:
     ///   - configurationService: Service providing scene dimensions and layout configuration.
-    internal init(configurationService: GameConfigurationService) {
+    internal init(
+        configurationService: GameConfigurationService,
+        screenNavigationService: ScreenNavigationService
+    ) {
         let config = configurationService.getGameConfiguration()
-        self.sceneSize = CGSize(width: config.sceneWidth, height: config.sceneHeight)
+        self.sceneSize = CGSize(
+            width: config.sceneWidth,
+            height: config.sceneHeight
+        )
         self.brickArea = CGRect(
             x: config.brickArea.x,
             y: config.brickArea.y,
             width: config.brickArea.width,
             height: config.brickArea.height
         )
+        self.screenNavigationService = screenNavigationService
     }
 
     /// Sets the game engine for this view model.
@@ -49,15 +58,19 @@ import SwiftUI
     /// - Parameter event: The game event to handle.
     internal func handleGameEvent(_ event: GameEvent) {
         guard let engine = engine else { return }
-        
+
         engine.process(event: event)
-        
+
         onScoreChanged?(engine.currentScore)
         onLivesChanged?(engine.remainingLives)
 
         if engine.shouldResetBall {
             onBallResetNeeded?()
             engine.acknowledgeBallReset()
+        }
+        
+        if engine.currentState == .gameOver {
+            screenNavigationService.navigate(to: .gameEnd)
         }
     }
 
