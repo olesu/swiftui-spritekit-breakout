@@ -103,13 +103,14 @@ This means SwiftUI views can't observe score/lives changes through the ViewModel
 - [ ] can transition from won back to idle
 - [ ] can transition from game over directly to playing (if we choose this approach)
 - [ ] can transition from won directly to playing (if we choose this approach)
+- [x] can transition to playing state (GameStateServiceTest.swift:7)
 
 ### NavigationCoordinator - Screen Mapping
 
-- [ ] maps game over state to game over screen
-- [ ] maps won state to won screen (or game end screen)
-- [ ] continues to map idle to idle screen
-- [ ] continues to map playing to game screen
+- [ ] maps game over state to game over screen ⚠️ *test exists but expects wrong behavior (NavigationCoordinatorTest.swift:31)*
+- [ ] maps won state to won screen (or game end screen) ⚠️ *test exists but expects wrong behavior (NavigationCoordinatorTest.swift:23)*
+- [x] continues to map idle to idle screen (NavigationCoordinatorTest.swift:7)
+- [x] continues to map playing to game screen (NavigationCoordinatorTest.swift:15)
 
 ### GameViewModel - Engine State Monitoring
 
@@ -154,4 +155,17 @@ This means SwiftUI views can't observe score/lives changes through the ViewModel
 - [ ] onLivesChanged only called when lives actually change
 - [ ] GameViewModel updates its observable properties for SwiftUI
 
+### BreakoutGameEngine - End-Game State Transitions (Missing)
+
+These behaviors are implemented in the engine but not verified by tests:
+
+- [ ] transitions to .gameOver state when final life is lost
+- [ ] transitions to .won state when final brick is destroyed
+- [x] should reset ball after ball lost when lives remain (BreakoutGameEngineTest.swift:91)
+- [x] should not reset ball when game over (BreakoutGameEngineTest.swift:100)
+
+---
+
 **Note:** This list assumes Option C (hybrid approach) with both "Play Again" and "Main Menu" buttons. If a different approach is chosen, some tests would be modified or removed.
+
+**Summary:** ~4 tests already exist (plus 2 that verify current wrong behavior). ~30+ tests still need to be written to complete game-over functionality.
