@@ -17,12 +17,12 @@ internal enum GameState {
 /// Provides a domain-level API for transitioning between game states
 /// and querying the current state. Delegates persistence to an adapter.
 internal protocol GameStateService {
-    /// Transitions the game to the playing state.
-    func transitionToPlaying()
+    /// Transitions the game to the specified state.
+    /// - Parameter newState: The state to transition to.
+    func transition(to newState: GameState)
 
-    /// Retrieves the current game state.
-    /// - Returns: The current game state.
-    func getState() -> GameState
+    /// The current game state.
+    var state: GameState { get }
 }
 
 internal struct RealGameStateService: GameStateService {
@@ -32,11 +32,11 @@ internal struct RealGameStateService: GameStateService {
         self.adapter = adapter
     }
 
-    internal func transitionToPlaying() {
-        adapter.save(.playing)
+    internal func transition(to newState: GameState) {
+        adapter.save(newState)
     }
 
-    internal func getState() -> GameState {
+    internal var state: GameState {
         adapter.read()
     }
 

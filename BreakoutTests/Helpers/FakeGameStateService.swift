@@ -3,19 +3,13 @@ import Foundation
 @testable import Breakout
 
 class FakeGameStateService: GameStateService {
-    var currentState: GameState
-    var stateTransitionedToPlaying: Bool = false
+    var state: GameState
 
     init(initialState: GameState = .idle) {
-        self.currentState = initialState
+        self.state = initialState
     }
 
-    func transitionToPlaying() {
-        stateTransitionedToPlaying = true
-        currentState = .playing
-    }
-
-    func getState() -> GameState {
-        currentState
+    func transition(to newState: GameState) {
+        state = newState
     }
 }

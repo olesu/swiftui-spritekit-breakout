@@ -34,14 +34,11 @@ struct IdleView: View {
 }
 
 private class PreviewGameStateService: GameStateService {
-    func transitionToPlaying() {
-        
+    var state: GameState = .idle
+
+    func transition(to newState: GameState) {
+
     }
-    
-    func getState() -> GameState {
-        .idle
-    }
-    
 
 }
 #endif

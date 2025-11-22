@@ -8,6 +8,6 @@ import Foundation
     }
 
     internal func startNewGame() async {
-        gameStateService.transitionToPlaying()
+        gameStateService.transition(to: .playing)
     }
 }

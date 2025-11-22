@@ -93,17 +93,21 @@ Alternative approach: Could the engine emit a different event type (e.g., `GameE
 
 This means SwiftUI views can't observe score/lives changes through the ViewModel - they must be updated via the callback mechanism to GameScene labels. This limits reusability of the ViewModel for SwiftUI-only contexts.
 
+### Consider changing some names
+
+- RealGameStateService has an awkward ring to it. What would be a better name?
+
 ## TDD Todo List
 
 ### GameStateService - State Transitions
 
-- [ ] can transition to game over state
-- [ ] can transition to won state
+- [x] can transition to any state (parameterized test covers .idle, .playing, .won, .gameOver) (GameStateServiceTest.swift:7)
+
+**Specific flow tests (may not be needed if we test illegal transitions instead):**
 - [ ] can transition from game over back to idle
 - [ ] can transition from won back to idle
 - [ ] can transition from game over directly to playing (if we choose this approach)
 - [ ] can transition from won directly to playing (if we choose this approach)
-- [x] can transition to playing state (GameStateServiceTest.swift:7)
 
 ### NavigationCoordinator - Screen Mapping
 

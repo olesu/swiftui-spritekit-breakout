@@ -4,13 +4,14 @@ import Testing
 
 struct GameStateServiceTest {
 
-    @Test func canChangeTheGameState() async throws {
+    @Test(arguments: [GameState.idle, GameState.playing, GameState.won, GameState.gameOver])
+    func canTransitionToState(state: GameState) async throws {
         let gameStateAdapter = FakeGameStateAdapter()
         let gameStateService = RealGameStateService(adapter: gameStateAdapter)
-        
-        gameStateService.transitionToPlaying()
-        
-        #expect(gameStateService.getState() == .playing)
+
+        gameStateService.transition(to: state)
+
+        #expect(gameStateService.state == state)
     }
 
 }

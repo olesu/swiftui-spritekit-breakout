@@ -10,7 +10,7 @@ struct IdleViewModelTest {
 
         await viewModel.startNewGame()
 
-        #expect(fakeGameStateService.stateTransitionedToPlaying == true)
+        #expect(fakeGameStateService.state == .playing)
     }
 
 }
