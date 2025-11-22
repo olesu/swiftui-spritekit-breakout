@@ -69,11 +69,8 @@ import SwiftUI
         
         engine.process(event: event)
         
-        currentScore = engine.currentScore
-        remainingLives = engine.remainingLives
-
-        onScoreChanged?(currentScore)
-        onLivesChanged?(remainingLives)
+        onScoreChanged?(engine.currentScore)
+        onLivesChanged?(engine.remainingLives)
 
         if engine.shouldResetBall {
             onBallResetNeeded?()
