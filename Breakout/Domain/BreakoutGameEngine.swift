@@ -9,8 +9,13 @@ internal final class BreakoutGameEngine: GameEngine {
     private var bricks: Bricks
     private var scoreCard: ScoreCard
     private var livesCard: LivesCard
-    private var gameState: GameState
+    private var gameState: GameState {
+        didSet {
+            stateAdapter.save(gameState)
+        }
+    }
     private var ballResetNeeded: Bool = false
+    private let stateAdapter: GameStateAdapter
 
     internal var currentScore: Int {
         scoreCard.total
@@ -18,6 +23,10 @@ internal final class BreakoutGameEngine: GameEngine {
 
     internal var remainingLives: Int {
         livesCard.remaining
+    }
+
+    internal var currentState: GameState {
+        gameState
     }
 
     internal var shouldResetBall: Bool {
@@ -31,12 +40,15 @@ internal final class BreakoutGameEngine: GameEngine {
     /// Initializes a new game engine with the specified brick configuration.
     /// - Parameters:
     ///   - bricks: The brick registry containing all bricks for this game session.
+    ///   - stateAdapter: The adapter for persisting game state.
     ///   - lives: The starting number of lives for the player (default: 3).
-    internal init(bricks: Bricks, lives: Int = 3) {
+    internal init(bricks: Bricks, stateAdapter: GameStateAdapter, lives: Int = 3) {
         self.bricks = bricks
         self.scoreCard = ScoreCard()
         self.livesCard = LivesCard(lives)
+        self.stateAdapter = stateAdapter
         self.gameState = .idle
+        stateAdapter.save(.idle)
     }
 
     internal func start() {
