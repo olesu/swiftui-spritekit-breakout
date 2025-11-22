@@ -5,7 +5,7 @@ import SwiftUI
 struct Application: App {
     private let navigationCoordinator: NavigationCoordinator
     private let gameModel: GameConfigurationModel
-    private let idleViewModel: IdleViewModel
+    private let screenNavigationService: ScreenNavigationService
     private let gameStateStorage: InMemoryStorage
 
     init() {
@@ -16,6 +16,7 @@ struct Application: App {
         // Game state storage - used by engine for game state persistence
         let gameStateStorage = InMemoryStorage()
 
+        self.screenNavigationService = screenNavigationService
         self.gameStateStorage = gameStateStorage
         navigationCoordinator = NavigationCoordinator(navigationState: navigationState)
 
@@ -24,8 +25,6 @@ struct Application: App {
                 loader: JsonGameConfigurationAdapter()
             )
         )
-
-        idleViewModel = IdleViewModel(screenNavigationService: screenNavigationService)
     }
 
     var body: some Scene {
@@ -33,8 +32,7 @@ struct Application: App {
             ZStack {
                 switch navigationCoordinator.currentScreen {
                 case .idle:
-                    IdleViewWrapper()
-                        .environment(idleViewModel)
+                    IdleView(screenNavigationService: screenNavigationService)
                 case .game:
                     GameViewWrapper()
                         .environment(gameModel)

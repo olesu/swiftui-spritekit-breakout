@@ -1,17 +1,14 @@
 import Foundation
 import SwiftUI
 
-struct IdleViewWrapper: View {
-    @Environment(IdleViewModel.self) private var viewModel: IdleViewModel
-
-    var body: some View {
-        IdleView(viewModel: viewModel)
-    }
-
-}
-
 struct IdleView: View {
-    var viewModel: IdleViewModel
+    @State private var viewModel: IdleViewModel
+
+    init(screenNavigationService: ScreenNavigationService) {
+        self._viewModel = State(initialValue: IdleViewModel(
+            screenNavigationService: screenNavigationService
+        ))
+    }
 
     var body: some View {
         Button("Start Game") {
@@ -24,13 +21,8 @@ struct IdleView: View {
 
 #if DEBUG
 #Preview {
-    IdleViewWrapper()
+    IdleView(screenNavigationService: PreviewScreenNavigationService())
         .frame(width: 320 * 0.5, height: 480 * 0.5)
-        .environment(
-            IdleViewModel(
-                screenNavigationService: PreviewScreenNavigationService()
-            )
-        )
 }
 
 private class PreviewScreenNavigationService: ScreenNavigationService {
