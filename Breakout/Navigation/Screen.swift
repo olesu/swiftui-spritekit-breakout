@@ -6,4 +6,6 @@ internal enum Screen {
     case idle
     /// The active game screen.
     case game
+    /// The game ended screen.
+    case gameEnd
 }

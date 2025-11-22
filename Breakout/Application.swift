@@ -43,6 +43,8 @@ struct Application: App {
                         configurationService: gameConfigurationService,
                         storage: gameStateStorage
                     )
+                case .gameEnd:
+                    Text("TODO: Game End Screen")
                 }
             }
             .frame(
