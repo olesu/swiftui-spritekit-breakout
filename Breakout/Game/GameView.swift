@@ -7,25 +7,31 @@ struct GameView: View {
     private let storage: InMemoryStorage
     @State private var scene: GameScene?
 
-    init(configurationService: GameConfigurationService, storage: InMemoryStorage) {
+    init(
+        configurationService: GameConfigurationService,
+        screenNavigationService: ScreenNavigationService,
+        storage: InMemoryStorage
+    ) {
         self.storage = storage
         self.viewModel = GameViewModel(
             configurationService: configurationService,
-            // TODO: Inject screenNavigationService
-            screenNavigationService: RealScreenNavigationService(navigationState: NavigationState())
+            screenNavigationService: screenNavigationService
         )
     }
 
     var body: some View {
         VStack {
             if let scene = scene {
-                SpriteView(scene: scene, debugOptions: [.showsPhysics, .showsFPS, .showsNodeCount])
-                    .gesture(
-                        DragGesture(minimumDistance: 0)
-                            .onChanged { value in
-                                scene.movePaddle(to: value.location)
-                            }
-                    )
+                SpriteView(
+                    scene: scene,
+                    debugOptions: [.showsPhysics, .showsFPS, .showsNodeCount]
+                )
+                .gesture(
+                    DragGesture(minimumDistance: 0)
+                        .onChanged { value in
+                            scene.movePaddle(to: value.location)
+                        }
+                )
             }
         }
         .onAppear {
@@ -43,7 +49,8 @@ struct GameView: View {
         return createScene(with: nodes)
     }
 
-    private func createNodesAndCollectBricks() -> ([NodeNames: SKNode], Bricks) {
+    private func createNodesAndCollectBricks() -> ([NodeNames: SKNode], Bricks)
+    {
         var bricks = Bricks()
         let nodeCreator = SpriteKitNodeCreator()
         let nodes = nodeCreator.createNodes { brickId, brickColor in
@@ -71,8 +78,11 @@ struct GameView: View {
 
         return gameScene
     }
-    
-    private func wireCallbacks(from viewModel: GameViewModel, to scene: GameScene) {
+
+    private func wireCallbacks(
+        from viewModel: GameViewModel,
+        to scene: GameScene
+    ) {
         viewModel.onScoreChanged = { [weak scene] score in
             scene?.updateScore(score)
         }
@@ -86,33 +96,42 @@ struct GameView: View {
 }
 
 #if DEBUG
-#Preview {
-    let configurationService = PreviewGameConfigurationService()
-    let storage = InMemoryStorage()
-    GameView(configurationService: configurationService, storage: storage)
+    #Preview {
+        let configurationService = PreviewGameConfigurationService()
+        let screenNavigationService = RealScreenNavigationService(
+            navigationState: NavigationState()
+        )
+        let storage = InMemoryStorage()
+        GameView(
+            configurationService: configurationService,
+            screenNavigationService: screenNavigationService,
+            storage: storage
+        )
         .frame(
-            width: configurationService.getGameConfiguration().sceneWidth * configurationService.getGameScale(),
-            height: configurationService.getGameConfiguration().sceneHeight * configurationService.getGameScale()
+            width: configurationService.getGameConfiguration().sceneWidth
+                * configurationService.getGameScale(),
+            height: configurationService.getGameConfiguration().sceneHeight
+                * configurationService.getGameScale()
         )
-}
+    }
 
-private class PreviewGameConfigurationService: GameConfigurationService {
-    func getGameConfiguration() -> GameConfiguration {
-        GameConfiguration(
-            sceneWidth: 320,
-            sceneHeight: 480,
-            brickArea: BrickArea(
-                x: 20,
-                y: 330,
-                width: 280,
-                height: 120
+    private class PreviewGameConfigurationService: GameConfigurationService {
+        func getGameConfiguration() -> GameConfiguration {
+            GameConfiguration(
+                sceneWidth: 320,
+                sceneHeight: 480,
+                brickArea: BrickArea(
+                    x: 20,
+                    y: 330,
+                    width: 280,
+                    height: 120
+                )
             )
-        )
-    }
+        }
 
-    func getGameScale() -> CGFloat {
-        0.5
+        func getGameScale() -> CGFloat {
+            0.5
+        }
     }
-}
 
 #endif

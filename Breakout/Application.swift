@@ -41,6 +41,7 @@ struct Application: App {
                 case .game:
                     GameView(
                         configurationService: gameConfigurationService,
+                        screenNavigationService: screenNavigationService,
                         storage: gameStateStorage
                     )
                 case .gameEnd:
