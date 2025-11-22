@@ -28,17 +28,14 @@ struct IdleView: View {
         .frame(width: 320 * 0.5, height: 480 * 0.5)
         .environment(
             IdleViewModel(
-                gameStateService: PreviewGameStateService()
+                screenNavigationService: PreviewScreenNavigationService()
             )
         )
 }
 
-private class PreviewGameStateService: GameStateService {
-    var state: GameState = .idle
-
-    func transition(to newState: GameState) {
+private class PreviewScreenNavigationService: ScreenNavigationService {
+    func navigate(to screen: Screen) {
 
     }
-
 }
 #endif

@@ -1,27 +1,13 @@
 import Foundation
 
 @Observable internal final class NavigationCoordinator {
-    private let storage: InMemoryStorage
+    private let navigationState: NavigationState
 
-    internal init(storage: InMemoryStorage) {
-        self.storage = storage
+    internal init(navigationState: NavigationState) {
+        self.navigationState = navigationState
     }
 
     internal var currentScreen: Screen {
-        Self.determineScreen(from: storage.state)
-    }
-
-    private static func determineScreen(from state: GameState) -> Screen {
-        switch state {
-        case .idle:
-            return .idle
-        case .playing, .won, .gameOver:
-            return .game
-        }
-    }
-
-    internal enum Screen {
-        case idle
-        case game
+        navigationState.currentScreen
     }
 }

@@ -5,12 +5,13 @@ import Testing
 struct IdleViewModelTest {
 
     @Test func canStartANewGame() async throws {
-        let fakeGameStateService = FakeGameStateService()
-        let viewModel = IdleViewModel(gameStateService: fakeGameStateService)
+        let navigationState = NavigationState()
+        let screenNavigationService = RealScreenNavigationService(navigationState: navigationState)
+        let viewModel = IdleViewModel(screenNavigationService: screenNavigationService)
 
         await viewModel.startNewGame()
 
-        #expect(fakeGameStateService.state == .playing)
+        #expect(navigationState.currentScreen == .game)
     }
 
 }

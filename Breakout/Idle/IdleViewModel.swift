@@ -1,13 +1,13 @@
 import Foundation
 
 @Observable internal final class IdleViewModel {
-    private let gameStateService: GameStateService
+    private let screenNavigationService: ScreenNavigationService
 
-    internal init(gameStateService: GameStateService) {
-        self.gameStateService = gameStateService
+    internal init(screenNavigationService: ScreenNavigationService) {
+        self.screenNavigationService = screenNavigationService
     }
 
     internal func startNewGame() async {
-        gameStateService.transition(to: .playing)
+        screenNavigationService.navigate(to: .game)
     }
 }

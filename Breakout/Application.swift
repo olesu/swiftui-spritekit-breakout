@@ -6,15 +6,18 @@ struct Application: App {
     private let navigationCoordinator: NavigationCoordinator
     private let gameModel: GameConfigurationModel
     private let idleViewModel: IdleViewModel
-    private let storage: InMemoryStorage
+    private let gameStateStorage: InMemoryStorage
 
     init() {
-        let storage = InMemoryStorage()
-        let adapter = InMemoryGameStateAdapter(storage: storage)
-        let gameStateService = RealGameStateService(adapter: adapter)
+        // Navigation state - simple observable for screen transitions
+        let navigationState = NavigationState()
+        let screenNavigationService = RealScreenNavigationService(navigationState: navigationState)
 
-        self.storage = storage
-        navigationCoordinator = NavigationCoordinator(storage: storage)
+        // Game state storage - used by engine for game state persistence
+        let gameStateStorage = InMemoryStorage()
+
+        self.gameStateStorage = gameStateStorage
+        navigationCoordinator = NavigationCoordinator(navigationState: navigationState)
 
         gameModel = GameConfigurationModel(
             service: RealGameConfigurationService(
@@ -22,7 +25,7 @@ struct Application: App {
             )
         )
 
-        idleViewModel = IdleViewModel(gameStateService: gameStateService)
+        idleViewModel = IdleViewModel(screenNavigationService: screenNavigationService)
     }
 
     var body: some Scene {
@@ -35,7 +38,7 @@ struct Application: App {
                 case .game:
                     GameViewWrapper()
                         .environment(gameModel)
-                        .environment(storage)
+                        .environment(gameStateStorage)
                 }
             }
             .frame(
