@@ -7,10 +7,12 @@ import SwiftUI
 /// SpriteKit GameScene updates. Bridges the gap between declarative SwiftUI
 /// and imperative SpriteKit.
 @Observable internal final class GameViewModel {
-    internal let configurationModel: GameConfigurationModel
-    private var engine: GameEngine?
+    // Configuration (loaded once at initialization)
+    internal let sceneSize: CGSize
+    internal let brickArea: CGRect
 
-    // Observable properties for SwiftUI
+    // Runtime state
+    private var engine: GameEngine?
     private(set) internal var currentScore: Int = 0
     private(set) internal var remainingLives: Int = 3
 
@@ -19,27 +21,18 @@ import SwiftUI
     internal var onLivesChanged: ((Int) -> Void)?
     internal var onBallResetNeeded: (() -> Void)?
 
-    /// Initializes the view model with configuration.
+    /// Initializes the view model with configuration service.
     /// - Parameters:
-    ///   - configurationModel: Model providing scene dimensions and layout configuration.
-    internal init(configurationModel: GameConfigurationModel) {
-        self.configurationModel = configurationModel
-    }
-
-    internal var sceneSize: CGSize {
-        configurationModel.sceneSize
-    }
-
-    internal var frameWidth: CGFloat {
-        configurationModel.frameWidth
-    }
-
-    internal var frameHeight: CGFloat {
-        configurationModel.frameHeight
-    }
-
-    internal var brickArea: CGRect {
-        configurationModel.brickArea
+    ///   - configurationService: Service providing scene dimensions and layout configuration.
+    internal init(configurationService: GameConfigurationService) {
+        let config = configurationService.getGameConfiguration()
+        self.sceneSize = CGSize(width: config.sceneWidth, height: config.sceneHeight)
+        self.brickArea = CGRect(
+            x: config.brickArea.x,
+            y: config.brickArea.y,
+            width: config.brickArea.width,
+            height: config.brickArea.height
+        )
     }
 
     /// Sets the game engine for this view model.

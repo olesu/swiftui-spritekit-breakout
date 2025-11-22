@@ -2,25 +2,16 @@ import Foundation
 import SpriteKit
 import SwiftUI
 
-struct GameViewWrapper: View {
-    @Environment(GameConfigurationModel.self)
-    private var configurationModel: GameConfigurationModel
-    @Environment(InMemoryStorage.self)
-    private var storage: InMemoryStorage
-
-    var body: some View {
-        GameView(configurationModel: configurationModel, storage: storage)
-    }
-}
-
 struct GameView: View {
-    var viewModel: GameViewModel
+    private let viewModel: GameViewModel
     private let storage: InMemoryStorage
     @State private var scene: GameScene?
 
-    init(configurationModel: GameConfigurationModel, storage: InMemoryStorage) {
+    init(configurationService: GameConfigurationService, storage: InMemoryStorage) {
         self.storage = storage
-        self.viewModel = GameViewModel(configurationModel: configurationModel)
+        self.viewModel = GameViewModel(
+            configurationService: configurationService
+        )
     }
 
     var body: some View {
@@ -94,18 +85,16 @@ struct GameView: View {
 
 #if DEBUG
 #Preview {
-    let configurationModel = GameConfigurationModel(service: PreviewGameConfigurationService())
+    let configurationService = PreviewGameConfigurationService()
     let storage = InMemoryStorage()
-    GameViewWrapper()
-        .environment(configurationModel)
-        .environment(storage)
+    GameView(configurationService: configurationService, storage: storage)
         .frame(
-            width: configurationModel.frameWidth,
-            height: configurationModel.frameHeight
+            width: configurationService.getGameConfiguration().sceneWidth * configurationService.getGameScale(),
+            height: configurationService.getGameConfiguration().sceneHeight * configurationService.getGameScale()
         )
 }
 
-class PreviewGameConfigurationService: GameConfigurationService {
+private class PreviewGameConfigurationService: GameConfigurationService {
     func getGameConfiguration() -> GameConfiguration {
         GameConfiguration(
             sceneWidth: 320,
@@ -122,7 +111,6 @@ class PreviewGameConfigurationService: GameConfigurationService {
     func getGameScale() -> CGFloat {
         0.5
     }
-    
 }
 
 #endif

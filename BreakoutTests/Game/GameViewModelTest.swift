@@ -6,23 +6,20 @@ import AppKit
 struct GameViewModelTest {
 
     @Test func exposesSceneSizeFromConfiguration() async throws {
-        let config = GameConfigurationModel(service: PreviewGameConfigurationService())
-        let viewModel = GameViewModel(configurationModel: config)
+        let viewModel = GameViewModel(configurationService: FakeGameConfigurationService())
 
         #expect(viewModel.sceneSize == CGSize(width: 320, height: 480))
     }
 
     @Test func exposesBrickAreaFromConfiguration() async throws {
-        let config = GameConfigurationModel(service: PreviewGameConfigurationService())
-        let viewModel = GameViewModel(configurationModel: config)
+        let viewModel = GameViewModel(configurationService: FakeGameConfigurationService())
 
         #expect(viewModel.brickArea == CGRect(x: 20, y: 330, width: 280, height: 120))
     }
 
     @Test func setsEngineCorrectly() async throws {
         let fakeEngine = FakeGameEngine()
-        let config = GameConfigurationModel(service: PreviewGameConfigurationService())
-        let viewModel = GameViewModel(configurationModel: config)
+        let viewModel = GameViewModel(configurationService: FakeGameConfigurationService())
 
         viewModel.setEngine(fakeEngine)
 
@@ -34,8 +31,7 @@ struct GameViewModelTest {
 
     @Test func callsOnBallResetNeededWhenEngineRequestsReset() async throws {
         let fakeEngine = FakeGameEngine()
-        let config = GameConfigurationModel(service: PreviewGameConfigurationService())
-        let viewModel = GameViewModel(configurationModel: config)
+        let viewModel = GameViewModel(configurationService: FakeGameConfigurationService())
 
         var callbackWasCalled = false
         viewModel.onBallResetNeeded = {
@@ -90,7 +86,7 @@ class FakeGameEngine: GameEngine {
     }
 }
 
-class PreviewGameConfigurationService: GameConfigurationService {
+class FakeGameConfigurationService: GameConfigurationService {
     func getGameConfiguration() -> GameConfiguration {
         GameConfiguration(
             sceneWidth: 320,

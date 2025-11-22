@@ -4,7 +4,8 @@ import SwiftUI
 @main
 struct Application: App {
     private let navigationCoordinator: NavigationCoordinator
-    private let gameModel: GameConfigurationModel
+    private let applicationConfiguration: ApplicationConfiguration
+    private let gameConfigurationService: GameConfigurationService
     private let screenNavigationService: ScreenNavigationService
     private let gameStateStorage: InMemoryStorage
 
@@ -16,15 +17,19 @@ struct Application: App {
         // Game state storage - used by engine for game state persistence
         let gameStateStorage = InMemoryStorage()
 
+        // Configuration services
+        let gameConfigurationService = RealGameConfigurationService(
+            loader: JsonGameConfigurationAdapter()
+        )
+        let applicationConfiguration = ApplicationConfiguration(
+            gameConfigurationService: gameConfigurationService
+        )
+
         self.screenNavigationService = screenNavigationService
         self.gameStateStorage = gameStateStorage
+        self.gameConfigurationService = gameConfigurationService
+        self.applicationConfiguration = applicationConfiguration
         navigationCoordinator = NavigationCoordinator(navigationState: navigationState)
-
-        gameModel = GameConfigurationModel(
-            service: RealGameConfigurationService(
-                loader: JsonGameConfigurationAdapter()
-            )
-        )
     }
 
     var body: some Scene {
@@ -34,14 +39,15 @@ struct Application: App {
                 case .idle:
                     IdleView(screenNavigationService: screenNavigationService)
                 case .game:
-                    GameViewWrapper()
-                        .environment(gameModel)
-                        .environment(gameStateStorage)
+                    GameView(
+                        configurationService: gameConfigurationService,
+                        storage: gameStateStorage
+                    )
                 }
             }
             .frame(
-                width: gameModel.frameWidth,
-                height: gameModel.frameHeight
+                width: applicationConfiguration.windowWidth,
+                height: applicationConfiguration.windowHeight
             )
         }
     }
