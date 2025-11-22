@@ -1,32 +1,157 @@
 # Losing the game
 
-In our current implementation, a life (or ball) is lost when the ball hits the gutter. But when the final ball is lost, nothing really happens.
+In our current implementation, a life (or ball) is lost when the ball hits the gutter. The game engine correctly tracks this and transitions to `GameState.gameOver` when all lives are lost, but the UI layer doesn't properly reflect this state change.
 
-## Observations
+## Current Implementation
 
-In the current implementation, when the ball hits the gutter (coded in a `GameScene` extension which handles physics), the
-`onGameEvent` handler is called with the `GameEvent.ballLost` event. The event handler in the view is set up to call the view model's `handleGameEvent` function. 
+### Event Flow (Working Correctly)
 
-The `handleGameEvent` function forwards the event to the game engine for processing and then notifies observers (via callbacks). If the engine has signaled a need for resetting the ball via its `shouldResetBall` property, the scene is notified via the `onBallResetNeeded` callback.
+When the ball hits the gutter (GameScene.swift:68-69), the following happens:
 
-## Current States
+1. `onGameEvent` handler is called with `GameEvent.ballLost` (GameScene.swift:69)
+2. Event flows to `GameViewModel.handleGameEvent` (GameView.swift:65-67)
+3. ViewModel forwards event to game engine for processing (GameViewModel.swift:70)
+4. Engine decrements lives via `LivesCard.lifeWasLost()` (BreakoutGameEngine.swift:69)
+5. If lives remaining > 0: engine sets `ballResetNeeded = true` (BreakoutGameEngine.swift:74)
+6. If lives remaining ≤ 0: engine transitions to `GameState.gameOver` (BreakoutGameEngine.swift:72)
+7. ViewModel checks `shouldResetBall` and notifies scene via `onBallResetNeeded` callback (GameViewModel.swift:75-78)
 
-We have an initial state `GameState.idle` where we start the game. This state is represented by the `IdleView`.
+### Current States
 
-When the player starts the game, we transition to the `GameState.playing` state which is represented by the `GameView`.
+The `GameState` enum (GameStateService.swift:4-13) has four states:
+- `idle`: Initial state, represented by `IdleView`
+- `playing`: Active gameplay, represented by `GameView`
+- `won`: Player destroyed all bricks (not yet fully implemented in UI)
+- `gameOver`: Player lost all lives (not yet fully implemented in UI)
 
-## Next state
+### The Problem
 
-When the player has lost all lives/balls, we want the game to transition to `GameState.gameOver` and the `GameOverView` (which does not exist yet) should activate.
+The `NavigationCoordinator` (NavigationCoordinator.swift:14-21) maps states to screens like this:
 
-A little dilemma: Does it make sense to transition directly from `GameState.gameOver` to `GameState.playing` if the user wants to play another game. Or does it make more sense to transition back to `GameState.idle` first? How do we design a natural flow here? What are common solutions?
+```swift
+case .idle:
+    return .idle
+case .playing, .won, .gameOver:
+    return .game  // All three map to the same screen!
+```
+
+This means:
+- ✅ Engine correctly transitions to `.gameOver` state
+- ❌ UI continues showing `GameView` with no visual feedback
+- ❌ No dedicated game-over screen exists
+- ❌ No way to restart or return to idle state after game over
+
+## What Needs to Be Done
+
+1. **Create dedicated end-game screens**: Either separate views for `GameOverView` and `GameWonView`, or a unified `GameEndView` that handles both cases
+2. **Update NavigationCoordinator**: Map `.gameOver` and `.won` states to appropriate screen(s)
+3. **Design state transition flow**: Decide how users restart after game over (see design question below)
+4. **Implement restart mechanism**: Add UI controls and state service methods for transitioning back to playing/idle
+
+## Design Question: State Transition Flow
+
+When the game ends (`.gameOver` or `.won`), how should restart work?
+
+**Option A: Direct restart**
+- `.gameOver` → `.playing` (reset score/lives, start immediately)
+- `.won` → `.playing`
+
+**Option B: Return to idle**
+- `.gameOver` → `.idle` → `.playing`
+- `.won` → `.idle` → `.playing`
+
+**Option C: Hybrid**
+- Show end screen with both "Play Again" and "Main Menu" buttons
+- Let user choose their path
+
+Common patterns in classic Breakout games typically use Option C, giving players agency over what happens next.
 
 ## Other Observations
 
 ### onScoreChanged and onLivesChanged called unconditionally
 
-`handleGameEvent` calls `onScoreChanged` and `onLivesChanged` unconditionally. Is this the desired behaviour, or do we only want this to happen when the score or lives are actually changed?
+`GameViewModel.handleGameEvent` (GameViewModel.swift:72-73) calls `onScoreChanged` and `onLivesChanged` unconditionally after processing every event, even if the values haven't changed. This causes unnecessary scene updates.
 
-### reset ball logic seems a little complex
+Potential issue: If a `ballLost` event occurs, `onScoreChanged` is called even though the score didn't change.
 
-If `shouldResetBall` is set, we notify the scene through the `onBallResetNeeded` callback and then we notify the engine that we have called the `onBallResetNeeded`. I am sure this is necessary, but it seems rather awkward and brittle.
+Should we only invoke these callbacks when values actually change?
+
+### Ball reset logic has awkward coordination
+
+The ball reset mechanism (GameViewModel.swift:75-78) uses a flag-based handshake:
+1. Engine sets `shouldResetBall = true`
+2. ViewModel checks flag and calls `onBallResetNeeded?()`
+3. ViewModel immediately calls `engine.acknowledgeBallReset()` to clear the flag
+
+This creates tight coupling between ViewModel and Engine around this specific flag. The "check flag → trigger action → acknowledge flag" pattern feels brittle - if the acknowledgement is missed or called twice, the state becomes inconsistent.
+
+Alternative approach: Could the engine emit a different event type (e.g., `GameEvent.ballResetRequired`) instead of using a stateful flag?
+
+### GameViewModel doesn't update its observable properties
+
+`GameViewModel` has `currentScore` and `remainingLives` as `@Observable` properties (GameViewModel.swift:15-16), but `handleGameEvent` never updates them. It only calls the closure-based callbacks (`onScoreChanged`, `onLivesChanged`).
+
+This means SwiftUI views can't observe score/lives changes through the ViewModel - they must be updated via the callback mechanism to GameScene labels. This limits reusability of the ViewModel for SwiftUI-only contexts.
+
+## TDD Todo List
+
+### GameStateService - State Transitions
+
+- [ ] can transition to game over state
+- [ ] can transition to won state
+- [ ] can transition from game over back to idle
+- [ ] can transition from won back to idle
+- [ ] can transition from game over directly to playing (if we choose this approach)
+- [ ] can transition from won directly to playing (if we choose this approach)
+
+### NavigationCoordinator - Screen Mapping
+
+- [ ] maps game over state to game over screen
+- [ ] maps won state to won screen (or game end screen)
+- [ ] continues to map idle to idle screen
+- [ ] continues to map playing to game screen
+
+### GameViewModel - Engine State Monitoring
+
+- [ ] detects when engine transitions to game over state
+- [ ] triggers GameStateService transition when engine reports game over
+- [ ] detects when engine transitions to won state
+- [ ] triggers GameStateService transition when engine reports won
+- [ ] stops processing events after game is over
+- [ ] stops processing events after game is won
+
+### GameEndViewModel (or GameOverViewModel) - Restart Logic
+
+- [ ] can request transition back to idle state
+- [ ] can request transition directly to playing state (if we support this)
+- [ ] provides current game state (won vs game over)
+- [ ] provides final score
+- [ ] provides game statistics (if we want to show these)
+
+### GameOverView / GameWonView / GameEndView - UI Components
+
+- [ ] displays when game over state is active
+- [ ] displays when won state is active
+- [ ] shows final score
+- [ ] has "Play Again" button
+- [ ] has "Main Menu" button (if we choose hybrid approach)
+- [ ] triggers appropriate state transition when buttons pressed
+
+### Integration - Full Flow
+
+- [ ] losing final life transitions to game over screen
+- [ ] destroying final brick transitions to won screen
+- [ ] clicking "Play Again" from game over starts new game
+- [ ] clicking "Main Menu" from game over returns to idle screen
+- [ ] clicking "Play Again" from won screen starts new game
+- [ ] clicking "Main Menu" from won screen returns to idle screen
+- [ ] new game starts with reset score and lives
+- [ ] game over screen doesn't respond to paddle gestures
+
+### Optional - Refactoring Existing Issues
+
+- [ ] onScoreChanged only called when score actually changes
+- [ ] onLivesChanged only called when lives actually change
+- [ ] GameViewModel updates its observable properties for SwiftUI
+
+**Note:** This list assumes Option C (hybrid approach) with both "Play Again" and "Main Menu" buttons. If a different approach is chosen, some tests would be modified or removed.
