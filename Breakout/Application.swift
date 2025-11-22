@@ -6,12 +6,14 @@ struct Application: App {
     private let navigationCoordinator: NavigationCoordinator
     private let gameModel: GameConfigurationModel
     private let idleViewModel: IdleViewModel
+    private let storage: InMemoryStorage
 
     init() {
         let storage = InMemoryStorage()
         let adapter = InMemoryGameStateAdapter(storage: storage)
         let gameStateService = RealGameStateService(adapter: adapter)
 
+        self.storage = storage
         navigationCoordinator = NavigationCoordinator(storage: storage)
 
         gameModel = GameConfigurationModel(
@@ -33,6 +35,7 @@ struct Application: App {
                 case .game:
                     GameViewWrapper()
                         .environment(gameModel)
+                        .environment(storage)
                 }
             }
             .frame(

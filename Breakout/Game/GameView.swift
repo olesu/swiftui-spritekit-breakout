@@ -5,17 +5,21 @@ import SwiftUI
 struct GameViewWrapper: View {
     @Environment(GameConfigurationModel.self)
     private var configurationModel: GameConfigurationModel
+    @Environment(InMemoryStorage.self)
+    private var storage: InMemoryStorage
 
     var body: some View {
-        GameView(configurationModel: configurationModel)
+        GameView(configurationModel: configurationModel, storage: storage)
     }
 }
 
 struct GameView: View {
     var viewModel: GameViewModel
+    private let storage: InMemoryStorage
     @State private var scene: GameScene?
 
-    init(configurationModel: GameConfigurationModel) {
+    init(configurationModel: GameConfigurationModel, storage: InMemoryStorage) {
+        self.storage = storage
         self.viewModel = GameViewModel(configurationModel: configurationModel)
     }
 
@@ -40,7 +44,9 @@ struct GameView: View {
 
     private func setupGame() -> GameScene {
         let (nodes, bricks) = createNodesAndCollectBricks()
-        initializeEngine(with: bricks)
+        let engine = createEngine(with: bricks)
+        viewModel.setEngine(engine)
+        engine.start()
         return createScene(with: nodes)
     }
 
@@ -53,8 +59,9 @@ struct GameView: View {
         return (nodes, bricks)
     }
 
-    private func initializeEngine(with bricks: Bricks) {
-        viewModel.initializeEngine(with: bricks)
+    private func createEngine(with bricks: Bricks) -> GameEngine {
+        let adapter = InMemoryGameStateAdapter(storage: storage)
+        return BreakoutGameEngine(bricks: bricks, stateAdapter: adapter)
     }
 
     private func createScene(with nodes: [NodeNames: SKNode]) -> GameScene {
@@ -88,8 +95,10 @@ struct GameView: View {
 #if DEBUG
 #Preview {
     let configurationModel = GameConfigurationModel(service: PreviewGameConfigurationService())
+    let storage = InMemoryStorage()
     GameViewWrapper()
         .environment(configurationModel)
+        .environment(storage)
         .frame(
             width: configurationModel.frameWidth,
             height: configurationModel.frameHeight

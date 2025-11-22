@@ -8,7 +8,6 @@ import SwiftUI
 /// and imperative SpriteKit.
 @Observable internal final class GameViewModel {
     internal let configurationModel: GameConfigurationModel
-    private let engineFactory: (Bricks) -> GameEngine
     private var engine: GameEngine?
 
     // Observable properties for SwiftUI
@@ -20,19 +19,11 @@ import SwiftUI
     internal var onLivesChanged: ((Int) -> Void)?
     internal var onBallResetNeeded: (() -> Void)?
 
-    /// Initializes the view model with configuration and an optional engine factory.
+    /// Initializes the view model with configuration.
     /// - Parameters:
     ///   - configurationModel: Model providing scene dimensions and layout configuration.
-    ///   - engineFactory: Factory closure for creating game engines. Defaults to creating
-    ///                    BreakoutGameEngine instances. Useful for dependency injection in tests.
-    internal init(
-        configurationModel: GameConfigurationModel,
-        engineFactory: @escaping (Bricks) -> GameEngine = { bricks in
-            BreakoutGameEngine(bricks: bricks, stateAdapter: InMemoryGameStateAdapter(storage: InMemoryStorage()))
-        }
-    ) {
+    internal init(configurationModel: GameConfigurationModel) {
         self.configurationModel = configurationModel
-        self.engineFactory = engineFactory
     }
 
     internal var sceneSize: CGSize {
@@ -51,11 +42,10 @@ import SwiftUI
         configurationModel.brickArea
     }
 
-    /// Initializes and starts the game engine with the provided brick configuration.
-    /// - Parameter bricks: The brick registry for this game session.
-    internal func initializeEngine(with bricks: Bricks) {
-        engine = engineFactory(bricks)
-        engine?.start()
+    /// Sets the game engine for this view model.
+    /// - Parameter engine: The game engine instance to use.
+    internal func setEngine(_ engine: GameEngine) {
+        self.engine = engine
     }
 
     /// Handles a game event from the SpriteKit layer.

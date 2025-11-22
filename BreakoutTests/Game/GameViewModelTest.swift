@@ -19,45 +19,30 @@ struct GameViewModelTest {
         #expect(viewModel.brickArea == CGRect(x: 20, y: 330, width: 280, height: 120))
     }
 
-    @Test func initializesEngineWithBricks() async throws {
+    @Test func setsEngineCorrectly() async throws {
         let fakeEngine = FakeGameEngine()
-        var capturedBricks: Bricks?
         let config = GameConfigurationModel(service: PreviewGameConfigurationService())
+        let viewModel = GameViewModel(configurationModel: config)
 
-        let viewModel = GameViewModel(
-            configurationModel: config,
-            engineFactory: { bricks in
-                capturedBricks = bricks
-                return fakeEngine
-            }
-        )
+        viewModel.setEngine(fakeEngine)
 
-        var bricks = Bricks()
-        bricks.add(Brick(id: BrickId(of: "brick1"), color: .red))
-        bricks.add(Brick(id: BrickId(of: "brick2"), color: .yellow))
+        // Verify engine is set by processing an event
+        viewModel.handleGameEvent(.ballLost)
 
-        viewModel.initializeEngine(with: bricks)
-
-        #expect(capturedBricks?.get(byId: BrickId(of: "brick1")) != nil)
-        #expect(capturedBricks?.get(byId: BrickId(of: "brick2")) != nil)
-        #expect(fakeEngine.startWasCalled)
+        #expect(fakeEngine.processedEvents.count == 1)
     }
 
     @Test func callsOnBallResetNeededWhenEngineRequestsReset() async throws {
         let fakeEngine = FakeGameEngine()
         let config = GameConfigurationModel(service: PreviewGameConfigurationService())
-
-        let viewModel = GameViewModel(
-            configurationModel: config,
-            engineFactory: { _ in fakeEngine }
-        )
+        let viewModel = GameViewModel(configurationModel: config)
 
         var callbackWasCalled = false
         viewModel.onBallResetNeeded = {
             callbackWasCalled = true
         }
 
-        viewModel.initializeEngine(with: Bricks())
+        viewModel.setEngine(fakeEngine)
         fakeEngine.shouldResetBall = true
 
         viewModel.handleGameEvent(.ballLost)
