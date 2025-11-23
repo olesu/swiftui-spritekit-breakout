@@ -8,6 +8,7 @@ struct Application: App {
     private let gameConfigurationService: GameConfigurationService
     private let screenNavigationService: ScreenNavigationService
     private let gameStateStorage: InMemoryStorage
+    private let gameResultService: GameResultService
 
     init() {
         // Navigation state - simple observable for screen transitions
@@ -16,6 +17,9 @@ struct Application: App {
 
         // Game state storage - used by engine for game state persistence
         let gameStateStorage = InMemoryStorage()
+
+        // Game result service - tracks game outcome for end screen
+        let gameResultService = RealGameResultService()
 
         // Configuration services
         let gameConfigurationService = RealGameConfigurationService(
@@ -27,6 +31,7 @@ struct Application: App {
 
         self.screenNavigationService = screenNavigationService
         self.gameStateStorage = gameStateStorage
+        self.gameResultService = gameResultService
         self.gameConfigurationService = gameConfigurationService
         self.applicationConfiguration = applicationConfiguration
         navigationCoordinator = NavigationCoordinator(navigationState: navigationState)
@@ -45,7 +50,10 @@ struct Application: App {
                         storage: gameStateStorage
                     )
                 case .gameEnd:
-                    GameEndView(screenNavigationService: screenNavigationService)
+                    GameEndView(
+                        screenNavigationService: screenNavigationService,
+                        gameResultService: gameResultService
+                    )
                 }
             }
             .frame(

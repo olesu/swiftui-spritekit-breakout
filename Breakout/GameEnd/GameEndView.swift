@@ -4,9 +4,10 @@ import SwiftUI
 struct GameEndView: View {
     @State private var viewModel: GameEndViewModel
 
-    init(screenNavigationService: ScreenNavigationService) {
+    init(screenNavigationService: ScreenNavigationService, gameResultService: GameResultService) {
         self._viewModel = State(initialValue: GameEndViewModel(
-            screenNavigationService: screenNavigationService
+            screenNavigationService: screenNavigationService,
+            gameResultService: gameResultService
         ))
     }
 
@@ -19,7 +20,7 @@ struct GameEndView: View {
                     .ignoresSafeArea()
 
                 VStack(spacing: geometry.size.height * 0.05) {
-                    Text("GAME OVER")
+                    Text(viewModel.message)
                         .font(.system(size: geometry.size.width * 0.12, weight: .black, design: .rounded))
                         .foregroundStyle(
                             LinearGradient(
@@ -67,13 +68,22 @@ struct GameEndView: View {
 
 #if DEBUG
 #Preview {
-    GameEndView(screenNavigationService: PreviewScreenNavigationService())
-        .frame(width: 320 * 0.5, height: 480 * 0.5)
+    GameEndView(
+        screenNavigationService: PreviewScreenNavigationService(),
+        gameResultService: PreviewGameResultService()
+    )
+    .frame(width: 320 * 0.5, height: 480 * 0.5)
 }
 
 private class PreviewScreenNavigationService: ScreenNavigationService {
     func navigate(to screen: Screen) {
 
+    }
+}
+
+private class PreviewGameResultService: GameResultService {
+    func didWin() -> Bool {
+        false
     }
 }
 #endif
