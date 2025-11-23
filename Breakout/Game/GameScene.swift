@@ -1,5 +1,6 @@
 import Foundation
 import SpriteKit
+import AppKit
 
 internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let gameNodes: [NodeNames: SKNode]
@@ -23,12 +24,40 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     override internal func didMove(to view: SKView) {
+        addGradientBackground()
         physicsWorld.contactDelegate = self
         gameNodes.values.forEach(addChild)
 
         if let brickLayout = gameNodes[.brickLayout] {
             brickNodeManager = BrickNodeManager(brickLayout: brickLayout)
         }
+    }
+
+    private func addGradientBackground() {
+        let gradientTexture = createGradientTexture()
+        let background = SKSpriteNode(texture: gradientTexture)
+        background.position = CGPoint(x: size.width / 2, y: size.height / 2)
+        background.size = size
+        background.zPosition = -1
+        addChild(background)
+    }
+
+    private func createGradientTexture() -> SKTexture {
+        let size = self.size
+        let image = NSImage(size: size, flipped: false) { rect in
+            let colors = [
+                NSColor(red: 0x1a / 255, green: 0x1a / 255, blue: 0x2e / 255, alpha: 1.0),
+                NSColor(red: 0x16 / 255, green: 0x21 / 255, blue: 0x3e / 255, alpha: 1.0)
+            ]
+            let gradient = NSGradient(colors: colors)!
+            gradient.draw(
+                from: CGPoint(x: 0, y: size.height),
+                to: CGPoint(x: 0, y: 0),
+                options: []
+            )
+            return true
+        }
+        return SKTexture(image: image)
     }
 
 }
