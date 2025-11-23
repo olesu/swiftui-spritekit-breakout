@@ -88,6 +88,17 @@ struct GameViewModelTest {
         #expect(context.gameResultService.didWin == true)
         #expect(context.gameResultService.score == engine.currentScore)
     }
+
+    @Test func savesLossResultWhenEngineTransitionsToGameOver() async throws {
+        let context = GameViewModelMother.makeContext()
+        let engine = GameEngineMother.makeEngineNearGameOver(autoStart: true)
+        context.viewModel.setEngine(engine)
+
+        context.viewModel.handleGameEvent(.ballLost)
+
+        #expect(context.gameResultService.didWin == false)
+        #expect(context.gameResultService.score == engine.currentScore)
+    }
 }
 
 class FakeNodeCreator: NodeCreator {
