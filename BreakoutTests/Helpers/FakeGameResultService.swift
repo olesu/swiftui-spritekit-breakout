@@ -1,6 +1,6 @@
-import Foundation
+@testable import Breakout
 
-final class RealGameResultService: GameResultService {
+class FakeGameResultService: GameResultService {
     private var _didWin: Bool = false
     private var _score: Int = 0
 

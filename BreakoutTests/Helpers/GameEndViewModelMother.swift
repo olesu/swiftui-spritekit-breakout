@@ -1,12 +1,12 @@
 @testable import Breakout
 
 struct GameEndViewModelMother {
-    static func makeModel(won: Bool, score: Int) -> GameEndViewModel {
+    static func makeModel() -> GameEndViewModel {
         let navigationState = NavigationState()
         let screenNavigationService = RealScreenNavigationService(
             navigationState: navigationState
         )
-        let gameResultService = FakeGameResultService(won: won, score: score)
+        let gameResultService = FakeGameResultService()
         return
             GameEndViewModel(
                 screenNavigationService: screenNavigationService,
@@ -14,19 +14,35 @@ struct GameEndViewModelMother {
             )
     }
 
-    static func makeModelAndNavigationState(won: Bool, score: Int) -> (
+    static func makeModelAndNavigationState() -> (
         GameEndViewModel, NavigationState
     ) {
         let navigationState = NavigationState()
         let screenNavigationService = RealScreenNavigationService(
             navigationState: navigationState
         )
-        let gameResultService = FakeGameResultService(won: won, score: score)
+        let gameResultService = FakeGameResultService()
         return (
             GameEndViewModel(
                 screenNavigationService: screenNavigationService,
                 gameResultService: gameResultService
             ), navigationState
+        )
+    }
+
+    static func makeModelAndGameResultService() -> (
+        GameEndViewModel, FakeGameResultService
+    ) {
+        let navigationState = NavigationState()
+        let screenNavigationService = RealScreenNavigationService(
+            navigationState: navigationState
+        )
+        let gameResultService = FakeGameResultService()
+        return (
+            GameEndViewModel(
+                screenNavigationService: screenNavigationService,
+                gameResultService: gameResultService
+            ), gameResultService
         )
     }
 }

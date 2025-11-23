@@ -93,5 +93,8 @@ private class PreviewGameResultService: GameResultService {
     var score: Int {
         0
     }
+
+    func save(didWin: Bool, score: Int) {
+    }
 }
 #endif

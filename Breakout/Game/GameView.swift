@@ -10,12 +10,14 @@ struct GameView: View {
     init(
         configurationService: GameConfigurationService,
         screenNavigationService: ScreenNavigationService,
-        storage: InMemoryStorage
+        storage: InMemoryStorage,
+        gameResultService: GameResultService
     ) {
         self.storage = storage
         self.viewModel = GameViewModel(
             configurationService: configurationService,
-            screenNavigationService: screenNavigationService
+            screenNavigationService: screenNavigationService,
+            gameResultService: gameResultService
         )
     }
 
@@ -105,7 +107,8 @@ struct GameView: View {
         GameView(
             configurationService: configurationService,
             screenNavigationService: screenNavigationService,
-            storage: storage
+            storage: storage,
+            gameResultService: RealGameResultService()
         )
         .frame(
             width: configurationService.getGameConfiguration().sceneWidth

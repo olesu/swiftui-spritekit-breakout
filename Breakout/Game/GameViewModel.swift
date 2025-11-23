@@ -8,7 +8,8 @@ import SwiftUI
 /// and imperative SpriteKit.
 @Observable internal final class GameViewModel {
     private let screenNavigationService: ScreenNavigationService
-    
+    private let gameResultService: GameResultService
+
     // Configuration (loaded once at initialization)
     internal let sceneSize: CGSize
     internal let brickArea: CGRect
@@ -28,7 +29,8 @@ import SwiftUI
     ///   - configurationService: Service providing scene dimensions and layout configuration.
     internal init(
         configurationService: GameConfigurationService,
-        screenNavigationService: ScreenNavigationService
+        screenNavigationService: ScreenNavigationService,
+        gameResultService: GameResultService
     ) {
         let config = configurationService.getGameConfiguration()
         self.sceneSize = CGSize(
@@ -42,6 +44,7 @@ import SwiftUI
             height: config.brickArea.height
         )
         self.screenNavigationService = screenNavigationService
+        self.gameResultService = gameResultService
     }
 
     /// Sets the game engine for this view model.
@@ -84,6 +87,10 @@ import SwiftUI
     
     private func handleScreenNavigation(_ engine: GameEngine) {
         if engine.currentState == .gameOver || engine.currentState == .won {
+            gameResultService.save(
+                didWin: engine.currentState == .won,
+                score: engine.currentScore
+            )
             screenNavigationService.navigate(to: .gameEnd)
         }
     }

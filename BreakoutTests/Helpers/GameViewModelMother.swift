@@ -1,22 +1,29 @@
 @testable import Breakout
 
-struct GameViewModelMother {
-    static func makeGameViewModel() -> GameViewModel {
-        return GameViewModel(
-            configurationService: FakeGameConfigurationService(),
-            screenNavigationService: FakeScreenNavigationService()
-        )
-    }
+struct GameViewModelTestContext {
+    let viewModel: GameViewModel
+    let navigationService: FakeScreenNavigationService
+    let gameResultService: FakeGameResultService
+    let configurationService: FakeGameConfigurationService
+}
 
-    static func makeGameViewModelAndScreenNavigationService() -> (
-        GameViewModel, FakeScreenNavigationService
-    ) {
+struct GameViewModelMother {
+    static func makeContext() -> GameViewModelTestContext {
+        let configurationService = FakeGameConfigurationService()
         let navigationService = FakeScreenNavigationService()
-        return (
-            GameViewModel(
-                configurationService: FakeGameConfigurationService(),
-                screenNavigationService: navigationService
-            ), navigationService
+        let gameResultService = FakeGameResultService()
+
+        let viewModel = GameViewModel(
+            configurationService: configurationService,
+            screenNavigationService: navigationService,
+            gameResultService: gameResultService
+        )
+
+        return GameViewModelTestContext(
+            viewModel: viewModel,
+            navigationService: navigationService,
+            gameResultService: gameResultService,
+            configurationService: configurationService
         )
     }
 }
