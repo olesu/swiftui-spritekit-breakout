@@ -5,7 +5,7 @@ import Foundation
     private let gameResultService: GameResultService
 
     internal var message: String {
-        "YOU WON!"
+        gameResultService.didWin() ? "YOU WON!" : "GAME OVER"
     }
 
     internal init(screenNavigationService: ScreenNavigationService, gameResultService: GameResultService) {

@@ -29,6 +29,18 @@ struct GameEndViewModelTest {
 
         #expect(viewModel.message == "YOU WON!")
     }
+
+    @Test func showsGameOverMessageWhenLivesRunOut() async throws {
+        let navigationState = NavigationState()
+        let screenNavigationService = RealScreenNavigationService(navigationState: navigationState)
+        let gameResultService = FakeGameResultService(won: false)
+        let viewModel = GameEndViewModel(
+            screenNavigationService: screenNavigationService,
+            gameResultService: gameResultService
+        )
+
+        #expect(viewModel.message == "GAME OVER")
+    }
 }
 
 struct FakeGameResultService: GameResultService {
