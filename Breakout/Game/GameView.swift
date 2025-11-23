@@ -6,6 +6,11 @@ struct GameView: View {
     private let viewModel: GameViewModel
     private let storage: InMemoryStorage
     @State private var scene: GameScene?
+    @State private var paddleXPosition: CGFloat = 0
+    @State private var isMovingLeft = false
+    @State private var isMovingRight = false
+    @State private var movementTimer: Timer?
+    @FocusState private var isFocused: Bool
 
     init(
         configurationService: GameConfigurationService,
@@ -28,20 +33,73 @@ struct GameView: View {
                     scene: scene,
                     debugOptions: [.showsPhysics, .showsFPS, .showsNodeCount]
                 )
+                .focusable()
+                .focused($isFocused)
                 .gesture(
                     DragGesture(minimumDistance: 0)
                         .onChanged { value in
+                            paddleXPosition = value.location.x
                             scene.movePaddle(to: value.location)
                         }
                 )
+                #if os(macOS)
+                .onKeyPress(.leftArrow) {
+                    isMovingLeft = true
+                    return .handled
+                }
+                .onKeyPress(.rightArrow) {
+                    isMovingRight = true
+                    return .handled
+                }
+                .onKeyPress(keys: [.leftArrow, .rightArrow], phases: .up) { press in
+                    if press.key == .leftArrow {
+                        isMovingLeft = false
+                    } else if press.key == .rightArrow {
+                        isMovingRight = false
+                    }
+                    return .handled
+                }
+                #endif
             }
         }
         .onAppear {
             if scene == nil {
                 scene = setupGame()
+                paddleXPosition = viewModel.sceneSize.width / 2
+            }
+            isFocused = true
+        }
+        #if os(macOS)
+        .onChange(of: isMovingLeft) { _, _ in
+            updatePaddleMovement()
+        }
+        .onChange(of: isMovingRight) { _, _ in
+            updatePaddleMovement()
+        }
+        #endif
+    }
+
+    #if os(macOS)
+    private func updatePaddleMovement() {
+        guard let scene = scene else { return }
+
+        movementTimer?.invalidate()
+
+        if isMovingLeft || isMovingRight {
+            movementTimer = Timer.scheduledTimer(withTimeInterval: 0.016, repeats: true) { [self] timer in
+                let paddleSpeed: CGFloat = 8.0
+                if isMovingLeft {
+                    paddleXPosition = max(0, paddleXPosition - paddleSpeed)
+                }
+                if isMovingRight {
+                    paddleXPosition = min(viewModel.sceneSize.width, paddleXPosition + paddleSpeed)
+                }
+
+                scene.movePaddle(to: CGPoint(x: paddleXPosition, y: 0))
             }
         }
     }
+    #endif
 
     private func setupGame() -> GameScene {
         let (nodes, bricks) = createNodesAndCollectBricks()
