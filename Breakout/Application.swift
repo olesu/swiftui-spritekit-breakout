@@ -19,7 +19,8 @@ struct Application: App {
         let gameStateStorage = InMemoryStorage()
 
         // Game result service - tracks game outcome for end screen
-        let gameResultService = RealGameResultService()
+        let gameResultAdapter = InMemoryGameResultAdapter(storage: gameStateStorage)
+        let gameResultService = RealGameResultService(adapter: gameResultAdapter)
 
         // Configuration services
         let gameConfigurationService = RealGameConfigurationService(

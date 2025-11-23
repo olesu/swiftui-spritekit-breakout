@@ -1,19 +1,21 @@
 import Foundation
 
 final class RealGameResultService: GameResultService {
-    private var _didWin: Bool = false
-    private var _score: Int = 0
+    private let adapter: GameResultAdapter
+
+    init(adapter: GameResultAdapter) {
+        self.adapter = adapter
+    }
 
     var didWin: Bool {
-        _didWin
+        adapter.didWin
     }
 
     var score: Int {
-        _score
+        adapter.score
     }
 
     func save(didWin: Bool, score: Int) {
-        _didWin = didWin
-        _score = score
+        adapter.save(didWin: didWin, score: score)
     }
 }

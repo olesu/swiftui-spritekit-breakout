@@ -104,11 +104,13 @@ struct GameView: View {
             navigationState: NavigationState()
         )
         let storage = InMemoryStorage()
+        let gameResultAdapter = InMemoryGameResultAdapter(storage: storage)
+        let gameResultService = RealGameResultService(adapter: gameResultAdapter)
         GameView(
             configurationService: configurationService,
             screenNavigationService: screenNavigationService,
             storage: storage,
-            gameResultService: RealGameResultService()
+            gameResultService: gameResultService
         )
         .frame(
             width: configurationService.getGameConfiguration().sceneWidth
