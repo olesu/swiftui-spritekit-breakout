@@ -32,6 +32,10 @@ struct GameEndView: View {
                         .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 2)
                         .shadow(color: .red.opacity(0.6), radius: 8, x: 0, y: 0)
 
+                    Text("Score: \(viewModel.score)")
+                        .font(.system(size: geometry.size.width * 0.06, weight: .bold, design: .rounded))
+                        .foregroundColor(.white)
+
                     Button(action: {
                         Task {
                             await viewModel.playAgain()
@@ -82,8 +86,12 @@ private class PreviewScreenNavigationService: ScreenNavigationService {
 }
 
 private class PreviewGameResultService: GameResultService {
-    func didWin() -> Bool {
+    var didWin: Bool {
         false
+    }
+
+    var score: Int {
+        0
     }
 }
 #endif

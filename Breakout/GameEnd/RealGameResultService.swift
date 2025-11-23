@@ -1,7 +1,11 @@
 import Foundation
 
 final class RealGameResultService: GameResultService {
-    func didWin() -> Bool {
+    var didWin: Bool {
         false
+    }
+
+    var score: Int {
+        0
     }
 }

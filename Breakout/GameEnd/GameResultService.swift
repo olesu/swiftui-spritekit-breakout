@@ -1,5 +1,6 @@
 import Foundation
 
 protocol GameResultService {
-    func didWin() -> Bool
+    var didWin: Bool { get }
+    var score: Int { get }
 }

@@ -3,15 +3,12 @@ import Testing
 @testable import Breakout
 
 struct GameEndViewModelTest {
-
     @Test func canPlayAgain() async throws {
-        let navigationState = NavigationState()
-        let screenNavigationService = RealScreenNavigationService(navigationState: navigationState)
-        let gameResultService = FakeGameResultService(won: true)
-        let viewModel = GameEndViewModel(
-            screenNavigationService: screenNavigationService,
-            gameResultService: gameResultService
-        )
+        let (viewModel, navigationState) =
+            GameEndViewModelMother.makeModelAndNavigationState(
+                won: true,
+                score: 0
+            )
 
         await viewModel.playAgain()
 
@@ -19,35 +16,39 @@ struct GameEndViewModelTest {
     }
 
     @Test func showsYouWonMessageWhenGameWasWon() async throws {
-        let navigationState = NavigationState()
-        let screenNavigationService = RealScreenNavigationService(navigationState: navigationState)
-        let gameResultService = FakeGameResultService(won: true)
-        let viewModel = GameEndViewModel(
-            screenNavigationService: screenNavigationService,
-            gameResultService: gameResultService
-        )
+        let viewModel = GameEndViewModelMother.makeModel(won: true, score: 0)
 
         #expect(viewModel.message == "YOU WON!")
     }
 
     @Test func showsGameOverMessageWhenLivesRunOut() async throws {
-        let navigationState = NavigationState()
-        let screenNavigationService = RealScreenNavigationService(navigationState: navigationState)
-        let gameResultService = FakeGameResultService(won: false)
-        let viewModel = GameEndViewModel(
-            screenNavigationService: screenNavigationService,
-            gameResultService: gameResultService
-        )
+        let viewModel = GameEndViewModelMother.makeModel(won: false, score: 0)
 
         #expect(viewModel.message == "GAME OVER")
+    }
+
+    @Test func exposesTheFinalScore() async throws {
+        let viewModel = GameEndViewModelMother.makeModel(won: true, score: 1234)
+
+        #expect(viewModel.score == 1234)
     }
 }
 
 struct FakeGameResultService: GameResultService {
-    let won: Bool
+    private let _won: Bool
+    private let _score: Int
 
-    func didWin() -> Bool {
-        won
+    init(won: Bool, score: Int) {
+        self._won = won
+        self._score = score
+    }
+
+    var didWin: Bool {
+        _won
+    }
+
+    var score: Int {
+        _score
     }
 
 }
