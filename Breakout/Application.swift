@@ -45,7 +45,7 @@ struct Application: App {
                         storage: gameStateStorage
                     )
                 case .gameEnd:
-                    Text("TODO: Game End Screen")
+                    GameEndView(screenNavigationService: screenNavigationService)
                 }
             }
             .frame(
