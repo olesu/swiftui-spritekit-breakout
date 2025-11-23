@@ -61,15 +61,29 @@ import SwiftUI
 
         engine.process(event: event)
 
+        handleScoreChange(engine)
+        handleLivesChange(engine)
+        handleBallReset(engine)
+        handleScreenNavigation(engine)
+    }
+    
+    private func handleScoreChange(_ engine: GameEngine) {
         onScoreChanged?(engine.currentScore)
+    }
+    
+    private func handleLivesChange(_ engine: GameEngine) {
         onLivesChanged?(engine.remainingLives)
-
+    }
+    
+    private func handleBallReset(_ engine: GameEngine) {
         if engine.shouldResetBall {
             onBallResetNeeded?()
             engine.acknowledgeBallReset()
         }
-        
-        if engine.currentState == .gameOver {
+    }
+    
+    private func handleScreenNavigation(_ engine: GameEngine) {
+        if engine.currentState == .gameOver || engine.currentState == .won {
             screenNavigationService.navigate(to: .gameEnd)
         }
     }

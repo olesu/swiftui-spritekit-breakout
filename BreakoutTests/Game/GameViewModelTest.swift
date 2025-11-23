@@ -17,7 +17,17 @@ struct GameViewModelTest {
         let engine = GameEngineMother.makeEngineNearGameOver(autoStart: true)
         viewModel.setEngine(engine)
         viewModel.handleGameEvent(.ballLost)
-        
+
+        #expect(fakeScreenNavigationService.navigatedTo == .gameEnd)
+    }
+
+    @Test func navigatesToGameEndWhenEngineTransitionsToWon() async throws {
+        let (viewModel, fakeScreenNavigationService) =
+            GameViewModelMother.makeGameViewModelAndScreenNavigationService()
+        let (engine, brickId) = GameEngineMother.makeEngineWithSingleBrick(autoStart: true)
+        viewModel.setEngine(engine)
+        viewModel.handleGameEvent(.brickHit(brickID: brickId))
+
         #expect(fakeScreenNavigationService.navigatedTo == .gameEnd)
     }
 
