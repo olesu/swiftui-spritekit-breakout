@@ -14,10 +14,7 @@ struct GameEndView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                Image("IdleScreenBackground")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .ignoresSafeArea()
+                IdleBackground()
 
                 VStack(spacing: geometry.size.height * 0.05) {
                     Text(viewModel.message)

@@ -13,10 +13,7 @@ struct IdleView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                Image("IdleScreenBackground")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .ignoresSafeArea()
+                IdleBackground()
 
                 GameButton(title: "PLAY", action: {
                     Task {
