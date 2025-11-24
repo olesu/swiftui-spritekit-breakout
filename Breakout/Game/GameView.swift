@@ -67,6 +67,9 @@ struct GameView: View {
                 scene = setupGame()
                 paddleXPosition = viewModel.sceneSize.width / 2
             }
+        }
+        .task {
+            try? await Task.sleep(for: .milliseconds(100))
             isFocused = true
         }
         #if os(macOS)

@@ -3,6 +3,7 @@ import SwiftUI
 
 struct IdleView: View {
     @State private var viewModel: IdleViewModel
+    @FocusState private var isFocused: Bool
 
     init(screenNavigationService: ScreenNavigationService) {
         self._viewModel = State(initialValue: IdleViewModel(
@@ -16,11 +17,27 @@ struct IdleView: View {
                 IdleBackground()
 
                 GameButton(title: "PLAY", action: {
+                    isFocused = false
                     Task {
                         await viewModel.startNewGame()
                     }
                 }, geometry: geometry)
             }
+            .focusable()
+            .focused($isFocused)
+            .task {
+                try? await Task.sleep(for: .milliseconds(100))
+                isFocused = true
+            }
+            #if os(macOS)
+            .onKeyPress(.space) {
+                isFocused = false
+                Task {
+                    await viewModel.startNewGame()
+                }
+                return .handled
+            }
+            #endif
         }
     }
 }

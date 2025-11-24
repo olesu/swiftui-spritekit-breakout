@@ -3,6 +3,7 @@ import SwiftUI
 
 struct GameEndView: View {
     @State private var viewModel: GameEndViewModel
+    @FocusState private var isFocused: Bool
 
     init(screenNavigationService: ScreenNavigationService, gameResultService: GameResultService) {
         self._viewModel = State(initialValue: GameEndViewModel(
@@ -34,12 +35,28 @@ struct GameEndView: View {
                         .foregroundColor(.white)
 
                     GameButton(title: "PLAY AGAIN", action: {
+                        isFocused = false
                         Task {
                             await viewModel.playAgain()
                         }
                     }, geometry: geometry)
                 }
             }
+            .focusable()
+            .focused($isFocused)
+            .task {
+                try? await Task.sleep(for: .milliseconds(100))
+                isFocused = true
+            }
+            #if os(macOS)
+            .onKeyPress(.space) {
+                isFocused = false
+                Task {
+                    await viewModel.playAgain()
+                }
+                return .handled
+            }
+            #endif
         }
     }
 }
