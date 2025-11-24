@@ -59,6 +59,10 @@ struct GameView: View {
                     }
                     return .handled
                 }
+                .onKeyPress(.space) {
+                    scene.launchBall()
+                    return .handled
+                }
                 #endif
             }
         }

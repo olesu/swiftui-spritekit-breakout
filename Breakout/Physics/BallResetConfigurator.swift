@@ -2,12 +2,9 @@ import SpriteKit
 
 internal struct BallResetConfigurator {
     private let resetPosition: CGPoint
-    private let resetVelocity: CGVector
 
-    internal init(resetPosition: CGPoint = CGPoint(x: 160, y: 50),
-                  resetVelocity: CGVector = CGVector(dx: 200, dy: 300)) {
+    internal init(resetPosition: CGPoint = CGPoint(x: 160, y: 50)) {
         self.resetPosition = resetPosition
-        self.resetVelocity = resetVelocity
     }
 
     internal func prepareForReset(_ ball: SKNode) {
@@ -33,6 +30,5 @@ internal struct BallResetConfigurator {
             | CollisionCategory.paddle.mask
 
         ball.alpha = 1
-        ball.physicsBody?.velocity = resetVelocity
     }
 }

@@ -21,7 +21,7 @@ struct BallResetConfiguratorTest {
         #expect(ball.alpha == 0)
     }
 
-    @Test("Performs ball reset with correct position and velocity") @MainActor
+    @Test("Performs ball reset with correct position and zero velocity") @MainActor
     func performsBallReset() {
         let ball = SKSpriteNode()
         ball.position = CGPoint(x: 250, y: 10)
@@ -34,7 +34,7 @@ struct BallResetConfiguratorTest {
         configurator.performReset(ball)
 
         #expect(ball.position == CGPoint(x: 160, y: 50))
-        #expect(ball.physicsBody?.velocity == CGVector(dx: 200, dy: 300))
+        #expect(ball.physicsBody?.velocity == CGVector.zero)
         #expect(ball.physicsBody?.angularVelocity == 0)
         #expect(ball.alpha == 1)
     }

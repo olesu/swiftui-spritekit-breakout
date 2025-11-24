@@ -8,6 +8,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private var brickNodeManager: BrickNodeManager?
     private let ballResetConfigurator = BallResetConfigurator()
     private let paddleBounceApplier = PaddleBounceApplier()
+    private var isBallClamped = true
 
     internal init(
         size: CGSize,
@@ -30,6 +31,12 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
 
         if let brickLayout = gameNodes[.brickLayout] {
             brickNodeManager = BrickNodeManager(brickLayout: brickLayout)
+        }
+    }
+
+    override internal func update(_ currentTime: TimeInterval) {
+        if isBallClamped {
+            clampBallToPaddle()
         }
     }
 
@@ -125,14 +132,37 @@ extension GameScene {
         guard let ball = gameNodes[.ball] else { return }
 
         ballResetConfigurator.prepareForReset(ball)
+        isBallClamped = true
 
         let waitAction = SKAction.wait(forDuration: 0.5)
-        let resetAction = SKAction.run { [weak ball, ballResetConfigurator] in
+        let resetAction = SKAction.run { [weak ball, weak self, ballResetConfigurator] in
             guard let ball = ball else { return }
             ballResetConfigurator.performReset(ball)
+            self?.clampBallToPaddle()
         }
 
         ball.run(SKAction.sequence([waitAction, resetAction]))
+    }
+
+    internal func launchBall() {
+        guard isBallClamped,
+              let ball = gameNodes[.ball],
+              let ballBody = ball.physicsBody else { return }
+
+        isBallClamped = false
+        ballBody.velocity = CGVector(dx: 0, dy: 360)
+    }
+
+    private func clampBallToPaddle() {
+        guard let ball = gameNodes[.ball],
+              let paddle = gameNodes[.paddle] else { return }
+
+        let paddleTop = paddle.position.y + paddle.frame.height / 2
+        let ballRadius = ball.frame.width / 2
+        ball.position = CGPoint(
+            x: paddle.position.x,
+            y: paddleTop + ballRadius
+        )
     }
 
     private func adjustBallVelocityForPaddleHit() {
