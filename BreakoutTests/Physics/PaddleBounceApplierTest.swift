@@ -4,21 +4,11 @@ import SpriteKit
 
 @Suite("PaddleBounceApplier Tests")
 struct PaddleBounceApplierTest {
-
     @Test("Applies correct velocity for center hit") @MainActor
     func appliesCorrectVelocityForCenterHit() {
-        let ball = SKSpriteNode()
-        ball.position = CGPoint(x: 160, y: 50)
-        ball.physicsBody = SKPhysicsBody(circleOfRadius: 4)
-        ball.physicsBody?.velocity = CGVector(dx: 200, dy: -300)
-
-        let paddle = SKSpriteNode()
-        paddle.position = CGPoint(x: 160, y: 40)
-        let paddleSize = CGSize(width: 40, height: 8)
-        paddle.physicsBody = SKPhysicsBody(rectangleOf: paddleSize)
-
-        let applier = PaddleBounceApplier()
-        applier.applyBounce(ball: ball, paddle: paddle)
+        let ball = makeBall()
+        let paddle = makePaddle()
+        let applier = makeApplier(ball, paddle)
 
         // Center hit should have minimal horizontal component
         let dx = ball.physicsBody?.velocity.dx ?? 0
@@ -30,18 +20,10 @@ struct PaddleBounceApplierTest {
 
     @Test("Applies correct velocity for left edge hit") @MainActor
     func appliesCorrectVelocityForLeftEdgeHit() {
-        let ball = SKSpriteNode()
-        ball.position = CGPoint(x: 140, y: 50)  // Left of paddle center
-        ball.physicsBody = SKPhysicsBody(circleOfRadius: 4)
-        ball.physicsBody?.velocity = CGVector(dx: 100, dy: -300)
-
-        let paddle = SKSpriteNode()
-        paddle.position = CGPoint(x: 160, y: 40)
-        let paddleSize = CGSize(width: 40, height: 8)
-        paddle.physicsBody = SKPhysicsBody(rectangleOf: paddleSize)
-
-        let applier = PaddleBounceApplier()
-        applier.applyBounce(ball: ball, paddle: paddle)
+        let ball = makeBall()
+        ball.position.x = 140  // Left of paddle center
+        let paddle = makePaddle()
+        let applier = makeApplier(ball, paddle)
 
         let dx = ball.physicsBody?.velocity.dx ?? 0
         let dy = ball.physicsBody?.velocity.dy ?? 0
@@ -52,18 +34,10 @@ struct PaddleBounceApplierTest {
 
     @Test("Applies correct velocity for right edge hit") @MainActor
     func appliesCorrectVelocityForRightEdgeHit() {
-        let ball = SKSpriteNode()
-        ball.position = CGPoint(x: 180, y: 50)  // Right of paddle center
-        ball.physicsBody = SKPhysicsBody(circleOfRadius: 4)
-        ball.physicsBody?.velocity = CGVector(dx: -100, dy: -300)
-
-        let paddle = SKSpriteNode()
-        paddle.position = CGPoint(x: 160, y: 40)
-        let paddleSize = CGSize(width: 40, height: 8)
-        paddle.physicsBody = SKPhysicsBody(rectangleOf: paddleSize)
-
-        let applier = PaddleBounceApplier()
-        applier.applyBounce(ball: ball, paddle: paddle)
+        let ball = makeBall()
+        ball.position.x = 180  // Right of paddle center
+        let paddle = makePaddle()
+        let applier = makeApplier(ball, paddle)
 
         let dx = ball.physicsBody?.velocity.dx ?? 0
         let dy = ball.physicsBody?.velocity.dy ?? 0
@@ -91,4 +65,30 @@ struct PaddleBounceApplierTest {
         paddle.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 40, height: 8))
         applier.applyBounce(ball: ball, paddle: paddle)
     }
+    
+    private func makeBall() -> SKSpriteNode {
+        let ball = SKSpriteNode()
+        ball.position = CGPoint(x: 160, y: 50)
+        ball.physicsBody = SKPhysicsBody(circleOfRadius: 4)
+        ball.physicsBody?.velocity = CGVector(dx: 200, dy: -300)
+
+        return ball
+    }
+    
+    private func makePaddle() -> SKSpriteNode {
+        let paddleSize = CGSize(width: 40, height: 8)
+        let paddle = SKSpriteNode(color: .white, size: paddleSize)
+        paddle.position = CGPoint(x: 160, y: 40)
+        paddle.physicsBody = SKPhysicsBody(rectangleOf: paddleSize)
+
+        return paddle
+    }
+    
+    private func makeApplier(_ ball: SKSpriteNode, _ paddle: SKSpriteNode) -> PaddleBounceApplier {
+        let applier = PaddleBounceApplier()
+        applier.applyBounce(ball: ball, paddle: paddle)
+
+        return applier
+    }
+
 }

@@ -28,7 +28,9 @@ internal struct PaddlePhysicsBodyConfigurer {
     internal let physicsBody: SKPhysicsBody
 
     internal init(paddleSize: CGSize) {
-        physicsBody = SKPhysicsBody(rectangleOf: paddleSize)
+        let topEdgeStart = CGPoint(x: -paddleSize.width / 2, y: paddleSize.height / 2)
+        let topEdgeEnd = CGPoint(x: paddleSize.width / 2, y: paddleSize.height / 2)
+        physicsBody = SKPhysicsBody(edgeFrom: topEdgeStart, to: topEdgeEnd)
         physicsBody.isDynamic = false
         physicsBody.categoryBitMask = CollisionCategory.paddle.mask
         physicsBody.contactTestBitMask = CollisionCategory.ball.mask
