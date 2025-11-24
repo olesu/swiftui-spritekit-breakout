@@ -31,7 +31,7 @@ struct GameView: View {
             if let scene = scene {
                 SpriteView(
                     scene: scene,
-                    debugOptions: [.showsPhysics, .showsFPS, .showsNodeCount]
+                    debugOptions: [/*.showsPhysics,*/ .showsFPS, .showsNodeCount]
                 )
                 .focusable()
                 .focused($isFocused)
