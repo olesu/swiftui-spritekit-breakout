@@ -17,7 +17,10 @@ import SwiftUI
     internal let brickArea: CGRect
 
     // Runtime state
-    private var currentState: GameState
+    private var currentState: GameState {
+        repository.load()
+    }
+    
     private var engine: GameEngine?
     internal var currentScore: Int {
         currentState.score
@@ -47,7 +50,6 @@ import SwiftUI
     ) {
         self.service = service
         self.repository = repository
-        self.currentState = repository.load()
 
         let config = configurationService.getGameConfiguration()
         self.sceneSize = CGSize(
@@ -103,8 +105,8 @@ import SwiftUI
     }
     
     internal func startGame() {
-        currentState = service.startGame(state: currentState)
-        repository.save(currentState)
+        let state = service.startGame(state: currentState)
+        repository.save(state)
     }
     
     private func handleScoreChange(_ engine: GameEngine) {

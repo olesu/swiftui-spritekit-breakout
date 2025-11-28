@@ -5,30 +5,34 @@ import Testing
 @testable import Breakout
 
 struct GameViewModelTest {
+    let repository = InMemoryGameStateRepository()
+    let service = BreakoutGameService()
+    let configService = FakeGameConfigurationService()
+    let navService = FakeScreenNavigationService()
+    let resultService = FakeGameResultService()
+
+    let viewModel: GameViewModel
+
+    init() async throws {
+        viewModel = GameViewModel(
+            service: service,
+            repository: repository,
+            configurationService: configService,
+            screenNavigationService: navService,
+            gameResultService: resultService
+        )
+    }
 
     @Test func receivesScreenNavigationService() async throws {
         let _ = GameViewModelMother.makeContext()
     }
 
     @Test func initialization_loadsStateFromRepository() async throws {
-        let repository = InMemoryGameStateRepository()
-        let savedState = GameState.initial
-            .with(score: 50)
-            .with(lives: 2)
-            .with(status: .playing)
-        repository.save(savedState)
-
-        let service = BreakoutGameService()
-        let configService = FakeGameConfigurationService()
-        let navService = FakeScreenNavigationService()
-        let resultService = FakeGameResultService()
-
-        let viewModel = GameViewModel(
-            service: service,
-            repository: repository,
-            configurationService: configService,
-            screenNavigationService: navService,
-            gameResultService: resultService
+        repository.save(
+            GameState.initial
+                .with(score: 50)
+                .with(lives: 2)
+                .with(status: .playing)
         )
 
         #expect(viewModel.currentScore == 50)
@@ -36,40 +40,12 @@ struct GameViewModelTest {
     }
 
     @Test func testStartGame_callsServiceAndSavesState() async throws {
-        let repository = InMemoryGameStateRepository()
-        let service = BreakoutGameService()
-        let configService = FakeGameConfigurationService()
-        let navService = FakeScreenNavigationService()
-        let resultService = FakeGameResultService()
-
-        let viewModel = GameViewModel(
-            service: service,
-            repository: repository,
-            configurationService: configService,
-            screenNavigationService: navService,
-            gameResultService: resultService
-        )
-        
         viewModel.startGame()
 
         #expect(repository.load().status == .playing)
     }
 
     @Test func startGame_transitionsToPlayingAndSavesState() async throws {
-        let repository = InMemoryGameStateRepository()
-        let service = BreakoutGameService()
-        let configService = FakeGameConfigurationService()
-        let navService = FakeScreenNavigationService()
-        let resultService = FakeGameResultService()
-
-        let viewModel = GameViewModel(
-            service: service,
-            repository: repository,
-            configurationService: configService,
-            screenNavigationService: navService,
-            gameResultService: resultService
-        )
-
         viewModel.startGame()
 
         let savedState = repository.load()
