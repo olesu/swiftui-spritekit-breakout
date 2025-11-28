@@ -13,7 +13,7 @@ struct BreakoutGameEngineTest {
 
         engine.process(event: .ballLost)
 
-        #expect(engine.currentState == .gameOver)
+        #expect(engine.currentStatus == .gameOver)
     }
 
     @Test func engineTransitionsToWonStateWhenAllBricksAreBroken() async throws
@@ -24,7 +24,7 @@ struct BreakoutGameEngineTest {
 
         engine.process(event: .brickHit(brickID: brickId))
 
-        #expect(engine.currentState == .won)
+        #expect(engine.currentStatus == .won)
     }
 
     @Test func engineStopsProcessingEventsAfterGameOver() async throws {
@@ -35,7 +35,7 @@ struct BreakoutGameEngineTest {
         engine.process(event: .ballLost)
         engine.process(event: .brickHit(brickID: BrickId(of: "test-brick-1")))
 
-        #expect(engine.currentState == .gameOver)
+        #expect(engine.currentStatus == .gameOver)
     }
 
     // MARK: - Score Management

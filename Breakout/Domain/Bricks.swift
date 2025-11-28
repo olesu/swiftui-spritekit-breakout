@@ -45,7 +45,7 @@ internal enum BrickColor {
 }
 
 /// Represents a single brick in the game.
-internal struct Brick {
+internal struct Brick: Equatable {
     internal let id: BrickId
     internal let color: BrickColor
 

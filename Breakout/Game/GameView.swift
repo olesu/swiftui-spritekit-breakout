@@ -128,7 +128,7 @@ struct GameView: View {
 
     private func createEngine(with bricks: Bricks) -> GameEngine {
         let adapter = InMemoryGameStateAdapter(storage: storage)
-        return BreakoutGameEngine(bricks: bricks, stateAdapter: adapter)
+        return BreakoutGameEngine(bricks: bricks, statusAdapter: adapter)
     }
 
     private func createScene(with nodes: [NodeNames: SKNode]) -> GameScene {

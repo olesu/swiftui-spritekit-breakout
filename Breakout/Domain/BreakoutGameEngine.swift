@@ -9,13 +9,13 @@ internal final class BreakoutGameEngine: GameEngine {
     private var bricks: Bricks
     private var scoreCard: ScoreCard
     private var livesCard: LivesCard
-    private var gameState: GameState {
+    private var gameStatus: GameStatus {
         didSet {
-            stateAdapter.save(gameState)
+            statusAdapter.save(gameStatus)
         }
     }
     private var ballResetNeeded: Bool = false
-    private let stateAdapter: GameStateAdapter
+    private let statusAdapter: GameStatusAdapter
 
     internal var currentScore: Int {
         scoreCard.total
@@ -25,8 +25,8 @@ internal final class BreakoutGameEngine: GameEngine {
         livesCard.remaining
     }
 
-    internal var currentState: GameState {
-        gameState
+    internal var currentStatus: GameStatus {
+        gameStatus
     }
 
     internal var shouldResetBall: Bool {
@@ -40,26 +40,26 @@ internal final class BreakoutGameEngine: GameEngine {
     /// Initializes a new game engine with the specified brick configuration.
     /// - Parameters:
     ///   - bricks: The brick registry containing all bricks for this game session.
-    ///   - stateAdapter: The adapter for persisting game state.
+    ///   - statusAdapter: The adapter for persisting game state.
     ///   - lives: The starting number of lives for the player (default: 3).
-    internal init(bricks: Bricks, stateAdapter: GameStateAdapter, lives: Int = 3) {
+    internal init(bricks: Bricks, statusAdapter: GameStatusAdapter, lives: Int = 3) {
         self.bricks = bricks
         self.scoreCard = ScoreCard()
         self.livesCard = LivesCard(lives)
-        self.stateAdapter = stateAdapter
-        self.gameState = .idle
-        stateAdapter.save(.idle)
+        self.statusAdapter = statusAdapter
+        self.gameStatus = .idle
+        statusAdapter.save(.idle)
     }
 
     internal func start() {
-        guard gameState == .idle else {
+        guard gameStatus == .idle else {
             return
         }
-        gameState = .playing
+        gameStatus = .playing
     }
 
     internal func process(event: GameEvent) {
-        guard gameState == .playing else {
+        guard gameStatus == .playing else {
             return
         }
 
@@ -75,13 +75,13 @@ internal final class BreakoutGameEngine: GameEngine {
             scoreCard.score(brick.color.pointValue)
 
             if !bricks.someRemaining {
-                gameState = .won
+                gameStatus = .won
             }
         case .ballLost:
             livesCard.lifeWasLost()
 
             if livesCard.gameOver {
-                gameState = .gameOver
+                gameStatus = .gameOver
             } else {
                 ballResetNeeded = true
             }

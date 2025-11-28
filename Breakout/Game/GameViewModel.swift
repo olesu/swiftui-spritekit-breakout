@@ -86,9 +86,9 @@ import SwiftUI
     }
     
     private func handleScreenNavigation(_ engine: GameEngine) {
-        if engine.currentState == .gameOver || engine.currentState == .won {
+        if engine.currentStatus == .gameOver || engine.currentStatus == .won {
             gameResultService.save(
-                didWin: engine.currentState == .won,
+                didWin: engine.currentStatus == .won,
                 score: engine.currentScore
             )
             screenNavigationService.navigate(to: .gameEnd)

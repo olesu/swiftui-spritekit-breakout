@@ -1,13 +1,17 @@
 import Foundation
 
-/// Represents the current state of the game session.
-internal enum GameState {
-    /// Game is idle, waiting to start.
-    case idle
-    /// Game is actively being played.
-    case playing
-    /// Player has won by destroying all bricks.
-    case won
-    /// Player has lost all lives.
-    case gameOver
+internal struct GameState: Equatable {
+    let score: Int
+    let lives: Int
+    let status: GameStatus
+    let bricks: [BrickId: Brick]
+    let ballResetNeeded: Bool
+
+    static let initial = GameState(
+        score: 0,
+        lives: 3,
+        status: .idle,
+        bricks: [:],
+        ballResetNeeded: false
+    )
 }

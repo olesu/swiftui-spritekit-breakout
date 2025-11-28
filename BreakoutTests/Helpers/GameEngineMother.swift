@@ -9,12 +9,12 @@ struct GameEngineMother {
     static func makeEngine(
         bricks: Bricks = Bricks(),
         lives: Int = 3,
-        stateAdapter: GameStateAdapter = FakeGameStateAdapter(),
+        statusAdapter: GameStatusAdapter = FakeGameStatusAdapter(),
         autoStart: Bool = false
     ) -> BreakoutGameEngine {
         let engine = BreakoutGameEngine(
             bricks: bricks,
-            stateAdapter: stateAdapter,
+            statusAdapter: statusAdapter,
             lives: lives
         )
         if autoStart {

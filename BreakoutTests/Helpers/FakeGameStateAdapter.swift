@@ -2,14 +2,14 @@ import Foundation
 
 @testable import Breakout
 
-class FakeGameStateAdapter: GameStateAdapter {
-    var currentState: GameState = .idle
+class FakeGameStatusAdapter: GameStatusAdapter {
+    var currentStatus: GameStatus = .idle
 
-    func save(_ state: GameState) {
-        currentState = state
+    func save(_ state: GameStatus) {
+        currentStatus = state
     }
 
-    func read() -> GameState {
-        currentState
+    func read() -> GameStatus {
+        currentStatus
     }
 }

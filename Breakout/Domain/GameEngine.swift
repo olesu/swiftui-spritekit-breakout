@@ -14,8 +14,8 @@ internal protocol GameEngine {
     /// The number of lives remaining for the player.
     var remainingLives: Int { get }
 
-    /// The current game state.
-    var currentState: GameState { get }
+    /// The current game status.
+    var currentStatus: GameStatus { get }
 
     /// Indicates whether the ball needs to be reset (after losing a life).
     var shouldResetBall: Bool { get }
