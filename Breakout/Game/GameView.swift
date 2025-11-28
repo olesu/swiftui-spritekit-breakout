@@ -113,6 +113,7 @@ struct GameView: View {
     private func setupGame() -> GameScene {
         let (nodes, bricks) = createNodesAndCollectBricks()
         viewModel.initializeBricks(bricks)
+        viewModel.startGame()
         return createScene(with: nodes)
     }
 
