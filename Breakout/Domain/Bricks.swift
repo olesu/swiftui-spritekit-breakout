@@ -48,6 +48,9 @@ internal enum BrickColor {
 internal struct Brick: Equatable {
     internal let id: BrickId
     internal let color: BrickColor
+    internal var value: Int {
+        color.pointValue
+    }
 
     internal init(id: BrickId, color: BrickColor = .green) {
         self.id = id

@@ -94,22 +94,58 @@ import SwiftUI
     /// ball reset if needed.
     /// - Parameter event: The game event to handle.
     internal func handleGameEvent(_ event: GameEvent) {
+        handleGameEventUsingStoredState(event)
+        
         guard let engine = engine else { return }
 
         engine.process(event: event)
+        
+        print("event = \(event)")
 
-        handleScoreChange(engine)
+        handleScoreChange(engine, event)
         handleLivesChange(engine)
         handleBallReset(engine)
         handleScreenNavigation(engine)
+    }
+    
+    internal func handleGameEventUsingStoredState(_ event: GameEvent) {
+        switch event {
+        case let .brickHit(brickID):
+            let state = repository.load()
+            if let brick = state.bricks[brickID] {
+                var updatedBricks = state.bricks
+                updatedBricks.removeValue(forKey: brickID)
+                let newStatus = updatedBricks.isEmpty ? GameStatus.won : state.status
+                repository.save(state
+                    .with(score: state.score + brick.value)
+                    .with(bricks: updatedBricks)
+                    .with(status: newStatus)
+                )
+            }
+        case .ballLost:
+            let state = repository.load()
+            let newLives = state.lives - 1
+            let newStatus = newLives <= 0 ? GameStatus.gameOver : state.status
+            let ballResetNeeded = newLives > 0
+            repository.save(state
+                .with(lives: newLives)
+                .with(status: newStatus)
+                .with(ballResetNeeded: ballResetNeeded)
+            )
+        }
     }
     
     internal func startGame() {
         let state = service.startGame(state: currentState)
         repository.save(state)
     }
+
+    internal func acknowledgeBallReset() {
+        let state = service.acknowledgeBallReset(state: currentState)
+        repository.save(state)
+    }
     
-    private func handleScoreChange(_ engine: GameEngine) {
+    private func handleScoreChange(_ engine: GameEngine, _ event: GameEvent) {
         onScoreChanged?(engine.currentScore)
     }
     
