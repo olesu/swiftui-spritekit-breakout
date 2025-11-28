@@ -7,6 +7,8 @@ import SwiftUI
 /// SpriteKit GameScene updates. Bridges the gap between declarative SwiftUI
 /// and imperative SpriteKit.
 @Observable internal final class GameViewModel {
+    private let service: GameService
+    private let repository: GameStateRepository
     private let screenNavigationService: ScreenNavigationService
     private let gameResultService: GameResultService
 
@@ -15,23 +17,38 @@ import SwiftUI
     internal let brickArea: CGRect
 
     // Runtime state
+    private var currentState: GameState
     private var engine: GameEngine?
-    private(set) internal var currentScore: Int = 0
-    private(set) internal var remainingLives: Int = 3
+    internal var currentScore: Int {
+        currentState.score
+    }
+    internal var remainingLives: Int {
+        currentState.lives
+    }
 
     // Closure-based callbacks for GameScene (non-SwiftUI communication)
     internal var onScoreChanged: ((Int) -> Void)?
     internal var onLivesChanged: ((Int) -> Void)?
     internal var onBallResetNeeded: (() -> Void)?
 
-    /// Initializes the view model with configuration service.
+    /// Initializes the view model with service, repository, and configuration.
     /// - Parameters:
+    ///   - service: The game service for stateless game logic.
+    ///   - repository: Repository for loading/saving game state.
     ///   - configurationService: Service providing scene dimensions and layout configuration.
+    ///   - screenNavigationService: Service for screen navigation.
+    ///   - gameResultService: Service for saving game results.
     internal init(
+        service: GameService,
+        repository: GameStateRepository,
         configurationService: GameConfigurationService,
         screenNavigationService: ScreenNavigationService,
         gameResultService: GameResultService
     ) {
+        self.service = service
+        self.repository = repository
+        self.currentState = repository.load()
+
         let config = configurationService.getGameConfiguration()
         self.sceneSize = CGSize(
             width: config.sceneWidth,
@@ -45,6 +62,21 @@ import SwiftUI
         )
         self.screenNavigationService = screenNavigationService
         self.gameResultService = gameResultService
+    }
+
+    /// DEPRECATED: Temporary backward compatibility initializer
+    internal convenience init(
+        configurationService: GameConfigurationService,
+        screenNavigationService: ScreenNavigationService,
+        gameResultService: GameResultService
+    ) {
+        self.init(
+            service: BreakoutGameService(),
+            repository: InMemoryGameStateRepository(),
+            configurationService: configurationService,
+            screenNavigationService: screenNavigationService,
+            gameResultService: gameResultService
+        )
     }
 
     /// Sets the game engine for this view model.

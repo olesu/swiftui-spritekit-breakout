@@ -10,6 +10,31 @@ struct GameViewModelTest {
         let _ = GameViewModelMother.makeContext()
     }
 
+    @Test func initialization_loadsStateFromRepository() async throws {
+        let repository = InMemoryGameStateRepository()
+        let savedState = GameState.initial
+            .with(score: 50)
+            .with(lives: 2)
+            .with(status: .playing)
+        repository.save(savedState)
+
+        let service = BreakoutGameService()
+        let configService = FakeGameConfigurationService()
+        let navService = FakeScreenNavigationService()
+        let resultService = FakeGameResultService()
+
+        let viewModel = GameViewModel(
+            service: service,
+            repository: repository,
+            configurationService: configService,
+            screenNavigationService: navService,
+            gameResultService: resultService
+        )
+
+        #expect(viewModel.currentScore == 50)
+        #expect(viewModel.remainingLives == 2)
+    }
+
     @Test func navigatesToGameEndWhenEngineTransitionsToGameOver() async throws
     {
         let context = GameViewModelMother.makeContext()
