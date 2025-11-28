@@ -35,6 +35,47 @@ struct GameViewModelTest {
         #expect(viewModel.remainingLives == 2)
     }
 
+    @Test func testStartGame_callsServiceAndSavesState() async throws {
+        let repository = InMemoryGameStateRepository()
+        let service = BreakoutGameService()
+        let configService = FakeGameConfigurationService()
+        let navService = FakeScreenNavigationService()
+        let resultService = FakeGameResultService()
+
+        let viewModel = GameViewModel(
+            service: service,
+            repository: repository,
+            configurationService: configService,
+            screenNavigationService: navService,
+            gameResultService: resultService
+        )
+        
+        viewModel.startGame()
+
+        #expect(repository.load().status == .playing)
+    }
+
+    @Test func startGame_transitionsToPlayingAndSavesState() async throws {
+        let repository = InMemoryGameStateRepository()
+        let service = BreakoutGameService()
+        let configService = FakeGameConfigurationService()
+        let navService = FakeScreenNavigationService()
+        let resultService = FakeGameResultService()
+
+        let viewModel = GameViewModel(
+            service: service,
+            repository: repository,
+            configurationService: configService,
+            screenNavigationService: navService,
+            gameResultService: resultService
+        )
+
+        viewModel.startGame()
+
+        let savedState = repository.load()
+        #expect(savedState.status == .playing)
+    }
+
     @Test func navigatesToGameEndWhenEngineTransitionsToGameOver() async throws
     {
         let context = GameViewModelMother.makeContext()

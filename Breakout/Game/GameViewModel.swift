@@ -102,6 +102,11 @@ import SwiftUI
         handleScreenNavigation(engine)
     }
     
+    internal func startGame() {
+        currentState = service.startGame(state: currentState)
+        repository.save(currentState)
+    }
+    
     private func handleScoreChange(_ engine: GameEngine) {
         onScoreChanged?(engine.currentScore)
     }
