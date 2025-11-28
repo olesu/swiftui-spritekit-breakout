@@ -8,7 +8,7 @@ struct PaddleBounceApplierTest {
     func appliesCorrectVelocityForCenterHit() {
         let ball = makeBall()
         let paddle = makePaddle()
-        let applier = makeApplier(ball, paddle)
+        let _ = makeApplier(ball, paddle)
 
         // Center hit should have minimal horizontal component
         let dx = ball.physicsBody?.velocity.dx ?? 0
@@ -23,7 +23,7 @@ struct PaddleBounceApplierTest {
         let ball = makeBall()
         ball.position.x = 140  // Left of paddle center
         let paddle = makePaddle()
-        let applier = makeApplier(ball, paddle)
+        let _ = makeApplier(ball, paddle)
 
         let dx = ball.physicsBody?.velocity.dx ?? 0
         let dy = ball.physicsBody?.velocity.dy ?? 0
@@ -37,7 +37,7 @@ struct PaddleBounceApplierTest {
         let ball = makeBall()
         ball.position.x = 180  // Right of paddle center
         let paddle = makePaddle()
-        let applier = makeApplier(ball, paddle)
+        let _ = makeApplier(ball, paddle)
 
         let dx = ball.physicsBody?.velocity.dx ?? 0
         let dy = ball.physicsBody?.velocity.dy ?? 0
