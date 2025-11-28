@@ -14,4 +14,54 @@ internal struct GameState: Equatable {
         bricks: [:],
         ballResetNeeded: false
     )
+
+    func with(score: Int) -> GameState {
+        GameState(
+            score: score,
+            lives: lives,
+            status: status,
+            bricks: bricks,
+            ballResetNeeded: ballResetNeeded
+        )
+    }
+
+    func with(lives: Int) -> GameState {
+        GameState(
+            score: score,
+            lives: lives,
+            status: status,
+            bricks: bricks,
+            ballResetNeeded: ballResetNeeded
+        )
+    }
+
+    func with(status: GameStatus) -> GameState {
+        GameState(
+            score: score,
+            lives: lives,
+            status: status,
+            bricks: bricks,
+            ballResetNeeded: ballResetNeeded
+        )
+    }
+
+    func with(bricks: [BrickId: Brick]) -> GameState {
+        GameState(
+            score: score,
+            lives: lives,
+            status: status,
+            bricks: bricks,
+            ballResetNeeded: ballResetNeeded
+        )
+    }
+
+    func with(ballResetNeeded: Bool) -> GameState {
+        GameState(
+            score: score,
+            lives: lives,
+            status: status,
+            bricks: bricks,
+            ballResetNeeded: ballResetNeeded
+        )
+    }
 }
