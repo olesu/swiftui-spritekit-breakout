@@ -188,4 +188,13 @@ struct GameServiceTest {
 
         #expect(newState == state)
     }
+
+    @Test func testAcknowledgeBallReset_clearsBallResetFlag() {
+        let state = GameState.initial
+            .with(ballResetNeeded: true)
+
+        let newState = service.acknowledgeBallReset(state: state)
+
+        #expect(newState.ballResetNeeded == false)
+    }
 }

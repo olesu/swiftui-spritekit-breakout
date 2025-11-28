@@ -41,4 +41,8 @@ internal final class BreakoutGameService: GameService {
                 .with(status: newStatus)
         }
     }
+
+    internal func acknowledgeBallReset(state: GameState) -> GameState {
+        return state.with(ballResetNeeded: false)
+    }
 }
