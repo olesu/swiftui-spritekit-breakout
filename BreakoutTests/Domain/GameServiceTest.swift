@@ -137,4 +137,55 @@ struct GameServiceTest {
 
         #expect(newState == state)
     }
+
+    @Test func testProcessBallLost_whenPlaying_decrementsLives() {
+        let state = GameState.initial
+            .with(status: .playing)
+            .with(lives: 3)
+
+        let newState = service.processEvent(.ballLost, state: state)
+
+        #expect(newState.lives == 2)
+    }
+
+    @Test func testProcessBallLost_whenPlaying_setsBallResetNeeded() {
+        let state = GameState.initial
+            .with(status: .playing)
+            .with(lives: 3)
+
+        let newState = service.processEvent(.ballLost, state: state)
+
+        #expect(newState.ballResetNeeded == true)
+    }
+
+    @Test func testProcessBallLost_whenLastLife_setsStatusToGameOver() {
+        let state = GameState.initial
+            .with(status: .playing)
+            .with(lives: 1)
+
+        let newState = service.processEvent(.ballLost, state: state)
+
+        #expect(newState.status == .gameOver)
+        #expect(newState.lives == 0)
+    }
+
+    @Test func testProcessBallLost_whenLastLife_doesNotSetBallResetNeeded() {
+        let state = GameState.initial
+            .with(status: .playing)
+            .with(lives: 1)
+
+        let newState = service.processEvent(.ballLost, state: state)
+
+        #expect(newState.ballResetNeeded == false)
+    }
+
+    @Test func testProcessBallLost_whenNotPlaying_returnsUnchangedState() {
+        let state = GameState.initial
+            .with(status: .idle)
+            .with(lives: 3)
+
+        let newState = service.processEvent(.ballLost, state: state)
+
+        #expect(newState == state)
+    }
 }

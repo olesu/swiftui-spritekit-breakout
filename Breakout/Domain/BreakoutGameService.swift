@@ -31,7 +31,14 @@ internal final class BreakoutGameService: GameService {
                 .with(status: newStatus)
 
         case .ballLost:
+            let newLives = state.lives - 1
+            let newStatus = newLives <= 0 ? GameStatus.gameOver : state.status
+            let ballResetNeeded = newLives > 0
+
             return state
+                .with(lives: newLives)
+                .with(ballResetNeeded: ballResetNeeded)
+                .with(status: newStatus)
         }
     }
 }
