@@ -95,11 +95,15 @@ import SwiftUI
     /// - Parameter event: The game event to handle.
     internal func handleGameEvent(_ event: GameEvent) {
         handleGameEventUsingStoredState(event)
-        
+        handleScoreChangeFromState()
+        handleLivesChangeFromState()
+        handleBallResetFromState()
+        handleScreenNavigationFromState()
+
         guard let engine = engine else { return }
 
         engine.process(event: event)
-        
+
         print("event = \(event)")
 
         handleScoreChange(engine, event)
@@ -144,22 +148,53 @@ import SwiftUI
         let state = service.acknowledgeBallReset(state: currentState)
         repository.save(state)
     }
+
+    internal func initializeBricks(_ bricksDict: [BrickId: Brick]) {
+        let state = currentState.with(bricks: bricksDict)
+        repository.save(state)
+    }
     
+    private func handleScoreChangeFromState() {
+        onScoreChanged?(currentState.score)
+    }
+
+    private func handleLivesChangeFromState() {
+        onLivesChanged?(currentState.lives)
+    }
+
+    private func handleBallResetFromState() {
+        let state = currentState
+        if state.ballResetNeeded {
+            onBallResetNeeded?()
+        }
+    }
+
+    private func handleScreenNavigationFromState() {
+        let state = currentState
+        if state.status == .gameOver || state.status == .won {
+            gameResultService.save(
+                didWin: state.status == .won,
+                score: state.score
+            )
+            screenNavigationService.navigate(to: .gameEnd)
+        }
+    }
+
     private func handleScoreChange(_ engine: GameEngine, _ event: GameEvent) {
         onScoreChanged?(engine.currentScore)
     }
-    
+
     private func handleLivesChange(_ engine: GameEngine) {
         onLivesChanged?(engine.remainingLives)
     }
-    
+
     private func handleBallReset(_ engine: GameEngine) {
         if engine.shouldResetBall {
             onBallResetNeeded?()
             engine.acknowledgeBallReset()
         }
     }
-    
+
     private func handleScreenNavigation(_ engine: GameEngine) {
         if engine.currentStatus == .gameOver || engine.currentStatus == .won {
             gameResultService.save(

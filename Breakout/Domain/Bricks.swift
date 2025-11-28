@@ -89,4 +89,10 @@ internal struct Bricks {
     internal mutating func remove(withId id: BrickId) {
         bricks.removeValue(forKey: id)
     }
+
+    /// Returns all bricks as a dictionary.
+    /// - Returns: Dictionary mapping brick IDs to bricks.
+    internal func toDictionary() -> [BrickId: Brick] {
+        bricks
+    }
 }

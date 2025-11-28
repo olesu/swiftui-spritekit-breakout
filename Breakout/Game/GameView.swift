@@ -110,6 +110,7 @@ struct GameView: View {
 
     private func setupGame() -> GameScene {
         let (nodes, bricks) = createNodesAndCollectBricks()
+        viewModel.initializeBricks(bricks.toDictionary())
         let engine = createEngine(with: bricks)
         viewModel.setEngine(engine)
         engine.start()
