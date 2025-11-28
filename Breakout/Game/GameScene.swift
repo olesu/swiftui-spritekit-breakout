@@ -9,6 +9,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let ballResetConfigurator = BallResetConfigurator()
     private let paddleBounceApplier = PaddleBounceApplier()
     private var isBallClamped = true
+    internal var onBallResetComplete: (() -> Void)?
 
     internal init(
         size: CGSize,
@@ -139,6 +140,7 @@ extension GameScene {
             guard let ball = ball else { return }
             ballResetConfigurator.performReset(ball)
             self?.clampBallToPaddle()
+            self?.onBallResetComplete?()
         }
 
         ball.run(SKAction.sequence([waitAction, resetAction]))

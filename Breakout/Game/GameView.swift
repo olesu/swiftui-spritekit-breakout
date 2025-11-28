@@ -156,6 +156,9 @@ struct GameView: View {
         viewModel.onBallResetNeeded = { [weak scene] in
             scene?.resetBall()
         }
+        scene.onBallResetComplete = { [weak viewModel] in
+            viewModel?.acknowledgeBallReset()
+        }
     }
 }
 
