@@ -14,6 +14,8 @@ struct GameViewModelMother {
         let gameResultService = FakeGameResultService()
 
         let viewModel = GameViewModel(
+            service: BreakoutGameService(),
+            repository: InMemoryGameStateRepository(),
             configurationService: configurationService,
             screenNavigationService: navigationService,
             gameResultService: gameResultService

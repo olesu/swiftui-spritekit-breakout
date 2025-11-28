@@ -20,6 +20,8 @@ struct GameView: View {
     ) {
         self.storage = storage
         self.viewModel = GameViewModel(
+            service: BreakoutGameService(),
+            repository: InMemoryGameStateRepository(),
             configurationService: configurationService,
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService
@@ -110,26 +112,19 @@ struct GameView: View {
 
     private func setupGame() -> GameScene {
         let (nodes, bricks) = createNodesAndCollectBricks()
-        viewModel.initializeBricks(bricks.toDictionary())
-        let engine = createEngine(with: bricks)
-        viewModel.setEngine(engine)
-        engine.start()
+        viewModel.initializeBricks(bricks)
         return createScene(with: nodes)
     }
 
-    private func createNodesAndCollectBricks() -> ([NodeNames: SKNode], Bricks)
+    private func createNodesAndCollectBricks() -> ([NodeNames: SKNode], [BrickId: Brick])
     {
-        var bricks = Bricks()
+        var bricks: [BrickId: Brick] = [:]
         let nodeCreator = SpriteKitNodeCreator()
         let nodes = nodeCreator.createNodes { brickId, brickColor in
-            bricks.add(Brick(id: BrickId(of: brickId), color: brickColor))
+            let brick = Brick(id: BrickId(of: brickId), color: brickColor)
+            bricks[brick.id] = brick
         }
         return (nodes, bricks)
-    }
-
-    private func createEngine(with bricks: Bricks) -> GameEngine {
-        let adapter = InMemoryGameStateAdapter(storage: storage)
-        return BreakoutGameEngine(bricks: bricks, statusAdapter: adapter)
     }
 
     private func createScene(with nodes: [NodeNames: SKNode]) -> GameScene {

@@ -20,8 +20,7 @@ import SwiftUI
     private var currentState: GameState {
         repository.load()
     }
-    
-    private var engine: GameEngine?
+
     internal var currentScore: Int {
         currentState.score
     }
@@ -66,77 +65,22 @@ import SwiftUI
         self.gameResultService = gameResultService
     }
 
-    /// DEPRECATED: Temporary backward compatibility initializer
-    internal convenience init(
-        configurationService: GameConfigurationService,
-        screenNavigationService: ScreenNavigationService,
-        gameResultService: GameResultService
-    ) {
-        self.init(
-            service: BreakoutGameService(),
-            repository: InMemoryGameStateRepository(),
-            configurationService: configurationService,
-            screenNavigationService: screenNavigationService,
-            gameResultService: gameResultService
-        )
-    }
-
-    /// Sets the game engine for this view model.
-    /// - Parameter engine: The game engine instance to use.
-    internal func setEngine(_ engine: GameEngine) {
-        self.engine = engine
-    }
-
     /// Handles a game event from the SpriteKit layer.
     ///
-    /// Processes the event through the game engine, updates observable properties
-    /// for SwiftUI, invokes callbacks for SpriteKit scene updates, and triggers
-    /// ball reset if needed.
+    /// Processes the event through the stateless game service, updates state
+    /// in the repository, and triggers callbacks for UI updates.
     /// - Parameter event: The game event to handle.
     internal func handleGameEvent(_ event: GameEvent) {
-        handleGameEventUsingStoredState(event)
-        handleScoreChangeFromState()
-        handleLivesChangeFromState()
-        handleBallResetFromState()
-        handleScreenNavigationFromState()
-
-        guard let engine = engine else { return }
-
-        engine.process(event: event)
-
-        print("event = \(event)")
-
-        handleScoreChange(engine, event)
-        handleLivesChange(engine)
-        handleBallReset(engine)
-        handleScreenNavigation(engine)
+        processEvent(event)
+        updateScore()
+        updateLives()
+        checkBallReset()
+        checkGameEnd()
     }
-    
-    internal func handleGameEventUsingStoredState(_ event: GameEvent) {
-        switch event {
-        case let .brickHit(brickID):
-            let state = repository.load()
-            if let brick = state.bricks[brickID] {
-                var updatedBricks = state.bricks
-                updatedBricks.removeValue(forKey: brickID)
-                let newStatus = updatedBricks.isEmpty ? GameStatus.won : state.status
-                repository.save(state
-                    .with(score: state.score + brick.value)
-                    .with(bricks: updatedBricks)
-                    .with(status: newStatus)
-                )
-            }
-        case .ballLost:
-            let state = repository.load()
-            let newLives = state.lives - 1
-            let newStatus = newLives <= 0 ? GameStatus.gameOver : state.status
-            let ballResetNeeded = newLives > 0
-            repository.save(state
-                .with(lives: newLives)
-                .with(status: newStatus)
-                .with(ballResetNeeded: ballResetNeeded)
-            )
-        }
+
+    private func processEvent(_ event: GameEvent) {
+        let state = service.processEvent(event, state: currentState)
+        repository.save(state)
     }
     
     internal func startGame() {
@@ -153,53 +97,28 @@ import SwiftUI
         let state = currentState.with(bricks: bricksDict)
         repository.save(state)
     }
-    
-    private func handleScoreChangeFromState() {
+
+    private func updateScore() {
         onScoreChanged?(currentState.score)
     }
 
-    private func handleLivesChangeFromState() {
+    private func updateLives() {
         onLivesChanged?(currentState.lives)
     }
 
-    private func handleBallResetFromState() {
+    private func checkBallReset() {
         let state = currentState
         if state.ballResetNeeded {
             onBallResetNeeded?()
         }
     }
 
-    private func handleScreenNavigationFromState() {
+    private func checkGameEnd() {
         let state = currentState
         if state.status == .gameOver || state.status == .won {
             gameResultService.save(
                 didWin: state.status == .won,
                 score: state.score
-            )
-            screenNavigationService.navigate(to: .gameEnd)
-        }
-    }
-
-    private func handleScoreChange(_ engine: GameEngine, _ event: GameEvent) {
-        onScoreChanged?(engine.currentScore)
-    }
-
-    private func handleLivesChange(_ engine: GameEngine) {
-        onLivesChanged?(engine.remainingLives)
-    }
-
-    private func handleBallReset(_ engine: GameEngine) {
-        if engine.shouldResetBall {
-            onBallResetNeeded?()
-            engine.acknowledgeBallReset()
-        }
-    }
-
-    private func handleScreenNavigation(_ engine: GameEngine) {
-        if engine.currentStatus == .gameOver || engine.currentStatus == .won {
-            gameResultService.save(
-                didWin: engine.currentStatus == .won,
-                score: engine.currentScore
             )
             screenNavigationService.navigate(to: .gameEnd)
         }
