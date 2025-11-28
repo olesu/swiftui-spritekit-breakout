@@ -2,9 +2,9 @@
 
 ## Core Principle
 
-**SpriteKit handles physics, Domain handles game rules.**
+**Pure, stateless game logic with immutable state transformations.**
 
-The architecture strictly separates physics simulation from game logic, enabling fast, framework-independent domain tests while leveraging SpriteKit's strengths.
+The architecture uses functional domain-driven design with pure functions, enabling fast, deterministic tests while maintaining clear separation between game logic, state management, and UI.
 
 ## Architecture Layers
 
@@ -16,123 +16,194 @@ The architecture strictly separates physics simulation from game logic, enabling
 │  ┌──────────────┐    ┌──────────────┐  │
 │  │   IdleView   │    │   GameView   │  │
 │  │ IdleViewModel│    │ GameViewModel│  │
-│  └──────────────┘    └──────────────┘  │
+│  └──────────────┘    └──────┬───────┘  │
+│                              │          │
+├─────────────────────────────┼──────────┤
+│          SpriteKit Layer    │          │  Physics, rendering, user input
+│         ┌──────────────┐    │          │
+│         │  GameScene   │────┘          │
+│         │  (SKScene)   │               │
+│         └──────┬───────┘               │
+│                │ GameEvent             │
+├────────────────┼───────────────────────┤
+│                ▼                        │
+│          Domain Layer                  │  Pure game logic (stateless)
+│    ┌──────────────────────┐            │
+│    │  GameService         │            │
+│    │  (Pure Functions)    │            │
+│    └──────────────────────┘            │
+│    ┌──────────────────────┐            │
+│    │  GameState           │            │
+│    │  (Aggregate Root)    │            │
+│    └──────────────────────┘            │
 ├─────────────────────────────────────────┤
-│          SpriteKit Layer                │  Physics, rendering, user input
-│         ┌──────────────┐                │
-│         │  GameScene   │                │
-│         │  (SKScene)   │                │
-│         └──────┬───────┘                │
-│                │ GameEvent              │
-├────────────────┼─────────────────────────┤
-│                ▼                         │
-│          Domain Layer                   │  Pure game logic (no frameworks)
-│    ┌──────────────────────┐             │
-│    │ BreakoutGameEngine   │             │
-│    │   (GameEngine)       │             │
-│    └──────────────────────┘             │
-│      Score, Lives, Bricks, State        │
-├─────────────────────────────────────────┤
-│          Adapter Layer                  │  External I/O (JSON, storage)
+│      Infrastructure Layer               │  Persistence, adapters
+│  ┌────────────────────────────┐         │
+│  │ GameStateRepository        │         │
+│  │ InMemoryGameStateRepository│         │
+│  └────────────────────────────┘         │
 │  JsonBrickLayoutAdapter                 │
 │  JsonGameConfigurationAdapter           │
-│  InMemoryGameStateAdapter               │
 └─────────────────────────────────────────┘
 ```
 
-## Event-Driven Communication
+## Stateless Architecture
 
-**Flow:** SpriteKit collision → GameEvent → Domain processing → State update → UI callback
+**Flow:** Event → Load State → Transform State → Save State → Update UI
 
 ```swift
-// SpriteKit detects collision
-func didBegin(_ contact: SKPhysicsContact) {
-    if contactMask == (ball | brick) {
-        onGameEvent(.brickHit(brickID: id))  // Send to domain
-    }
+// 1. Event received from SpriteKit
+func handleGameEvent(_ event: GameEvent) {
+    processEvent(event)      // Transform state via service
+    updateScore()            // Notify UI
+    updateLives()
+    checkBallReset()
+    checkGameEnd()
 }
 
-// Domain processes event
-func process(event: GameEvent) {
+// 2. Pure function processes event
+func processEvent(_ event: GameEvent) {
+    let state = service.processEvent(event, state: currentState)
+    repository.save(state)
+}
+
+// 3. Service uses pure functions
+func processEvent(_ event: GameEvent, state: GameState) -> GameState {
+    guard state.status == .playing else { return state }
+
     switch event {
-    case .brickHit(let id):
-        bricks.remove(withId: id)           // Update state
-        scoreCard.score(brick.color.pointValue)
-        if !bricks.someRemaining { gameState = .won }
+    case .brickHit(let brickID):
+        guard let brick = state.bricks[brickID] else { return state }
+        var updatedBricks = state.bricks
+        updatedBricks.removeValue(forKey: brickID)
+        let newScore = state.score + brick.color.pointValue
+        let newStatus = updatedBricks.isEmpty ? .won : state.status
+        return state
+            .with(bricks: updatedBricks)
+            .with(score: newScore)
+            .with(status: newStatus)
+    case .ballLost:
+        let newLives = state.lives - 1
+        let newStatus = newLives <= 0 ? .gameOver : state.status
+        let ballResetNeeded = newLives > 0
+        return state
+            .with(lives: newLives)
+            .with(status: newStatus)
+            .with(ballResetNeeded: ballResetNeeded)
     }
 }
-
-// Callbacks notify UI layers
-onScoreChanged?(engine.currentScore)         // For SpriteKit labels
-onLivesChanged?(engine.remainingLives)       // For SpriteKit labels
-self.currentScore = engine.currentScore      // For SwiftUI @Observable
 ```
 
 ## Key Design Patterns
 
-### 1. Protocol-Oriented Design
-All major abstractions use protocols for dependency injection:
-- `GameEngine` - Core game logic abstraction
-- `GameStateAdapter` - Storage abstraction
-- `BrickLayoutAdapter` - Layout loading abstraction
-- `NodeCreator` - SpriteKit node creation abstraction
+### 1. Domain-Driven Design (DDD)
 
-### 2. Adapter Pattern
-External dependencies isolated behind adapters:
-- `JsonBrickLayoutAdapter` - Loads brick layouts from JSON
-- `JsonGameConfigurationAdapter` - Loads game config from JSON
-- `InMemoryGameStateAdapter` - In-memory state storage
-
-### 3. Value vs Reference Types
-- **Value types (struct):** Domain models (Brick, BrickId, ScoreCard, LivesCard)
-- **Reference types (class):** Stateful components (GameEngine, GameViewModel, GameScene)
-
-### 4. Dependency Injection
-No hidden dependencies. All dependencies passed via initializers:
+**Aggregate Root:** `GameState` owns all game state
 ```swift
-GameViewModel(configurationModel: config, engineFactory: factory)
-GameScene(size: size, nodes: nodes, onGameEvent: handler)
-BreakoutGameEngine(bricks: bricks, lives: 3)
+struct GameState: Equatable {
+    let score: Int
+    let lives: Int
+    let status: GameStatus
+    let bricks: [BrickId: Brick]
+    let ballResetNeeded: Bool
+
+    // Immutable updates via copy-on-write
+    func with(score: Int) -> GameState { ... }
+    func with(lives: Int) -> GameState { ... }
+}
 ```
 
-### 5. Extracted Testable Components
-Complex operations extracted to dedicated, testable types:
-- `PaddleBounceCalculator` - Pure bounce angle calculation
-- `PaddleBounceApplier` - Full paddle bounce integration
-- `BallResetConfigurator` - Ball reset configuration
-- `BrickNodeManager` - Isolated brick node management
+**Value Objects:** `BrickId`, `Brick`, `BrickColor`
+
+**Domain Service:** `GameService` provides stateless operations
+```swift
+protocol GameService {
+    func startGame(state: GameState) -> GameState
+    func processEvent(_ event: GameEvent, state: GameState) -> GameState
+    func acknowledgeBallReset(state: GameState) -> GameState
+}
+```
+
+### 2. Repository Pattern
+
+State persistence abstracted behind repository:
+```swift
+protocol GameStateRepository {
+    func load() -> GameState
+    func save(_ state: GameState)
+}
+```
+
+### 3. Pure Functions
+
+All domain logic is pure functions `(event, state) → state`:
+- **Deterministic:** Same input → same output
+- **No side effects:** Only transforms data
+- **Easily testable:** No mocking required
+- **Composable:** Functions combine predictably
+
+### 4. Immutable State
+
+State never mutated, always copied with modifications:
+```swift
+// Before (mutable):
+scoreCard.score(points)
+bricks.remove(withId: id)
+
+// After (immutable):
+state
+    .with(score: state.score + points)
+    .with(bricks: updatedBricks)
+```
+
+### 5. Dependency Injection
+
+Dependencies passed explicitly via initializers:
+```swift
+GameViewModel(
+    service: BreakoutGameService(),
+    repository: InMemoryGameStateRepository(),
+    configurationService: configService,
+    screenNavigationService: navService,
+    gameResultService: resultService
+)
+```
 
 ## Directory Structure
 
 ```
 Breakout/
 ├── Application.swift              # Entry point, dependency wiring
-├── Domain/                        # Pure game logic (framework-free)
-│   ├── BreakoutGameEngine.swift
-│   ├── Bricks.swift              # Brick registry
-│   ├── ScoreCard.swift, LivesCard.swift
-│   ├── GameEvent.swift           # Events from SpriteKit
-│   ├── GameStateService.swift
-│   ├── BrickLayoutConfig.swift   # JSON-based layouts
-│   └── Adapters/                 # External I/O abstractions
-│       ├── JsonBrickLayoutAdapter.swift
-│       ├── JsonGameConfigurationAdapter.swift
-│       └── InMemoryGameStateAdapter.swift
-├── Game/                         # Main game screen
-│   ├── GameView.swift           # SwiftUI view
-│   ├── GameViewModel.swift      # Coordinates domain + scene
-│   └── GameScene.swift          # SpriteKit scene (physics)
-├── Idle/                         # Idle screen (start game)
+├── Domain/                        # Pure game logic (stateless)
+│   ├── GameService.swift          # Service protocol
+│   ├── BreakoutGameService.swift  # Stateless implementation
+│   ├── GameState.swift            # Aggregate root
+│   ├── GameStatus.swift           # State machine enum
+│   ├── GameStateRepository.swift  # Repository protocol
+│   ├── Bricks.swift               # BrickId, Brick, BrickColor
+│   ├── GameEvent.swift            # Events from SpriteKit
+│   └── BrickLayoutConfig.swift    # JSON-based layouts
+├── Infrastructure/                # Persistence implementations
+│   └── InMemoryGameStateRepository.swift
+├── Game/                          # Main game screen
+│   ├── GameView.swift             # SwiftUI view
+│   ├── GameViewModel.swift        # Coordinates domain + scene
+│   └── GameScene.swift            # SpriteKit scene (physics)
+├── Idle/                          # Idle screen (start game)
 │   ├── IdleView.swift
 │   └── IdleViewModel.swift
+├── GameEnd/                       # Game end screen
+│   ├── GameEndView.swift
+│   └── GameEndViewModel.swift
 ├── Navigation/
 │   └── NavigationCoordinator.swift  # State-based routing
-├── Nodes/                        # SpriteKit sprites + physics
+├── Nodes/                         # SpriteKit sprites + physics
 │   ├── BallSprite.swift, PaddleSprite.swift, BrickSprite.swift
 │   ├── PhysicsBodyConfigurers.swift
 │   ├── BrickNodeManager.swift
+│   ├── ScoreLabel.swift, LivesLabel.swift
 │   └── SpriteKitNodeCreator.swift
-├── Physics/                      # Extracted physics logic
+├── Physics/                       # Extracted physics logic
 │   ├── PaddleBounceCalculator.swift
 │   ├── PaddleBounceApplier.swift
 │   └── BallResetConfigurator.swift
@@ -147,23 +218,88 @@ Breakout/
 .idle → .playing → (.won | .gameOver)
 ```
 
-Domain enforces transitions. Only processes events in `.playing` state.
+Enforced by pure functions. Events only processed in `.playing` state.
+
+### State Lifecycle
+```
+1. Repository.load() → GameState
+2. Service.processEvent(event, state) → GameState
+3. Repository.save(state)
+4. UI callbacks triggered from new state
+```
 
 ### SwiftUI + SpriteKit Bridge
-`GameViewModel` bridges two update mechanisms:
-- **@Observable properties** → SwiftUI views (declarative)
+
+`GameViewModel` coordinates two update mechanisms:
+- **@Observable properties** → SwiftUI (declarative)
 - **Closure callbacks** → GameScene (imperative)
 
-Both updated synchronously to maintain consistency.
+```swift
+// After state change, update both
+private func updateScore() {
+    onScoreChanged?(currentState.score)  // → SpriteKit label
+}
+// currentScore property automatically updates SwiftUI via @Observable
+```
+
+## Event-Driven Flow
+
+**Complete event flow with ball reset:**
+
+```
+1. Ball hits gutter (SpriteKit)
+   ↓
+2. GameScene.didBegin(contact)
+   ↓
+3. onGameEvent(.ballLost)
+   ↓
+4. GameViewModel.handleGameEvent(.ballLost)
+   ↓
+5. GameService.processEvent(.ballLost, state) → newState
+   - lives decreased
+   - ballResetNeeded = true
+   - status = .gameOver (if lives ≤ 0)
+   ↓
+6. Repository.save(newState)
+   ↓
+7. Callbacks triggered:
+   - updateLives() → GameScene updates lives label
+   - checkBallReset() → onBallResetNeeded?()
+   - checkGameEnd() → navigate to game end screen
+   ↓
+8. GameScene.resetBall()
+   - Animates ball reset
+   - Calls onBallResetComplete?()
+   ↓
+9. GameViewModel.acknowledgeBallReset()
+   ↓
+10. GameService.acknowledgeBallReset(state) → newState
+    - ballResetNeeded = false
+    ↓
+11. Repository.save(newState)
+```
 
 ## Testing Strategy
 
-**35+ passing tests** with clear separation:
+**62 passing tests** with focus on pure function testing:
 
-### Domain Tests (Fast, No SpriteKit)
-- `BreakoutGameEngineTest` - Core game logic
-- `BricksTest`, `ScoreCardTest`, `LivesCardTest` - Domain models
-- `GameEventTest` - Event validation
+### Domain Tests (Fast, Pure Functions)
+- `GameServiceTest` - Stateless game logic (18 tests)
+  - State transitions
+  - Score calculations
+  - Win/lose conditions
+  - Ball reset logic
+- `GameStateTest` - Aggregate root (6 tests)
+  - Immutable updates
+  - Initial state
+- `GameStateRepositoryTest` - Persistence (3 tests)
+
+### ViewModel Tests (Integration)
+- `GameViewModelTest` - Coordination logic (13 tests)
+  - Event processing
+  - State persistence
+  - UI callbacks
+  - Navigation
 
 ### Physics Tests (Isolated Logic)
 - `PaddleBounceCalculatorTest` - Pure calculation
@@ -171,14 +307,17 @@ Both updated synchronously to maintain consistency.
 - `BallResetConfiguratorTest` - Reset configuration
 
 ### Integration Tests
-- `GameViewModelTest` - View model coordination
 - `GameSceneTest` - Scene behavior
 - `SpriteKitNodeCreatorTest` - Node creation with DI
+
+### Adapter Tests
+- `JsonBrickLayoutAdapterTest`
+- `GameConfigurationServiceTest`
 
 ## Configuration
 
 ### Data-Driven Design
-Brick layouts defined in JSON, not hardcoded:
+Brick layouts defined in JSON:
 ```json
 {
   "levelName": "Classic Breakout",
@@ -199,17 +338,56 @@ Resilient fallback pattern:
 
 ## Key Architectural Benefits
 
-1. **Fast Tests** - Domain tests run instantly (no SpriteKit initialization)
-2. **Framework Independence** - Domain has zero UI dependencies
-3. **Clear Boundaries** - Protocols define layer contracts
-4. **Easy to Reason About** - Event flow is explicit and unidirectional
-5. **Testable Components** - Complex logic extracted to dedicated types
-6. **Data-Driven** - New levels via JSON, no code changes
-7. **Type Safety** - Swift's type system prevents invalid states
-8. **Maintainable** - Clear separation makes changes localized
+1. **Pure Function Benefits**
+   - Predictable and deterministic
+   - Easy to test (no mocking)
+   - No hidden dependencies
+   - Trivial to reason about
+
+2. **Fast Tests**
+   - Domain tests run instantly
+   - No async, no frameworks
+   - 100% reproducible
+
+3. **Type Safety**
+   - Compiler enforces state transitions
+   - Immutable data prevents bugs
+   - Equatable enables time-travel debugging
+
+4. **Clear Boundaries**
+   - Service: pure logic
+   - Repository: persistence
+   - ViewModel: coordination
+   - Scene: physics/rendering
+
+5. **Maintainable**
+   - Changes localized to single functions
+   - No global state
+   - Explicit dependencies
+
+6. **Scalable**
+   - Easy to add new events
+   - Easy to add new game states
+   - Easy to add new side effects
+
+## Migration Notes
+
+The codebase was successfully migrated from a stateful object-oriented architecture to this pure functional architecture in 7 phases:
+
+1. Created `GameState` aggregate root
+2. Implemented stateless `GameService`
+3. Created `GameStateRepository`
+4. Updated `GameViewModel` to use new architecture
+5. Integrated with `GameView`
+6. Removed old engine code (-467 lines)
+7. Manual testing and bug fixes
+
+**Result:** 1,102 lines of code deleted, architecture simplified, all tests passing.
 
 ## Influences
 
-- Event-driven domain logic pattern
-- Clean Architecture (layered separation of concerns)
-- Hexagonal Architecture (Ports & Adapters for external dependencies)
+- Domain-Driven Design (Evans)
+- Functional Core, Imperative Shell (Boundaries - Gary Bernhardt)
+- Pure Functions & Immutability (Functional Programming)
+- Repository Pattern (Fowler)
+- Event Sourcing concepts (state as fold over events)

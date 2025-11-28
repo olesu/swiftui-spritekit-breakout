@@ -91,7 +91,8 @@ extension GameScene {
         let contactMask = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
 
         // Ball + Brick collision
-        if contactMask == (CollisionCategory.ball.mask | CollisionCategory.brick.mask) {
+        let ballBrickMask = CollisionCategory.ball.mask | CollisionCategory.brick.mask
+        if (contactMask & ballBrickMask) == ballBrickMask {
             let brickNode = contact.bodyA.categoryBitMask == CollisionCategory.brick.mask ? contact.bodyA.node : contact.bodyB.node
 
             if let brickIdString = brickNode?.name {
@@ -102,12 +103,14 @@ extension GameScene {
         }
 
         // Ball + Gutter collision
-        if contactMask == (CollisionCategory.ball.mask | CollisionCategory.gutter.mask) {
+        let ballGutterMask = CollisionCategory.ball.mask | CollisionCategory.gutter.mask
+        if (contactMask & ballGutterMask) == ballGutterMask {
             onGameEvent(.ballLost)
         }
 
         // Ball + Paddle collision
-        if contactMask == (CollisionCategory.ball.mask | CollisionCategory.paddle.mask) {
+        let ballPaddleMask = CollisionCategory.ball.mask | CollisionCategory.paddle.mask
+        if (contactMask & ballPaddleMask) == ballPaddleMask {
             adjustBallVelocityForPaddleHit()
         }
     }
@@ -116,9 +119,17 @@ extension GameScene {
 // MARK: - Paddle Control
 extension GameScene {
     private func paddleClampedX(location: CGPoint) -> CGFloat {
-        let minX: CGFloat = 20
-        let maxX: CGFloat = size.width - 20
-        return  max(minX, min(maxX, location.x))
+        guard let paddle = gameNodes[.paddle] else {
+            // Fallback to original fixed margins if paddle is missing
+            let minX: CGFloat = 20
+            let maxX: CGFloat = size.width - 20
+            return max(minX, min(maxX, location.x))
+        }
+
+        let halfWidth = paddle.frame.width / 2
+        let minX = halfWidth
+        let maxX = size.width - halfWidth
+        return max(minX, min(maxX, location.x))
     }
 
     internal func movePaddle(to location: CGPoint) {
@@ -152,7 +163,16 @@ extension GameScene {
               let ballBody = ball.physicsBody else { return }
 
         isBallClamped = false
-        ballBody.velocity = CGVector(dx: 0, dy: 360)
+
+        // Add a small horizontal component to avoid purely vertical trajectories.
+        // Randomize direction slightly within a safe range.
+        let baseSpeed: CGFloat = 360
+        let angleDegrees: CGFloat = 85 + CGFloat.random(in: -10...10) // around near-vertical but not exactly
+        let angle = angleDegrees * .pi / 180
+        let dx = baseSpeed * sin(angle) * (Bool.random() ? 1 : -1)
+        let dy = baseSpeed * cos(angle)
+
+        ballBody.velocity = CGVector(dx: dx, dy: max(dy, 200)) // ensure upward component is reasonable
     }
 
     private func clampBallToPaddle() {
