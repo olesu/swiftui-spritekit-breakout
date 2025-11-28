@@ -1,0 +1,40 @@
+import Foundation
+import Testing
+
+@testable import Breakout
+
+struct GameStateRepositoryTest {
+    @Test func testSaveAndLoad_persistsGameState() {
+        let repository = InMemoryGameStateRepository()
+        let state = GameState.initial
+            .with(score: 100)
+            .with(lives: 2)
+            .with(status: .playing)
+
+        repository.save(state)
+        let loadedState = repository.load()
+
+        #expect(loadedState == state)
+    }
+
+    @Test func testLoad_whenNoStateSaved_returnsInitialState() {
+        let repository = InMemoryGameStateRepository()
+
+        let loadedState = repository.load()
+
+        #expect(loadedState == GameState.initial)
+    }
+
+    @Test func testSave_overwritesPreviousState() {
+        let repository = InMemoryGameStateRepository()
+        let state1 = GameState.initial.with(score: 50)
+        let state2 = GameState.initial.with(score: 100)
+
+        repository.save(state1)
+        repository.save(state2)
+        let loadedState = repository.load()
+
+        #expect(loadedState == state2)
+        #expect(loadedState.score == 100)
+    }
+}
