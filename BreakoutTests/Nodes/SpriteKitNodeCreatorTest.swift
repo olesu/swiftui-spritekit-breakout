@@ -1,5 +1,6 @@
 import SpriteKit
 import Testing
+import BreakoutDomain
 
 @testable import Breakout
 

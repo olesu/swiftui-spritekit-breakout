@@ -1,6 +1,7 @@
 import Foundation
 import SpriteKit
 import AppKit
+import BreakoutDomain
 
 internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let gameNodes: [NodeNames: SKNode]

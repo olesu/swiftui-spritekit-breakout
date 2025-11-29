@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		373709532EDB128C0032FF7B /* BreakoutDomain in Frameworks */ = {isa = PBXBuildFile; productRef = 373709522EDB128C0032FF7B /* BreakoutDomain */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		379ACDE92E598E0300E23C13 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -57,6 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				373709532EDB128C0032FF7B /* BreakoutDomain in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +124,7 @@
 			);
 			name = Breakout;
 			packageProductDependencies = (
+				373709522EDB128C0032FF7B /* BreakoutDomain */,
 			);
 			productName = Breakout;
 			productReference = 379ACDDA2E598E0300E23C13 /* Breakout.app */;
@@ -202,6 +208,9 @@
 			);
 			mainGroup = 379ACDD12E598E0200E23C13;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				373709512EDB128C0032FF7B /* XCLocalSwiftPackageReference "Packages/BreakoutDomain" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 379ACDDB2E598E0300E23C13 /* Products */;
 			projectDirPath = "";
@@ -614,6 +623,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		373709512EDB128C0032FF7B /* XCLocalSwiftPackageReference "Packages/BreakoutDomain" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/BreakoutDomain;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		373709522EDB128C0032FF7B /* BreakoutDomain */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BreakoutDomain;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 379ACDD22E598E0200E23C13 /* Project object */;
 }

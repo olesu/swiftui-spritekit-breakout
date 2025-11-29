@@ -3,6 +3,8 @@ import SpriteKit
 import AppKit
 import os.log
 
+import BreakoutDomain
+
 extension BrickColor {
     internal func toNSColor() -> NSColor {
         switch self {

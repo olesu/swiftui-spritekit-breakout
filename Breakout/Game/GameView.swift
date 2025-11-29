@@ -1,6 +1,7 @@
 import Foundation
 import SpriteKit
 import SwiftUI
+import BreakoutDomain
 
 struct GameView: View {
     private let viewModel: GameViewModel
@@ -191,10 +192,10 @@ struct GameView: View {
                 sceneWidth: 320,
                 sceneHeight: 480,
                 brickArea: BrickArea(
-                    x: 20,
-                    y: 330,
-                    width: 280,
-                    height: 120
+                    x: 20.0,
+                    y: 330.0,
+                    width: 280.0,
+                    height: 120.0
                 )
             )
         }

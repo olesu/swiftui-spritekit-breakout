@@ -1,7 +1,7 @@
 import Foundation
 
 /// Errors that can occur when loading brick layouts.
-internal enum BrickLayoutAdapterError: Error {
+public enum BrickLayoutAdapterError: Error {
     /// The specified layout file could not be found.
     case fileNotFound(String)
     /// The layout file contains invalid JSON or cannot be decoded.
@@ -12,7 +12,7 @@ internal enum BrickLayoutAdapterError: Error {
 ///
 /// Abstracts the loading mechanism (JSON files, network, etc.) from
 /// the domain layer. Implementations handle file I/O and deserialization.
-internal protocol BrickLayoutAdapter {
+public protocol BrickLayoutAdapter {
     /// Loads a brick layout configuration from the specified file.
     /// - Parameter fileName: The name of the layout file to load (without extension).
     /// - Returns: A decoded brick layout configuration.

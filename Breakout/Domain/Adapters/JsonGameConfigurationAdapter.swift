@@ -1,4 +1,5 @@
 import Foundation
+import BreakoutDomain
 
 internal final class JsonGameConfigurationAdapter: GameConfigurationAdapter {
     internal enum LoaderError: Error {

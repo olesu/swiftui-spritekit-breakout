@@ -1,29 +1,29 @@
 import Foundation
 
 /// Unique identifier for a brick in the game.
-internal struct BrickId: Hashable {
-    internal let value: String
+public struct BrickId: Hashable, Sendable {
+    public let value: String
 
-    internal init(of value: String) {
+    public init(of value: String) {
         self.value = value
     }
 }
 
 /// Color of a brick, which determines its visual appearance and point value.
-internal enum BrickColor {
+public enum BrickColor: Sendable {
     case red
     case orange
     case yellow
     case green
 
-    internal enum ColorError: Error {
+    public enum ColorError: Error, Sendable {
         case unknownColor(String)
     }
 
     /// Creates a brick color from a string name.
     /// - Parameter colorName: The string name of the color (e.g., "Red", "Orange").
     /// - Throws: ColorError.unknownColor if the color name is not recognized.
-    init(from colorName: String) throws {
+    public init(from colorName: String) throws {
         switch colorName {
         case "Red": self = .red
         case "Orange": self = .orange
@@ -34,7 +34,7 @@ internal enum BrickColor {
     }
 
     /// The point value awarded for destroying a brick of this color.
-    internal var pointValue: Int {
+    public var pointValue: Int {
         switch self {
         case .red: return 7
         case .orange: return 7
@@ -45,14 +45,14 @@ internal enum BrickColor {
 }
 
 /// Represents a single brick in the game.
-internal struct Brick: Equatable {
-    internal let id: BrickId
-    internal let color: BrickColor
-    internal var value: Int {
+public struct Brick: Equatable, Sendable {
+    public let id: BrickId
+    public let color: BrickColor
+    public var value: Int {
         color.pointValue
     }
 
-    internal init(id: BrickId, color: BrickColor = .green) {
+    public init(id: BrickId, color: BrickColor = .green) {
         self.id = id
         self.color = color
     }

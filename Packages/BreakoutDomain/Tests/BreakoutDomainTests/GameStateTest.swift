@@ -1,7 +1,7 @@
 import Foundation
 import Testing
 
-@testable import Breakout
+@testable import BreakoutDomain
 
 struct GameStateTest {
     @Test func testInitialGameState_hasDefaultValues() {

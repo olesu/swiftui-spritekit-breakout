@@ -1,14 +1,16 @@
 import Foundation
 
-internal final class BreakoutGameService: GameService {
-    internal func startGame(state: GameState) -> GameState {
+public final class BreakoutGameService: GameService {
+    public init() {}
+
+    public func startGame(state: GameState) -> GameState {
         guard state.status == .idle else {
             return state
         }
         return state.with(status: .playing)
     }
 
-    internal func processEvent(_ event: GameEvent, state: GameState) -> GameState {
+    public func processEvent(_ event: GameEvent, state: GameState) -> GameState {
         guard state.status == .playing else {
             return state
         }
@@ -42,7 +44,7 @@ internal final class BreakoutGameService: GameService {
         }
     }
 
-    internal func acknowledgeBallReset(state: GameState) -> GameState {
+    public func acknowledgeBallReset(state: GameState) -> GameState {
         return state.with(ballResetNeeded: false)
     }
 }

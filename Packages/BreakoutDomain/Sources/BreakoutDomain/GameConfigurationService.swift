@@ -5,7 +5,7 @@ import os.log
 ///
 /// Provides platform-specific configuration values such as scene dimensions
 /// and scaling factors. Falls back to safe defaults if configuration cannot be loaded.
-internal protocol GameConfigurationService {
+public protocol GameConfigurationService {
     /// Retrieves the game configuration containing scene dimensions and layout.
     /// - Returns: The game configuration, or a fallback configuration if loading fails.
     func getGameConfiguration() -> GameConfiguration
@@ -15,14 +15,14 @@ internal protocol GameConfigurationService {
     func getGameScale() -> CGFloat
 }
 
-internal final class RealGameConfigurationService: GameConfigurationService {
+public final class RealGameConfigurationService: GameConfigurationService {
     private let loader: GameConfigurationAdapter
 
-    internal init(loader: GameConfigurationAdapter) {
+    public init(loader: GameConfigurationAdapter) {
         self.loader = loader
     }
 
-    internal func getGameConfiguration() -> GameConfiguration {
+    public func getGameConfiguration() -> GameConfiguration {
         do {
             return try loader.load()
         } catch {
@@ -31,7 +31,7 @@ internal final class RealGameConfigurationService: GameConfigurationService {
         }
     }
 
-    internal func getGameScale() -> CGFloat {
+    public func getGameScale() -> CGFloat {
         #if os(macOS)
             return 1.5
         #else

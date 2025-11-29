@@ -1,6 +1,6 @@
 import Testing
 
-@testable import Breakout
+@testable import BreakoutDomain
 
 extension GameConfiguration {
     static func createValid() -> GameConfiguration {

@@ -1,5 +1,6 @@
 import Foundation
 import SpriteKit
+import BreakoutDomain
 
 /// Protocol for creating SpriteKit nodes for the game scene.
 ///

@@ -1,13 +1,16 @@
 import Foundation
+import BreakoutDomain
 
-internal final class InMemoryGameStateRepository: GameStateRepository {
+public final class InMemoryGameStateRepository: GameStateRepository {
     private var storedState: GameState = GameState.initial
 
-    internal func load() -> GameState {
+    public init() {}
+
+    public func load() -> GameState {
         return storedState
     }
 
-    internal func save(_ state: GameState) {
+    public func save(_ state: GameState) {
         storedState = state
     }
 }

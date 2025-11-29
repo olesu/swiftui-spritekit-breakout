@@ -1,6 +1,8 @@
 import Testing
 import Foundation
 
+import BreakoutDomain
+
 @testable import Breakout
 
 struct BrickLayoutAdapterTest {

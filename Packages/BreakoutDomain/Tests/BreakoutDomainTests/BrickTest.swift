@@ -1,6 +1,6 @@
 import Testing
 
-@testable import Breakout
+@testable import BreakoutDomain
 
 internal struct ColorAndValue {
     let color: BrickColor

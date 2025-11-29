@@ -1,4 +1,5 @@
 import SpriteKit
+import BreakoutDomain
 
 /// Represents sprite-level brick information for SpriteKit rendering.
 ///

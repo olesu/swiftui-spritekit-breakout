@@ -1,3 +1,5 @@
+import BreakoutDomain
+
 @testable import Breakout
 
 struct GameViewModelTestContext {

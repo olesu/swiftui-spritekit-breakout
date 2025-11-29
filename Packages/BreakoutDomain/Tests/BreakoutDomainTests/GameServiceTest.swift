@@ -1,7 +1,7 @@
 import Foundation
 import Testing
 
-@testable import Breakout
+@testable import BreakoutDomain
 
 struct GameServiceTest {
     let service = BreakoutGameService()

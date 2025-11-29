@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents the current status of the game session.
-internal enum GameStatus {
+public enum GameStatus: Sendable {
     /// Game is idle, waiting to start.
     case idle
     /// Game is actively being played.

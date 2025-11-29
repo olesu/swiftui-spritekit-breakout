@@ -1,13 +1,13 @@
 import Foundation
 
-internal struct GameState: Equatable {
-    let score: Int
-    let lives: Int
-    let status: GameStatus
-    let bricks: [BrickId: Brick]
-    let ballResetNeeded: Bool
+public struct GameState: Equatable, Sendable {
+    public let score: Int
+    public let lives: Int
+    public let status: GameStatus
+    public let bricks: [BrickId: Brick]
+    public let ballResetNeeded: Bool
 
-    static let initial = GameState(
+    public static let initial = GameState(
         score: 0,
         lives: 3,
         status: .idle,
@@ -15,7 +15,7 @@ internal struct GameState: Equatable {
         ballResetNeeded: false
     )
 
-    func with(score: Int) -> GameState {
+    public func with(score: Int) -> GameState {
         GameState(
             score: score,
             lives: lives,
@@ -25,7 +25,7 @@ internal struct GameState: Equatable {
         )
     }
 
-    func with(lives: Int) -> GameState {
+    public func with(lives: Int) -> GameState {
         GameState(
             score: score,
             lives: lives,
@@ -35,7 +35,7 @@ internal struct GameState: Equatable {
         )
     }
 
-    func with(status: GameStatus) -> GameState {
+    public func with(status: GameStatus) -> GameState {
         GameState(
             score: score,
             lives: lives,
@@ -45,7 +45,7 @@ internal struct GameState: Equatable {
         )
     }
 
-    func with(bricks: [BrickId: Brick]) -> GameState {
+    public func with(bricks: [BrickId: Brick]) -> GameState {
         GameState(
             score: score,
             lives: lives,
@@ -55,7 +55,7 @@ internal struct GameState: Equatable {
         )
     }
 
-    func with(ballResetNeeded: Bool) -> GameState {
+    public func with(ballResetNeeded: Bool) -> GameState {
         GameState(
             score: score,
             lives: lives,

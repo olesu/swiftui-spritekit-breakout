@@ -1,21 +1,28 @@
 import Foundation
 
 /// Represents a positioned brick with its color.
-internal struct BrickLayoutData {
-    internal let position: CGPoint
-    internal let color: BrickColor
+public struct BrickLayoutData {
+    public let position: CGPoint
+    public let color: BrickColor
 }
 
 /// Configuration for a brick type, specifying its visual appearance and point value.
-internal struct BrickTypeConfig: Codable {
-    internal let id: Int
-    internal let colorName: String
-    internal let scoreValue: Int
+public struct BrickTypeConfig: Codable {
+    public let id: Int
+    public let colorName: String
+    public let scoreValue: Int
+
+    /// Public initializer to allow construction from other modules.
+    public init(id: Int, colorName: String, scoreValue: Int) {
+        self.id = id
+        self.colorName = colorName
+        self.scoreValue = scoreValue
+    }
 
     /// Converts the string color name to a domain BrickColor enum.
     /// - Returns: The corresponding BrickColor.
     /// - Throws: BrickColorError if the color name is invalid.
-    internal func toBrickColor() throws -> BrickColor {
+    public func toBrickColor() throws -> BrickColor {
         return try BrickColor(from: colorName)
     }
 }
@@ -24,21 +31,48 @@ internal struct BrickTypeConfig: Codable {
 ///
 /// Represents a grid-based brick layout with positioning metadata.
 /// The layout array contains brick type IDs (0 = empty, >0 = brick type).
-internal struct BrickLayoutConfig: Codable {
-    internal let levelName: String
-    internal let mapCols: Int
-    internal let mapRows: Int
-    internal let startX: CGFloat
-    internal let startY: CGFloat
-    internal let brickWidth: CGFloat
-    internal let brickHeight: CGFloat
-    internal let spacing: CGFloat
-    internal let rowSpacing: CGFloat
-    internal let brickTypes: [BrickTypeConfig]
-    internal let layout: [Int]
+public struct BrickLayoutConfig: Codable {
+    public let levelName: String
+    public let mapCols: Int
+    public let mapRows: Int
+    public let startX: CGFloat
+    public let startY: CGFloat
+    public let brickWidth: CGFloat
+    public let brickHeight: CGFloat
+    public let spacing: CGFloat
+    public let rowSpacing: CGFloat
+    public let brickTypes: [BrickTypeConfig]
+    public let layout: [Int]
+
+    /// Public initializer to allow construction from other modules.
+    public init(
+        levelName: String,
+        mapCols: Int,
+        mapRows: Int,
+        startX: CGFloat,
+        startY: CGFloat,
+        brickWidth: CGFloat,
+        brickHeight: CGFloat,
+        spacing: CGFloat,
+        rowSpacing: CGFloat,
+        brickTypes: [BrickTypeConfig],
+        layout: [Int]
+    ) {
+        self.levelName = levelName
+        self.mapCols = mapCols
+        self.mapRows = mapRows
+        self.startX = startX
+        self.startY = startY
+        self.brickWidth = brickWidth
+        self.brickHeight = brickHeight
+        self.spacing = spacing
+        self.rowSpacing = rowSpacing
+        self.brickTypes = brickTypes
+        self.layout = layout
+    }
 }
 
-extension BrickLayoutConfig {
+public extension BrickLayoutConfig {
     /// Generates positioned brick data from a grid-based layout configuration.
     ///
     /// Converts a one-dimensional layout array representing a 2D grid into positioned
@@ -48,7 +82,7 @@ extension BrickLayoutConfig {
     /// - Parameter config: The layout configuration containing grid data and positioning.
     /// - Returns: An array of brick layout data with calculated positions and colors.
     /// - Throws: BrickColorError if a brick type has an invalid color name.
-    static internal func generateBricks(from config: BrickLayoutConfig) throws -> [BrickLayoutData] {
+    static public func generateBricks(from config: BrickLayoutConfig) throws -> [BrickLayoutData] {
         var bricks: [BrickLayoutData] = []
 
         for (index, typeId) in config.layout.enumerated() {

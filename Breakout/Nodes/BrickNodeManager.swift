@@ -1,5 +1,6 @@
 import Foundation
 import SpriteKit
+import BreakoutDomain
 
 internal final class BrickNodeManager {
     private let brickLayout: SKNode

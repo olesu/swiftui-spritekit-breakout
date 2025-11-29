@@ -1,7 +1,7 @@
 import Foundation
 import AppKit
 
-@testable import Breakout
+@testable import BreakoutDomain
 
 struct BrickLayoutConfigMother {
     private init() {}

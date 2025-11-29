@@ -1,4 +1,5 @@
 import Foundation
+import BreakoutDomain
 
 internal final class JsonBrickLayoutAdapter: BrickLayoutAdapter {
     internal func load(fileName: String) throws -> BrickLayoutConfig {

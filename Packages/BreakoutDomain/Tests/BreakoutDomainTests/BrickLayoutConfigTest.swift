@@ -1,7 +1,7 @@
 import Testing
 import Foundation
 
-@testable import Breakout
+@testable import BreakoutDomain
 
 struct BrickLayoutConfigTest {
 

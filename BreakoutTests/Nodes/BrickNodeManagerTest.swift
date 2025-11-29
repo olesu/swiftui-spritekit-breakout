@@ -1,5 +1,7 @@
 import Testing
 import SpriteKit
+import BreakoutDomain
+
 @testable import Breakout
 
 struct BrickNodeManagerTest {

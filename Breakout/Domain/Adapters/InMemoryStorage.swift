@@ -1,4 +1,5 @@
 import Foundation
+import BreakoutDomain
 
 /// In-memory storage for game state.
 @Observable internal final class InMemoryStorage {

@@ -1,5 +1,6 @@
 import Testing
 import AppKit
+import BreakoutDomain
 
 @testable import Breakout
 
