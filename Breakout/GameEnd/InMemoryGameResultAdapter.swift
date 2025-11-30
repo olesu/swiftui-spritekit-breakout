@@ -10,15 +10,15 @@ final class InMemoryGameResultAdapter: GameResultAdapter {
     }
 
     var didWin: Bool {
-        storage.gameResultDidWin
+        storage.didWinGame
     }
 
     var score: Int {
-        storage.gameResultScore
+        storage.finalScore
     }
 
     func save(didWin: Bool, score: Int) {
-        storage.gameResultDidWin = didWin
-        storage.gameResultScore = score
+        storage.didWinGame = didWin
+        storage.finalScore = score
     }
 }
