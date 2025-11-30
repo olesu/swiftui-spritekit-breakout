@@ -82,7 +82,7 @@ public extension BrickLayoutConfig {
     /// - Parameter config: The layout configuration containing grid data and positioning.
     /// - Returns: An array of brick layout data with calculated positions and colors.
     /// - Throws: BrickColorError if a brick type has an invalid color name.
-    static public func generateBricks(from config: BrickLayoutConfig) throws -> [BrickLayoutData] {
+    static func generateBricks(from config: BrickLayoutConfig) throws -> [BrickLayoutData] {
         var bricks: [BrickLayoutData] = []
 
         for (index, typeId) in config.layout.enumerated() {
