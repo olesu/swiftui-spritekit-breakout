@@ -34,25 +34,84 @@
 		379ACDF22E598E0300E23C13 /* BreakoutUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BreakoutUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		377F1C722EDC890E00BA5CBC /* Exceptions for "Tests" folder in "Breakout" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				BreakoutAppTests/Game/GameSceneTest.swift,
+				BreakoutAppTests/Game/GameViewModelTest.swift,
+				BreakoutAppTests/GameEnd/GameEndViewModelTest.swift,
+				BreakoutAppTests/Helpers/FakeGameResultService.swift,
+				BreakoutAppTests/Helpers/FakeScreenNavigationService.swift,
+				BreakoutAppTests/Helpers/GameEndViewModelMother.swift,
+				BreakoutAppTests/Helpers/GameViewModelMother.swift,
+				BreakoutAppTests/Idle/IdleViewModelTest.swift,
+				BreakoutAppTests/MappingTest.swift,
+				BreakoutAppTests/Navigation/NavigationCoordinatorTest.swift,
+				BreakoutAppTests/Nodes/BrickNodeManagerTest.swift,
+				BreakoutAppTests/Nodes/ClassicBricksLayoutTest.swift,
+				BreakoutAppTests/Nodes/PhysicsBodyConfigurersTest.swift,
+				BreakoutAppTests/Nodes/SpriteKitNodeCreatorTest.swift,
+				BreakoutAppTests/Physics/BallResetConfiguratorTest.swift,
+				BreakoutAppTests/Physics/PaddleBounceApplierTest.swift,
+				BreakoutAppTests/Physics/PaddleBounceCalculatorTest.swift,
+				BreakoutAppUITests/BreakoutUITests.swift,
+				BreakoutAppUITests/BreakoutUITestsLaunchTests.swift,
+			);
+			target = 379ACDD92E598E0200E23C13 /* Breakout */;
+		};
+		377F1C732EDC890E00BA5CBC /* Exceptions for "Tests" folder in "BreakoutTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				BreakoutAppTests/Game/GameSceneTest.swift,
+				BreakoutAppTests/Game/GameViewModelTest.swift,
+				BreakoutAppTests/GameEnd/GameEndViewModelTest.swift,
+				BreakoutAppTests/Helpers/FakeGameResultService.swift,
+				BreakoutAppTests/Helpers/FakeScreenNavigationService.swift,
+				BreakoutAppTests/Helpers/GameEndViewModelMother.swift,
+				BreakoutAppTests/Helpers/GameViewModelMother.swift,
+				BreakoutAppTests/Idle/IdleViewModelTest.swift,
+				BreakoutAppTests/MappingTest.swift,
+				BreakoutAppTests/Navigation/NavigationCoordinatorTest.swift,
+				BreakoutAppTests/Nodes/BrickNodeManagerTest.swift,
+				BreakoutAppTests/Nodes/ClassicBricksLayoutTest.swift,
+				BreakoutAppTests/Nodes/PhysicsBodyConfigurersTest.swift,
+				BreakoutAppTests/Nodes/SpriteKitNodeCreatorTest.swift,
+				BreakoutAppTests/Physics/BallResetConfiguratorTest.swift,
+				BreakoutAppTests/Physics/PaddleBounceApplierTest.swift,
+				BreakoutAppTests/Physics/PaddleBounceCalculatorTest.swift,
+			);
+			target = 379ACDE72E598E0300E23C13 /* BreakoutTests */;
+		};
+		377F1C742EDC890E00BA5CBC /* Exceptions for "Tests" folder in "BreakoutUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				BreakoutAppUITests/BreakoutUITests.swift,
+				BreakoutAppUITests/BreakoutUITestsLaunchTests.swift,
+			);
+			target = 379ACDF12E598E0300E23C13 /* BreakoutUITests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		377F1C382EDC878800BA5CBC /* Sources */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		377F1C422EDC88FF00BA5CBC /* Tests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				377F1C722EDC890E00BA5CBC /* Exceptions for "Tests" folder in "Breakout" target */,
+				377F1C732EDC890E00BA5CBC /* Exceptions for "Tests" folder in "BreakoutTests" target */,
+				377F1C742EDC890E00BA5CBC /* Exceptions for "Tests" folder in "BreakoutUITests" target */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
 		379ACDDC2E598E0300E23C13 /* Breakout */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Breakout;
-			sourceTree = "<group>";
-		};
-		379ACDEB2E598E0300E23C13 /* BreakoutTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = BreakoutTests;
-			sourceTree = "<group>";
-		};
-		379ACDF52E598E0300E23C13 /* BreakoutUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = BreakoutUITests;
-			sourceTree = "<group>";
-		};
-		37DDA2522E9AA65600E6E517 /* Resources */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -87,10 +146,9 @@
 		379ACDD12E598E0200E23C13 = {
 			isa = PBXGroup;
 			children = (
-				37DDA2522E9AA65600E6E517 /* Resources */,
+				377F1C422EDC88FF00BA5CBC /* Tests */,
+				377F1C382EDC878800BA5CBC /* Sources */,
 				379ACDDC2E598E0300E23C13 /* Breakout */,
-				379ACDEB2E598E0300E23C13 /* BreakoutTests */,
-				379ACDF52E598E0300E23C13 /* BreakoutUITests */,
 				379ACDDB2E598E0300E23C13 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -121,8 +179,9 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				377F1C382EDC878800BA5CBC /* Sources */,
+				377F1C422EDC88FF00BA5CBC /* Tests */,
 				379ACDDC2E598E0300E23C13 /* Breakout */,
-				37DDA2522E9AA65600E6E517 /* Resources */,
 			);
 			name = Breakout;
 			packageProductDependencies = (
@@ -146,9 +205,6 @@
 			dependencies = (
 				379ACDEA2E598E0300E23C13 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				379ACDEB2E598E0300E23C13 /* BreakoutTests */,
-			);
 			name = BreakoutTests;
 			packageProductDependencies = (
 			);
@@ -168,9 +224,6 @@
 			);
 			dependencies = (
 				379ACDF42E598E0300E23C13 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				379ACDF52E598E0300E23C13 /* BreakoutUITests */,
 			);
 			name = BreakoutUITests;
 			packageProductDependencies = (

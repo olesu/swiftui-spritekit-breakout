@@ -26,7 +26,7 @@ struct Application: App {
 
         // Configuration services
         let gameConfigurationService = RealGameConfigurationService(
-            loader: JsonGameConfigurationAdapter()
+            loader: JsonGameConfigurationAdapter(bundle: .main)
         )
         let applicationConfiguration = ApplicationConfiguration(
             gameConfigurationService: gameConfigurationService
