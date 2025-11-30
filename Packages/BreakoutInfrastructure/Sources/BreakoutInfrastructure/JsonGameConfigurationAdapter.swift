@@ -1,18 +1,24 @@
 import Foundation
 import BreakoutDomain
 
-internal final class JsonGameConfigurationAdapter: GameConfigurationAdapter {
-    internal enum LoaderError: Error {
+public final class JsonGameConfigurationAdapter: GameConfigurationAdapter {
+    private let bundle: Bundle
+
+    public init(bundle: Bundle) {
+        self.bundle = bundle
+    }
+    
+    public enum LoaderError: Error {
         case resourceNotFound(String, String)
         case decodingFailed(Error)
     }
 
-    internal func load() throws -> GameConfiguration {
+    public func load() throws -> GameConfiguration {
         let resourceName = "GameConfiguration"
         let resourceExt = "json"
 
         guard
-            let url = Bundle.main.url(
+            let url = bundle.url(
                 forResource: resourceName,
                 withExtension: resourceExt
             )
