@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import BreakoutDomain
+import BreakoutInfrastructure
 
 @main
 struct Application: App {

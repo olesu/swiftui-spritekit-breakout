@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		373709532EDB128C0032FF7B /* BreakoutDomain in Frameworks */ = {isa = PBXBuildFile; productRef = 373709522EDB128C0032FF7B /* BreakoutDomain */; };
+		37B479F32EDC35F3004C47AF /* BreakoutInfrastructure in Frameworks */ = {isa = PBXBuildFile; productRef = 37B479F22EDC35F3004C47AF /* BreakoutInfrastructure */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37B479F32EDC35F3004C47AF /* BreakoutInfrastructure in Frameworks */,
 				373709532EDB128C0032FF7B /* BreakoutDomain in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -125,6 +127,7 @@
 			name = Breakout;
 			packageProductDependencies = (
 				373709522EDB128C0032FF7B /* BreakoutDomain */,
+				37B479F22EDC35F3004C47AF /* BreakoutInfrastructure */,
 			);
 			productName = Breakout;
 			productReference = 379ACDDA2E598E0300E23C13 /* Breakout.app */;
@@ -210,6 +213,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				373709512EDB128C0032FF7B /* XCLocalSwiftPackageReference "Packages/BreakoutDomain" */,
+				37B479F12EDC35F3004C47AF /* XCLocalSwiftPackageReference "Packages/BreakoutInfrastructure" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 379ACDDB2E598E0300E23C13 /* Products */;
@@ -629,12 +633,20 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/BreakoutDomain;
 		};
+		37B479F12EDC35F3004C47AF /* XCLocalSwiftPackageReference "Packages/BreakoutInfrastructure" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/BreakoutInfrastructure;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		373709522EDB128C0032FF7B /* BreakoutDomain */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = BreakoutDomain;
+		};
+		37B479F22EDC35F3004C47AF /* BreakoutInfrastructure */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BreakoutInfrastructure;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -1,5 +1,7 @@
 import Foundation
 
+import BreakoutInfrastructure
+
 final class InMemoryGameResultAdapter: GameResultAdapter {
     private let storage: InMemoryStorage
 

@@ -2,6 +2,7 @@ import Foundation
 import SpriteKit
 import SwiftUI
 import BreakoutDomain
+import BreakoutInfrastructure
 
 struct GameView: View {
     private let viewModel: GameViewModel
