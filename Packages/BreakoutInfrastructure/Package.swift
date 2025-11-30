@@ -32,7 +32,10 @@ let package = Package(
         ),
         .testTarget(
             name: "BreakoutInfrastructureTests",
-            dependencies: ["BreakoutInfrastructure"]
+            dependencies: ["BreakoutInfrastructure"],
+            resources: [
+                .process("Resources")
+            ]
         ),
     ]
 )

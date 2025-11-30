@@ -4,6 +4,7 @@ import AppKit
 import os.log
 
 import BreakoutDomain
+import BreakoutInfrastructure
 
 extension BrickColor {
     internal func toNSColor() -> NSColor {
@@ -22,7 +23,7 @@ internal struct SpriteKitNodeCreator: NodeCreator {
 
     internal init(
         layoutFileName: String = "001-classic-breakout",
-        layoutLoader: BrickLayoutAdapter = JsonBrickLayoutAdapter()
+        layoutLoader: BrickLayoutAdapter = JsonBrickLayoutAdapter(bundle: .main)
     ) {
         self.layoutFileName = layoutFileName
         self.layoutLoader = layoutLoader

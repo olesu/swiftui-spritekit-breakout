@@ -1,9 +1,15 @@
 import Foundation
 import BreakoutDomain
 
-internal final class JsonBrickLayoutAdapter: BrickLayoutAdapter {
-    internal func load(fileName: String) throws -> BrickLayoutConfig {
-        guard let url = Bundle.main.url(forResource: fileName, withExtension: "json") else {
+public final class JsonBrickLayoutAdapter: BrickLayoutAdapter {
+    private let bundle: Bundle
+
+    public init(bundle: Bundle) {
+        self.bundle = bundle
+    }
+    
+    public func load(fileName: String) throws -> BrickLayoutConfig {
+        guard let url = bundle.url(forResource: fileName, withExtension: "json") else {
             throw BrickLayoutAdapterError.fileNotFound(fileName)
         }
 

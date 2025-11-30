@@ -1,7 +1,7 @@
 import Foundation
 
 /// Errors that can occur when loading brick layouts.
-public enum BrickLayoutAdapterError: Error {
+public enum BrickLayoutAdapterError: Error, Equatable {
     /// The specified layout file could not be found.
     case fileNotFound(String)
     /// The layout file contains invalid JSON or cannot be decoded.
