@@ -2,9 +2,9 @@ import Foundation
 import Testing
 import BreakoutDomain
 
-@testable import Breakout
+@testable import BreakoutInfrastructure
 
-struct GameStateRepositoryTest {
+struct InMemoryGameStateRepositoryTest {
     @Test func testSaveAndLoad_persistsGameState() {
         let repository = InMemoryGameStateRepository()
         let state = GameState.initial
@@ -36,6 +36,5 @@ struct GameStateRepositoryTest {
         let loadedState = repository.load()
 
         #expect(loadedState == state2)
-        #expect(loadedState.score == 100)
     }
 }

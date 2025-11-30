@@ -1,4 +1,5 @@
 import BreakoutDomain
+import BreakoutInfrastructure
 
 @testable import Breakout
 

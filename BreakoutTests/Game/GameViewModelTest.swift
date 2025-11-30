@@ -3,6 +3,7 @@ import SpriteKit
 import Testing
 
 import BreakoutDomain
+import BreakoutInfrastructure
 
 @testable import Breakout
 
