@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import BreakoutNavigation
 
 struct GameEndView: View {
     @State private var viewModel: GameEndViewModel

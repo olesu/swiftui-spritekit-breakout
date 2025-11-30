@@ -3,6 +3,7 @@ import SpriteKit
 import SwiftUI
 import BreakoutDomain
 import BreakoutInfrastructure
+import BreakoutNavigation
 
 struct GameView: View {
     private let viewModel: GameViewModel

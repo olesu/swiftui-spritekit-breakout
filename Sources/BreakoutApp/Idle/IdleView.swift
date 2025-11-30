@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import BreakoutNavigation
 
 struct IdleView: View {
     @State private var viewModel: IdleViewModel

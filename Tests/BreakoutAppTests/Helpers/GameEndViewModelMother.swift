@@ -1,3 +1,5 @@
+import BreakoutNavigation
+
 @testable import Breakout
 
 struct GameEndViewModelMother {

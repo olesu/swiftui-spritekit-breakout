@@ -1,6 +1,6 @@
 import Testing
 
-@testable import Breakout
+@testable import BreakoutNavigation
 
 struct NavigationCoordinatorTest {
 

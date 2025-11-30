@@ -1,4 +1,5 @@
 import Foundation
+import BreakoutNavigation
 
 @Observable internal final class IdleViewModel {
     private let screenNavigationService: ScreenNavigationService

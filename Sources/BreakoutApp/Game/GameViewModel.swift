@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import BreakoutDomain
+import BreakoutNavigation
 
 /// Coordinates between the SwiftUI view layer and the domain game engine.
 ///

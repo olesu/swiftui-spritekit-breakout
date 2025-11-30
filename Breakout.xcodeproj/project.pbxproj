@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		373709532EDB128C0032FF7B /* BreakoutDomain in Frameworks */ = {isa = PBXBuildFile; productRef = 373709522EDB128C0032FF7B /* BreakoutDomain */; };
+		377F1C772EDC8B8B00BA5CBC /* BreakoutNavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 377F1C762EDC8B8B00BA5CBC /* BreakoutNavigation */; };
 		37B479F32EDC35F3004C47AF /* BreakoutInfrastructure in Frameworks */ = {isa = PBXBuildFile; productRef = 37B479F22EDC35F3004C47AF /* BreakoutInfrastructure */; };
 /* End PBXBuildFile section */
 
@@ -47,7 +48,6 @@
 				BreakoutAppTests/Helpers/GameViewModelMother.swift,
 				BreakoutAppTests/Idle/IdleViewModelTest.swift,
 				BreakoutAppTests/MappingTest.swift,
-				BreakoutAppTests/Navigation/NavigationCoordinatorTest.swift,
 				BreakoutAppTests/Nodes/BrickNodeManagerTest.swift,
 				BreakoutAppTests/Nodes/ClassicBricksLayoutTest.swift,
 				BreakoutAppTests/Nodes/PhysicsBodyConfigurersTest.swift,
@@ -72,7 +72,6 @@
 				BreakoutAppTests/Helpers/GameViewModelMother.swift,
 				BreakoutAppTests/Idle/IdleViewModelTest.swift,
 				BreakoutAppTests/MappingTest.swift,
-				BreakoutAppTests/Navigation/NavigationCoordinatorTest.swift,
 				BreakoutAppTests/Nodes/BrickNodeManagerTest.swift,
 				BreakoutAppTests/Nodes/ClassicBricksLayoutTest.swift,
 				BreakoutAppTests/Nodes/PhysicsBodyConfigurersTest.swift,
@@ -123,6 +122,7 @@
 			files = (
 				37B479F32EDC35F3004C47AF /* BreakoutInfrastructure in Frameworks */,
 				373709532EDB128C0032FF7B /* BreakoutDomain in Frameworks */,
+				377F1C772EDC8B8B00BA5CBC /* BreakoutNavigation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -187,6 +187,7 @@
 			packageProductDependencies = (
 				373709522EDB128C0032FF7B /* BreakoutDomain */,
 				37B479F22EDC35F3004C47AF /* BreakoutInfrastructure */,
+				377F1C762EDC8B8B00BA5CBC /* BreakoutNavigation */,
 			);
 			productName = Breakout;
 			productReference = 379ACDDA2E598E0300E23C13 /* Breakout.app */;
@@ -267,6 +268,7 @@
 			packageReferences = (
 				373709512EDB128C0032FF7B /* XCLocalSwiftPackageReference "Packages/BreakoutDomain" */,
 				37B479F12EDC35F3004C47AF /* XCLocalSwiftPackageReference "Packages/BreakoutInfrastructure" */,
+				377F1C752EDC8B8B00BA5CBC /* XCLocalSwiftPackageReference "Packages/BreakoutNavigation" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 379ACDDB2E598E0300E23C13 /* Products */;
@@ -686,6 +688,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/BreakoutDomain;
 		};
+		377F1C752EDC8B8B00BA5CBC /* XCLocalSwiftPackageReference "Packages/BreakoutNavigation" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/BreakoutNavigation;
+		};
 		37B479F12EDC35F3004C47AF /* XCLocalSwiftPackageReference "Packages/BreakoutInfrastructure" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/BreakoutInfrastructure;
@@ -696,6 +702,10 @@
 		373709522EDB128C0032FF7B /* BreakoutDomain */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = BreakoutDomain;
+		};
+		377F1C762EDC8B8B00BA5CBC /* BreakoutNavigation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BreakoutNavigation;
 		};
 		37B479F22EDC35F3004C47AF /* BreakoutInfrastructure */ = {
 			isa = XCSwiftPackageProductDependency;

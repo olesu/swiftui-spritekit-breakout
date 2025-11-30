@@ -1,13 +1,13 @@
 import Foundation
 
-@Observable internal final class NavigationCoordinator {
+@Observable public final class NavigationCoordinator {
     private let navigationState: NavigationState
 
-    internal init(navigationState: NavigationState) {
+    public init(navigationState: NavigationState) {
         self.navigationState = navigationState
     }
 
-    internal var currentScreen: Screen {
+    public var currentScreen: Screen {
         navigationState.currentScreen
     }
 }

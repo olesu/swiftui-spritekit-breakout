@@ -1,4 +1,5 @@
 import Foundation
+import BreakoutNavigation
 
 @Observable internal final class GameEndViewModel {
     private let screenNavigationService: ScreenNavigationService

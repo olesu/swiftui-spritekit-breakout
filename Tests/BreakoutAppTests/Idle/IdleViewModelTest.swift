@@ -1,4 +1,5 @@
 import Testing
+import BreakoutNavigation
 
 @testable import Breakout
 
