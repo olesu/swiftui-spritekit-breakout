@@ -2,14 +2,8 @@ import Foundation
 import SwiftUI
 
 struct IdleView: View {
-    @State private var viewModel: IdleViewModel
+    @Environment(IdleViewModel.self) private var viewModel: IdleViewModel
     @FocusState private var isFocused: Bool
-
-    init(screenNavigationService: ScreenNavigationService) {
-        self._viewModel = State(initialValue: IdleViewModel(
-            screenNavigationService: screenNavigationService
-        ))
-    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -42,15 +36,3 @@ struct IdleView: View {
     }
 }
 
-#if DEBUG
-#Preview {
-    IdleView(screenNavigationService: PreviewScreenNavigationService())
-        .frame(width: 320 * 0.5, height: 480 * 0.5)
-}
-
-private class PreviewScreenNavigationService: ScreenNavigationService {
-    func navigate(to screen: Screen) {
-
-    }
-}
-#endif

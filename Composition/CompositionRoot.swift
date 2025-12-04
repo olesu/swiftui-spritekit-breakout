@@ -10,6 +10,7 @@ enum CompositionRoot {
         let screenNavigationService = RealScreenNavigationService(
             navigationState: navigationState
         )
+        let idleViewModel = IdleViewModel(screenNavigationService: screenNavigationService)
 
         // TODO: Extract to GameConfigurationDependencies
         let gameConfigurationService = RealGameConfigurationService(
@@ -34,7 +35,8 @@ enum CompositionRoot {
             gameConfigurationService: gameConfigurationService,
             screenNavigationService: screenNavigationService,
             gameStateStorage: gameStateStorage,
-            gameResultService: gameResultService
+            gameResultService: gameResultService,
+            idleViewModel: idleViewModel
         )
     }
 }

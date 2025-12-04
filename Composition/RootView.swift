@@ -11,7 +11,8 @@ struct RootView: View {
         ZStack {
             switch deps.navigationCoordinator.currentScreen {
             case .idle:
-                IdleView(screenNavigationService: deps.screenNavigationService)
+                IdleView()
+                    .environment(deps.idleViewModel)
             case .game:
                 GameView(
                     configurationService: deps.gameConfigurationService,
