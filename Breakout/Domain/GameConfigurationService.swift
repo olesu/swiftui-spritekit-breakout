@@ -15,6 +15,7 @@ internal protocol GameConfigurationService {
     func getGameScale() -> CGFloat
 }
 
+@Observable
 internal final class RealGameConfigurationService: GameConfigurationService {
     private let loader: GameConfigurationAdapter
 

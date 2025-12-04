@@ -3,7 +3,8 @@ import Foundation
 /// Provides application-level configuration.
 ///
 /// Calculates window dimensions based on game configuration and scale.
-internal struct ApplicationConfiguration {
+@Observable
+internal class ApplicationConfiguration {
     private let gameConfigurationService: GameConfigurationService
 
     internal init(gameConfigurationService: GameConfigurationService) {

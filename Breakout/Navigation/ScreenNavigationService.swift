@@ -7,7 +7,8 @@ internal protocol ScreenNavigationService {
     func navigate(to screen: Screen)
 }
 
-internal struct RealScreenNavigationService: ScreenNavigationService {
+@Observable
+internal class RealScreenNavigationService: ScreenNavigationService {
     private let navigationState: NavigationState
 
     internal init(navigationState: NavigationState) {

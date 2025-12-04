@@ -1,5 +1,6 @@
 import Foundation
 
+@Observable
 final class RealGameResultService: GameResultService {
     private let adapter: GameResultAdapter
 
