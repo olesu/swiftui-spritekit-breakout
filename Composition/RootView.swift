@@ -15,6 +15,7 @@ struct RootView: View {
                     .environment(deps.idleViewModel)
             case .game:
                 GameView(
+                    gameService: BreakoutGameService(),
                     configurationService: deps.gameConfigurationService,
                     screenNavigationService: deps.screenNavigationService,
                     storage: deps.gameStateStorage,

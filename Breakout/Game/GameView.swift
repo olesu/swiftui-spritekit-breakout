@@ -13,6 +13,7 @@ struct GameView: View {
     @FocusState private var isFocused: Bool
 
     init(
+        gameService: GameService,
         configurationService: GameConfigurationService,
         screenNavigationService: ScreenNavigationService,
         storage: InMemoryStorage,
@@ -20,7 +21,7 @@ struct GameView: View {
     ) {
         self.storage = storage
         self.viewModel = GameViewModel(
-            service: BreakoutGameService(),
+            service: gameService,
             repository: InMemoryGameStateRepository(),
             configurationService: configurationService,
             screenNavigationService: screenNavigationService,
@@ -162,46 +163,3 @@ struct GameView: View {
     }
 }
 
-#if DEBUG
-    #Preview {
-        let configurationService = PreviewGameConfigurationService()
-        let screenNavigationService = RealScreenNavigationService(
-            navigationState: NavigationState()
-        )
-        let storage = InMemoryStorage()
-        let gameResultAdapter = InMemoryGameResultAdapter(storage: storage)
-        let gameResultService = RealGameResultService(adapter: gameResultAdapter)
-        GameView(
-            configurationService: configurationService,
-            screenNavigationService: screenNavigationService,
-            storage: storage,
-            gameResultService: gameResultService
-        )
-        .frame(
-            width: configurationService.getGameConfiguration().sceneWidth
-                * configurationService.getGameScale(),
-            height: configurationService.getGameConfiguration().sceneHeight
-                * configurationService.getGameScale()
-        )
-    }
-
-    private class PreviewGameConfigurationService: GameConfigurationService {
-        func getGameConfiguration() -> GameConfiguration {
-            GameConfiguration(
-                sceneWidth: 320,
-                sceneHeight: 480,
-                brickArea: BrickArea(
-                    x: 20,
-                    y: 330,
-                    width: 280,
-                    height: 120
-                )
-            )
-        }
-
-        func getGameScale() -> CGFloat {
-            0.5
-        }
-    }
-
-#endif
