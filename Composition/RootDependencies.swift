@@ -7,5 +7,6 @@ struct RootDependencies {
     let gameResultService: RealGameResultService
     let gameService: BreakoutGameService
     let idleViewModel: IdleViewModel
+    let gameViewModel: GameViewModel
     let gameEndViewModel: GameEndViewModel
 }

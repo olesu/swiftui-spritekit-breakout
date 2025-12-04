@@ -83,6 +83,10 @@ import SwiftUI
         repository.save(state)
     }
     
+    func resetGame() {
+        repository.save(GameState.initial)
+    }
+    
     internal func startGame() {
         let state = service.startGame(state: currentState)
         repository.save(state)

@@ -14,13 +14,15 @@ struct RootView: View {
                 IdleView()
                     .environment(deps.idleViewModel)
             case .game:
-                GameView(
-                    gameService: BreakoutGameService(),
+                let viewModel = GameViewModel(
+                    service: BreakoutGameService(),
+                    repository: InMemoryGameStateRepository(),
                     configurationService: deps.gameConfigurationService,
                     screenNavigationService: deps.screenNavigationService,
-                    storage: deps.gameStateStorage,
                     gameResultService: deps.gameResultService
                 )
+                GameView()
+                    .environment(deps.gameViewModel)
             case .gameEnd:
                 GameEndView()
                     .environment(deps.gameEndViewModel)

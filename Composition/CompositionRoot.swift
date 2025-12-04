@@ -34,7 +34,17 @@ enum CompositionRoot {
             gameResultService: gameResultService
         )
         
+        let gameStateRepository = InMemoryGameStateRepository()
+        
         let breakoutGameService = BreakoutGameService()
+        let gameViewModel = GameViewModel(
+            service: breakoutGameService,
+            repository: gameStateRepository,
+            configurationService: gameConfigurationService,
+            screenNavigationService: screenNavigationService,
+            gameResultService: gameResultService
+        )
+
 
         return RootDependencies(
             navigationCoordinator: navigationCoordinator,
@@ -45,6 +55,7 @@ enum CompositionRoot {
             gameResultService: gameResultService,
             gameService: breakoutGameService,
             idleViewModel: idleViewModel,
+            gameViewModel: gameViewModel,
             gameEndViewModel: gameEndViewModel
         )
     }

@@ -3,31 +3,14 @@ import SpriteKit
 import SwiftUI
 
 struct GameView: View {
-    private let viewModel: GameViewModel
-    private let storage: InMemoryStorage
+    @Environment(GameViewModel.self) private var viewModel: GameViewModel
+    
     @State private var scene: GameScene?
     @State private var paddleXPosition: CGFloat = 0
     @State private var isMovingLeft = false
     @State private var isMovingRight = false
     @State private var movementTimer: Timer?
     @FocusState private var isFocused: Bool
-
-    init(
-        gameService: GameService,
-        configurationService: GameConfigurationService,
-        screenNavigationService: ScreenNavigationService,
-        storage: InMemoryStorage,
-        gameResultService: GameResultService
-    ) {
-        self.storage = storage
-        self.viewModel = GameViewModel(
-            service: gameService,
-            repository: InMemoryGameStateRepository(),
-            configurationService: configurationService,
-            screenNavigationService: screenNavigationService,
-            gameResultService: gameResultService
-        )
-    }
 
     var body: some View {
         VStack {
@@ -114,6 +97,7 @@ struct GameView: View {
     private func setupGame() -> GameScene {
         let (nodes, bricks) = createNodesAndCollectBricks()
         viewModel.initializeBricks(bricks)
+        viewModel.resetGame()
         viewModel.startGame()
         return createScene(with: nodes)
     }

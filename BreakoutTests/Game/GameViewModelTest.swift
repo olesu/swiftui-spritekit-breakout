@@ -23,11 +23,25 @@ struct GameViewModelTest {
         )
     }
 
-    @Test func receivesScreenNavigationService() async throws {
-        let _ = GameViewModelMother.makeContext()
+    // MARK: - Game Restart
+
+    @Test
+    func startingANewGameAfterGameOverResetsStateToInitial() {
+        repository.save(GameState.initial
+            .with(lives: 0)
+            .with(status: .gameOver))
+
+        viewModel.resetGame()
+        viewModel.startGame()
+
+        #expect(repository.load().status == .playing)
+        #expect(repository.load().lives == 3)
     }
 
-    @Test func initialization_loadsStateFromRepository() async throws {
+    // MARK: - Initialization
+
+    @Test
+    func restoresPersistedStateWhenInitialized() async throws {
         repository.save(
             GameState.initial
                 .with(score: 50)
@@ -39,55 +53,58 @@ struct GameViewModelTest {
         #expect(viewModel.remainingLives == 2)
     }
 
-    @Test func testStartGame_callsServiceAndSavesState() async throws {
-        viewModel.startGame()
+    @Test
+    func exposesInjectedNavigationService() async throws {
+        let _ = GameViewModelMother.makeContext()
+        // No expectations — just verifying construction works
+    }
 
+    // MARK: - Starting a Game
+
+    @Test
+    func startingAGameTransitionsStateToPlaying() async throws {
+        viewModel.startGame()
         #expect(repository.load().status == .playing)
     }
 
-    @Test func startGame_transitionsToPlayingAndSavesState() async throws {
+    @Test
+    func startingAGamePersistsUpdatedState() async throws {
         viewModel.startGame()
-
-        let savedState = repository.load()
-        #expect(savedState.status == .playing)
+        let saved = repository.load()
+        #expect(saved.status == .playing)
     }
 
-    @Test func testHandleGameEvent_brickHit_updatesScore() async throws {
+    // MARK: - Brick Hit Behavior
+
+    @Test
+    func hittingABrickIncreasesTheScore() async throws {
         repository.save(GameState.initial
             .with(bricks: [
-                BrickId(of: "1"): Brick(
-                    id: BrickId(of: "1"),
-                    color: .red
-                )
+                BrickId(of: "1"): Brick(id: BrickId(of: "1"), color: .red)
             ])
         )
         viewModel.startGame()
-        viewModel.handleGameEvent(
-            .brickHit(brickID: BrickId(of: "1"))
-        )
+        viewModel.handleGameEvent(.brickHit(brickID: BrickId(of: "1")))
 
         #expect(viewModel.currentScore == 7)
     }
 
-    @Test func testHandleGameEvent_brickHit_addsToExistingScore() async throws {
+    @Test
+    func hittingABrickAddsToExistingScore() async throws {
         repository.save(GameState.initial
             .with(score: 10)
             .with(bricks: [
-                BrickId(of: "1"): Brick(
-                    id: BrickId(of: "1"),
-                    color: .red
-                )
+                BrickId(of: "1"): Brick(id: BrickId(of: "1"), color: .red)
             ])
         )
         viewModel.startGame()
-        viewModel.handleGameEvent(
-            .brickHit(brickID: BrickId(of: "1"))
-        )
+        viewModel.handleGameEvent(.brickHit(brickID: BrickId(of: "1")))
 
         #expect(viewModel.currentScore == 17)
     }
 
-    @Test func testHandleGameEvent_brickHit_removesBrick() async throws {
+    @Test
+    func hittingABrickRemovesItFromTheBoard() async throws {
         let brickId = BrickId(of: "1")
         repository.save(GameState.initial
             .with(bricks: [
@@ -97,11 +114,11 @@ struct GameViewModelTest {
         viewModel.startGame()
         viewModel.handleGameEvent(.brickHit(brickID: brickId))
 
-        let savedState = repository.load()
-        #expect(savedState.bricks[brickId] == nil)
+        #expect(repository.load().bricks[brickId] == nil)
     }
 
-    @Test func testHandleGameEvent_lastBrickHit_transitionsToWon() async throws {
+    @Test
+    func hittingTheFinalBrickEndsTheGameAsWon() async throws {
         let brickId = BrickId(of: "1")
         repository.save(GameState.initial
             .with(bricks: [
@@ -111,53 +128,59 @@ struct GameViewModelTest {
         viewModel.startGame()
         viewModel.handleGameEvent(.brickHit(brickID: brickId))
 
-        let savedState = repository.load()
-        #expect(savedState.status == .won)
+        #expect(repository.load().status == .won)
     }
 
-    @Test func testHandleGameEvent_ballLost_decreasesLives() async throws {
+    // MARK: - Ball Lost Behavior
+
+    @Test
+    func losingABallDecreasesRemainingLives() async throws {
         repository.save(GameState.initial.with(lives: 3))
         viewModel.startGame()
         viewModel.handleGameEvent(.ballLost)
 
-        let savedState = repository.load()
-        #expect(savedState.lives == 2)
+        #expect(repository.load().lives == 2)
     }
 
-    @Test func testHandleGameEvent_ballLost_setsBallResetNeeded() async throws {
+    @Test
+    func losingABallMarksBallResetAsRequired() async throws {
         repository.save(GameState.initial.with(lives: 3))
         viewModel.startGame()
         viewModel.handleGameEvent(.ballLost)
 
-        let savedState = repository.load()
-        #expect(savedState.ballResetNeeded == true)
+        #expect(repository.load().ballResetNeeded == true)
     }
 
-    @Test func testHandleGameEvent_ballLost_transitionsToGameOverWhenNoLivesLeft() async throws {
+    @Test
+    func losingTheFinalBallEndsTheGameAsGameOver() async throws {
         repository.save(GameState.initial.with(lives: 1))
         viewModel.startGame()
         viewModel.handleGameEvent(.ballLost)
 
-        let savedState = repository.load()
-        #expect(savedState.status == .gameOver)
+        #expect(repository.load().status == .gameOver)
     }
 
-    @Test func testAcknowledgeBallReset_clearsBallResetFlag() async throws {
+    // MARK: - Reset Behavior
+
+    @Test
+    func acknowledgingBallResetClearsResetFlag() async throws {
         repository.save(GameState.initial.with(ballResetNeeded: true))
 
         viewModel.acknowledgeBallReset()
 
-        let savedState = repository.load()
-        #expect(savedState.ballResetNeeded == false)
+        #expect(repository.load().ballResetNeeded == false)
     }
 
-    @Test func exposesSceneSizeFromConfiguration() async throws {
-        let context = GameViewModelMother.makeContext()
+    // MARK: - Configuration Exposure
 
+    @Test
+    func exposesSceneSizeFromConfiguration() async throws {
+        let context = GameViewModelMother.makeContext()
         #expect(context.viewModel.sceneSize == CGSize(width: 320, height: 480))
     }
 
-    @Test func exposesBrickAreaFromConfiguration() async throws {
+    @Test
+    func exposesBrickAreaFromConfiguration() async throws {
         let context = GameViewModelMother.makeContext()
 
         #expect(
@@ -175,7 +198,7 @@ class FakeGameConfigurationService: GameConfigurationService {
             brickArea: BrickArea(x: 20, y: 330, width: 280, height: 120)
         )
     }
-
+    
     func getGameScale() -> CGFloat {
         1.0
     }

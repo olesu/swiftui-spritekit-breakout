@@ -1,5 +1,5 @@
-import SwiftUI
 import Foundation
+import SwiftUI
 
 #if DEBUG
     #Preview {
@@ -9,20 +9,25 @@ import Foundation
         )
         let storage = InMemoryStorage()
         let gameResultAdapter = InMemoryGameResultAdapter(storage: storage)
-        let gameResultService = RealGameResultService(adapter: gameResultAdapter)
-        GameView(
-            gameService: BreakoutGameService(),
+        let gameResultService = RealGameResultService(
+            adapter: gameResultAdapter
+        )
+        let viewModel = GameViewModel(
+            service: BreakoutGameService(),
+            repository: InMemoryGameStateRepository(),
             configurationService: configurationService,
             screenNavigationService: screenNavigationService,
-            storage: storage,
             gameResultService: gameResultService
         )
-        .frame(
-            width: configurationService.getGameConfiguration().sceneWidth
-                * configurationService.getGameScale(),
-            height: configurationService.getGameConfiguration().sceneHeight
-                * configurationService.getGameScale()
-        )
+
+        GameView()
+            .environment(viewModel)
+            .frame(
+                width: configurationService.getGameConfiguration().sceneWidth
+                    * configurationService.getGameScale(),
+                height: configurationService.getGameConfiguration().sceneHeight
+                    * configurationService.getGameScale()
+            )
     }
 
     private class PreviewGameConfigurationService: GameConfigurationService {
