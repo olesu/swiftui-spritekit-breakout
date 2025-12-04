@@ -36,7 +36,7 @@ enum CompositionRoot {
         
         let gameStateRepository = InMemoryGameStateRepository()
         
-        let breakoutGameService = BreakoutGameService()
+        let breakoutGameService = GameReducer()
         let gameViewModel = GameViewModel(
             service: breakoutGameService,
             repository: gameStateRepository,

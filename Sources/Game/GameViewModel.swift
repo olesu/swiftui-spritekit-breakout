@@ -6,8 +6,8 @@ import SwiftUI
 /// Maintains observable state for SwiftUI views and provides callbacks for
 /// SpriteKit GameScene updates. Bridges the gap between declarative SwiftUI
 /// and imperative SpriteKit.
-@Observable internal final class GameViewModel {
-    private let service: GameService
+@Observable final class GameViewModel {
+    private let service: GameReducer
     private let repository: GameStateRepository
     private let screenNavigationService: ScreenNavigationService
     private let gameResultService: GameResultService
@@ -41,7 +41,7 @@ import SwiftUI
     ///   - screenNavigationService: Service for screen navigation.
     ///   - gameResultService: Service for saving game results.
     internal init(
-        service: GameService,
+        service: GameReducer,
         repository: GameStateRepository,
         configurationService: GameConfigurationService,
         screenNavigationService: ScreenNavigationService,

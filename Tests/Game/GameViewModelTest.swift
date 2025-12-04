@@ -6,7 +6,7 @@ import Testing
 
 struct GameViewModelTest {
     let repository = InMemoryGameStateRepository()
-    let service = BreakoutGameService()
+    let service = GameReducer()
     let configService = FakeGameConfigurationService()
     let navService = FakeScreenNavigationService()
     let resultService = FakeGameResultService()

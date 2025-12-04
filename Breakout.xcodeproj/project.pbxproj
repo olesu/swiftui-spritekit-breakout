@@ -6,10 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		3755E4D32EE1E02300BF207F /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3755E49D2EE1E02300BF207F /* Application.swift */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		379ACDE92E598E0300E23C13 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -28,36 +24,25 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		3755E49D2EE1E02300BF207F /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		379ACDDA2E598E0300E23C13 /* Breakout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Breakout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		379ACDE82E598E0300E23C13 /* BreakoutTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BreakoutTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		379ACDF22E598E0300E23C13 /* BreakoutUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BreakoutUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		3755E5152EE1E8AE00BF207F /* Composition */ = {
+		3755E54D2EE20D6600BF207F /* Sources */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Composition;
+			path = Sources;
 			sourceTree = "<group>";
 		};
-		379ACDDC2E598E0300E23C13 /* Breakout */ = {
+		379ACDEB2E598E0300E23C13 /* Tests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Breakout;
+			path = Tests;
 			sourceTree = "<group>";
 		};
-		379ACDEB2E598E0300E23C13 /* BreakoutTests */ = {
+		379ACDF52E598E0300E23C13 /* UITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = BreakoutTests;
-			sourceTree = "<group>";
-		};
-		379ACDF52E598E0300E23C13 /* BreakoutUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = BreakoutUITests;
-			sourceTree = "<group>";
-		};
-		37DDA2522E9AA65600E6E517 /* Resources */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Resources;
+			path = UITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -90,12 +75,9 @@
 		379ACDD12E598E0200E23C13 = {
 			isa = PBXGroup;
 			children = (
-				3755E49D2EE1E02300BF207F /* Application.swift */,
-				3755E5152EE1E8AE00BF207F /* Composition */,
-				37DDA2522E9AA65600E6E517 /* Resources */,
-				379ACDDC2E598E0300E23C13 /* Breakout */,
-				379ACDEB2E598E0300E23C13 /* BreakoutTests */,
-				379ACDF52E598E0300E23C13 /* BreakoutUITests */,
+				3755E54D2EE20D6600BF207F /* Sources */,
+				379ACDEB2E598E0300E23C13 /* Tests */,
+				379ACDF52E598E0300E23C13 /* UITests */,
 				379ACDDB2E598E0300E23C13 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -126,9 +108,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				3755E5152EE1E8AE00BF207F /* Composition */,
-				379ACDDC2E598E0300E23C13 /* Breakout */,
-				37DDA2522E9AA65600E6E517 /* Resources */,
+				3755E54D2EE20D6600BF207F /* Sources */,
 			);
 			name = Breakout;
 			packageProductDependencies = (
@@ -151,7 +131,7 @@
 				379ACDEA2E598E0300E23C13 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				379ACDEB2E598E0300E23C13 /* BreakoutTests */,
+				379ACDEB2E598E0300E23C13 /* Tests */,
 			);
 			name = BreakoutTests;
 			packageProductDependencies = (
@@ -174,7 +154,7 @@
 				379ACDF42E598E0300E23C13 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				379ACDF52E598E0300E23C13 /* BreakoutUITests */,
+				379ACDF52E598E0300E23C13 /* UITests */,
 			);
 			name = BreakoutUITests;
 			packageProductDependencies = (
@@ -256,7 +236,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3755E4D32EE1E02300BF207F /* Application.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -415,7 +394,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Breakout/Breakout.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
@@ -457,7 +435,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Breakout/Breakout.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;

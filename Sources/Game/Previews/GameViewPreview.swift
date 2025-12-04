@@ -13,7 +13,7 @@ import SwiftUI
             adapter: gameResultAdapter
         )
         let viewModel = GameViewModel(
-            service: BreakoutGameService(),
+            service: GameReducer(),
             repository: InMemoryGameStateRepository(),
             configurationService: configurationService,
             screenNavigationService: screenNavigationService,

@@ -5,7 +5,7 @@ struct RootDependencies {
     let screenNavigationService: RealScreenNavigationService
     let gameStateStorage: InMemoryStorage
     let gameResultService: RealGameResultService
-    let gameService: BreakoutGameService
+    let gameService: GameReducer
     let idleViewModel: IdleViewModel
     let gameViewModel: GameViewModel
     let gameEndViewModel: GameEndViewModel

@@ -1,6 +1,6 @@
 import Foundation
 
-internal final class BreakoutGameService: GameService {
+final class GameReducer {
     
     internal func startGame(state: GameState) -> GameState {
         guard state.status == .idle else {

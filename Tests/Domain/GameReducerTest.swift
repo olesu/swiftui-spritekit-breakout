@@ -3,8 +3,8 @@ import Testing
 
 @testable import Breakout
 
-struct GameServiceTest {
-    let service = BreakoutGameService()
+struct GameReducerTest {
+    let service = GameReducer()
     
     @Test func testStartGame_transitionsFromIdleToPlaying() {
         let state = GameState.initial
