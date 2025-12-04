@@ -2,11 +2,11 @@ import SwiftUI
 
 struct RootView: View {
     let deps: RootDependencies
-    
+
     init(_ deps: RootDependencies) {
         self.deps = deps
     }
-    
+
     var body: some View {
         ZStack {
             switch deps.navigationCoordinator.currentScreen {
@@ -21,10 +21,8 @@ struct RootView: View {
                     gameResultService: deps.gameResultService
                 )
             case .gameEnd:
-                GameEndView(
-                    screenNavigationService: deps.screenNavigationService,
-                    gameResultService: deps.gameResultService
-                )
+                GameEndView()
+                    .environment(deps.gameEndViewModel)
             }
         }
         .frame(

@@ -6,4 +6,5 @@ struct RootDependencies {
     let gameStateStorage: InMemoryStorage
     let gameResultService: RealGameResultService
     let idleViewModel: IdleViewModel
+    let gameEndViewModel: GameEndViewModel
 }

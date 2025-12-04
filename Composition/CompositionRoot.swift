@@ -28,6 +28,11 @@ enum CompositionRoot {
         let gameResultService = RealGameResultService(
             adapter: gameResultAdapter
         )
+        
+        let gameEndViewModel = GameEndViewModel(
+            screenNavigationService: screenNavigationService,
+            gameResultService: gameResultService
+        )
 
         return RootDependencies(
             navigationCoordinator: navigationCoordinator,
@@ -36,7 +41,8 @@ enum CompositionRoot {
             screenNavigationService: screenNavigationService,
             gameStateStorage: gameStateStorage,
             gameResultService: gameResultService,
-            idleViewModel: idleViewModel
+            idleViewModel: idleViewModel,
+            gameEndViewModel: gameEndViewModel
         )
     }
 }

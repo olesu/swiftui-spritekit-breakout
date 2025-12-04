@@ -2,15 +2,8 @@ import Foundation
 import SwiftUI
 
 struct GameEndView: View {
-    @State private var viewModel: GameEndViewModel
+    @Environment(GameEndViewModel.self) private var viewModel: GameEndViewModel
     @FocusState private var isFocused: Bool
-
-    init(screenNavigationService: ScreenNavigationService, gameResultService: GameResultService) {
-        self._viewModel = State(initialValue: GameEndViewModel(
-            screenNavigationService: screenNavigationService,
-            gameResultService: gameResultService
-        ))
-    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -60,32 +53,3 @@ struct GameEndView: View {
         }
     }
 }
-
-#if DEBUG
-#Preview {
-    GameEndView(
-        screenNavigationService: GameEndPreviewScreenNavigationService(),
-        gameResultService: GameEndPreviewGameResultService()
-    )
-    .frame(width: 320 * 0.5, height: 480 * 0.5)
-}
-
-private class GameEndPreviewScreenNavigationService: ScreenNavigationService {
-    func navigate(to screen: Screen) {
-
-    }
-}
-
-private class GameEndPreviewGameResultService: GameResultService {
-    var didWin: Bool {
-        false
-    }
-
-    var score: Int {
-        0
-    }
-
-    func save(didWin: Bool, score: Int) {
-    }
-}
-#endif
