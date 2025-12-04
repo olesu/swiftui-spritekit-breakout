@@ -36,10 +36,10 @@ enum CompositionRoot {
         
         let gameStateRepository = InMemoryGameStateRepository()
         
-        let breakoutGameService = GameReducer()
+        let gameReducer = GameReducer()
+        let gameSession = GameSession(repository: gameStateRepository, reducer: gameReducer)
         let gameViewModel = GameViewModel(
-            service: breakoutGameService,
-            repository: gameStateRepository,
+            session: gameSession,
             configurationService: gameConfigurationService,
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService
@@ -53,7 +53,7 @@ enum CompositionRoot {
             screenNavigationService: screenNavigationService,
             gameStateStorage: gameStateStorage,
             gameResultService: gameResultService,
-            gameService: breakoutGameService,
+            gameService: gameReducer,
             idleViewModel: idleViewModel,
             gameViewModel: gameViewModel,
             gameEndViewModel: gameEndViewModel

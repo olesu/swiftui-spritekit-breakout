@@ -1,9 +1,9 @@
 @testable import Breakout
 
 class FakeScreenNavigationService: ScreenNavigationService {
-    var navigatedTo: Screen?
+    var didNavigateTo: Screen?
 
     func navigate(to screen: Screen) {
-        navigatedTo = screen
+        didNavigateTo = screen
     }
 }

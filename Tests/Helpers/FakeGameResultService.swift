@@ -1,19 +1,19 @@
 @testable import Breakout
 
 class FakeGameResultService: GameResultService {
-    private var _didWin: Bool = false
-    private var _score: Int = 0
+    var savedDidWin: Bool?
+    var savedScore: Int?
 
     var didWin: Bool {
-        _didWin
+        savedDidWin ?? false
     }
 
     var score: Int {
-        _score
+        savedScore ?? -1
     }
 
     func save(didWin: Bool, score: Int) {
-        _didWin = didWin
-        _score = score
+        savedDidWin = didWin
+        savedScore = score
     }
 }

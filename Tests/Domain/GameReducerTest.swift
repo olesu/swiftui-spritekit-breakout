@@ -4,196 +4,192 @@ import Testing
 @testable import Breakout
 
 struct GameReducerTest {
-    let service = GameReducer()
-    
-    @Test func testStartGame_transitionsFromIdleToPlaying() {
+    let reducer = GameReducer()
+
+    // MARK: - Start Game
+
+    @Test func startingAGameFromIdleBeginsPlay() {
         let state = GameState.initial
 
-        let newState = service.startGame(state: state)
+        let newState = reducer.start(state)
 
         #expect(newState.status == .playing)
     }
 
-    @Test func testStartGame_whenAlreadyPlaying_returnsUnchangedState() {
+    @Test func startingAGameWhenAlreadyPlayingHasNoEffect() {
         let state = GameState.initial.with(status: .playing)
 
-        let newState = service.startGame(state: state)
+        let newState = reducer.start(state)
 
-        #expect(newState.status == .playing)
         #expect(newState == state)
     }
 
-    @Test func testStartGame_whenGameWon_returnsUnchangedState() {
+    @Test func startingAGameWhenAlreadyWonDoesNothing() {
         let state = GameState.initial.with(status: .won)
 
-        let newState = service.startGame(state: state)
+        let newState = reducer.start(state)
 
-        #expect(newState.status == .won)
         #expect(newState == state)
     }
 
-    @Test func testStartGame_whenGameOver_returnsUnchangedState() {
+    @Test func startingAGameWhenGameOverDoesNothing() {
         let state = GameState.initial.with(status: .gameOver)
 
-        let newState = service.startGame(state: state)
+        let newState = reducer.start(state)
 
-        #expect(newState.status == .gameOver)
         #expect(newState == state)
     }
 
-    @Test func testProcessBrickHit_whenPlaying_removesBrick() {
+    // MARK: - Brick Hit
+
+    @Test func hittingABrickRemovesItFromTheBoard() {
         let brick = Brick(id: BrickId(of: "1"), color: .red)
-        let bricks: [BrickId: Brick] = [brick.id: brick]
         let state = GameState.initial
             .with(status: .playing)
-            .with(bricks: bricks)
+            .with(bricks: [brick.id: brick])
 
-        let newState = service.processEvent(.brickHit(brickID: brick.id), state: state)
+        let newState = reducer.reduce(state, event: .brickHit(brickID: brick.id))
 
         #expect(newState.bricks.isEmpty)
     }
 
-    @Test func testProcessBrickHit_whenPlaying_addsScoreBasedOnColor_red() {
+    @Test func hittingABrickAddsScoreBasedOnColor_red() {
         let brick = Brick(id: BrickId(of: "1"), color: .red)
-        let bricks: [BrickId: Brick] = [brick.id: brick]
         let state = GameState.initial
             .with(status: .playing)
-            .with(bricks: bricks)
+            .with(bricks: [brick.id: brick])
 
-        let newState = service.processEvent(.brickHit(brickID: brick.id), state: state)
+        let newState = reducer.reduce(state, event: .brickHit(brickID: brick.id))
 
         #expect(newState.score == 7)
     }
 
-    @Test func testProcessBrickHit_whenPlaying_addsScoreBasedOnColor_orange() {
+    @Test func hittingABrickAddsScoreBasedOnColor_orange() {
         let brick = Brick(id: BrickId(of: "1"), color: .orange)
-        let bricks: [BrickId: Brick] = [brick.id: brick]
         let state = GameState.initial
             .with(status: .playing)
-            .with(bricks: bricks)
+            .with(bricks: [brick.id: brick])
 
-        let newState = service.processEvent(.brickHit(brickID: brick.id), state: state)
+        let newState = reducer.reduce(state, event: .brickHit(brickID: brick.id))
 
         #expect(newState.score == 7)
     }
 
-    @Test func testProcessBrickHit_whenPlaying_addsScoreBasedOnColor_yellow() {
+    @Test func hittingABrickAddsScoreBasedOnColor_yellow() {
         let brick = Brick(id: BrickId(of: "1"), color: .yellow)
-        let bricks: [BrickId: Brick] = [brick.id: brick]
         let state = GameState.initial
             .with(status: .playing)
-            .with(bricks: bricks)
+            .with(bricks: [brick.id: brick])
 
-        let newState = service.processEvent(.brickHit(brickID: brick.id), state: state)
+        let newState = reducer.reduce(state, event: .brickHit(brickID: brick.id))
 
         #expect(newState.score == 4)
     }
 
-    @Test func testProcessBrickHit_whenPlaying_addsScoreBasedOnColor_green() {
+    @Test func hittingABrickAddsScoreBasedOnColor_green() {
         let brick = Brick(id: BrickId(of: "1"), color: .green)
-        let bricks: [BrickId: Brick] = [brick.id: brick]
         let state = GameState.initial
             .with(status: .playing)
-            .with(bricks: bricks)
+            .with(bricks: [brick.id: brick])
 
-        let newState = service.processEvent(.brickHit(brickID: brick.id), state: state)
+        let newState = reducer.reduce(state, event: .brickHit(brickID: brick.id))
 
         #expect(newState.score == 1)
     }
 
-    @Test func testProcessBrickHit_whenLastBrick_setsStatusToWon() {
+    @Test func hittingTheLastBrickEndsTheGameAsWon() {
         let brick = Brick(id: BrickId(of: "1"), color: .red)
-        let bricks: [BrickId: Brick] = [brick.id: brick]
         let state = GameState.initial
             .with(status: .playing)
-            .with(bricks: bricks)
+            .with(bricks: [brick.id: brick])
 
-        let newState = service.processEvent(.brickHit(brickID: brick.id), state: state)
+        let newState = reducer.reduce(state, event: .brickHit(brickID: brick.id))
 
         #expect(newState.status == .won)
     }
 
-    @Test func testProcessBrickHit_whenNotPlaying_returnsUnchangedState() {
+    @Test func hittingABrickWhenNotPlayingHasNoEffect() {
         let brick = Brick(id: BrickId(of: "1"), color: .red)
-        let bricks: [BrickId: Brick] = [brick.id: brick]
         let state = GameState.initial
             .with(status: .idle)
-            .with(bricks: bricks)
+            .with(bricks: [brick.id: brick])
 
-        let newState = service.processEvent(.brickHit(brickID: brick.id), state: state)
+        let newState = reducer.reduce(state, event: .brickHit(brickID: brick.id))
 
         #expect(newState == state)
     }
 
-    @Test func testProcessBrickHit_whenBrickDoesNotExist_returnsUnchangedState() {
+    @Test func hittingANonexistentBrickHasNoEffect() {
         let brick = Brick(id: BrickId(of: "1"), color: .red)
-        let bricks: [BrickId: Brick] = [brick.id: brick]
-        let nonExistentBrickId = BrickId(of: "999")
+        let nonExistent = BrickId(of: "999")
         let state = GameState.initial
             .with(status: .playing)
-            .with(bricks: bricks)
+            .with(bricks: [brick.id: brick])
 
-        let newState = service.processEvent(.brickHit(brickID: nonExistentBrickId), state: state)
+        let newState = reducer.reduce(state, event: .brickHit(brickID: nonExistent))
 
         #expect(newState == state)
     }
 
-    @Test func testProcessBallLost_whenPlaying_decrementsLives() {
+    // MARK: - Ball Lost
+
+    @Test func losingABallReducesRemainingLives() {
         let state = GameState.initial
             .with(status: .playing)
             .with(lives: 3)
 
-        let newState = service.processEvent(.ballLost, state: state)
+        let newState = reducer.reduce(state, event: .ballLost)
 
         #expect(newState.lives == 2)
     }
 
-    @Test func testProcessBallLost_whenPlaying_setsBallResetNeeded() {
+    @Test func losingABallTriggersBallResetWhenLivesRemain() {
         let state = GameState.initial
             .with(status: .playing)
             .with(lives: 3)
 
-        let newState = service.processEvent(.ballLost, state: state)
+        let newState = reducer.reduce(state, event: .ballLost)
 
         #expect(newState.ballResetNeeded == true)
     }
 
-    @Test func testProcessBallLost_whenLastLife_setsStatusToGameOver() {
+    @Test func losingTheFinalBallEndsTheGame() {
         let state = GameState.initial
             .with(status: .playing)
             .with(lives: 1)
 
-        let newState = service.processEvent(.ballLost, state: state)
+        let newState = reducer.reduce(state, event: .ballLost)
 
         #expect(newState.status == .gameOver)
         #expect(newState.lives == 0)
     }
 
-    @Test func testProcessBallLost_whenLastLife_doesNotSetBallResetNeeded() {
+    @Test func losingTheFinalBallDoesNotRequestBallReset() {
         let state = GameState.initial
             .with(status: .playing)
             .with(lives: 1)
 
-        let newState = service.processEvent(.ballLost, state: state)
+        let newState = reducer.reduce(state, event: .ballLost)
 
         #expect(newState.ballResetNeeded == false)
     }
 
-    @Test func testProcessBallLost_whenNotPlaying_returnsUnchangedState() {
+    @Test func losingABallWhenNotPlayingHasNoEffect() {
         let state = GameState.initial
             .with(status: .idle)
             .with(lives: 3)
 
-        let newState = service.processEvent(.ballLost, state: state)
+        let newState = reducer.reduce(state, event: .ballLost)
 
         #expect(newState == state)
     }
 
-    @Test func testAcknowledgeBallReset_clearsBallResetFlag() {
-        let state = GameState.initial
-            .with(ballResetNeeded: true)
+    // MARK: - Ball Reset Acknowledgment
 
-        let newState = service.acknowledgeBallReset(state: state)
+    @Test func acknowledgingBallResetClearsResetFlag() {
+        let state = GameState.initial.with(ballResetNeeded: true)
+
+        let newState = reducer.acknowledgeBallReset(state)
 
         #expect(newState.ballResetNeeded == false)
     }

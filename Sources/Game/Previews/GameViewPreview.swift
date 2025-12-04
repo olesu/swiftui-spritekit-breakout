@@ -12,9 +12,12 @@ import SwiftUI
         let gameResultService = RealGameResultService(
             adapter: gameResultAdapter
         )
-        let viewModel = GameViewModel(
-            service: GameReducer(),
+        let session = GameSession(
             repository: InMemoryGameStateRepository(),
+            reducer: GameReducer()
+        )
+        let viewModel = GameViewModel(
+            session: session,
             configurationService: configurationService,
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService

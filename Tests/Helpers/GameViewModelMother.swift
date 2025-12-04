@@ -12,10 +12,13 @@ struct GameViewModelMother {
         let configurationService = FakeGameConfigurationService()
         let navigationService = FakeScreenNavigationService()
         let gameResultService = FakeGameResultService()
+        let gameSession = GameSession(
+            repository: InMemoryGameStateRepository(),
+            reducer: GameReducer()
+        )
 
         let viewModel = GameViewModel(
-            service: GameReducer(),
-            repository: InMemoryGameStateRepository(),
+            session: gameSession,
             configurationService: configurationService,
             screenNavigationService: navigationService,
             gameResultService: gameResultService
