@@ -1,35 +1,34 @@
 import SwiftUI
 
 struct RootView: View {
-    @Environment(NavigationCoordinator.self) var navigationCoordinator: NavigationCoordinator
-    @Environment(RealScreenNavigationService.self) var screenNavigationService: RealScreenNavigationService
-    @Environment(RealGameConfigurationService.self) var gameConfigurationService: RealGameConfigurationService
-    @Environment(InMemoryStorage.self) var gameStateStorage: InMemoryStorage
-    @Environment(RealGameResultService.self) var gameResultService: RealGameResultService
-    @Environment(ApplicationConfiguration.self) var applicationConfiguration: ApplicationConfiguration
+    let deps: RootDependencies
+    
+    init(_ deps: RootDependencies) {
+        self.deps = deps
+    }
     
     var body: some View {
         ZStack {
-            switch navigationCoordinator.currentScreen {
+            switch deps.navigationCoordinator.currentScreen {
             case .idle:
-                IdleView(screenNavigationService: screenNavigationService)
+                IdleView(screenNavigationService: deps.screenNavigationService)
             case .game:
                 GameView(
-                    configurationService: gameConfigurationService,
-                    screenNavigationService: screenNavigationService,
-                    storage: gameStateStorage,
-                    gameResultService: gameResultService
+                    configurationService: deps.gameConfigurationService,
+                    screenNavigationService: deps.screenNavigationService,
+                    storage: deps.gameStateStorage,
+                    gameResultService: deps.gameResultService
                 )
             case .gameEnd:
                 GameEndView(
-                    screenNavigationService: screenNavigationService,
-                    gameResultService: gameResultService
+                    screenNavigationService: deps.screenNavigationService,
+                    gameResultService: deps.gameResultService
                 )
             }
         }
         .frame(
-            width: applicationConfiguration.windowWidth,
-            height: applicationConfiguration.windowHeight
+            width: deps.applicationConfiguration.windowWidth,
+            height: deps.applicationConfiguration.windowHeight
         )
 
     }
