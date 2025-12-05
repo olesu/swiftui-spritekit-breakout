@@ -2,9 +2,8 @@ import Testing
 import SpriteKit
 @testable import Breakout
 
-@Suite("PaddleBounceApplier Tests")
 struct PaddleBounceApplierTest {
-    @Test("Applies correct velocity for center hit") @MainActor
+    @Test
     func appliesCorrectVelocityForCenterHit() {
         let ball = makeBall()
         let paddle = makePaddle()
@@ -18,7 +17,7 @@ struct PaddleBounceApplierTest {
         #expect(dy > 0)  // Should bounce upward
     }
 
-    @Test("Applies correct velocity for left edge hit") @MainActor
+    @Test
     func appliesCorrectVelocityForLeftEdgeHit() {
         let ball = makeBall()
         ball.position.x = 140  // Left of paddle center
@@ -32,7 +31,7 @@ struct PaddleBounceApplierTest {
         #expect(dy > 0)  // Should bounce upward
     }
 
-    @Test("Applies correct velocity for right edge hit") @MainActor
+    @Test
     func appliesCorrectVelocityForRightEdgeHit() {
         let ball = makeBall()
         ball.position.x = 180  // Right of paddle center
@@ -46,7 +45,7 @@ struct PaddleBounceApplierTest {
         #expect(dy > 0)  // Should bounce upward
     }
 
-    @Test("Handles missing physics bodies gracefully") @MainActor
+    @Test
     func handlesMissingPhysicsBodies() {
         let ball = SKSpriteNode()
         let paddle = SKSpriteNode()

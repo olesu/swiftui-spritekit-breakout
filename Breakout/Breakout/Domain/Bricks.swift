@@ -7,6 +7,7 @@ internal struct BrickId: Hashable {
     internal init(of value: String) {
         self.value = value
     }
+    
 }
 
 /// Color of a brick, which determines its visual appearance and point value.

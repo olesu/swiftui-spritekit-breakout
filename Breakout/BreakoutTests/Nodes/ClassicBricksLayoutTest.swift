@@ -5,7 +5,7 @@ import AppKit
 
 struct ClassicBricksLayoutTest {
 
-    @Test @MainActor func acceptsCustomBrickLayout() throws {
+    @Test func acceptsCustomBrickLayout() throws {
         let bricks = [
             (BrickData(id: UUID().uuidString, position: CGPoint(x: 10, y: 20), color: .red), BrickColor.red)
         ]
@@ -31,7 +31,7 @@ struct ClassicBricksLayoutTest {
         #expect(brickData.color == .blue)
     }
 
-    @Test @MainActor func layoutUsesBrickDataIDs() throws {
+    @Test func layoutUsesBrickDataIDs() throws {
         let id1 = "11111111-1111-1111-1111-111111111111"
         let id2 = "22222222-2222-2222-2222-222222222222"
 

@@ -5,7 +5,7 @@ import SpriteKit
 @Suite("BallResetConfigurator Tests")
 struct BallResetConfiguratorTest {
 
-    @Test("Prepares ball for reset by making it invisible") @MainActor
+    @Test
     func preparesBallForReset() {
         let ball = SKSpriteNode()
         ball.physicsBody = SKPhysicsBody(circleOfRadius: 4)
@@ -21,7 +21,7 @@ struct BallResetConfiguratorTest {
         #expect(ball.alpha == 0)
     }
 
-    @Test("Performs ball reset with correct position and zero velocity") @MainActor
+    @Test
     func performsBallReset() {
         let ball = SKSpriteNode()
         ball.position = CGPoint(x: 250, y: 10)

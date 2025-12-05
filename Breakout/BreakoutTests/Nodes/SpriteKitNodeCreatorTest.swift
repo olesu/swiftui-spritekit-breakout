@@ -5,7 +5,7 @@ import Testing
 
 struct SpriteKitNodeCreatorTest {
 
-    @Test @MainActor func loadsDefaultLayoutWhenNoLayoutSpecified() throws {
+    @Test func loadsDefaultLayoutWhenNoLayoutSpecified() throws {
         // This test will pass once we add default parameter
         let creator = SpriteKitNodeCreator()
         var bricksAdded: [(String, BrickColor)] = []
@@ -20,7 +20,7 @@ struct SpriteKitNodeCreatorTest {
         #expect(bricksAdded.count > 0)  // Should have loaded default layout
     }
 
-    @Test @MainActor func loadsCustomLayoutWhenFileNameProvided() throws {
+    @Test func loadsCustomLayoutWhenFileNameProvided() throws {
         // This test will pass once we add layoutFileName parameter
         let creator = SpriteKitNodeCreator(layoutFileName: "test-layout")
         var bricksAdded: [(String, BrickColor)] = []
@@ -35,7 +35,7 @@ struct SpriteKitNodeCreatorTest {
         #expect(nodes[NodeNames.ball] != nil)
     }
 
-    @Test @MainActor func usesInjectedLoaderToLoadLayout() throws {
+    @Test func usesInjectedLoaderToLoadLayout() throws {
         // This test will pass once we add layoutLoader parameter
         let mockLoader = MockBrickLayoutAdapter()
         let creator = SpriteKitNodeCreator(
@@ -54,7 +54,7 @@ struct SpriteKitNodeCreatorTest {
         #expect(bricksAdded[1].1 == .green)
     }
 
-    @Test @MainActor func returnsEmptyLayoutWhenLoaderFails() throws {
+    @Test func returnsEmptyLayoutWhenLoaderFails() throws {
         // This test will pass once we handle loader failures gracefully
         let failingLoader = FailingBrickLayoutAdapter()
         let creator = SpriteKitNodeCreator(

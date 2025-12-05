@@ -2,10 +2,9 @@ import Testing
 import SpriteKit
 @testable import Breakout
 
-@Suite("GameScene Tests")
 struct GameSceneTest {
 
-    @Test("Updates paddle position when moved") @MainActor
+    @Test
     func updatesPaddlePositionWhenMoved() {
         let paddleNode = SKSpriteNode()
         let nodes: [NodeNames: SKNode] = [.paddle: paddleNode]
