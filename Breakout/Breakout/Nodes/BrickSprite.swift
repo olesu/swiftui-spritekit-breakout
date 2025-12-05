@@ -20,39 +20,75 @@ internal struct BrickData {
 internal final class BrickSprite: SKSpriteNode {
     internal init(id: String, position: CGPoint, color: NSColor) {
         let brickSize = CGSize(width: 22, height: 10)
-        let texture = BrickSprite.createBrickTexture(size: brickSize, baseColor: color)
+        let texture = BrickSprite.createBrickTexture(
+            size: brickSize,
+            baseColor: color
+        )
         super.init(texture: texture, color: .white, size: brickSize)
         self.name = id
         self.position = position
-        self.physicsBody = BrickPhysicsBodyConfigurer(brickSize: brickSize).physicsBody
+        self.physicsBody =
+            BrickPhysicsBodyConfigurer(brickSize: brickSize).physicsBody
     }
 
-    private static func createBrickTexture(size: CGSize, baseColor: NSColor) -> SKTexture {
+    private static func createBrickTexture(size: CGSize, baseColor: NSColor)
+        -> SKTexture
+    {
         let image = NSImage(size: size, flipped: false) { rect in
-            let path = NSBezierPath(roundedRect: rect.insetBy(dx: 0.5, dy: 0.5), xRadius: 2, yRadius: 2)
+            let path = NSBezierPath(
+                roundedRect: rect.insetBy(dx: 0.5, dy: 0.5),
+                xRadius: 2,
+                yRadius: 2
+            )
 
             // Lighten the base color for the top of gradient
-            let lightColor = baseColor.blended(withFraction: 0.4, of: NSColor.white) ?? baseColor
-            let darkColor = baseColor.blended(withFraction: 0.3, of: NSColor.black) ?? baseColor
+            let lightColor =
+                baseColor.blended(withFraction: 0.4, of: NSColor.white)
+                ?? baseColor
+            let darkColor =
+                baseColor.blended(withFraction: 0.3, of: NSColor.black)
+                ?? baseColor
 
             // Vertical gradient for 3D effect
-            let gradient = NSGradient(colors: [lightColor, baseColor, darkColor])!
+            let gradient = NSGradient(colors: [
+                lightColor, baseColor, darkColor,
+            ])!
             gradient.draw(in: path, angle: 90)
 
             // Top highlight
             NSColor.white.withAlphaComponent(0.4).setFill()
-            let highlightRect = NSRect(x: 2, y: rect.height - 3, width: rect.width - 4, height: 1.5)
-            let highlight = NSBezierPath(roundedRect: highlightRect, xRadius: 0.5, yRadius: 0.5)
+            let highlightRect = NSRect(
+                x: 2,
+                y: rect.height - 3,
+                width: rect.width - 4,
+                height: 1.5
+            )
+            let highlight = NSBezierPath(
+                roundedRect: highlightRect,
+                xRadius: 0.5,
+                yRadius: 0.5
+            )
             highlight.fill()
 
             // Bottom shadow
             NSColor.black.withAlphaComponent(0.3).setFill()
-            let shadowRect = NSRect(x: 2, y: 1, width: rect.width - 4, height: 1.5)
-            let shadow = NSBezierPath(roundedRect: shadowRect, xRadius: 0.5, yRadius: 0.5)
+            let shadowRect = NSRect(
+                x: 2,
+                y: 1,
+                width: rect.width - 4,
+                height: 1.5
+            )
+            let shadow = NSBezierPath(
+                roundedRect: shadowRect,
+                xRadius: 0.5,
+                yRadius: 0.5
+            )
             shadow.fill()
 
             // Border
-            let borderColor = darkColor.blended(withFraction: 0.5, of: NSColor.black) ?? darkColor
+            let borderColor =
+                darkColor.blended(withFraction: 0.5, of: NSColor.black)
+                ?? darkColor
             borderColor.withAlphaComponent(0.6).setStroke()
             path.lineWidth = 1
             path.stroke()
@@ -70,7 +106,10 @@ internal final class BrickSprite: SKSpriteNode {
 internal final class ClassicBricksLayout: SKNode {
     internal let brickLayout: [(BrickData, BrickColor)]
 
-    internal init(bricks: [(BrickData, BrickColor)], onBrickAdded: (String, BrickColor) -> ()) {
+    internal init(
+        bricks: [(BrickData, BrickColor)],
+        onBrickAdded: (Brick) -> Void
+    ) {
         self.brickLayout = bricks
         super.init()
         setupBricks(onBrickAdded: onBrickAdded)
@@ -80,7 +119,7 @@ internal final class ClassicBricksLayout: SKNode {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func setupBricks(onBrickAdded: (String, BrickColor) -> ()) {
+    private func setupBricks(onBrickAdded: (Brick) -> Void) {
         brickLayout.forEach { (brickData, brickColor) in
             let brick = BrickSprite(
                 id: brickData.id,
@@ -88,8 +127,14 @@ internal final class ClassicBricksLayout: SKNode {
                 color: brickData.color
             )
             addChild(brick)
-            onBrickAdded(brickData.id, brickColor)
+            onBrickAdded(
+                Brick(
+                    id: BrickId(of: brickData.id),
+                    color: BrickColor(nsColor: brickData.color) ?? .green,
+                )
+            )
         }
     }
 
 }
+

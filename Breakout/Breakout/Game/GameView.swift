@@ -95,21 +95,10 @@ struct GameView: View {
     #endif
 
     private func setupGame() -> GameScene {
-        let (nodes, bricks) = createNodesAndCollectBricks()
+        let (nodes, bricks) = viewModel.createNodesAndCollectBricks()
         viewModel.resetGame(with: bricks)
         viewModel.startGame()
         return createScene(with: nodes)
-    }
-
-    private func createNodesAndCollectBricks() -> ([NodeNames: SKNode], [BrickId: Brick])
-    {
-        var bricks: [BrickId: Brick] = [:]
-        let nodeCreator = SpriteKitNodeCreator()
-        let nodes = nodeCreator.createNodes { brickId, brickColor in
-            let brick = Brick(id: BrickId(of: brickId), color: brickColor)
-            bricks[brick.id] = brick
-        }
-        return (nodes, bricks)
     }
 
     private func createScene(with nodes: [NodeNames: SKNode]) -> GameScene {

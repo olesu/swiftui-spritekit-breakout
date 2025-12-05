@@ -3,30 +3,19 @@ import SpriteKit
 import AppKit
 import os.log
 
-extension BrickColor {
-    internal func toNSColor() -> NSColor {
-        switch self {
-        case .red: return .red
-        case .orange: return .orange
-        case .yellow: return .yellow
-        case .green: return .green
-        }
-    }
-}
-
 internal struct SpriteKitNodeCreator: NodeCreator {
     private let layoutFileName: String
-    private let layoutLoader: BrickLayoutAdapter
+    private let layoutLoader: LoadBrickLayoutService
 
     internal init(
         layoutFileName: String = "001-classic-breakout",
-        layoutLoader: BrickLayoutAdapter = JsonBrickLayoutAdapter()
+        layoutLoader: LoadBrickLayoutService
     ) {
         self.layoutFileName = layoutFileName
         self.layoutLoader = layoutLoader
     }
 
-    internal func createNodes(onBrickAdded: @escaping (String, BrickColor) -> Void) -> [NodeNames: SKNode] {
+    internal func createNodes(onBrickAdded: @escaping (Brick) -> Void) -> [NodeNames: SKNode] {
         let brickLayoutData = loadBrickLayout()
 
         return [
@@ -44,8 +33,7 @@ internal struct SpriteKitNodeCreator: NodeCreator {
 
     private func loadBrickLayout() -> [(BrickData, BrickColor)] {
         do {
-            let config = try layoutLoader.load(fileName: layoutFileName)
-            let domainBricks = try BrickLayoutConfig.generateBricks(from: config)
+            let domainBricks = try layoutLoader.load(named: layoutFileName)
             return domainBricks.map { brick in
                 let brickData = BrickData(
                     id: UUID().uuidString,
@@ -60,3 +48,4 @@ internal struct SpriteKitNodeCreator: NodeCreator {
         }
     }
 }
+

@@ -20,7 +20,10 @@ import SwiftUI
             session: session,
             configurationService: configurationService,
             screenNavigationService: screenNavigationService,
-            gameResultService: gameResultService
+            gameResultService: gameResultService,
+            nodeCreator: SpriteKitNodeCreator(
+                layoutLoader: LoadBrickLayoutService(adapter: JsonBrickLayoutAdapter())
+            )
         )
 
         GameView()

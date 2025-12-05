@@ -3,15 +3,19 @@ import Testing
 
 @testable import Breakout
 
+@MainActor
 struct SpriteKitNodeCreatorTest {
+    private let loader = LoadBrickLayoutService(
+        adapter: JsonBrickLayoutAdapter()
+    )
 
     @Test func loadsDefaultLayoutWhenNoLayoutSpecified() throws {
         // This test will pass once we add default parameter
-        let creator = SpriteKitNodeCreator()
+        let creator = SpriteKitNodeCreator(layoutLoader: loader)
         var bricksAdded: [(String, BrickColor)] = []
 
-        let nodes = creator.createNodes { id, color in
-            bricksAdded.append((id, color))
+        let nodes = creator.createNodes { brick in
+            bricksAdded.append((brick.id.value, brick.color))
         }
 
         #expect(nodes[NodeNames.paddle] != nil)
@@ -22,11 +26,14 @@ struct SpriteKitNodeCreatorTest {
 
     @Test func loadsCustomLayoutWhenFileNameProvided() throws {
         // This test will pass once we add layoutFileName parameter
-        let creator = SpriteKitNodeCreator(layoutFileName: "test-layout")
+        let creator = SpriteKitNodeCreator(
+            layoutFileName: "test-layout",
+            layoutLoader: loader
+        )
         var bricksAdded: [(String, BrickColor)] = []
 
-        let nodes = creator.createNodes { id, color in
-            bricksAdded.append((id, color))
+        let nodes = creator.createNodes { brick in
+            bricksAdded.append((brick.id.value, brick.color))
         }
 
         // Should attempt to load "test-layout" (will fail since it doesn't exist)
@@ -36,19 +43,21 @@ struct SpriteKitNodeCreatorTest {
     }
 
     @Test func usesInjectedLoaderToLoadLayout() throws {
-        // This test will pass once we add layoutLoader parameter
-        let mockLoader = MockBrickLayoutAdapter()
+        let mockAdapter = MockBrickLayoutAdapter()
+        let mockLoader = LoadBrickLayoutService(
+            adapter: mockAdapter
+        )
         let creator = SpriteKitNodeCreator(
             layoutFileName: "custom-layout",
             layoutLoader: mockLoader
         )
 
         var bricksAdded: [(String, BrickColor)] = []
-        let _ = creator.createNodes { id, color in
-            bricksAdded.append((id, color))
+        let _ = creator.createNodes { brick in
+            bricksAdded.append((brick.id.value, brick.color))
         }
 
-        #expect(mockLoader.loadedFileName == "custom-layout")
+        #expect(mockAdapter.loadedFileName == "custom-layout")
         #expect(bricksAdded.count == 2)  // MockLoader returns 2 bricks
         #expect(bricksAdded[0].1 == .red)
         #expect(bricksAdded[1].1 == .green)
@@ -56,15 +65,16 @@ struct SpriteKitNodeCreatorTest {
 
     @Test func returnsEmptyLayoutWhenLoaderFails() throws {
         // This test will pass once we handle loader failures gracefully
-        let failingLoader = FailingBrickLayoutAdapter()
+        let adapter = FailingBrickLayoutAdapter()
+        let loader = LoadBrickLayoutService(adapter: adapter)
         let creator = SpriteKitNodeCreator(
             layoutFileName: "will-fail",
-            layoutLoader: failingLoader
+            layoutLoader: loader
         )
 
         var bricksAdded: [(String, BrickColor)] = []
-        let nodes = creator.createNodes { id, color in
-            bricksAdded.append((id, color))
+        let nodes = creator.createNodes { brick in
+            bricksAdded.append((brick.id.value, brick.color))
         }
 
         #expect(nodes[NodeNames.paddle] != nil)  // Other nodes should still be created

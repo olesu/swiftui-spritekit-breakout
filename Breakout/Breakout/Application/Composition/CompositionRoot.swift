@@ -42,7 +42,10 @@ enum CompositionRoot {
             session: gameSession,
             configurationService: gameConfigurationService,
             screenNavigationService: screenNavigationService,
-            gameResultService: gameResultService
+            gameResultService: gameResultService,
+            nodeCreator: SpriteKitNodeCreator(
+                layoutLoader: LoadBrickLayoutService(adapter: JsonBrickLayoutAdapter())
+            )
         )
 
 

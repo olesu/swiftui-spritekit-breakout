@@ -1,11 +1,13 @@
 import Foundation
 import SwiftUI
+import SpriteKit
 
 @Observable
 final class GameViewModel {
     private let session: GameSession
     private let screenNavigationService: ScreenNavigationService
     private let gameResultService: GameResultService
+    private let nodeCreator: NodeCreator
 
     // UI configuration (safe as stored properties)
     internal let sceneSize: CGSize
@@ -20,7 +22,8 @@ final class GameViewModel {
         session: GameSession,
         configurationService: GameConfigurationService,
         screenNavigationService: ScreenNavigationService,
-        gameResultService: GameResultService
+        gameResultService: GameResultService,
+        nodeCreator: NodeCreator
     ) {
         self.session = session
         self.screenNavigationService = screenNavigationService
@@ -34,6 +37,7 @@ final class GameViewModel {
             width: config.brickArea.width,
             height: config.brickArea.height
         )
+        self.nodeCreator = nodeCreator
     }
 
     // MARK: - UI-derived computed properties
@@ -99,5 +103,16 @@ final class GameViewModel {
         default:
             break
         }
+    }
+    
+    // MARK: - Node creation, really?
+    
+    func createNodesAndCollectBricks() -> ([NodeNames: SKNode], [BrickId: Brick])
+    {
+        var bricks: [BrickId: Brick] = [:]
+        let nodes = nodeCreator.createNodes { brick in
+            bricks[brick.id] = brick
+        }
+        return (nodes, bricks)
     }
 }

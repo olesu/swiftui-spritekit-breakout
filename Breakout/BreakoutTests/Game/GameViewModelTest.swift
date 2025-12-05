@@ -20,7 +20,8 @@ struct GameViewModelTest {
             session: session,
             configurationService: configService,
             screenNavigationService: navService,
-            gameResultService: resultService
+            gameResultService: resultService,
+            nodeCreator: SpriteKitNodeCreator(layoutLoader: LoadBrickLayoutService(adapter: JsonBrickLayoutAdapter()))
         )
     }
 

@@ -22,7 +22,8 @@ struct GameViewModelMother {
             session: gameSession,
             configurationService: configurationService,
             screenNavigationService: navigationService,
-            gameResultService: gameResultService
+            gameResultService: gameResultService,
+            nodeCreator: SpriteKitNodeCreator(layoutLoader: LoadBrickLayoutService(adapter: JsonBrickLayoutAdapter()))
         )
 
         return GameViewModelTestContext(
