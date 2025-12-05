@@ -4,6 +4,7 @@ import Foundation
 ///
 /// Calculates window dimensions based on game configuration and scale.
 @Observable
+@MainActor
 internal class ApplicationConfiguration {
     private let gameConfigurationService: GameConfigurationService
 

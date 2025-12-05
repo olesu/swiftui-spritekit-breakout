@@ -14,7 +14,7 @@ enum CompositionRoot {
 
         // TODO: Extract to GameConfigurationDependencies
         let gameConfigurationService = DefaultGameConfigurationService(
-            loader: JsonGameConfigurationAdapter()
+            gameConfigurationAdapter: JsonGameConfigurationAdapter()
         )
         let applicationConfiguration = ApplicationConfiguration(
             gameConfigurationService: gameConfigurationService
