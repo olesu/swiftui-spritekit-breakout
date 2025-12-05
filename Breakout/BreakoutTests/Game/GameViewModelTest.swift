@@ -10,7 +10,7 @@ struct GameViewModelTest {
     let session: GameSession
     let viewModel: GameViewModel
 
-    init() async throws {
+    init() {
         session = GameSession(
             repository: repository,
             reducer: GameReducer()
@@ -26,7 +26,7 @@ struct GameViewModelTest {
     // MARK: - Initialization
 
     @Test
-    func exposesPersistedStateOnInitialization() async throws {
+    func exposesPersistedStateOnInitialization() {
         repository.save(
             GameState.initial
                 .with(score: 99)
@@ -39,7 +39,7 @@ struct GameViewModelTest {
     }
 
     @Test
-    func exposesSceneConfiguration() async throws {
+    func exposesSceneConfiguration() {
         let context = GameViewModelMother.makeContext()
         #expect(context.viewModel.sceneSize == CGSize(width: 320, height: 480))
         #expect(context.viewModel.brickArea == CGRect(x: 20, y: 330, width: 280, height: 120))
@@ -48,7 +48,7 @@ struct GameViewModelTest {
     // MARK: - Score Callback
 
     @Test
-    func scoreCallbackIsTriggeredOnScoreChange() async throws {
+    func scoreCallbackIsTriggeredOnScoreChange() {
         var callbackScore: Int?
         viewModel.onScoreChanged = { callbackScore = $0 }
 
@@ -68,7 +68,7 @@ struct GameViewModelTest {
     // MARK: - Lives Callback
 
     @Test
-    func livesCallbackIsTriggeredOnLifeLost() async throws {
+    func livesCallbackIsTriggeredOnLifeLost() {
         var callbackLives: Int?
         viewModel.onLivesChanged = { callbackLives = $0 }
 
@@ -86,7 +86,7 @@ struct GameViewModelTest {
     // MARK: - Ball Reset Callback
 
     @Test
-    func ballResetCallbackIsTriggeredWhenBallResetNeeded() async throws {
+    func ballResetCallbackIsTriggeredWhenBallResetNeeded() {
         var resetTriggered = false
         viewModel.onBallResetNeeded = { resetTriggered = true }
 
@@ -104,7 +104,7 @@ struct GameViewModelTest {
     // MARK: - Navigation on Game End
 
     @Test
-    func navigatingToGameEndOnGameOver() async throws {
+    func navigatingToGameEndOnGameOver() {
         repository.save(
             GameState.initial
                 .with(status: .playing)
@@ -117,7 +117,7 @@ struct GameViewModelTest {
     }
 
     @Test
-    func navigatingToGameEndOnWin() async throws {
+    func navigatingToGameEndOnWin() {
         let id = BrickId(of: "b")
         repository.save(
             GameState.initial
@@ -133,7 +133,7 @@ struct GameViewModelTest {
     // MARK: - Result Saving
 
     @Test
-    func savesResultWhenGameEndsAsWin() async throws {
+    func savesResultWhenGameEndsAsWin() {
         let id = BrickId(of: "b")
         repository.save(
             GameState.initial
@@ -148,7 +148,7 @@ struct GameViewModelTest {
     }
 
     @Test
-    func savesResultWhenGameEndsAsLoss() async throws {
+    func savesResultWhenGameEndsAsLoss() {
         repository.save(
             GameState.initial
                 .with(status: .playing)

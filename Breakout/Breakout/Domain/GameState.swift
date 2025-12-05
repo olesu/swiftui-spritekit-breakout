@@ -1,6 +1,6 @@
 import Foundation
 
-internal struct GameState: Equatable {
+nonisolated struct GameState: Equatable {
     let score: Int
     let lives: Int
     let status: GameStatus

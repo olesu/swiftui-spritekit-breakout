@@ -29,9 +29,7 @@ struct GameEndView: View {
 
                     GameButton(title: "PLAY AGAIN", action: {
                         isFocused = false
-                        Task {
-                            await viewModel.playAgain()
-                        }
+                        viewModel.playAgain()
                     }, geometry: geometry)
                 }
             }
@@ -44,9 +42,7 @@ struct GameEndView: View {
             #if os(macOS)
             .onKeyPress(.space) {
                 isFocused = false
-                Task {
-                    await viewModel.playAgain()
-                }
+                viewModel.playAgain()
                 return .handled
             }
             #endif

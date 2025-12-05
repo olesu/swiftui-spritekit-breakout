@@ -1,6 +1,6 @@
 import Foundation
 
-@Observable internal final class GameEndViewModel {
+@Observable final class GameEndViewModel {
     private let screenNavigationService: ScreenNavigationService
     private let gameResultService: GameResultService
 
@@ -17,7 +17,7 @@ import Foundation
         self.gameResultService = gameResultService
     }
 
-    internal func playAgain() async {
+    internal func playAgain() {
         screenNavigationService.navigate(to: .game)
     }
 }

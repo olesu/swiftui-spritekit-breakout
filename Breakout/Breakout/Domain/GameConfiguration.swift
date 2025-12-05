@@ -1,6 +1,6 @@
 import Foundation
 
-internal struct GameConfiguration: Codable, Equatable {
+nonisolated struct GameConfiguration: Codable, Equatable {
     internal let sceneWidth: CGFloat
     internal let sceneHeight: CGFloat
 

@@ -1,14 +1,14 @@
 import Foundation
 
 /// Service for managing screen navigation transitions.
-internal protocol ScreenNavigationService {
+protocol ScreenNavigationService {
     /// Navigates to the specified screen.
     /// - Parameter screen: The screen to navigate to.
     func navigate(to screen: Screen)
 }
 
 @Observable
-internal class RealScreenNavigationService: ScreenNavigationService {
+nonisolated class RealScreenNavigationService: ScreenNavigationService {
     private let navigationState: NavigationState
 
     internal init(navigationState: NavigationState) {

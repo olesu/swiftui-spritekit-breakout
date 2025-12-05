@@ -12,9 +12,7 @@ struct IdleView: View {
 
                 GameButton(title: "PLAY", action: {
                     isFocused = false
-                    Task {
-                        await viewModel.startNewGame()
-                    }
+                    viewModel.startNewGame()
                 }, geometry: geometry)
             }
             .focusable()
@@ -26,9 +24,7 @@ struct IdleView: View {
             #if os(macOS)
             .onKeyPress(.space) {
                 isFocused = false
-                Task {
-                    await viewModel.startNewGame()
-                }
+                viewModel.startNewGame()
                 return .handled
             }
             #endif

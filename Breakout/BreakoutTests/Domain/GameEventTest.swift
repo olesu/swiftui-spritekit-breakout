@@ -4,7 +4,7 @@ import Foundation
 @testable import Breakout
 
 struct GameEventTest {
-    @Test func canCreateBrickHitEvent() async throws {
+    @Test func canCreateBrickHitEvent() {
         let brickID = BrickId(of: UUID().uuidString)
         
         let event = GameEvent.brickHit(brickID: brickID)
@@ -12,13 +12,13 @@ struct GameEventTest {
         #expect(event == .brickHit(brickID: brickID))
     }
     
-    @Test func canCreateBallLostEvent() async throws {
+    @Test func canCreateBallLostEvent() {
         let event = GameEvent.ballLost
         
         #expect(event == .ballLost)
     }
     
-    @Test func eventsWithSameDataAreEqual() async throws {
+    @Test func eventsWithSameDataAreEqual() {
         let brickID = BrickId(of: UUID().uuidString)
         let event1 = GameEvent.brickHit(brickID: brickID)
         let event2 = GameEvent.brickHit(brickID: brickID)

@@ -4,7 +4,7 @@ import SpriteKit
 
 struct BrickNodeManagerTest {
 
-    @Test func removesBrickNodeById() async throws {
+    @Test func removesBrickNodeById() {
         let brickId = BrickId(of: UUID().uuidString)
         let brick = BrickSprite(id: brickId.value, position: CGPoint(x: 100, y: 400), color: .red)
         let brickLayout = SKNode()
