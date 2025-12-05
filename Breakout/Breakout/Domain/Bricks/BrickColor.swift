@@ -1,15 +1,5 @@
 import Foundation
 
-/// Unique identifier for a brick in the game.
-nonisolated struct BrickId: Hashable {
-    let value: String
-
-    init(of value: String) {
-        self.value = value
-    }
-    
-}
-
 /// Color of a brick, which determines its visual appearance and point value.
 nonisolated enum BrickColor {
     case red
@@ -45,16 +35,3 @@ nonisolated enum BrickColor {
     }
 }
 
-/// Represents a single brick in the game.
-nonisolated struct Brick: Equatable {
-    let id: BrickId
-    let color: BrickColor
-    var value: Int {
-        color.pointValue
-    }
-
-    init(id: BrickId, color: BrickColor = .green) {
-        self.id = id
-        self.color = color
-    }
-}

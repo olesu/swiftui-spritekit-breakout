@@ -2,6 +2,7 @@ import Testing
 import SpriteKit
 @testable import Breakout
 
+@MainActor
 struct GameViewModelTest {
     let repository = InMemoryGameStateRepository()
     let configService = FakeGameConfigurationService()

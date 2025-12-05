@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents the different screens in the application.
-nonisolated enum Screen {
+enum Screen {
     /// The idle/start screen.
     case idle
     /// The active game screen.

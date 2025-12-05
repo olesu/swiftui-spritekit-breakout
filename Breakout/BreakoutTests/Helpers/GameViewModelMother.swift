@@ -7,6 +7,7 @@ struct GameViewModelTestContext {
     let configurationService: FakeGameConfigurationService
 }
 
+@MainActor
 struct GameViewModelMother {
     static func makeContext() -> GameViewModelTestContext {
         let configurationService = FakeGameConfigurationService()

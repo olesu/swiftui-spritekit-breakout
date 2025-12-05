@@ -1,9 +1,10 @@
 @testable import Breakout
 
+@MainActor
 struct GameEndViewModelMother {
     static func makeModel() -> GameEndViewModel {
         let navigationState = NavigationState()
-        let screenNavigationService = RealScreenNavigationService(
+        let screenNavigationService = DefaultScreenNavigationService(
             navigationState: navigationState
         )
         let gameResultService = FakeGameResultService()
@@ -18,7 +19,7 @@ struct GameEndViewModelMother {
         GameEndViewModel, NavigationState
     ) {
         let navigationState = NavigationState()
-        let screenNavigationService = RealScreenNavigationService(
+        let screenNavigationService = DefaultScreenNavigationService(
             navigationState: navigationState
         )
         let gameResultService = FakeGameResultService()
@@ -34,7 +35,7 @@ struct GameEndViewModelMother {
         GameEndViewModel, FakeGameResultService
     ) {
         let navigationState = NavigationState()
-        let screenNavigationService = RealScreenNavigationService(
+        let screenNavigationService = DefaultScreenNavigationService(
             navigationState: navigationState
         )
         let gameResultService = FakeGameResultService()

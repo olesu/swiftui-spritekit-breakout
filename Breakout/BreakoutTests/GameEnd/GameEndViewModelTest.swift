@@ -2,6 +2,7 @@ import Testing
 
 @testable import Breakout
 
+@MainActor
 struct GameEndViewModelTest {
     @Test func canPlayAgain() {
         let (viewModel, navigationState) =

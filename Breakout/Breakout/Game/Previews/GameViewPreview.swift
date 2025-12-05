@@ -4,7 +4,7 @@ import SwiftUI
 #if DEBUG
     #Preview {
         let configurationService = PreviewGameConfigurationService()
-        let screenNavigationService = RealScreenNavigationService(
+        let screenNavigationService = DefaultScreenNavigationService(
             navigationState: NavigationState()
         )
         let storage = InMemoryStorage()

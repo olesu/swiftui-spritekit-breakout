@@ -4,7 +4,7 @@ import Foundation
 ///
 /// Represents significant game occurrences detected by the physics engine
 /// that require domain logic processing (score updates, life management, etc.).
-nonisolated enum GameEvent: Equatable {
+enum GameEvent: Equatable {
     /// A brick was hit by the ball.
     /// - Parameter brickID: The unique identifier of the brick that was hit.
     case brickHit(brickID: BrickId)

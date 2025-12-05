@@ -1,6 +1,6 @@
 import Foundation
 
-nonisolated final class InMemoryGameStateRepository: GameStateRepository {
+final class InMemoryGameStateRepository: GameStateRepository {
     private var storedState: GameState = GameState.initial
 
     internal func load() -> GameState {

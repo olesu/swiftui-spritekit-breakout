@@ -7,13 +7,13 @@ enum CompositionRoot {
         let navigationCoordinator = NavigationCoordinator(
             navigationState: navigationState
         )
-        let screenNavigationService = RealScreenNavigationService(
+        let screenNavigationService = DefaultScreenNavigationService(
             navigationState: navigationState
         )
         let idleViewModel = IdleViewModel(screenNavigationService: screenNavigationService)
 
         // TODO: Extract to GameConfigurationDependencies
-        let gameConfigurationService = RealGameConfigurationService(
+        let gameConfigurationService = DefaultGameConfigurationService(
             loader: JsonGameConfigurationAdapter()
         )
         let applicationConfiguration = ApplicationConfiguration(

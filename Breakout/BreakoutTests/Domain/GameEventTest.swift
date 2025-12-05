@@ -3,6 +3,7 @@ import Foundation
 
 @testable import Breakout
 
+@MainActor
 struct GameEventTest {
     @Test func canCreateBrickHitEvent() {
         let brickID = BrickId(of: UUID().uuidString)

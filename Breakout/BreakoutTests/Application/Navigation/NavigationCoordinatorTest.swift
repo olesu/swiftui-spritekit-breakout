@@ -2,6 +2,7 @@ import Testing
 
 @testable import Breakout
 
+@MainActor
 struct NavigationCoordinatorTest {
 
     @Test func startsOnIdleScreen() {

@@ -1,8 +1,8 @@
 struct RootDependencies {
     let navigationCoordinator: NavigationCoordinator
     let applicationConfiguration: ApplicationConfiguration
-    let gameConfigurationService: RealGameConfigurationService
-    let screenNavigationService: RealScreenNavigationService
+    let gameConfigurationService: DefaultGameConfigurationService
+    let screenNavigationService: DefaultScreenNavigationService
     let gameStateStorage: InMemoryStorage
     let gameResultService: RealGameResultService
     let gameService: GameReducer
