@@ -4,12 +4,7 @@ import SwiftUI
 
 struct GameView: View {
     @Environment(GameViewModel.self) private var viewModel: GameViewModel
-    
     @State private var scene: GameScene?
-    @State private var paddleXPosition: CGFloat = 0
-    @State private var isMovingLeft = false
-    @State private var isMovingRight = false
-    @State private var movementTimer: Timer?
     @FocusState private var isFocused: Bool
 
     var body: some View {
@@ -24,25 +19,20 @@ struct GameView: View {
                 .gesture(
                     DragGesture(minimumDistance: 0)
                         .onChanged { value in
-                            paddleXPosition = value.location.x
                             scene.movePaddle(to: value.location)
                         }
                 )
                 #if os(macOS)
                 .onKeyPress(.leftArrow) {
-                    isMovingLeft = true
+                    scene.startMovingPaddleLeft()
                     return .handled
                 }
                 .onKeyPress(.rightArrow) {
-                    isMovingRight = true
+                    scene.startMovingPaddleRight()
                     return .handled
                 }
-                .onKeyPress(keys: [.leftArrow, .rightArrow], phases: .up) { press in
-                    if press.key == .leftArrow {
-                        isMovingLeft = false
-                    } else if press.key == .rightArrow {
-                        isMovingRight = false
-                    }
+                .onKeyPress(keys: [.leftArrow, .rightArrow], phases: .up) { _ in
+                    scene.stopMovingPaddle()
                     return .handled
                 }
                 .onKeyPress(.space) {
@@ -59,37 +49,7 @@ struct GameView: View {
             try? await Task.sleep(for: .milliseconds(100))
             isFocused = true
         }
-        #if os(macOS)
-        .onChange(of: isMovingLeft) { _, _ in
-            updatePaddleMovement()
-        }
-        .onChange(of: isMovingRight) { _, _ in
-            updatePaddleMovement()
-        }
-        #endif
     }
-
-    #if os(macOS)
-    private func updatePaddleMovement() {
-        guard let scene = scene else { return }
-
-        movementTimer?.invalidate()
-
-        if isMovingLeft || isMovingRight {
-            movementTimer = Timer.scheduledTimer(withTimeInterval: 0.016, repeats: true) { [self] timer in
-                let paddleSpeed: CGFloat = 8.0
-                if isMovingLeft {
-                    paddleXPosition = max(0, paddleXPosition - paddleSpeed)
-                }
-                if isMovingRight {
-                    paddleXPosition = min(viewModel.sceneSize.width, paddleXPosition + paddleSpeed)
-                }
-
-                scene.movePaddle(to: CGPoint(x: paddleXPosition, y: 0))
-            }
-        }
-    }
-    #endif
 
     private func setupGame() {
         viewModel.onSceneNodesCreated = onSceneNodesCreated
@@ -98,7 +58,6 @@ struct GameView: View {
     
     private func onSceneNodesCreated(_ nodes: [NodeNames: SKNode]) {
         scene = createScene(with: nodes)
-        paddleXPosition = viewModel.sceneSize.width / 2 // TODO: Refactor positiong system
     }
 
     private func createScene(with nodes: [NodeNames: SKNode]) -> GameScene {

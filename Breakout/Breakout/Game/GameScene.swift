@@ -10,6 +10,8 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let paddleBounceApplier = PaddleBounceApplier()
     private var isBallClamped = true
     internal var onBallResetComplete: (() -> Void)?
+    
+    private var lastUpdateTime: TimeInterval = 0
 
     internal init(
         size: CGSize,
@@ -39,6 +41,12 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         if isBallClamped {
             clampBallToPaddle()
         }
+        
+        if lastUpdateTime > 0 {
+            let dt = currentTime - lastUpdateTime
+            tickPaddleMovement(deltaTime: dt)
+        }
+        lastUpdateTime = currentTime
     }
 
     private func addGradientBackground() {
@@ -115,17 +123,69 @@ extension GameScene {
 
 // MARK: - Paddle Control
 extension GameScene {
-    private func paddleClampedX(location: CGPoint) -> CGFloat {
-        let minX: CGFloat = 20
-        let maxX: CGFloat = size.width - 20
-        return  max(minX, min(maxX, location.x))
+    private func clampedPaddleX(_ x: CGFloat) -> CGFloat {
+        guard let paddle = gameNodes[.paddle] else { return x }
+        
+        let halfWidth = paddle.frame.width / 2
+        let minX = halfWidth
+        let maxX = size.width - halfWidth
+        
+        return max(minX, min(maxX, x))
     }
 
-    internal func movePaddle(to location: CGPoint) {
+    func movePaddle(to location: CGPoint) {
         guard let paddle = gameNodes[.paddle] else { return }
-        paddle.position.x = paddleClampedX(location: location)
+        paddle.position.x = clampedPaddleX(location.x)
     }
 }
+
+// MARK: - Paddle Intents
+extension GameScene {
+    internal func startMovingPaddleLeft()  { isMovingLeft = true }
+    internal func startMovingPaddleRight() { isMovingRight = true }
+    internal func stopMovingPaddle() {
+        isMovingLeft = false
+        isMovingRight = false
+    }
+}
+
+// MARK: - Paddle Motion State
+extension GameScene {
+    private var paddleNode: SKNode? { gameNodes[.paddle] }
+
+    private var isMovingLeft: Bool {
+        get { paddleMotion.isMovingLeft }
+        set { paddleMotion.isMovingLeft = newValue }
+    }
+
+    private var isMovingRight: Bool {
+        get { paddleMotion.isMovingRight }
+        set { paddleMotion.isMovingRight = newValue }
+    }
+}
+
+// Simple mutable struct to keep state together
+private struct PaddleMotion {
+    var isMovingLeft = false
+    var isMovingRight = false
+    let speed: CGFloat = 450.0
+}
+
+private var paddleMotion = PaddleMotion()
+
+// MARK: - Temporary tick-based movement (will be replaced)
+extension GameScene {
+    internal func tickPaddleMovement(deltaTime dt: TimeInterval) {
+        guard let paddle = paddleNode else { return }
+
+        var x = paddle.position.x
+        if isMovingLeft  { x -= paddleMotion.speed * CGFloat(dt) }
+        if isMovingRight { x += paddleMotion.speed * CGFloat(dt) }
+
+        paddle.position.x = clampedPaddleX(x) // already refactored
+    }
+}
+
 
 // MARK: - Ball Control
 extension GameScene {
