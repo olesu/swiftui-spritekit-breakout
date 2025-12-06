@@ -11,6 +11,8 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private var isBallClamped = true
     internal var onBallResetComplete: (() -> Void)?
     
+    private var paddleMotion: PaddleMotionController?
+    
     private var lastUpdateTime: TimeInterval = 0
 
     internal init(
@@ -35,6 +37,16 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         if let brickLayout = gameNodes[.brickLayout] {
             brickNodeManager = BrickNodeManager(brickLayout: brickLayout)
         }
+        
+        if let paddle = gameNodes[.paddle] as? SKSpriteNode {
+            paddleMotion = PaddleMotionController(
+                paddle: paddle,
+                speed: 450,
+                sceneWidth: size.width
+            )
+        } else {
+            assertionFailure("Paddle node is not an SKSpriteNode")
+        }
     }
 
     override internal func update(_ currentTime: TimeInterval) {
@@ -44,7 +56,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if lastUpdateTime > 0 {
             let dt = currentTime - lastUpdateTime
-            tickPaddleMovement(deltaTime: dt)
+            paddleMotion?.update(deltaTime: dt)
         }
         lastUpdateTime = currentTime
     }
@@ -121,71 +133,15 @@ extension GameScene {
     }
 }
 
-// MARK: - Paddle Control
-extension GameScene {
-    private func clampedPaddleX(_ x: CGFloat) -> CGFloat {
-        guard let paddle = gameNodes[.paddle] else { return x }
-        
-        let halfWidth = paddle.frame.width / 2
-        let minX = halfWidth
-        let maxX = size.width - halfWidth
-        
-        return max(minX, min(maxX, x))
-    }
-
-    func movePaddle(to location: CGPoint) {
-        guard let paddle = gameNodes[.paddle] else { return }
-        paddle.position.x = clampedPaddleX(location.x)
-    }
-}
-
 // MARK: - Paddle Intents
 extension GameScene {
-    internal func startMovingPaddleLeft()  { isMovingLeft = true }
-    internal func startMovingPaddleRight() { isMovingRight = true }
-    internal func stopMovingPaddle() {
-        isMovingLeft = false
-        isMovingRight = false
-    }
+    func startMovingPaddleLeft()  { paddleMotion?.startLeft() }
+    func startMovingPaddleRight() { paddleMotion?.startRight() }
+    func stopMovingPaddle() { paddleMotion?.stop() }
+    func movePaddle(to location: CGPoint) { paddleMotion?.overridePosition(x: location.x) }
+    func endPaddleOverride() { paddleMotion?.endOverride() }
+    
 }
-
-// MARK: - Paddle Motion State
-extension GameScene {
-    private var paddleNode: SKNode? { gameNodes[.paddle] }
-
-    private var isMovingLeft: Bool {
-        get { paddleMotion.isMovingLeft }
-        set { paddleMotion.isMovingLeft = newValue }
-    }
-
-    private var isMovingRight: Bool {
-        get { paddleMotion.isMovingRight }
-        set { paddleMotion.isMovingRight = newValue }
-    }
-}
-
-// Simple mutable struct to keep state together
-private struct PaddleMotion {
-    var isMovingLeft = false
-    var isMovingRight = false
-    let speed: CGFloat = 450.0
-}
-
-private var paddleMotion = PaddleMotion()
-
-// MARK: - Temporary tick-based movement (will be replaced)
-extension GameScene {
-    internal func tickPaddleMovement(deltaTime dt: TimeInterval) {
-        guard let paddle = paddleNode else { return }
-
-        var x = paddle.position.x
-        if isMovingLeft  { x -= paddleMotion.speed * CGFloat(dt) }
-        if isMovingRight { x += paddleMotion.speed * CGFloat(dt) }
-
-        paddle.position.x = clampedPaddleX(x) // already refactored
-    }
-}
-
 
 // MARK: - Ball Control
 extension GameScene {

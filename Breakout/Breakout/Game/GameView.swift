@@ -21,6 +21,9 @@ struct GameView: View {
                         .onChanged { value in
                             scene.movePaddle(to: value.location)
                         }
+                        .onEnded { _ in
+                            scene.endPaddleOverride()
+                        }
                 )
                 #if os(macOS)
                 .onKeyPress(.leftArrow) {
