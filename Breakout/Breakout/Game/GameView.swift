@@ -53,10 +53,7 @@ struct GameView: View {
             }
         }
         .onAppear {
-            if scene == nil {
-                scene = setupGame()
-                paddleXPosition = viewModel.sceneSize.width / 2
-            }
+                setupGame()
         }
         .task {
             try? await Task.sleep(for: .milliseconds(100))
@@ -94,11 +91,14 @@ struct GameView: View {
     }
     #endif
 
-    private func setupGame() -> GameScene {
-        let (nodes, bricks) = viewModel.createNodesAndCollectBricks()
-        viewModel.resetGame(with: bricks)
-        viewModel.startGame()
-        return createScene(with: nodes)
+    private func setupGame() {
+        viewModel.onSceneNodesCreated = onSceneNodesCreated
+        viewModel.startNewGame()
+    }
+    
+    private func onSceneNodesCreated(_ nodes: [NodeNames: SKNode]) {
+        scene = createScene(with: nodes)
+        paddleXPosition = viewModel.sceneSize.width / 2 // TODO: Refactor positiong system
     }
 
     private func createScene(with nodes: [NodeNames: SKNode]) -> GameScene {

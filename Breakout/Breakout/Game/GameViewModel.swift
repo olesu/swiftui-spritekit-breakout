@@ -14,9 +14,10 @@ final class GameViewModel {
     internal let brickArea: CGRect
 
     // UI callbacks to GameScene
-    internal var onScoreChanged: ((Int) -> Void)?
-    internal var onLivesChanged: ((Int) -> Void)?
-    internal var onBallResetNeeded: (() -> Void)?
+    var onScoreChanged: ((Int) -> Void)?
+    var onLivesChanged: ((Int) -> Void)?
+    var onBallResetNeeded: (() -> Void)?
+    var onSceneNodesCreated: (([NodeNames: SKNode]) -> Void)?
 
     init(
         session: GameSession,
@@ -55,11 +56,20 @@ final class GameViewModel {
     }
 
     // MARK: - Game Flow
+    
+    func startNewGame() {
+        var bricks: [BrickId: Brick] = [:]
+        let nodes = nodeCreator.createNodes { brick in
+            bricks[brick.id] = brick
+        }
 
-    internal func startGame() {
+        session.reset(bricks: bricks)
         session.startGame()
+        
         syncCallbacks()
         checkGameEnd()
+
+        onSceneNodesCreated?(nodes)
     }
 
     internal func handleGameEvent(_ event: GameEvent) {
@@ -105,14 +115,4 @@ final class GameViewModel {
         }
     }
     
-    // MARK: - Node creation, really?
-    
-    func createNodesAndCollectBricks() -> ([NodeNames: SKNode], [BrickId: Brick])
-    {
-        var bricks: [BrickId: Brick] = [:]
-        let nodes = nodeCreator.createNodes { brick in
-            bricks[brick.id] = brick
-        }
-        return (nodes, bricks)
-    }
 }

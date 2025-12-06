@@ -21,7 +21,7 @@ struct GameViewModelTest {
             configurationService: configService,
             screenNavigationService: navService,
             gameResultService: resultService,
-            nodeCreator: SpriteKitNodeCreator(layoutLoader: LoadBrickLayoutService(adapter: JsonBrickLayoutAdapter()))
+            nodeCreator: FakeNodeCreator()
         )
     }
 
@@ -46,6 +46,19 @@ struct GameViewModelTest {
         #expect(context.viewModel.sceneSize == CGSize(width: 320, height: 480))
         #expect(context.viewModel.brickArea == CGRect(x: 20, y: 330, width: 280, height: 120))
     }
+    
+    @Test
+    func sceneNodesReadyIsTriggeredAfterStartingNewGame() {
+        var receivedNodes: [NodeNames: SKNode]? = nil
+        viewModel.onSceneNodesCreated = { nodes in
+            receivedNodes = nodes
+        }
+
+        viewModel.startNewGame()
+
+        #expect(receivedNodes != nil)
+    }
+
 
     // MARK: - Score Callback
 
