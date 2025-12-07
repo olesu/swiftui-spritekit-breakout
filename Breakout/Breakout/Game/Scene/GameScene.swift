@@ -34,22 +34,35 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
 
     override internal func didMove(to view: SKView) {
         addGradientBackground()
+        setPhysicsDelegateToSelf()
+        initBrickNodeManager()
+        initPaddleMotion()
+    }
+    
+    private func setPhysicsDelegateToSelf() {
         physicsWorld.contactDelegate = self
+    }
+    
+    private func initBrickNodeManager() {
+        guard let brickLayout = gameNodes[.brickLayout] else {
+            return
+        }
+        
         gameNodes.values.forEach(addChild)
-
-        if let brickLayout = gameNodes[.brickLayout] {
-            brickNodeManager = BrickNodeManager(brickLayout: brickLayout)
+        brickNodeManager = BrickNodeManager(brickLayout: brickLayout)
+    }
+    
+    private func initPaddleMotion() {
+        guard let paddle = gameNodes[.paddle] as? SKSpriteNode else {
+            assertionFailure("Paddle must be an SKSpriteNode")
+            return
         }
 
-        if let paddle = gameNodes[.paddle] as? SKSpriteNode {
-            paddleMotion = PaddleMotionController(
-                paddle: paddle,
-                speed: 450,
-                sceneWidth: size.width
-            )
-        } else {
-            assertionFailure("Paddle node is not an SKSpriteNode")
-        }
+        paddleMotion = PaddleMotionController(
+            paddle: paddle,
+            speed: 450,
+            sceneWidth: size.width
+        )
     }
 
     override internal func update(_ currentTime: TimeInterval) {
@@ -57,9 +70,8 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
             let dt = currentTime - lastUpdateTime
             paddleMotion?.update(deltaTime: dt)
         }
-        
-        if
-            let ball = gameNodes[.ball] as? SKSpriteNode,
+
+        if let ball = gameNodes[.ball] as? SKSpriteNode,
             let paddle = gameNodes[.paddle] as? SKSpriteNode
         {
             ballController.update(ball: ball, paddle: paddle)
@@ -68,40 +80,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     private func addGradientBackground() {
-        let gradientTexture = createGradientTexture()
-        let background = SKSpriteNode(texture: gradientTexture)
-        background.position = CGPoint(x: size.width / 2, y: size.height / 2)
-        background.size = size
-        background.zPosition = -1
-        addChild(background)
-    }
-
-    private func createGradientTexture() -> SKTexture {
-        let size = self.size
-        let image = NSImage(size: size, flipped: false) { rect in
-            let colors = [
-                NSColor(
-                    red: 0x1a / 255,
-                    green: 0x1a / 255,
-                    blue: 0x2e / 255,
-                    alpha: 1.0
-                ),
-                NSColor(
-                    red: 0x16 / 255,
-                    green: 0x21 / 255,
-                    blue: 0x3e / 255,
-                    alpha: 1.0
-                ),
-            ]
-            let gradient = NSGradient(colors: colors)!
-            gradient.draw(
-                from: CGPoint(x: 0, y: size.height),
-                to: CGPoint(x: 0, y: 0),
-                options: []
-            )
-            return true
-        }
-        return SKTexture(image: image)
+        addChild(GradientBackground.create(with: size))
     }
 
 }
@@ -180,15 +159,15 @@ extension GameScene {
         ballController.prepareReset(ball: ball)
 
         let wait = SKAction.wait(forDuration: 0.5)
-        
+
         let reset = SKAction.run { [weak self] in
             guard
                 let self,
                 let ball = self.gameNodes[.ball] as? SKSpriteNode
             else { return }
-            
+
             let resetPosition = CGPoint(x: 160, y: 50)
-            
+
             self.ballController.performReset(ball: ball, at: resetPosition)
             self.onBallResetComplete?()
         }
