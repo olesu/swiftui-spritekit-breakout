@@ -14,6 +14,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let ballController: BallController
 
     private var paddleMotion: PaddleMotionController?
+    private var paddleInput: PaddleInputController?
     private let paddleBounceApplier = PaddleBounceApplier()
 
     private var lastUpdateTime: TimeInterval = 0
@@ -21,25 +22,6 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private weak var ballNode: SKSpriteNode?
     private weak var paddleNode: SKSpriteNode?
     
-    private struct KeyState {
-        var left = false
-        var right = false
-        
-        var movement: Movement {
-            if left && !right { return .left }
-            if right && !left { return .right }
-            return .none
-        }
-        
-        enum Movement {
-            case none
-            case left
-            case right
-        }
-    }
-
-    private var keyState = KeyState()
-
     internal init(
         size: CGSize,
         nodes: [NodeNames: SKNode],
@@ -61,7 +43,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         addGradientBackground()
         cacheImportantNodes()
         createBrickManagerIfPossible()
-        initPaddleMotion()
+        initPaddleMotionAndInput()
     }
 
     private func addGameNodes() {
@@ -82,13 +64,16 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
 
-    private func initPaddleMotion() {
+    private func initPaddleMotionAndInput() {
         guard let paddle = paddleNode else { return }
-        paddleMotion = PaddleMotionController(
+        let motion = PaddleMotionController(
             paddle: paddle,
             speed: paddleSpeed,
             sceneWidth: size.width
         )
+
+        paddleMotion = motion
+        paddleInput = PaddleInputController(motion: motion)
     }
 
     override internal func update(_ currentTime: TimeInterval) {
@@ -152,47 +137,6 @@ extension GameScene {
     }
 }
 
-// MARK: - Paddle Intents
-// TODO: Extract protocol
-extension GameScene {
-    func pressLeft() {
-        keyState.left = true
-        applyKeyState()
-    }
-    
-    func releaseLeft() {
-        keyState.left = false
-        applyKeyState()
-    }
-
-    func pressRight() {
-        keyState.right = true
-        applyKeyState()
-    }
-
-    func releaseRight() {
-        keyState.right = false
-        applyKeyState()
-    }
-    
-    private func applyKeyState() {
-        switch keyState.movement {
-        case .left:
-            paddleMotion?.startLeft()
-        case .right:
-            paddleMotion?.startRight()
-        case .none:
-            paddleMotion?.stop()
-        }
-    }
-
-    func movePaddle(to location: CGPoint) {
-        paddleMotion?.overridePosition(x: location.x)
-    }
-    func endPaddleOverride() { paddleMotion?.endOverride() }
-
-}
-
 // MARK: - Ball Control
 extension GameScene {
     internal func resetBall() {
@@ -238,3 +182,29 @@ extension GameScene {
     }
 }
 
+// Mark: - Paddle Intent API
+extension GameScene {
+    func movePaddle(to point: CGPoint) {
+        paddleInput?.movePaddle(to: point)
+    }
+    
+    func endPaddleOverride() {
+        paddleInput?.endPaddleOverride()
+    }
+    
+    func pressLeft() {
+        paddleInput?.pressLeft()
+    }
+    
+    func pressRight() {
+        paddleInput?.pressRight()
+    }
+    
+    func releaseLeft() {
+        paddleInput?.releaseLeft()
+    }
+    
+    func releaseRight() {
+        paddleInput?.releaseRight()
+    }
+}
