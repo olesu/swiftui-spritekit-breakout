@@ -1,18 +1,17 @@
+import AppKit
 import Foundation
 import SpriteKit
-import AppKit
 
 internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let gameNodes: [NodeNames: SKNode]
     private let onGameEvent: (GameEvent) -> Void
     private var brickNodeManager: BrickNodeManager?
-    private let ballResetConfigurator = BallResetConfigurator()
     private let paddleBounceApplier = PaddleBounceApplier()
-    private var isBallClamped = true
     internal var onBallResetComplete: (() -> Void)?
-    
+
+    private let ballController: BallController
     private var paddleMotion: PaddleMotionController?
-    
+
     private var lastUpdateTime: TimeInterval = 0
 
     internal init(
@@ -22,6 +21,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     ) {
         self.gameNodes = nodes
         self.onGameEvent = onGameEvent
+        self.ballController = BallController()
         super.init(size: size)
     }
 
@@ -37,7 +37,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         if let brickLayout = gameNodes[.brickLayout] {
             brickNodeManager = BrickNodeManager(brickLayout: brickLayout)
         }
-        
+
         if let paddle = gameNodes[.paddle] as? SKSpriteNode {
             paddleMotion = PaddleMotionController(
                 paddle: paddle,
@@ -50,13 +50,16 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     override internal func update(_ currentTime: TimeInterval) {
-        if isBallClamped {
-            clampBallToPaddle()
-        }
-        
         if lastUpdateTime > 0 {
             let dt = currentTime - lastUpdateTime
             paddleMotion?.update(deltaTime: dt)
+        }
+        
+        if
+            let ball = gameNodes[.ball] as? SKSpriteNode,
+            let paddle = gameNodes[.paddle] as? SKSpriteNode
+        {
+            ballController.update(ball: ball, paddle: paddle)
         }
         lastUpdateTime = currentTime
     }
@@ -74,8 +77,18 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         let size = self.size
         let image = NSImage(size: size, flipped: false) { rect in
             let colors = [
-                NSColor(red: 0x1a / 255, green: 0x1a / 255, blue: 0x2e / 255, alpha: 1.0),
-                NSColor(red: 0x16 / 255, green: 0x21 / 255, blue: 0x3e / 255, alpha: 1.0)
+                NSColor(
+                    red: 0x1a / 255,
+                    green: 0x1a / 255,
+                    blue: 0x2e / 255,
+                    alpha: 1.0
+                ),
+                NSColor(
+                    red: 0x16 / 255,
+                    green: 0x21 / 255,
+                    blue: 0x3e / 255,
+                    alpha: 1.0
+                ),
             ]
             let gradient = NSGradient(colors: colors)!
             gradient.draw(
@@ -108,11 +121,16 @@ extension GameScene {
 // MARK: - Physics Contact Delegate
 extension GameScene {
     internal func didBegin(_ contact: SKPhysicsContact) {
-        let contactMask = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
+        let contactMask =
+            contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
 
         // Ball + Brick collision
-        if contactMask == (CollisionCategory.ball.mask | CollisionCategory.brick.mask) {
-            let brickNode = contact.bodyA.categoryBitMask == CollisionCategory.brick.mask ? contact.bodyA.node : contact.bodyB.node
+        if contactMask
+            == (CollisionCategory.ball.mask | CollisionCategory.brick.mask)
+        {
+            let brickNode =
+                contact.bodyA.categoryBitMask == CollisionCategory.brick.mask
+                ? contact.bodyA.node : contact.bodyB.node
 
             if let brickIdString = brickNode?.name {
                 let brickId = BrickId(of: brickIdString)
@@ -122,12 +140,16 @@ extension GameScene {
         }
 
         // Ball + Gutter collision
-        if contactMask == (CollisionCategory.ball.mask | CollisionCategory.gutter.mask) {
+        if contactMask
+            == (CollisionCategory.ball.mask | CollisionCategory.gutter.mask)
+        {
             onGameEvent(.ballLost)
         }
 
         // Ball + Paddle collision
-        if contactMask == (CollisionCategory.ball.mask | CollisionCategory.paddle.mask) {
+        if contactMask
+            == (CollisionCategory.ball.mask | CollisionCategory.paddle.mask)
+        {
             adjustBallVelocityForPaddleHit()
         }
     }
@@ -135,59 +157,55 @@ extension GameScene {
 
 // MARK: - Paddle Intents
 extension GameScene {
-    func startMovingPaddleLeft()  { paddleMotion?.startLeft() }
+    func startMovingPaddleLeft() { paddleMotion?.startLeft() }
     func startMovingPaddleRight() { paddleMotion?.startRight() }
     func stopMovingPaddle() { paddleMotion?.stop() }
-    func movePaddle(to location: CGPoint) { paddleMotion?.overridePosition(x: location.x) }
+    func movePaddle(to location: CGPoint) {
+        paddleMotion?.overridePosition(x: location.x)
+    }
     func endPaddleOverride() { paddleMotion?.endOverride() }
-    
+
 }
 
 // MARK: - Ball Control
 extension GameScene {
     internal func resetBall() {
-        guard let ball = gameNodes[.ball] else { return }
+        guard
+            let ball = gameNodes[.ball] as? SKSpriteNode
+        else { return }
 
-        ballResetConfigurator.prepareForReset(ball)
-        isBallClamped = true
+        ballController.prepareReset(ball: ball)
 
-        let waitAction = SKAction.wait(forDuration: 0.5)
-        let resetAction = SKAction.run { [weak ball, weak self, ballResetConfigurator] in
-            guard let ball = ball else { return }
-            ballResetConfigurator.performReset(ball)
-            self?.clampBallToPaddle()
-            self?.onBallResetComplete?()
+        let wait = SKAction.wait(forDuration: 0.5)
+        
+        let reset = SKAction.run { [weak self] in
+            guard
+                let self,
+                let ball = self.gameNodes[.ball] as? SKSpriteNode
+            else { return }
+            
+            let resetPosition = CGPoint(x: 160, y: 50)
+            
+            self.ballController.performReset(ball: ball, at: resetPosition)
+            self.onBallResetComplete?()
         }
 
-        ball.run(SKAction.sequence([waitAction, resetAction]))
+        ball.run(.sequence([wait, reset]))
     }
 
     internal func launchBall() {
-        guard isBallClamped,
-              let ball = gameNodes[.ball],
-              let ballBody = ball.physicsBody else { return }
+        guard
+            let ball = gameNodes[.ball] as? SKSpriteNode
+        else { return }
 
-        isBallClamped = false
-        ballBody.velocity = CGVector(dx: 0, dy: 360)
-    }
-
-    private func clampBallToPaddle() {
-        guard let ball = gameNodes[.ball],
-              let paddle = gameNodes[.paddle] else { return }
-
-        let paddleTop = paddle.position.y + paddle.frame.height / 2
-        let ballRadius = ball.frame.width / 2
-        ball.position = CGPoint(
-            x: paddle.position.x,
-            y: paddleTop + ballRadius
-        )
+        ballController.launch(ball: ball)
     }
 
     private func adjustBallVelocityForPaddleHit() {
         guard let ball = gameNodes[.ball],
-              let paddle = gameNodes[.paddle] else { return }
+            let paddle = gameNodes[.paddle]
+        else { return }
 
         paddleBounceApplier.applyBounce(ball: ball, paddle: paddle)
     }
 }
-
