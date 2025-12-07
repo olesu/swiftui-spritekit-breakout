@@ -3,6 +3,7 @@ import Foundation
 import SpriteKit
 
 internal final class GameScene: SKScene, SKPhysicsContactDelegate {
+    private let paddleSpeed = 450.0
     private let gameNodes: [NodeNames: SKNode]
 
     private var brickNodeManager: BrickNodeManager?
@@ -16,6 +17,9 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let paddleBounceApplier = PaddleBounceApplier()
 
     private var lastUpdateTime: TimeInterval = 0
+    
+    private weak var ballNode: SKSpriteNode?
+    private weak var paddleNode: SKSpriteNode?
 
     internal init(
         size: CGSize,
@@ -32,47 +36,53 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override internal func didMove(to view: SKView) {
+    override func didMove(to view: SKView) {
+        physicsWorld.contactDelegate = self
+        addGameNodes()
         addGradientBackground()
-        setPhysicsDelegateToSelf()
-        initBrickNodeManager()
+        cacheImportantNodes()
+        createBrickManagerIfPossible()
         initPaddleMotion()
     }
-    
-    private func setPhysicsDelegateToSelf() {
-        physicsWorld.contactDelegate = self
-    }
-    
-    private func initBrickNodeManager() {
-        guard let brickLayout = gameNodes[.brickLayout] else {
-            return
-        }
-        
-        gameNodes.values.forEach(addChild)
-        brickNodeManager = BrickNodeManager(brickLayout: brickLayout)
-    }
-    
-    private func initPaddleMotion() {
-        guard let paddle = gameNodes[.paddle] as? SKSpriteNode else {
-            assertionFailure("Paddle must be an SKSpriteNode")
-            return
-        }
 
+    private func addGameNodes() {
+        gameNodes.values.forEach(addChild)
+    }
+
+    private func cacheImportantNodes() {
+        ballNode = gameNodes[.ball] as? SKSpriteNode
+        paddleNode = gameNodes[.paddle] as? SKSpriteNode
+
+        assert(ballNode != nil, "GameScene: Missing .ball in node dictionary")
+        assert(paddleNode != nil, "GameScene: Missing .paddle in node dictionary")
+    }
+
+    private func createBrickManagerIfPossible() {
+        if let brickLayout = gameNodes[.brickLayout] {
+            brickNodeManager = BrickNodeManager(brickLayout: brickLayout)
+        }
+    }
+
+    private func initPaddleMotion() {
+        guard let paddle = paddleNode else { return }
         paddleMotion = PaddleMotionController(
             paddle: paddle,
-            speed: 450,
+            speed: paddleSpeed,
             sceneWidth: size.width
         )
     }
 
     override internal func update(_ currentTime: TimeInterval) {
-        if lastUpdateTime > 0 {
-            let dt = currentTime - lastUpdateTime
-            paddleMotion?.update(deltaTime: dt)
+        guard lastUpdateTime > 0 else {
+            lastUpdateTime = currentTime
+            return
         }
 
-        if let ball = gameNodes[.ball] as? SKSpriteNode,
-            let paddle = gameNodes[.paddle] as? SKSpriteNode
+        let dt = currentTime - lastUpdateTime
+        paddleMotion?.update(deltaTime: dt)
+
+        if let ball = ballNode,
+            let paddle = paddleNode
         {
             ballController.update(ball: ball, paddle: paddle)
         }
@@ -107,6 +117,7 @@ extension GameScene {
             contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
 
         // Ball + Brick collision
+        // TODO: Improve with reducer
         if contactMask
             == (CollisionCategory.ball.mask | CollisionCategory.brick.mask)
         {
@@ -138,6 +149,7 @@ extension GameScene {
 }
 
 // MARK: - Paddle Intents
+// TODO: Extract protocol
 extension GameScene {
     func startMovingPaddleLeft() { paddleMotion?.startLeft() }
     func startMovingPaddleRight() { paddleMotion?.startRight() }
@@ -153,7 +165,7 @@ extension GameScene {
 extension GameScene {
     internal func resetBall() {
         guard
-            let ball = gameNodes[.ball] as? SKSpriteNode
+            let ball = ballNode
         else { return }
 
         ballController.prepareReset(ball: ball)
@@ -163,29 +175,31 @@ extension GameScene {
         let reset = SKAction.run { [weak self] in
             guard
                 let self,
-                let ball = self.gameNodes[.ball] as? SKSpriteNode
+                let ball = self.ballNode
             else { return }
 
-            let resetPosition = CGPoint(x: 160, y: 50)
-
-            self.ballController.performReset(ball: ball, at: resetPosition)
+            self.ballController.performReset(ball: ball, at: resetPosition())
             self.onBallResetComplete?()
         }
 
-        ball.run(.sequence([wait, reset]))
+        run(.sequence([wait, reset]))
+    }
+    
+    private func resetPosition() -> CGPoint {
+        .init(x: size.width / 2, y: 50)
     }
 
     internal func launchBall() {
         guard
-            let ball = gameNodes[.ball] as? SKSpriteNode
+            let ball = ballNode
         else { return }
 
         ballController.launch(ball: ball)
     }
 
     private func adjustBallVelocityForPaddleHit() {
-        guard let ball = gameNodes[.ball],
-            let paddle = gameNodes[.paddle]
+        guard let ball = ballNode,
+            let paddle = paddleNode
         else { return }
 
         paddleBounceApplier.applyBounce(ball: ball, paddle: paddle)
