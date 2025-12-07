@@ -28,15 +28,19 @@ struct GameView: View {
                     )
                     #if os(macOS)
                     .onKeyPress(.leftArrow) {
-                        scene.startMovingPaddleLeft()
+                        scene.pressLeft()
                         return .handled
                     }
                     .onKeyPress(.rightArrow) {
-                        scene.startMovingPaddleRight()
+                        scene.pressRight()
                         return .handled
                     }
-                    .onKeyPress(keys: [.leftArrow, .rightArrow], phases: .up) { _ in
-                        scene.stopMovingPaddle()
+                    .onKeyPress(keys: [.leftArrow], phases: .up) { _ in
+                        scene.releaseLeft()
+                        return .handled
+                    }
+                    .onKeyPress(keys: [.rightArrow], phases: .up) { _ in
+                        scene.releaseRight()
                         return .handled
                     }
                     .onKeyPress(.space) {

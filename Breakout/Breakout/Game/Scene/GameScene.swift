@@ -20,6 +20,25 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private weak var ballNode: SKSpriteNode?
     private weak var paddleNode: SKSpriteNode?
+    
+    private struct KeyState {
+        var left = false
+        var right = false
+        
+        var movement: Movement {
+            if left && !right { return .left }
+            if right && !left { return .right }
+            return .none
+        }
+        
+        enum Movement {
+            case none
+            case left
+            case right
+        }
+    }
+
+    private var keyState = KeyState()
 
     internal init(
         size: CGSize,
@@ -136,9 +155,37 @@ extension GameScene {
 // MARK: - Paddle Intents
 // TODO: Extract protocol
 extension GameScene {
-    func startMovingPaddleLeft() { paddleMotion?.startLeft() }
-    func startMovingPaddleRight() { paddleMotion?.startRight() }
-    func stopMovingPaddle() { paddleMotion?.stop() }
+    func pressLeft() {
+        keyState.left = true
+        applyKeyState()
+    }
+    
+    func releaseLeft() {
+        keyState.left = false
+        applyKeyState()
+    }
+
+    func pressRight() {
+        keyState.right = true
+        applyKeyState()
+    }
+
+    func releaseRight() {
+        keyState.right = false
+        applyKeyState()
+    }
+    
+    private func applyKeyState() {
+        switch keyState.movement {
+        case .left:
+            paddleMotion?.startLeft()
+        case .right:
+            paddleMotion?.startRight()
+        case .none:
+            paddleMotion?.stop()
+        }
+    }
+
     func movePaddle(to location: CGPoint) {
         paddleMotion?.overridePosition(x: location.x)
     }
@@ -190,3 +237,4 @@ extension GameScene {
         paddleBounceApplier.applyBounce(ball: ball, paddle: paddle)
     }
 }
+
