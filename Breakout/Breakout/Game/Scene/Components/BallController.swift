@@ -1,6 +1,9 @@
 import SpriteKit
 
 final class BallController {
+    private let launchVector = CGVector(dx: 0, dy: 400)
+    private let disabledMask: UInt32 = 0x0
+
     private(set) var state: BallState = .clamped
 
     func clamp(ball: SKSpriteNode, to paddle: SKSpriteNode) {
@@ -8,17 +11,20 @@ final class BallController {
 
         ball.physicsBody?.velocity = .zero
         ball.position.x = paddle.position.x
-
-        let paddleTop = paddle.position.y + paddle.size.height / 2
-        let ballRadius = ball.size.width / 2
-
-        ball.position.y = paddleTop + ballRadius
+        ball.position.y = topOf(paddle: paddle) + radiusOf(ball: ball)
+    }
+    
+    private func topOf(paddle: SKSpriteNode) -> CGFloat {
+        paddle.position.y + paddle.size.height / 2
+    }
+    
+    private func radiusOf(ball: SKSpriteNode) -> CGFloat {
+        ball.size.width / 2
     }
 
     func launch(ball: SKSpriteNode) {
         state = .launched
-
-        ball.physicsBody?.velocity = CGVector(dx: 0, dy: 400)
+        ball.physicsBody?.velocity = launchVector
     }
 
     func reset(ball: SKSpriteNode, onto paddle: SKSpriteNode) {
@@ -31,8 +37,6 @@ final class BallController {
     }
 
     func prepareReset(ball: SKSpriteNode) {
-        let disabledMask: UInt32 = 0x0
-
         ball.physicsBody?.categoryBitMask = disabledMask
         ball.physicsBody?.contactTestBitMask = disabledMask
         ball.physicsBody?.collisionBitMask = disabledMask
@@ -41,15 +45,13 @@ final class BallController {
 
     func performReset(ball: SKSpriteNode, at resetPosition: CGPoint) {
         state = .clamped
-        
         ball.position = resetPosition
-
+        ball.alpha = 1
         ball.physicsBody?.velocity = .zero
         ball.physicsBody?.angularVelocity = 0
         restorePhysicsMasks(ball)
-        ball.alpha = 1
     }
-    
+
     private func restorePhysicsMasks(_ ball: SKSpriteNode) {
         ball.physicsBody?.categoryBitMask = CollisionCategory.ball.mask
         ball.physicsBody?.contactTestBitMask =
@@ -63,24 +65,22 @@ final class BallController {
             | CollisionCategory.paddle.mask
 
     }
-    
+
     func performWorldReset(ball: SKSpriteNode, at position: CGPoint) {
         state = .launched
         ball.position = position
+        ball.alpha = 1
         ball.physicsBody?.velocity = .zero
         ball.physicsBody?.angularVelocity = 0
         restorePhysicsMasks(ball)
-        ball.alpha = 1
     }
-    
+
     func performPaddleReset(ball: SKSpriteNode, paddle: SKSpriteNode) {
         state = .clamped
+        ball.alpha = 1
         ball.physicsBody?.velocity = .zero
         ball.physicsBody?.angularVelocity = 0
-        
         clamp(ball: ball, to: paddle)
-        
         restorePhysicsMasks(ball)
-        ball.alpha = 1
     }
 }

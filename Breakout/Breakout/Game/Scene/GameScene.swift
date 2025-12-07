@@ -4,13 +4,16 @@ import SpriteKit
 
 internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let gameNodes: [NodeNames: SKNode]
-    private let onGameEvent: (GameEvent) -> Void
+
     private var brickNodeManager: BrickNodeManager?
-    private let paddleBounceApplier = PaddleBounceApplier()
+
     internal var onBallResetComplete: (() -> Void)?
+    private let onGameEvent: (GameEvent) -> Void
 
     private let ballController: BallController
+
     private var paddleMotion: PaddleMotionController?
+    private let paddleBounceApplier = PaddleBounceApplier()
 
     private var lastUpdateTime: TimeInterval = 0
 
