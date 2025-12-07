@@ -95,21 +95,6 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
 
 }
 
-// MARK: - UI Updates
-extension GameScene {
-    internal func updateScore(_ score: Int) {
-        if let scoreLabel = gameNodes[.scoreLabel] as? ScoreLabel {
-            scoreLabel.text = String(format: "%02d", score)
-        }
-    }
-
-    internal func updateLives(_ lives: Int) {
-        if let livesLabel = gameNodes[.livesLabel] as? LivesLabel {
-            livesLabel.text = "\(lives)"
-        }
-    }
-}
-
 // MARK: - Physics Contact Delegate
 extension GameScene {
     internal func didBegin(_ contact: SKPhysicsContact) {

@@ -8,49 +8,61 @@ struct GameView: View {
     @FocusState private var isFocused: Bool
 
     var body: some View {
-        VStack {
-            if let scene = scene {
-                SpriteView(
-                    scene: scene,
-                    debugOptions: [/*.showsPhysics,*/ .showsFPS, .showsNodeCount]
-                )
-                .focusable()
-                .focused($isFocused)
-                .gesture(
-                    DragGesture(minimumDistance: 0)
-                        .onChanged { value in
-                            scene.movePaddle(to: value.location)
-                        }
-                        .onEnded { _ in
-                            scene.endPaddleOverride()
-                        }
-                )
-                #if os(macOS)
-                .onKeyPress(.leftArrow) {
-                    scene.startMovingPaddleLeft()
-                    return .handled
+        ZStack {
+            VStack {
+                if let scene = scene {
+                    SpriteView(
+                        scene: scene,
+                        debugOptions: [/*.showsPhysics,*/ .showsFPS, .showsNodeCount]
+                    )
+                    .focusable()
+                    .focused($isFocused)
+                    .gesture(
+                        DragGesture(minimumDistance: 0)
+                            .onChanged { value in
+                                scene.movePaddle(to: value.location)
+                            }
+                            .onEnded { _ in
+                                scene.endPaddleOverride()
+                            }
+                    )
+                    #if os(macOS)
+                    .onKeyPress(.leftArrow) {
+                        scene.startMovingPaddleLeft()
+                        return .handled
+                    }
+                    .onKeyPress(.rightArrow) {
+                        scene.startMovingPaddleRight()
+                        return .handled
+                    }
+                    .onKeyPress(keys: [.leftArrow, .rightArrow], phases: .up) { _ in
+                        scene.stopMovingPaddle()
+                        return .handled
+                    }
+                    .onKeyPress(.space) {
+                        scene.launchBall()
+                        return .handled
+                    }
+                    #endif
                 }
-                .onKeyPress(.rightArrow) {
-                    scene.startMovingPaddleRight()
-                    return .handled
-                }
-                .onKeyPress(keys: [.leftArrow, .rightArrow], phases: .up) { _ in
-                    scene.stopMovingPaddle()
-                    return .handled
-                }
-                .onKeyPress(.space) {
-                    scene.launchBall()
-                    return .handled
-                }
-                #endif
             }
-        }
-        .onAppear {
-                setupGame()
-        }
-        .task {
-            try? await Task.sleep(for: .milliseconds(100))
-            isFocused = true
+            .onAppear {
+                    setupGame()
+            }
+            .task {
+                try? await Task.sleep(for: .milliseconds(100))
+                isFocused = true
+            }
+            
+            VStack {
+                HStack {
+                    ScoreView(score: viewModel.currentScore)
+                    Spacer()
+                    LivesView(lives: viewModel.remainingLives)
+                }
+                .padding()
+                Spacer()
+            }
         }
     }
 
@@ -82,12 +94,6 @@ struct GameView: View {
         from viewModel: GameViewModel,
         to scene: GameScene
     ) {
-        viewModel.onScoreChanged = { [weak scene] score in
-            scene?.updateScore(score)
-        }
-        viewModel.onLivesChanged = { [weak scene] lives in
-            scene?.updateLives(lives)
-        }
         viewModel.onBallResetNeeded = { [weak scene] in
             scene?.resetBall()
         }

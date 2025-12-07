@@ -28,16 +28,11 @@ struct GameViewModelTest {
     // MARK: - Initialization
 
     @Test
-    func exposesPersistedStateOnInitialization() {
-        repository.save(
-            GameState.initial
-                .with(score: 99)
-                .with(lives: 2)
-                .with(status: .playing)
-        )
-
-        #expect(viewModel.currentScore == 99)
-        #expect(viewModel.remainingLives == 2)
+    func reflectsScoreAfterGameStarts() {
+        viewModel.startNewGame()
+        
+        #expect(viewModel.currentScore == 0)
+        #expect(viewModel.remainingLives == 3)
     }
 
     @Test
@@ -59,44 +54,6 @@ struct GameViewModelTest {
         #expect(receivedNodes != nil)
     }
 
-
-    // MARK: - Score Callback
-
-    @Test
-    func scoreCallbackIsTriggeredOnScoreChange() {
-        var callbackScore: Int?
-        viewModel.onScoreChanged = { callbackScore = $0 }
-
-        // Arrange: one brick that gives 7 points
-        let id = BrickId(of: "b")
-        repository.save(
-            GameState.initial
-                .with(status: .playing)
-                .with(bricks: [id: Brick(id: id, color: .red)])
-        )
-
-        viewModel.handleGameEvent(.brickHit(brickID: id))
-
-        #expect(callbackScore == 7)
-    }
-
-    // MARK: - Lives Callback
-
-    @Test
-    func livesCallbackIsTriggeredOnLifeLost() {
-        var callbackLives: Int?
-        viewModel.onLivesChanged = { callbackLives = $0 }
-
-        repository.save(
-            GameState.initial
-                .with(status: .playing)
-                .with(lives: 3)
-        )
-
-        viewModel.handleGameEvent(.ballLost)
-
-        #expect(callbackLives == 2)
-    }
 
     // MARK: - Ball Reset Callback
 
@@ -175,5 +132,6 @@ struct GameViewModelTest {
         #expect(resultService.savedDidWin == false)
         #expect(resultService.savedScore == 0)
     }
+    
 }
 

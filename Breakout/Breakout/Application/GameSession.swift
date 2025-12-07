@@ -7,7 +7,7 @@ struct GameSession {
     }
     
     func startGame() {
-        repository.save(reducer.start(.initial))
+        repository.save(reducer.start(state))
     }
     
     func apply(_ event: GameEvent) {

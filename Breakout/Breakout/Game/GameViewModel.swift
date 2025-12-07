@@ -14,8 +14,6 @@ final class GameViewModel {
     internal let brickArea: CGRect
 
     // UI callbacks to GameScene
-    var onScoreChanged: ((Int) -> Void)?
-    var onLivesChanged: ((Int) -> Void)?
     var onBallResetNeeded: (() -> Void)?
     var onSceneNodesCreated: (([NodeNames: SKNode]) -> Void)?
 
@@ -41,19 +39,9 @@ final class GameViewModel {
         self.nodeCreator = nodeCreator
     }
 
-    // MARK: - UI-derived computed properties
-
-    internal var currentScore: Int {
-        session.state.score
-    }
-
-    internal var remainingLives: Int {
-        session.state.lives
-    }
-
-    internal var gameStatus: GameStatus {
-        session.state.status
-    }
+    var currentScore: Int = 0
+    var remainingLives: Int = 0
+    var gameStatus: GameStatus = .idle
 
     // MARK: - Game Flow
     
@@ -65,8 +53,7 @@ final class GameViewModel {
 
         session.reset(bricks: bricks)
         session.startGame()
-        
-        syncCallbacks()
+        updateUIFromDomain()
         checkGameEnd()
 
         onSceneNodesCreated?(nodes)
@@ -74,26 +61,27 @@ final class GameViewModel {
 
     internal func handleGameEvent(_ event: GameEvent) {
         session.apply(event)
-        syncCallbacks()
+        updateUIFromDomain()
         checkGameEnd()
     }
 
     internal func resetGame(with bricks: [BrickId: Brick]) {
         session.reset(bricks: bricks)
-        syncCallbacks()
+        updateUIFromDomain()
     }
 
     internal func acknowledgeBallReset() {
         session.acknowledgeBallReset()
-        syncCallbacks()
+        updateUIFromDomain()
     }
 
     // MARK: - Callback Synchronization
 
-    private func syncCallbacks() {
-        onScoreChanged?(session.state.score)
-        onLivesChanged?(session.state.lives)
-
+    private func updateUIFromDomain() {
+        currentScore = session.state.score
+        remainingLives = session.state.lives
+        gameStatus = session.state.status
+        
         if session.state.ballResetNeeded {
             onBallResetNeeded?()
         }
