@@ -4,8 +4,11 @@ struct LivesView: View {
     let lives: Int
 
     var body: some View {
-        Text("❤️ \(lives)")
-            .font(.system(size: 28, weight: .bold))
-            .foregroundColor(.white)
+        HStack(spacing: 4) {
+            ForEach(0..<lives, id: \.self) { _ in
+                Text("❤️")
+                    .font(.system(size: 28))
+            }
+        }
     }
 }
