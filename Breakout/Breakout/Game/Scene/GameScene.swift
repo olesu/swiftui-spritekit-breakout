@@ -4,32 +4,36 @@ import SpriteKit
 
 internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let paddleSpeed = 450.0
+
     private let gameNodes: [NodeNames: SKNode]
+    private let onGameEvent: (GameEvent) -> Void
+    private let collisionRouter: CollisionRouter
 
     private var brickNodeManager: BrickNodeManager?
 
     internal var onBallResetComplete: (() -> Void)?
-    private let onGameEvent: (GameEvent) -> Void
 
     private let ballController: BallController
 
     private var paddleMotion: PaddleMotionController?
     private var paddleInput: PaddleInputController?
-    private let paddleBounceApplier = PaddleBounceApplier()
+    private let paddleBounceApplier = PaddleBounceApplier()  // TODO: Inject
 
     private var lastUpdateTime: TimeInterval = 0
-    
+
     private weak var ballNode: SKSpriteNode?
     private weak var paddleNode: SKSpriteNode?
-    
+
     internal init(
         size: CGSize,
         nodes: [NodeNames: SKNode],
-        onGameEvent: @escaping (GameEvent) -> Void
+        onGameEvent: @escaping (GameEvent) -> Void,
+        collisionRouter: CollisionRouter
     ) {
         self.gameNodes = nodes
         self.onGameEvent = onGameEvent
-        self.ballController = BallController()
+        self.ballController = BallController()  // TODO: Inject
+        self.collisionRouter = collisionRouter
         super.init(size: size)
     }
 
@@ -55,7 +59,10 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         paddleNode = gameNodes[.paddle] as? SKSpriteNode
 
         assert(ballNode != nil, "GameScene: Missing .ball in node dictionary")
-        assert(paddleNode != nil, "GameScene: Missing .paddle in node dictionary")
+        assert(
+            paddleNode != nil,
+            "GameScene: Missing .paddle in node dictionary"
+        )
     }
 
     private func createBrickManagerIfPossible() {
@@ -102,38 +109,37 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
 // MARK: - Physics Contact Delegate
 extension GameScene {
     internal func didBegin(_ contact: SKPhysicsContact) {
-        let contactMask =
-            contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
-
-        // Ball + Brick collision
-        // TODO: Improve with reducer
-        if contactMask
-            == (CollisionCategory.ball.mask | CollisionCategory.brick.mask)
-        {
-            let brickNode =
-                contact.bodyA.categoryBitMask == CollisionCategory.brick.mask
-                ? contact.bodyA.node : contact.bodyB.node
-
-            if let brickIdString = brickNode?.name {
-                let brickId = BrickId(of: brickIdString)
-                onGameEvent(.brickHit(brickID: brickId))
-                brickNodeManager?.remove(brickId: brickId)
-            }
+        let result = collisionRouter.route(
+            Collision(
+                categoryA: contact.bodyA.categoryBitMask,
+                nodeA: contact.bodyA.node,
+                categoryB: contact.bodyB.categoryBitMask,
+                nodeB: contact.bodyB.node
+            )
+        )
+        switch result {
+        case .ballHitBrick(let brickId):
+            handleBallHitBrick(brickId)
+        case .ballHitGutter:
+            handleBallHitGutter()
+        case .ballHitPaddle:
+            handleBallHitPaddle()
+        case .none:
+            break
         }
-
-        // Ball + Gutter collision
-        if contactMask
-            == (CollisionCategory.ball.mask | CollisionCategory.gutter.mask)
-        {
-            onGameEvent(.ballLost)
-        }
-
-        // Ball + Paddle collision
-        if contactMask
-            == (CollisionCategory.ball.mask | CollisionCategory.paddle.mask)
-        {
-            adjustBallVelocityForPaddleHit()
-        }
+    }
+    
+    private func handleBallHitBrick(_ brickId: BrickId) {
+        onGameEvent(.brickHit(brickID: brickId))
+        brickNodeManager?.remove(brickId: brickId)
+    }
+    
+    private func handleBallHitGutter() {
+        onGameEvent(.ballLost)
+    }
+    
+    private func handleBallHitPaddle() {
+        adjustBallVelocityForPaddleHit()
     }
 }
 
@@ -160,7 +166,7 @@ extension GameScene {
 
         run(.sequence([wait, reset]))
     }
-    
+
     private func resetPosition() -> CGPoint {
         .init(x: size.width / 2, y: 50)
     }
@@ -187,23 +193,23 @@ extension GameScene {
     func movePaddle(to point: CGPoint) {
         paddleInput?.movePaddle(to: point)
     }
-    
+
     func endPaddleOverride() {
         paddleInput?.endPaddleOverride()
     }
-    
+
     func pressLeft() {
         paddleInput?.pressLeft()
     }
-    
+
     func pressRight() {
         paddleInput?.pressRight()
     }
-    
+
     func releaseLeft() {
         paddleInput?.releaseLeft()
     }
-    
+
     func releaseRight() {
         paddleInput?.releaseRight()
     }
