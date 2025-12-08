@@ -1,3 +1,4 @@
+import OSLog
 import SwiftUI
 
 enum CompositionRoot {
@@ -106,8 +107,10 @@ extension CompositionRoot {
         )
 
         let nodeCreator = SpriteKitNodeCreator(
-            layoutLoader: LoadBrickLayoutService(
-                adapter: JsonBrickLayoutAdapter()
+            brickSpecs: loadBrickLayout(
+                loadBrickLayoutService: LoadBrickLayoutService(
+                    adapter: JsonBrickLayoutAdapter()
+                )
             )
         )
 
@@ -126,4 +129,30 @@ extension CompositionRoot {
 
         return (reducer, viewModel)
     }
+
+    static private func loadBrickLayout(
+        loadBrickLayoutService: LoadBrickLayoutService
+    ) -> [(BrickData, BrickColor)] {
+        let layoutFileName = "001-classic-breakout"
+
+        do {
+            let domainBricks = try loadBrickLayoutService.load(
+                named: layoutFileName
+            )
+            return domainBricks.map { brick in
+                let brickData = BrickData(
+                    id: UUID().uuidString,
+                    position: brick.position,
+                    color: brick.color.toNSColor()
+                )
+                return (brickData, brick.color)
+            }
+        } catch {
+            Logger().error(
+                "Failed to load brick layout \(layoutFileName) Using empty layout as fallback."
+            )
+            return []
+        }
+    }
+
 }

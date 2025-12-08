@@ -1,53 +1,44 @@
+import AppKit
 import Foundation
 import SpriteKit
-import AppKit
 import os.log
 
 internal struct SpriteKitNodeCreator: NodeCreator {
-    private let layoutFileName: String
-    private let layoutLoader: LoadBrickLayoutService
-
+    private let brickSpecs: [(BrickData, BrickColor)]
+    
     internal init(
-        layoutFileName: String = "001-classic-breakout",
-        layoutLoader: LoadBrickLayoutService
+        brickSpecs: [(BrickData, BrickColor)]
     ) {
-        self.layoutFileName = layoutFileName
-        self.layoutLoader = layoutLoader
+        self.brickSpecs = brickSpecs
     }
 
-    internal func createNodes(onBrickAdded: @escaping (Brick) -> Void) -> [NodeNames: SKNode] {
-        let brickLayoutData = loadBrickLayout()
-        
-        let layout = ClassicBricksLayout(brickSpecs: brickLayoutData)
-        
+    internal func createNodes(
+        onBrickAdded: @escaping (Brick) -> Void
+    ) -> [NodeNames: SKNode] {
+        let layout = ClassicBricksLayout(brickSpecs: brickSpecs)
+
         layout.createdBricks.forEach(onBrickAdded)
 
         return [
             .paddle: PaddleSprite(position: CGPoint(x: 160, y: 40)),
             .brickLayout: layout,
             .ball: BallSprite(position: CGPoint(x: 160, y: 50)),
-            .topWall: WallSprite(position: CGPoint(x: 160, y: 430), size: CGSize(width: 320, height: 10)),
-            .leftWall: WallSprite(position: CGPoint(x: 0, y: 245), size: CGSize(width: 10, height: 470)),
-            .rightWall: WallSprite(position: CGPoint(x: 320, y: 245), size: CGSize(width: 10, height: 470)),
-            .gutter: GutterSprite(position: CGPoint(x: 160, y: 0), size: CGSize(width: 320, height: 10))
+            .topWall: WallSprite(
+                position: CGPoint(x: 160, y: 430),
+                size: CGSize(width: 320, height: 10)
+            ),
+            .leftWall: WallSprite(
+                position: CGPoint(x: 0, y: 245),
+                size: CGSize(width: 10, height: 470)
+            ),
+            .rightWall: WallSprite(
+                position: CGPoint(x: 320, y: 245),
+                size: CGSize(width: 10, height: 470)
+            ),
+            .gutter: GutterSprite(
+                position: CGPoint(x: 160, y: 0),
+                size: CGSize(width: 320, height: 10)
+            ),
         ]
     }
-
-    private func loadBrickLayout() -> [(BrickData, BrickColor)] {
-        do {
-            let domainBricks = try layoutLoader.load(named: layoutFileName)
-            return domainBricks.map { brick in
-                let brickData = BrickData(
-                    id: UUID().uuidString,
-                    position: brick.position,
-                    color: brick.color.toNSColor()
-                )
-                return (brickData, brick.color)
-            }
-        } catch {
-            os_log(.error, "Failed to load brick layout '%{public}@': %{public}@. Using empty layout as fallback.", layoutFileName, error.localizedDescription)
-            return []
-        }
-    }
 }
-
