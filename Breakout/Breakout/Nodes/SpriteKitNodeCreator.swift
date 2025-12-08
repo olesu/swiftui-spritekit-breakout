@@ -7,23 +7,17 @@ internal struct SpriteKitNodeCreator: NodeCreator {
     private let brickSpecs: [BrickSpec]
     
     internal init(
-        brickLayoutData: [BrickLayoutData]
+        bricks: [Brick]
     ) {
-        self.brickSpecs = brickLayoutData.map { brick in
-            BrickSpec(layoutData: brick)
+        self.brickSpecs = bricks.map { brick in
+            BrickSpec(brick: brick)
         }
     }
 
-    internal func createNodes(
-        onBrickAdded: @escaping (Brick) -> Void
-    ) -> [NodeNames: SKNode] {
-        let layout = ClassicBricksLayout(brickSpecs: brickSpecs)
-
-        layout.createdBricks.forEach(onBrickAdded)
-
+    func createNodes() -> [NodeNames: SKNode] {
         return [
             .paddle: PaddleSprite(position: CGPoint(x: 160, y: 40)),
-            .brickLayout: layout,
+            .brickLayout: ClassicBricksLayout(brickSpecs: brickSpecs),
             .ball: BallSprite(position: CGPoint(x: 160, y: 50)),
             .topWall: WallSprite(
                 position: CGPoint(x: 160, y: 430),

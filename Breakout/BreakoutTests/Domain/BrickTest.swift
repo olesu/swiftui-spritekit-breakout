@@ -15,7 +15,7 @@ struct BrickTest {
         ColorAndValue(color: BrickColor.green, value: 1),
     ])
     func hasValueForColor(_ args: ColorAndValue) {
-        let brick = Brick(id: BrickId(of: "1"), color: args.color)
+        let brick = Brick(id: BrickId(of: "1"), color: args.color, position: .zero)
 
         #expect(brick.value == args.value)
     }

@@ -22,7 +22,8 @@ struct GameViewModelTest {
             screenNavigationService: navService,
             gameResultService: resultService,
             nodeCreator: FakeNodeCreator(),
-            collisionRouter: DefaultCollisionRouter(brickIdentifier: NodeNameBrickIdentifier())
+            collisionRouter: DefaultCollisionRouter(brickIdentifier: NodeNameBrickIdentifier()),
+            bricks: []
         )
     }
 
@@ -82,7 +83,7 @@ struct GameViewModelTest {
         repository.save(
             GameState.initial
                 .with(status: .playing)
-                .with(bricks: [id: Brick(id: id, color: .red)])
+                .with(bricks: [id: Brick(id: id, color: .red, position: .zero)])
         )
 
         viewModel.handleGameEvent(.brickHit(brickID: id))
@@ -98,7 +99,7 @@ struct GameViewModelTest {
         repository.save(
             GameState.initial
                 .with(status: .playing)
-                .with(bricks: [id: Brick(id: id, color: .red)])
+                .with(bricks: [id: Brick(id: id, color: .red, position: .zero)])
         )
 
         viewModel.handleGameEvent(.brickHit(brickID: id))

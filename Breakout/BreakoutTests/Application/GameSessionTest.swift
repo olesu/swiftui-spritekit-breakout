@@ -31,7 +31,7 @@ struct GameSessionTest {
     @Test
     func applyingAnEventUpdatesAndPersistsState() {
         let brickId = BrickId(of: "1")
-        let brick = Brick(id: brickId, color: .red)
+        let brick = Brick(id: brickId, color: .red, position: .zero)
 
         repository.save(
             GameState.initial
@@ -61,7 +61,7 @@ struct GameSessionTest {
         let session = GameSession(repository: repository, reducer: GameReducer())
 
         let brickId = BrickId(of: "1")
-        let bricks: [BrickId: Brick] = [brickId: Brick(id: brickId, color: .red)]
+        let bricks: [BrickId: Brick] = [brickId: Brick(id: brickId, color: .red, position: .zero)]
 
         session.reset(bricks: bricks)
 

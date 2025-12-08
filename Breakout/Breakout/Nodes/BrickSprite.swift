@@ -112,13 +112,13 @@ struct BrickSpec {
         self.color = color
     }
     
-    init(layoutData: BrickLayoutData) {
+    init(brick: Brick) {
         data = BrickData(
-            id: UUID().uuidString,
-            position: layoutData.position,
-            color: layoutData.color.toNSColor()
+            id: brick.id.value,
+            position: CGPoint(x: brick.position.x, y: brick.position.y),
+            color: brick.color.toNSColor()
         )
-        color = layoutData.color
+        color = brick.color
     }
 }
 
@@ -161,6 +161,7 @@ final class ClassicBricksLayout: SKNode {
         Brick(
             id: BrickId(of: brickSpec.data.id),
             color: brickSpec.color,
+            position: Point(x: brickSpec.data.position.x, y: brickSpec.data.position.y)
         )
     }
 }

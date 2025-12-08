@@ -106,14 +106,13 @@ extension CompositionRoot {
             reducer: reducer
         )
 
-        let nodeCreator = SpriteKitNodeCreator(
-            brickLayoutData: loadBrickLayout(
-                configurationService: configurationService,
-                loadBrickLayoutService: LoadBrickLayoutService(
-                    adapter: JsonBrickLayoutAdapter()
-                )
-            )
+        let bricks = BrickFactory.makeBricks(from: loadBrickLayout(
+            configurationService: configurationService,
+            loadBrickLayoutService: LoadBrickLayoutService(
+                adapter: JsonBrickLayoutAdapter()
+            ))
         )
+        let nodeCreator = SpriteKitNodeCreator(bricks: bricks)
 
         let collisionRouter = DefaultCollisionRouter(
             brickIdentifier: NodeNameBrickIdentifier()
@@ -125,7 +124,8 @@ extension CompositionRoot {
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService,
             nodeCreator: nodeCreator,
-            collisionRouter: collisionRouter
+            collisionRouter: collisionRouter,
+            bricks: bricks
         )
 
         return (reducer, viewModel)

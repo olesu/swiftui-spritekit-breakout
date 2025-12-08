@@ -9,10 +9,11 @@ final class GameViewModel {
     private let gameResultService: GameResultService
     private let nodeCreator: NodeCreator
     private let collisionRouter: CollisionRouter
+    private let bricks: [Brick]
 
     // UI configuration (safe as stored properties)
-    internal let sceneSize: CGSize
-    internal let brickArea: CGRect
+    let sceneSize: CGSize
+    let brickArea: CGRect
 
     // UI callbacks to GameScene
     var onBallResetNeeded: (() -> Void)?
@@ -23,7 +24,8 @@ final class GameViewModel {
         screenNavigationService: ScreenNavigationService,
         gameResultService: GameResultService,
         nodeCreator: NodeCreator,
-        collisionRouter: CollisionRouter
+        collisionRouter: CollisionRouter,
+        bricks: [Brick]
     ) {
         self.session = session
         self.screenNavigationService = screenNavigationService
@@ -39,6 +41,7 @@ final class GameViewModel {
         )
         self.nodeCreator = nodeCreator
         self.collisionRouter = collisionRouter
+        self.bricks = bricks
     }
 
     var currentScore: Int = 0
@@ -48,18 +51,14 @@ final class GameViewModel {
     // MARK: - Game Flow
     
     func startNewGame() -> GameScene {
-        var bricks: [BrickId: Brick] = [:]
-        let nodes = nodeCreator.createNodes { brick in
-            bricks[brick.id] = brick
-        }
+        let nodes = nodeCreator.createNodes()
 
-        session.reset(bricks: bricks)
+        session.reset(bricks: Dictionary(uniqueKeysWithValues: bricks.map { ($0.id, $0) }))
         session.startGame()
         updateUIFromDomain()
         checkGameEnd()
 
         return makeScene(with: nodes)
-
     }
 
     internal func handleGameEvent(_ event: GameEvent) {

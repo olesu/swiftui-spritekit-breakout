@@ -17,14 +17,17 @@ struct GameViewModelMother {
             repository: InMemoryGameStateRepository(),
             reducer: GameReducer()
         )
+        
+        let bricks: [Brick] = []
 
         let viewModel = GameViewModel(
             session: gameSession,
             configurationService: configurationService,
             screenNavigationService: navigationService,
             gameResultService: gameResultService,
-            nodeCreator: SpriteKitNodeCreator(brickLayoutData: []),
-            collisionRouter: DefaultCollisionRouter(brickIdentifier: NodeNameBrickIdentifier())
+            nodeCreator: SpriteKitNodeCreator(bricks: bricks),
+            collisionRouter: DefaultCollisionRouter(brickIdentifier: NodeNameBrickIdentifier()),
+            bricks: bricks
         )
 
         return GameViewModelTestContext(

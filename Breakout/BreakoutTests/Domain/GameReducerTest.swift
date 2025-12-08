@@ -43,7 +43,7 @@ struct GameReducerTest {
     // MARK: - Brick Hit
 
     @Test func hittingABrickRemovesItFromTheBoard() {
-        let brick = Brick(id: BrickId(of: "1"), color: .red)
+        let brick = Brick(id: BrickId(of: "1"), color: .red, position: .zero)
         let state = GameState.initial
             .with(status: .playing)
             .with(bricks: [brick.id: brick])
@@ -54,7 +54,7 @@ struct GameReducerTest {
     }
 
     @Test func hittingABrickAddsScoreBasedOnColor_red() {
-        let brick = Brick(id: BrickId(of: "1"), color: .red)
+        let brick = Brick(id: BrickId(of: "1"), color: .red, position: .zero)
         let state = GameState.initial
             .with(status: .playing)
             .with(bricks: [brick.id: brick])
@@ -65,7 +65,7 @@ struct GameReducerTest {
     }
 
     @Test func hittingABrickAddsScoreBasedOnColor_orange() {
-        let brick = Brick(id: BrickId(of: "1"), color: .orange)
+        let brick = Brick(id: BrickId(of: "1"), color: .orange, position: .zero)
         let state = GameState.initial
             .with(status: .playing)
             .with(bricks: [brick.id: brick])
@@ -76,7 +76,7 @@ struct GameReducerTest {
     }
 
     @Test func hittingABrickAddsScoreBasedOnColor_yellow() {
-        let brick = Brick(id: BrickId(of: "1"), color: .yellow)
+        let brick = Brick(id: BrickId(of: "1"), color: .yellow, position: .zero)
         let state = GameState.initial
             .with(status: .playing)
             .with(bricks: [brick.id: brick])
@@ -87,7 +87,7 @@ struct GameReducerTest {
     }
 
     @Test func hittingABrickAddsScoreBasedOnColor_green() {
-        let brick = Brick(id: BrickId(of: "1"), color: .green)
+        let brick = Brick(id: BrickId(of: "1"), color: .green, position: .zero)
         let state = GameState.initial
             .with(status: .playing)
             .with(bricks: [brick.id: brick])
@@ -98,7 +98,7 @@ struct GameReducerTest {
     }
 
     @Test func hittingTheLastBrickEndsTheGameAsWon() {
-        let brick = Brick(id: BrickId(of: "1"), color: .red)
+        let brick = Brick(id: BrickId(of: "1"), color: .red, position: .zero)
         let state = GameState.initial
             .with(status: .playing)
             .with(bricks: [brick.id: brick])
@@ -109,7 +109,7 @@ struct GameReducerTest {
     }
 
     @Test func hittingABrickWhenNotPlayingHasNoEffect() {
-        let brick = Brick(id: BrickId(of: "1"), color: .red)
+        let brick = Brick(id: BrickId(of: "1"), color: .red, position: .zero)
         let state = GameState.initial
             .with(status: .idle)
             .with(bricks: [brick.id: brick])
@@ -120,7 +120,7 @@ struct GameReducerTest {
     }
 
     @Test func hittingANonexistentBrickHasNoEffect() {
-        let brick = Brick(id: BrickId(of: "1"), color: .red)
+        let brick = Brick(id: BrickId(of: "1"), color: .red, position: .zero)
         let nonExistent = BrickId(of: "999")
         let state = GameState.initial
             .with(status: .playing)

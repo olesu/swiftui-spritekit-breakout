@@ -3,6 +3,7 @@ import Testing
 
 @testable import Breakout
 
+@MainActor
 struct GameStateTest {
     @Test func testInitialGameState_hasDefaultValues() {
         let state = GameState.initial
@@ -49,7 +50,7 @@ struct GameStateTest {
 
     @Test func testWithBricks_updatesBricks_keepsOtherFieldsUnchanged() {
         let state = GameState.initial
-        let brick = Brick(id: BrickId(of: "1"), color: .red)
+        let brick = Brick(id: BrickId(of: "1"), color: .red, position: .zero)
         let bricks: [BrickId: Brick] = [brick.id: brick]
         let updated = state.with(bricks: bricks)
 
