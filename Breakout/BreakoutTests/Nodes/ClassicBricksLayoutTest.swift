@@ -7,15 +7,15 @@ struct ClassicBricksLayoutTest {
 
     @Test func acceptsCustomBrickLayout() throws {
         let bricks = [
-            (BrickData(id: UUID().uuidString, position: CGPoint(x: 10, y: 20), color: .red), BrickColor.red)
+            BrickSpec(data: BrickData(id: "brick-001", position: CGPoint(x: 10, y: 20), color: .red), color: .red)
         ]
 
         let layout = ClassicBricksLayout(brickSpecs: bricks)
 
-        #expect(layout.brickLayout.count == 1)
-        #expect(layout.brickLayout[0].0.position == CGPoint(x: 10, y: 20))
-        #expect(layout.brickLayout[0].0.color == .red)
-        #expect(layout.brickLayout[0].1 == BrickColor.red)
+        #expect(layout.brickSpecs.count == 1)
+        #expect(layout.brickSpecs[0].data.position == CGPoint(x: 10, y: 20))
+        #expect(layout.brickSpecs[0].data.color == .red)
+        #expect(layout.brickSpecs[0].color == BrickColor.red)
     }
 
     @Test func brickDataAcceptsPredictableID() throws {
@@ -36,8 +36,8 @@ struct ClassicBricksLayoutTest {
         let id2 = "22222222-2222-2222-2222-222222222222"
 
         let bricks = [
-            (BrickData(id: id1, position: CGPoint(x: 10, y: 20), color: .red), BrickColor.red),
-            (BrickData(id: id2, position: CGPoint(x: 30, y: 40), color: .green), BrickColor.green)
+            BrickSpec(data: BrickData(id: id1, position: CGPoint(x: 0, y: 0), color: .red), color: .red),
+            BrickSpec(data: BrickData(id: id2, position: CGPoint(x: 0, y: 0), color: .green), color: .green)
         ]
 
         let layout = ClassicBricksLayout(brickSpecs: bricks)

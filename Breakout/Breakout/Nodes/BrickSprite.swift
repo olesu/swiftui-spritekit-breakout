@@ -103,11 +103,30 @@ internal final class BrickSprite: SKSpriteNode {
     }
 }
 
-final class ClassicBricksLayout: SKNode {
-    let brickLayout: [(BrickData, BrickColor)]
+struct BrickSpec {
+    let data: BrickData
+    let color: BrickColor
+    
+    init(data: BrickData, color: BrickColor) {
+        self.data = data
+        self.color = color
+    }
+    
+    init(layoutData: BrickLayoutData) {
+        data = BrickData(
+            id: UUID().uuidString,
+            position: layoutData.position,
+            color: layoutData.color.toNSColor()
+        )
+        color = layoutData.color
+    }
+}
 
-    init(brickSpecs: [(BrickData, BrickColor)]) {
-        self.brickLayout = brickSpecs
+final class ClassicBricksLayout: SKNode {
+    let brickSpecs: [BrickSpec]
+
+    init(brickSpecs: [BrickSpec]) {
+        self.brickSpecs = brickSpecs
         super.init()
         setupBricks()
     }
@@ -115,33 +134,33 @@ final class ClassicBricksLayout: SKNode {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     private(set) var createdBricks: [Brick] = []
 
     private func setupBricks() {
-        brickLayout.forEach { (brickData, brickColor) in
-            let sprite = makeBrickSprite(from: brickData)
+        brickSpecs.forEach { brickSpec in
+            let sprite = makeBrickSprite(from: brickSpec)
             addChild(sprite)
-            
-            let domainBrick = makeBrick(from: brickData, color: brickColor)
+
+            let domainBrick = makeBrick(from: brickSpec)
             createdBricks.append(domainBrick)
         }
     }
 
-    private func makeBrickSprite(from brickData: BrickData) -> BrickSprite {
+    private func makeBrickSprite(from brickSpec: BrickSpec) -> BrickSprite {
         BrickSprite(
-            id: brickData.id,
-            position: brickData.position,
-            color: brickData.color
+            id: brickSpec.data.id,
+            position: brickSpec.data.position,
+            color: brickSpec.data.color
         )
     }
 
-    private func makeBrick(from brickData: BrickData, color: BrickColor)
+    private func makeBrick(from brickSpec: BrickSpec)
         -> Brick
     {
         Brick(
-            id: BrickId(of: brickData.id),
-            color: color,
+            id: BrickId(of: brickSpec.data.id),
+            color: brickSpec.color,
         )
     }
 }

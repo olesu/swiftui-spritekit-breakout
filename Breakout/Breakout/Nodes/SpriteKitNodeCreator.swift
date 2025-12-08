@@ -4,18 +4,13 @@ import SpriteKit
 import os.log
 
 internal struct SpriteKitNodeCreator: NodeCreator {
-    private let brickSpecs: [(BrickData, BrickColor)]
+    private let brickSpecs: [BrickSpec]
     
     internal init(
         brickLayoutData: [BrickLayoutData]
     ) {
         self.brickSpecs = brickLayoutData.map { brick in
-            let brickData = BrickData(
-                id: UUID().uuidString,
-                position: brick.position,
-                color: brick.color.toNSColor()
-            )
-            return (brickData, brick.color)
+            BrickSpec(layoutData: brick)
         }
     }
 
