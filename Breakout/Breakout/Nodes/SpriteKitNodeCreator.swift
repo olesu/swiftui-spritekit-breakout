@@ -17,10 +17,14 @@ internal struct SpriteKitNodeCreator: NodeCreator {
 
     internal func createNodes(onBrickAdded: @escaping (Brick) -> Void) -> [NodeNames: SKNode] {
         let brickLayoutData = loadBrickLayout()
+        
+        let layout = ClassicBricksLayout(brickSpecs: brickLayoutData)
+        
+        layout.createdBricks.forEach(onBrickAdded)
 
         return [
             .paddle: PaddleSprite(position: CGPoint(x: 160, y: 40)),
-            .brickLayout: ClassicBricksLayout(bricks: brickLayoutData, onBrickAdded: onBrickAdded),
+            .brickLayout: layout,
             .ball: BallSprite(position: CGPoint(x: 160, y: 50)),
             .topWall: WallSprite(position: CGPoint(x: 160, y: 430), size: CGSize(width: 320, height: 10)),
             .leftWall: WallSprite(position: CGPoint(x: 0, y: 245), size: CGSize(width: 10, height: 470)),

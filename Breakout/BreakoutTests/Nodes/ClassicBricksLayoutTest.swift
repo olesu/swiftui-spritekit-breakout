@@ -10,7 +10,7 @@ struct ClassicBricksLayoutTest {
             (BrickData(id: UUID().uuidString, position: CGPoint(x: 10, y: 20), color: .red), BrickColor.red)
         ]
 
-        let layout = ClassicBricksLayout(bricks: bricks, onBrickAdded: { _ in })
+        let layout = ClassicBricksLayout(brickSpecs: bricks)
 
         #expect(layout.brickLayout.count == 1)
         #expect(layout.brickLayout[0].0.position == CGPoint(x: 10, y: 20))
@@ -40,10 +40,8 @@ struct ClassicBricksLayoutTest {
             (BrickData(id: id2, position: CGPoint(x: 30, y: 40), color: .green), BrickColor.green)
         ]
 
-        var addedBrickIds: [String] = []
-        let _ = ClassicBricksLayout(bricks: bricks, onBrickAdded: { brick in
-            addedBrickIds.append(brick.id.value)
-        })
+        let layout = ClassicBricksLayout(brickSpecs: bricks)
+        let addedBrickIds = layout.createdBricks.map { $0.id.value }
 
         #expect(addedBrickIds.count == 2)
         #expect(addedBrickIds[0] == id1)

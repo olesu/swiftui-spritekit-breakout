@@ -23,7 +23,8 @@ struct GameViewModelMother {
             configurationService: configurationService,
             screenNavigationService: navigationService,
             gameResultService: gameResultService,
-            nodeCreator: SpriteKitNodeCreator(layoutLoader: LoadBrickLayoutService(adapter: JsonBrickLayoutAdapter()))
+            nodeCreator: SpriteKitNodeCreator(layoutLoader: LoadBrickLayoutService(adapter: JsonBrickLayoutAdapter())),
+            collisionRouter: DefaultCollisionRouter(brickIdentifier: NodeNameBrickIdentifier())
         )
 
         return GameViewModelTestContext(

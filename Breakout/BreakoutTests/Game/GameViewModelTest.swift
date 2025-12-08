@@ -21,7 +21,8 @@ struct GameViewModelTest {
             configurationService: configService,
             screenNavigationService: navService,
             gameResultService: resultService,
-            nodeCreator: FakeNodeCreator()
+            nodeCreator: FakeNodeCreator(),
+            collisionRouter: DefaultCollisionRouter(brickIdentifier: NodeNameBrickIdentifier())
         )
     }
 
@@ -29,7 +30,7 @@ struct GameViewModelTest {
 
     @Test
     func reflectsScoreAfterGameStarts() {
-        viewModel.startNewGame() { _ in }
+        let _ = viewModel.startNewGame()
         
         #expect(viewModel.currentScore == 0)
         #expect(viewModel.remainingLives == 3)
@@ -42,18 +43,6 @@ struct GameViewModelTest {
         #expect(context.viewModel.brickArea == CGRect(x: 20, y: 330, width: 280, height: 120))
     }
     
-    @Test
-    func sceneNodesReadyIsTriggeredAfterStartingNewGame() {
-        var receivedNodes: [NodeNames: SKNode]? = nil
-
-        viewModel.startNewGame() { nodes in
-            receivedNodes = nodes
-        }
-
-        #expect(receivedNodes != nil)
-    }
-
-
     // MARK: - Ball Reset Callback
 
     @Test
