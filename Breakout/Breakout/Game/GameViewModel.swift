@@ -47,7 +47,7 @@ final class GameViewModel {
 
     // MARK: - Game Flow
     
-    func startNewGame(onSceneNodesCreated: @escaping ([NodeNames: SKNode]) -> Void) {
+    func startNewGame() -> GameScene {
         var bricks: [BrickId: Brick] = [:]
         let nodes = nodeCreator.createNodes { brick in
             bricks[brick.id] = brick
@@ -58,7 +58,8 @@ final class GameViewModel {
         updateUIFromDomain()
         checkGameEnd()
 
-        onSceneNodesCreated(nodes)
+        return makeScene(with: nodes)
+
     }
 
     internal func handleGameEvent(_ event: GameEvent) {
@@ -109,4 +110,30 @@ final class GameViewModel {
         collisionRouter
     }
     
+}
+
+extension GameViewModel {
+    func makeScene(with nodes: [NodeNames: SKNode]) -> GameScene {
+        let scene = GameScene(
+            size: sceneSize,
+            nodes: nodes,
+            onGameEvent: { [weak self] event in self?.handleGameEvent(event) },
+            collisionRouter: collisionRouter
+            )
+        
+        wireSceneCallbacks(scene)
+        
+        return scene
+    }
+    
+    private func wireSceneCallbacks(_ scene: GameScene) {
+        scene.onBallResetComplete = { [weak self] in
+            self?.acknowledgeBallReset()
+        }
+        onBallResetNeeded = { [weak scene] in
+            scene?.resetBall()
+        }
+    }
+
+
 }

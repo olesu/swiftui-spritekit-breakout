@@ -13,7 +13,9 @@ struct GameView: View {
                 if let scene = scene {
                     SpriteView(
                         scene: scene,
-                        debugOptions: [/*.showsPhysics,*/ .showsFPS, .showsNodeCount]
+                        debugOptions: [ /*.showsPhysics,*/
+                            .showsFPS, .showsNodeCount,
+                        ]
                     )
                     .focusable()
                     .focused($isFocused)
@@ -27,36 +29,36 @@ struct GameView: View {
                             }
                     )
                     #if os(macOS)
-                    .onKeyPress(.leftArrow) {
-                        scene.pressLeft()
-                        return .handled
-                    }
-                    .onKeyPress(.rightArrow) {
-                        scene.pressRight()
-                        return .handled
-                    }
-                    .onKeyPress(keys: [.leftArrow], phases: .up) { _ in
-                        scene.releaseLeft()
-                        return .handled
-                    }
-                    .onKeyPress(keys: [.rightArrow], phases: .up) { _ in
-                        scene.releaseRight()
-                        return .handled
-                    }
-                    .onKeyPress(.space) {
-                        scene.launchBall()
-                        return .handled
-                    }
+                        .onKeyPress(.leftArrow) {
+                            scene.pressLeft()
+                            return .handled
+                        }
+                        .onKeyPress(.rightArrow) {
+                            scene.pressRight()
+                            return .handled
+                        }
+                        .onKeyPress(keys: [.leftArrow], phases: .up) { _ in
+                            scene.releaseLeft()
+                            return .handled
+                        }
+                        .onKeyPress(keys: [.rightArrow], phases: .up) { _ in
+                            scene.releaseRight()
+                            return .handled
+                        }
+                        .onKeyPress(.space) {
+                            scene.launchBall()
+                            return .handled
+                        }
                     #endif
                 }
             }
             .onAppear {
-                    setupGame()
+                scene = viewModel.startNewGame()
             }
             .task {
                 isFocused = true
             }
-            
+
             VStack {
                 HStack {
                     ScoreView(score: viewModel.currentScore)
@@ -66,44 +68,6 @@ struct GameView: View {
                 .padding()
                 Spacer()
             }
-        }
-    }
-
-}
-
-// MARK: - Game Setup
-extension GameView {
-    private func setupGame() {
-        viewModel.startNewGame() { nodes in
-            self.scene = createScene(with: nodes)
-        }
-    }
-    
-    private func createScene(with nodes: [NodeNames: SKNode]) -> GameScene {
-        let viewModel = self.viewModel
-        let gameScene = GameScene(
-            size: viewModel.sceneSize,
-            nodes: nodes,
-            onGameEvent: { [weak viewModel] event in
-                viewModel?.handleGameEvent(event)
-            },
-            collisionRouter: viewModel.todoRemoveMeWhenSceneCreationIsInViewModelCollisionRouter()
-        )
-
-        wireCallbacks(from: viewModel, to: gameScene)
-
-        return gameScene
-    }
-
-    private func wireCallbacks(
-        from viewModel: GameViewModel,
-        to scene: GameScene
-    ) {
-        viewModel.onBallResetNeeded = { [weak scene] in
-            scene?.resetBall()
-        }
-        scene.onBallResetComplete = { [weak viewModel] in
-            viewModel?.acknowledgeBallReset()
         }
     }
 
