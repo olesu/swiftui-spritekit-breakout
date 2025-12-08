@@ -106,18 +106,7 @@ internal final class BrickSprite: SKSpriteNode {
 final class ClassicBricksLayout: SKNode {
     let brickLayout: [(BrickData, BrickColor)]
 
-    init(
-        brickSpecs: [(BrickData, BrickColor)],
-        onBrickAdded: (Brick) -> Void
-    ) {
-        self.brickLayout = brickSpecs
-        super.init()
-        setupBricks(onBrickAdded: onBrickAdded)
-    }
-
-    init(
-        brickSpecs: [(BrickData, BrickColor)]
-    ) {
+    init(brickSpecs: [(BrickData, BrickColor)]) {
         self.brickLayout = brickSpecs
         super.init()
         setupBricks()
@@ -128,17 +117,6 @@ final class ClassicBricksLayout: SKNode {
     }
     
     private(set) var createdBricks: [Brick] = []
-
-    private func setupBricks(onBrickAdded: (Brick) -> Void) {
-        brickLayout.forEach { (brickData, brickColor) in
-            let sprite = makeBrickSprite(from: brickData)
-            addChild(sprite)
-            
-            let domainBrick = makeBrick(from: brickData, color: brickColor)
-            createdBricks.append(domainBrick)
-            onBrickAdded(domainBrick)
-        }
-    }
 
     private func setupBricks() {
         brickLayout.forEach { (brickData, brickColor) in
@@ -163,7 +141,7 @@ final class ClassicBricksLayout: SKNode {
     {
         Brick(
             id: BrickId(of: brickData.id),
-            color: BrickColor(nsColor: brickData.color) ?? .green,
+            color: color,
         )
     }
 }

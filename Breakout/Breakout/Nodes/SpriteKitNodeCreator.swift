@@ -7,9 +7,16 @@ internal struct SpriteKitNodeCreator: NodeCreator {
     private let brickSpecs: [(BrickData, BrickColor)]
     
     internal init(
-        brickSpecs: [(BrickData, BrickColor)]
+        brickLayoutData: [BrickLayoutData]
     ) {
-        self.brickSpecs = brickSpecs
+        self.brickSpecs = brickLayoutData.map { brick in
+            let brickData = BrickData(
+                id: UUID().uuidString,
+                position: brick.position,
+                color: brick.color.toNSColor()
+            )
+            return (brickData, brick.color)
+        }
     }
 
     internal func createNodes(

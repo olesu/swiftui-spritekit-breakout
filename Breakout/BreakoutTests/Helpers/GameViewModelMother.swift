@@ -23,7 +23,7 @@ struct GameViewModelMother {
             configurationService: configurationService,
             screenNavigationService: navigationService,
             gameResultService: gameResultService,
-            nodeCreator: SpriteKitNodeCreator(brickSpecs: []),
+            nodeCreator: SpriteKitNodeCreator(brickLayoutData: []),
             collisionRouter: DefaultCollisionRouter(brickIdentifier: NodeNameBrickIdentifier())
         )
 

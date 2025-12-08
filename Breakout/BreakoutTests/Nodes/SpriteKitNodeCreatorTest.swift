@@ -6,13 +6,11 @@ import Testing
 @MainActor
 struct SpriteKitNodeCreatorTest {
     @Test func createsNodesFromBrickSpec() throws {
-        let creator = SpriteKitNodeCreator(brickSpecs: [
-            (BrickData(
-                id: "brick-001",
+        let creator = SpriteKitNodeCreator(brickLayoutData: [
+            BrickLayoutData(
                 position: CGPoint(x: 0, y: 0),
                 color: .red
-            ),
-            BrickColor.red)
+            )
         ])
 
         var bricksAdded: [(String, BrickColor)] = []
@@ -21,7 +19,7 @@ struct SpriteKitNodeCreatorTest {
         }
 
         #expect(bricksAdded.count == 1)
-        #expect(bricksAdded[0].0 == "brick-001")
+        #expect(bricksAdded[0].0 != "")
         #expect(bricksAdded[0].1 == .red)
     }
 }

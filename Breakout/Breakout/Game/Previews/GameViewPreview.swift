@@ -21,7 +21,7 @@ import SwiftUI
             configurationService: configurationService,
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService,
-            nodeCreator: SpriteKitNodeCreator(brickSpecs: []),
+            nodeCreator: SpriteKitNodeCreator(brickLayoutData: []),
             collisionRouter: DefaultCollisionRouter(
                 brickIdentifier: NodeNameBrickIdentifier()
             )

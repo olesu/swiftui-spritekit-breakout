@@ -107,7 +107,7 @@ extension CompositionRoot {
         )
 
         let nodeCreator = SpriteKitNodeCreator(
-            brickSpecs: loadBrickLayout(
+            brickLayoutData: loadBrickLayout(
                 configurationService: configurationService,
                 loadBrickLayoutService: LoadBrickLayoutService(
                     adapter: JsonBrickLayoutAdapter()
@@ -134,21 +134,14 @@ extension CompositionRoot {
     static private func loadBrickLayout(
         configurationService: GameConfigurationService,
         loadBrickLayoutService: LoadBrickLayoutService
-    ) -> [(BrickData, BrickColor)] {
+    ) -> [BrickLayoutData] {
         let cfg = configurationService.getGameConfiguration()
 
         do {
             let domainBricks = try loadBrickLayoutService.load(
                 named: cfg.layoutFileName
             )
-            return domainBricks.map { brick in
-                let brickData = BrickData(
-                    id: UUID().uuidString,
-                    position: brick.position,
-                    color: brick.color.toNSColor()
-                )
-                return (brickData, brick.color)
-            }
+            return domainBricks
         } catch {
             Logger().error(
                 "Failed to load brick layout \(cfg.layoutFileName) Using empty layout as fallback."
