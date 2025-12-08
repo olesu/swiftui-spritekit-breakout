@@ -39,16 +39,7 @@ import SwiftUI
 
     private class PreviewGameConfigurationService: GameConfigurationService {
         func getGameConfiguration() -> GameConfiguration {
-            GameConfiguration(
-                sceneWidth: 320,
-                sceneHeight: 480,
-                brickArea: BrickArea(
-                    x: 20,
-                    y: 330,
-                    width: 280,
-                    height: 120
-                )
-            )
+            GameConfiguration.defaultValue()
         }
 
         func getGameScale() -> CGFloat {

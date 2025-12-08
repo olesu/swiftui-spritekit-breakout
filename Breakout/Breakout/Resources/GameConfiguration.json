@@ -1,10 +1,11 @@
 {
-  "sceneWidth": 320,
-  "sceneHeight": 480,
-  "brickArea": {
-    "x": 20,
-    "y": 330,
-    "width": 280,
-    "height": 120
-  }
+    "layoutFileName": "001-classic-breakout",
+    "sceneWidth": 320,
+    "sceneHeight": 480,
+    "brickArea": {
+        "x": 20,
+        "y": 330,
+        "width": 280,
+        "height": 120
+    }
 }
