@@ -29,7 +29,7 @@ struct GameViewModelTest {
 
     @Test
     func reflectsScoreAfterGameStarts() {
-        viewModel.startNewGame()
+        viewModel.startNewGame() { _ in }
         
         #expect(viewModel.currentScore == 0)
         #expect(viewModel.remainingLives == 3)
@@ -45,11 +45,10 @@ struct GameViewModelTest {
     @Test
     func sceneNodesReadyIsTriggeredAfterStartingNewGame() {
         var receivedNodes: [NodeNames: SKNode]? = nil
-        viewModel.onSceneNodesCreated = { nodes in
+
+        viewModel.startNewGame() { nodes in
             receivedNodes = nodes
         }
-
-        viewModel.startNewGame()
 
         #expect(receivedNodes != nil)
     }

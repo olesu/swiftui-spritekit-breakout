@@ -54,7 +54,6 @@ struct GameView: View {
                     setupGame()
             }
             .task {
-                try? await Task.sleep(for: .milliseconds(100))
                 isFocused = true
             }
             
@@ -70,15 +69,16 @@ struct GameView: View {
         }
     }
 
+}
+
+// MARK: - Game Setup
+extension GameView {
     private func setupGame() {
-        viewModel.onSceneNodesCreated = onSceneNodesCreated
-        viewModel.startNewGame()
+        viewModel.startNewGame() { nodes in
+            self.scene = createScene(with: nodes)
+        }
     }
     
-    private func onSceneNodesCreated(_ nodes: [NodeNames: SKNode]) {
-        scene = createScene(with: nodes)
-    }
-
     private func createScene(with nodes: [NodeNames: SKNode]) -> GameScene {
         let viewModel = self.viewModel
         let gameScene = GameScene(
@@ -105,5 +105,5 @@ struct GameView: View {
             viewModel?.acknowledgeBallReset()
         }
     }
-}
 
+}

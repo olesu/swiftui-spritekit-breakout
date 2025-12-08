@@ -15,7 +15,6 @@ final class GameViewModel {
 
     // UI callbacks to GameScene
     var onBallResetNeeded: (() -> Void)?
-    var onSceneNodesCreated: (([NodeNames: SKNode]) -> Void)?
 
     init(
         session: GameSession,
@@ -45,7 +44,7 @@ final class GameViewModel {
 
     // MARK: - Game Flow
     
-    func startNewGame() {
+    func startNewGame(onSceneNodesCreated: @escaping ([NodeNames: SKNode]) -> Void) {
         var bricks: [BrickId: Brick] = [:]
         let nodes = nodeCreator.createNodes { brick in
             bricks[brick.id] = brick
@@ -56,7 +55,7 @@ final class GameViewModel {
         updateUIFromDomain()
         checkGameEnd()
 
-        onSceneNodesCreated?(nodes)
+        onSceneNodesCreated(nodes)
     }
 
     internal func handleGameEvent(_ event: GameEvent) {

@@ -18,7 +18,6 @@ struct IdleView: View {
             .focusable()
             .focused($isFocused)
             .task {
-                try? await Task.sleep(for: .milliseconds(100))
                 isFocused = true
             }
             #if os(macOS)
