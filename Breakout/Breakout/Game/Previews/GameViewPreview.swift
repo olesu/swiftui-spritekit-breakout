@@ -23,6 +23,9 @@ import SwiftUI
             gameResultService: gameResultService,
             nodeCreator: SpriteKitNodeCreator(
                 layoutLoader: LoadBrickLayoutService(adapter: JsonBrickLayoutAdapter())
+            ),
+            collisionRouter: DefaultCollisionRouter(
+                brickIdentifier: NodeNameBrickIdentifier()
             )
         )
 

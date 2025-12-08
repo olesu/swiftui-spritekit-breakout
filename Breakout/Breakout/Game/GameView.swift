@@ -87,9 +87,7 @@ extension GameView {
             onGameEvent: { [weak viewModel] event in
                 viewModel?.handleGameEvent(event)
             },
-            collisionRouter: DefaultCollisionRouter(
-                brickIdentifier: NodeNameBrickIdentifier()
-            ) // TODO: Inject (via context in game view model, or separate)?!?
+            collisionRouter: viewModel.todoRemoveMeWhenSceneCreationIsInViewModelCollisionRouter()
         )
 
         wireCallbacks(from: viewModel, to: gameScene)

@@ -1,8 +1,40 @@
 import SwiftUI
 
 enum CompositionRoot {
+
     static func makeRootDependencies() -> RootDependencies {
-        // TODO: Extract to NavigationDependencies
+        let navigation = makeNavigationDependencies()
+        let configuration = makeConfigurationDependencies()
+        let gameResult = makeGameResultDependencies(
+            screenNavigationService: navigation.screenNavigationService
+        )
+        let game = makeGameDependencies(
+            configurationService: configuration.gameConfigurationService,
+            gameResultService: gameResult.gameResultService,
+            screenNavigationService: navigation.screenNavigationService
+        )
+
+        return RootDependencies(
+            navigationCoordinator: navigation.navigationCoordinator,
+            applicationConfiguration: configuration.applicationConfiguration,
+            gameConfigurationService: configuration.gameConfigurationService,
+            screenNavigationService: navigation.screenNavigationService,
+            gameStateStorage: gameResult.gameStateStorage,
+            gameResultService: gameResult.gameResultService,
+            gameService: game.reducer,
+            idleViewModel: navigation.idleViewModel,
+            gameViewModel: game.viewModel,
+            gameEndViewModel: gameResult.gameEndViewModel
+        )
+    }
+}
+
+extension CompositionRoot {
+    fileprivate static func makeNavigationDependencies() -> (
+        navigationCoordinator: NavigationCoordinator,
+        screenNavigationService: DefaultScreenNavigationService,
+        idleViewModel: IdleViewModel
+    ) {
         let navigationState = NavigationState()
         let navigationCoordinator = NavigationCoordinator(
             navigationState: navigationState
@@ -10,56 +42,88 @@ enum CompositionRoot {
         let screenNavigationService = DefaultScreenNavigationService(
             navigationState: navigationState
         )
-        let idleViewModel = IdleViewModel(screenNavigationService: screenNavigationService)
+        let idleViewModel = IdleViewModel(
+            screenNavigationService: screenNavigationService
+        )
 
-        // TODO: Extract to GameConfigurationDependencies
+        return (navigationCoordinator, screenNavigationService, idleViewModel)
+    }
+}
+
+extension CompositionRoot {
+    fileprivate static func makeConfigurationDependencies() -> (
+        applicationConfiguration: ApplicationConfiguration,
+        gameConfigurationService: DefaultGameConfigurationService
+    ) {
         let gameConfigurationService = DefaultGameConfigurationService(
             gameConfigurationAdapter: JsonGameConfigurationAdapter()
         )
+
         let applicationConfiguration = ApplicationConfiguration(
             gameConfigurationService: gameConfigurationService
         )
-        
-        // TODO: Extract to GameResultDependencies
+
+        return (applicationConfiguration, gameConfigurationService)
+    }
+}
+
+extension CompositionRoot {
+    fileprivate static func makeGameResultDependencies(
+        screenNavigationService: DefaultScreenNavigationService
+    ) -> (
+        gameStateStorage: InMemoryStorage,
+        gameResultService: RealGameResultService,
+        gameEndViewModel: GameEndViewModel
+    ) {
         let gameStateStorage = InMemoryStorage()
-        let gameResultAdapter = InMemoryGameResultAdapter(
-            storage: gameStateStorage
-        )
-        let gameResultService = RealGameResultService(
-            adapter: gameResultAdapter
-        )
-        
+        let resultAdapter = InMemoryGameResultAdapter(storage: gameStateStorage)
+        let gameResultService = RealGameResultService(adapter: resultAdapter)
+
         let gameEndViewModel = GameEndViewModel(
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService
         )
-        
-        let gameStateRepository = InMemoryGameStateRepository()
-        
-        let gameReducer = GameReducer()
-        let gameSession = GameSession(repository: gameStateRepository, reducer: gameReducer)
-        let gameViewModel = GameViewModel(
-            session: gameSession,
-            configurationService: gameConfigurationService,
-            screenNavigationService: screenNavigationService,
-            gameResultService: gameResultService,
-            nodeCreator: SpriteKitNodeCreator(
-                layoutLoader: LoadBrickLayoutService(adapter: JsonBrickLayoutAdapter())
+
+        return (gameStateStorage, gameResultService, gameEndViewModel)
+    }
+}
+
+extension CompositionRoot {
+    fileprivate static func makeGameDependencies(
+        configurationService: DefaultGameConfigurationService,
+        gameResultService: RealGameResultService,
+        screenNavigationService: DefaultScreenNavigationService
+    ) -> (
+        reducer: GameReducer,
+        viewModel: GameViewModel
+    ) {
+        let repository = InMemoryGameStateRepository()
+        let reducer = GameReducer()
+
+        let session = GameSession(
+            repository: repository,
+            reducer: reducer
+        )
+
+        let nodeCreator = SpriteKitNodeCreator(
+            layoutLoader: LoadBrickLayoutService(
+                adapter: JsonBrickLayoutAdapter()
             )
         )
 
-
-        return RootDependencies(
-            navigationCoordinator: navigationCoordinator,
-            applicationConfiguration: applicationConfiguration,
-            gameConfigurationService: gameConfigurationService,
-            screenNavigationService: screenNavigationService,
-            gameStateStorage: gameStateStorage,
-            gameResultService: gameResultService,
-            gameService: gameReducer,
-            idleViewModel: idleViewModel,
-            gameViewModel: gameViewModel,
-            gameEndViewModel: gameEndViewModel
+        let collisionRouter = DefaultCollisionRouter(
+            brickIdentifier: NodeNameBrickIdentifier()
         )
+
+        let viewModel = GameViewModel(
+            session: session,
+            configurationService: configurationService,
+            screenNavigationService: screenNavigationService,
+            gameResultService: gameResultService,
+            nodeCreator: nodeCreator,
+            collisionRouter: collisionRouter
+        )
+
+        return (reducer, viewModel)
     }
 }

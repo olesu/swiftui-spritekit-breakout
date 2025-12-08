@@ -8,6 +8,7 @@ final class GameViewModel {
     private let screenNavigationService: ScreenNavigationService
     private let gameResultService: GameResultService
     private let nodeCreator: NodeCreator
+    private let collisionRouter: CollisionRouter
 
     // UI configuration (safe as stored properties)
     internal let sceneSize: CGSize
@@ -21,7 +22,8 @@ final class GameViewModel {
         configurationService: GameConfigurationService,
         screenNavigationService: ScreenNavigationService,
         gameResultService: GameResultService,
-        nodeCreator: NodeCreator
+        nodeCreator: NodeCreator,
+        collisionRouter: CollisionRouter
     ) {
         self.session = session
         self.screenNavigationService = screenNavigationService
@@ -36,6 +38,7 @@ final class GameViewModel {
             height: config.brickArea.height
         )
         self.nodeCreator = nodeCreator
+        self.collisionRouter = collisionRouter
     }
 
     var currentScore: Int = 0
@@ -100,6 +103,10 @@ final class GameViewModel {
         default:
             break
         }
+    }
+    
+    func todoRemoveMeWhenSceneCreationIsInViewModelCollisionRouter() -> CollisionRouter {
+        collisionRouter
     }
     
 }
