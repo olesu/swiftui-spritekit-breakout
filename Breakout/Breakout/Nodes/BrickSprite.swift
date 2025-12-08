@@ -107,10 +107,10 @@ internal final class ClassicBricksLayout: SKNode {
     internal let brickLayout: [(BrickData, BrickColor)]
 
     internal init(
-        bricks: [(BrickData, BrickColor)],
+        brickSpecs: [(BrickData, BrickColor)],
         onBrickAdded: (Brick) -> Void
     ) {
-        self.brickLayout = bricks
+        self.brickLayout = brickSpecs
         super.init()
         setupBricks(onBrickAdded: onBrickAdded)
     }
@@ -118,23 +118,34 @@ internal final class ClassicBricksLayout: SKNode {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    private(set) var createdBricks: [Brick] = []
 
     private func setupBricks(onBrickAdded: (Brick) -> Void) {
         brickLayout.forEach { (brickData, brickColor) in
-            let brick = BrickSprite(
-                id: brickData.id,
-                position: brickData.position,
-                color: brickData.color
-            )
-            addChild(brick)
-            onBrickAdded(
-                Brick(
-                    id: BrickId(of: brickData.id),
-                    color: BrickColor(nsColor: brickData.color) ?? .green,
-                )
-            )
+            let sprite = makeBrickSprite(from: brickData)
+            addChild(sprite)
+            
+            let domainBrick = makeBrick(from: brickData, color: brickColor)
+            createdBricks.append(domainBrick)
+            onBrickAdded(domainBrick)
         }
     }
 
-}
+    private func makeBrickSprite(from brickData: BrickData) -> BrickSprite {
+        BrickSprite(
+            id: brickData.id,
+            position: brickData.position,
+            color: brickData.color
+        )
+    }
 
+    private func makeBrick(from brickData: BrickData, color: BrickColor)
+        -> Brick
+    {
+        Brick(
+            id: BrickId(of: brickData.id),
+            color: BrickColor(nsColor: brickData.color) ?? .green,
+        )
+    }
+}
