@@ -60,13 +60,7 @@ extension GameViewModel {
         let nodes = try nodeCreator.createNodes()
         let bricks = try brickService.load(named: layoutFileName)
 
-        // TODO: Send bricks into session.startGame instead of reset???
-        // TODO: Let startGame handle resetting
-        // TODO: If dictionary is needed in session, let session create it
-        session.reset(
-            bricks: Dictionary(uniqueKeysWithValues: bricks.map { ($0.id, $0) })
-        )
-        session.startGame()
+        session.startGame(bricks: bricks)
 
         currentScore = session.state.score
         remainingLives = session.state.lives

@@ -4,10 +4,10 @@ import Testing
 
 @MainActor
 struct GameSessionTest {
-    let repository = InMemoryGameStateRepository()
 
     @Test
     func sessionReturnsPersistedStateOnInitialization() {
+        let repository = InMemoryGameStateRepository()
         let initial = GameState.initial.with(score: 42)
         repository.save(initial)
 
@@ -18,18 +18,33 @@ struct GameSessionTest {
     
     @Test
     func startingAGameUpdatesAndPersistsState() {
-        repository.save(GameState.initial)
+        let repository = InMemoryGameStateRepository()
+        let oldState = GameState.initial
+            .with(score: 100)
+            .with(lives: 0)
+            .with(status: .gameOver)
+
+        repository.save(oldState)
 
         let session = GameSession(repository: repository, reducer: GameReducer())
 
-        session.startGame()
+        let brickId = BrickId(of: "1")
+        let brick = Brick(id: brickId, color: .red, position: .zero)
+        let bricks = [brick]
 
-        let savedState = repository.load()
-        #expect(savedState.status == .playing)
+        session.startGame(bricks: bricks)
+
+        let saved = repository.load()
+
+        #expect(saved.score == 0)
+        #expect(saved.lives == 3)
+        #expect(saved.status == .playing)
+        #expect(saved.bricks[brickId] == brick)
     }
     
     @Test
     func applyingAnEventUpdatesAndPersistsState() {
+        let repository = InMemoryGameStateRepository()
         let brickId = BrickId(of: "1")
         let brick = Brick(id: brickId, color: .red, position: .zero)
 
@@ -50,31 +65,8 @@ struct GameSessionTest {
     }
     
     @Test
-    func resettingTheGameReplacesStateWithFreshInitialState() {
-        let oldState = GameState.initial
-            .with(score: 100)
-            .with(lives: 0)
-            .with(status: .gameOver)
-
-        repository.save(oldState)
-
-        let session = GameSession(repository: repository, reducer: GameReducer())
-
-        let brickId = BrickId(of: "1")
-        let bricks: [BrickId: Brick] = [brickId: Brick(id: brickId, color: .red, position: .zero)]
-
-        session.reset(bricks: bricks)
-
-        let saved = repository.load()
-
-        #expect(saved.score == 0)
-        #expect(saved.lives == 3)
-        #expect(saved.status == .idle)
-        #expect(saved.bricks == bricks)
-    }
-    
-    @Test
     func acknowledgingBallResetClearsFlagAndPersistsState() {
+        let repository = InMemoryGameStateRepository()
         repository.save(
             GameState.initial
                 .with(ballResetNeeded: true)

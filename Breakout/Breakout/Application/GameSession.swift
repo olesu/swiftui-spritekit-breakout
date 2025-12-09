@@ -6,7 +6,8 @@ struct GameSession {
         repository.load()
     }
     
-    func startGame() {
+    func startGame(bricks: [Brick]) {
+        reset(bricks: bricks)
         repository.save(reducer.start(state))
     }
     
@@ -14,7 +15,9 @@ struct GameSession {
         repository.save(reducer.reduce(state, event: event))
     }
     
-    func reset(bricks: [BrickId: Brick]) {
+    private func reset(bricks: [Brick]) {
+        let bricks = Dictionary(uniqueKeysWithValues: bricks.map { ($0.id, $0) })
+        
         repository.save(.initial.with(bricks: bricks))
     }
     
