@@ -1,14 +1,14 @@
 import Foundation
 import SpriteKit
 
-internal final class BrickNodeManager {
+final class BrickNodeManager: NodeManager {
     private let brickLayout: SKNode
 
-    internal init(brickLayout: SKNode) {
+    init(brickLayout: SKNode) {
         self.brickLayout = brickLayout
     }
 
-    internal func remove(brickId: BrickId) {
+    func remove(brickId: BrickId) {
         let idString = brickId.value
         brickLayout.children.first { $0.name == idString }?.removeFromParent()
     }

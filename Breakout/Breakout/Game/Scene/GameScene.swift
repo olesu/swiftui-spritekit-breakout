@@ -8,7 +8,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let onBallResetComplete: (() -> Void)
     private let collisionRouter: CollisionRouter
 
-    private var brickNodeManager: BrickNodeManager?
+    private var nodeManager: NodeManager?
 
 
     private let ballController: BallController
@@ -69,7 +69,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
 
     private func createBrickManagerIfPossible() {
         if let brickLayout = gameNodes[.brickLayout] {
-            brickNodeManager = BrickNodeManager(brickLayout: brickLayout)
+            nodeManager = BrickNodeManager(brickLayout: brickLayout)
         }
     }
 
@@ -126,7 +126,7 @@ extension GameScene {
     
     private func handleBallHitBrick(_ brickId: BrickId) {
         onGameEvent(.brickHit(brickID: brickId))
-        brickNodeManager?.remove(brickId: brickId)
+        nodeManager?.remove(brickId: brickId)
     }
     
     private func handleBallHitGutter() {
