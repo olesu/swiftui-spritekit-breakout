@@ -18,4 +18,10 @@ struct BrickNodeManagerTest {
 
         #expect(brick.parent == nil)
     }
+    
+    @Test func containsAllNodes() {
+        let manager = BrickNodeManager(nodes: [.paddle: SKNode(), .brickLayout: SKNode()])
+        
+        #expect(manager.allNodes.count == 2)
+    }
 }

@@ -53,7 +53,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     private func addGameNodes() {
-        gameNodes.values.forEach(addChild)
+        nodeManager?.allNodes.forEach(addChild)
     }
 
     private func cacheImportantNodes() {

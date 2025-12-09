@@ -4,9 +4,12 @@ import SpriteKit
 final class BrickNodeManager: NodeManager {
     private let brickLayout: SKNode
 
+    let allNodes: [SKNode]
+
     init(nodes: [NodeNames: SKNode]) {
         guard let brickLayout = nodes[.brickLayout] else { fatalError("No brick layout node found") }
         
+        self.allNodes = nodes.map { $1 }
         self.brickLayout = brickLayout
     }
 
