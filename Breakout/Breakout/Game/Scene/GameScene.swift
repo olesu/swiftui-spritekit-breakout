@@ -3,8 +3,6 @@ import Foundation
 import SpriteKit
 
 internal final class GameScene: SKScene, SKPhysicsContactDelegate {
-    private let paddleSpeed = 450.0
-
     private let gameNodes: [NodeNames: SKNode]
     private let onGameEvent: (GameEvent) -> Void
     private let collisionRouter: CollisionRouter
@@ -14,8 +12,8 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     var onBallResetComplete: (() -> Void)?
 
     private let ballController: BallController
+    private let paddleMotion: PaddleMotionController
 
-    private var paddleMotion: PaddleMotionController?
     private var paddleInput: PaddleInputController?
     private let paddleBounceApplier = PaddleBounceApplier()  // TODO: Inject
 
@@ -28,12 +26,14 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         size: CGSize,
         nodes: [NodeNames: SKNode],
         onGameEvent: @escaping (GameEvent) -> Void,
-        collisionRouter: CollisionRouter
+        collisionRouter: CollisionRouter,
+        paddleMotion: PaddleMotionController
     ) {
         self.gameNodes = nodes
         self.onGameEvent = onGameEvent
         self.ballController = BallController()  // TODO: Inject
         self.collisionRouter = collisionRouter
+        self.paddleMotion = paddleMotion
         super.init(size: size)
     }
 
@@ -72,20 +72,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     private func initPaddleMotionAndInput() {
-        guard let paddleNode = paddleNode else { return }
-        let motion = PaddleMotionController(
-            paddle: Paddle(
-                x: paddleNode.position.x,
-                y: paddleNode.position.y,
-                w: paddleNode.size.width,
-                h: paddleNode.size.height
-                ),
-            speed: paddleSpeed,
-            sceneWidth: size.width
-        )
-
-        paddleMotion = motion
-        paddleInput = PaddleInputController(motion: motion)
+        paddleInput = PaddleInputController(motion: paddleMotion)
     }
 
     override internal func update(_ currentTime: TimeInterval) {
@@ -95,12 +82,12 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         }
 
         let dt = currentTime - lastUpdateTime
-        paddleMotion?.update(deltaTime: dt) // TODO: Should probably return next position
+        paddleMotion.update(deltaTime: dt) // TODO: Should probably return next position
 
         if let ball = ballNode,
             let paddle = paddleNode
         {
-            paddle.position.x = CGFloat(paddleMotion?.paddle.x ?? -1) // TODO: Should be obvious! But we do need to mutate the sprite position somewhere
+            paddle.position.x = CGFloat(paddleMotion.paddle.x ?? -1) // TODO: Should be obvious! But we do need to mutate the sprite position somewhere
             ballController.update(ball: ball, paddle: paddle)
         }
         lastUpdateTime = currentTime

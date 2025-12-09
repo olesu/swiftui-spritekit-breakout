@@ -4,6 +4,6 @@ import SpriteKit
 
 struct FakeNodeCreator: NodeCreator {
     func createNodes() -> [Breakout.NodeNames : SKNode] {
-        return [:]
+        return [.paddle: SKSpriteNode()]
     }
 }

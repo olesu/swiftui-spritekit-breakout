@@ -104,16 +104,38 @@ extension GameViewModel {
 
 extension GameViewModel {
     func makeScene(with nodes: [NodeNames: SKNode]) -> GameScene {
+        guard let paddleNode = nodes[.paddle] as? SKSpriteNode else {
+            fatalError("Missing paddle node")
+        }
         let scene = GameScene(
             size: sceneSize,
             nodes: nodes,
             onGameEvent: { [weak self] event in self?.handleGameEvent(event) },
-            collisionRouter: collisionRouter
+            collisionRouter: collisionRouter,
+            paddleMotion: makePaddleMotionController(paddleNode: paddleNode, sceneWidth: sceneSize.width)
             )
         
         wireSceneCallbacks(scene)
         
         return scene
+    }
+    
+    private func makePaddleMotionController(paddleNode: SKSpriteNode, sceneWidth: CGFloat) -> PaddleMotionController {
+        let paddleSpeed = 450.0
+
+        let result = PaddleMotionController(
+            paddle: Paddle(
+                x: paddleNode.position.x,
+                y: paddleNode.position.y,
+                w: paddleNode.size.width,
+                h: paddleNode.size.height
+                ),
+            speed: paddleSpeed,
+            sceneWidth: sceneWidth
+        )
+
+        return result
+
     }
     
     private func wireSceneCallbacks(_ scene: GameScene) {
