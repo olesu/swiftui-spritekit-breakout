@@ -9,5 +9,5 @@ internal protocol NodeCreator {
     /// Creates all SpriteKit nodes required for the game scene.
     /// - Parameter onBrickAdded: Callback invoked for each brick created, passing brick ID and color.
     /// - Returns: A dictionary mapping node names to their corresponding SKNode instances.
-    func createNodes() -> [NodeNames: SKNode]
+    func createNodes() throws -> [NodeNames: SKNode]
 }

@@ -9,11 +9,12 @@ final class GameViewModel {
     private let gameResultService: GameResultService
     private let nodeCreator: NodeCreator
     private let collisionRouter: CollisionRouter
-    private let bricks: [Brick]
+    private let brickService: BrickService
 
     // UI configuration (safe as stored properties)
     let sceneSize: CGSize
     let brickArea: CGRect
+    let layoutFileName: String
 
     // UI callbacks to GameScene
     var onBallResetNeeded: (() -> Void)?
@@ -25,7 +26,7 @@ final class GameViewModel {
         gameResultService: GameResultService,
         nodeCreator: NodeCreator,
         collisionRouter: CollisionRouter,
-        bricks: [Brick]
+        brickService: BrickService
     ) {
         self.session = session
         self.screenNavigationService = screenNavigationService
@@ -39,59 +40,49 @@ final class GameViewModel {
             width: config.brickArea.width,
             height: config.brickArea.height
         )
+        self.layoutFileName = config.layoutFileName
         self.nodeCreator = nodeCreator
         self.collisionRouter = collisionRouter
-        self.bricks = bricks
+        self.brickService = brickService
     }
 
     var currentScore: Int = 0
     var remainingLives: Int = 0
     var gameStatus: GameStatus = .idle
 
-    // MARK: - Game Flow
-    
-    func startNewGame() -> GameScene {
-        let nodes = nodeCreator.createNodes()
+}
 
+extension GameViewModel {
+    func startNewGame() throws -> GameScene {
+        let nodes = try nodeCreator.createNodes()
+        let bricks = try brickService.load(named: layoutFileName)
+
+        // TODO: Send bricks into session.startGame instead of reset???
+        // TODO: Let startGame handle resetting
+        // TODO: If dictionary is needed in session, let session create it
         session.reset(bricks: Dictionary(uniqueKeysWithValues: bricks.map { ($0.id, $0) }))
         session.startGame()
-        updateUIFromDomain()
-        checkGameEnd()
 
-        return makeScene(with: nodes)
-    }
-
-    internal func handleGameEvent(_ event: GameEvent) {
-        session.apply(event)
-        updateUIFromDomain()
-        checkGameEnd()
-    }
-
-    internal func resetGame(with bricks: [BrickId: Brick]) {
-        session.reset(bricks: bricks)
-        updateUIFromDomain()
-    }
-
-    internal func acknowledgeBallReset() {
-        session.acknowledgeBallReset()
-        updateUIFromDomain()
-    }
-
-    // MARK: - Callback Synchronization
-
-    private func updateUIFromDomain() {
         currentScore = session.state.score
         remainingLives = session.state.lives
         gameStatus = session.state.status
         
+        return makeScene(with: nodes)
+    }
+    
+    private func handleGameEvent(_ event: GameEvent) {
+        session.apply(event)
+        
+        currentScore = session.state.score
+        remainingLives = session.state.lives
+        gameStatus = session.state.status
+        
+        // TODO: Seems misplaced
         if session.state.ballResetNeeded {
             onBallResetNeeded?()
         }
-    }
 
-    // MARK: - Navigation + Result Saving
-
-    private func checkGameEnd() {
+        // Handle game over
         let state = session.state
         switch state.status {
         case .gameOver, .won:
@@ -104,11 +95,11 @@ final class GameViewModel {
             break
         }
     }
-    
-    func todoRemoveMeWhenSceneCreationIsInViewModelCollisionRouter() -> CollisionRouter {
-        collisionRouter
+
+    private func acknowledgeBallReset() {
+        session.acknowledgeBallReset()
     }
-    
+
 }
 
 extension GameViewModel {

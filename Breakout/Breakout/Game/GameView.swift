@@ -53,7 +53,11 @@ struct GameView: View {
                 }
             }
             .onAppear {
-                scene = viewModel.startNewGame()
+                do {
+                    scene = try viewModel.startNewGame()
+                } catch {
+                    // TODO
+                }
             }
             .task {
                 isFocused = true

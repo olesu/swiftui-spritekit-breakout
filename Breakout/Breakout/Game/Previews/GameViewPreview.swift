@@ -16,17 +16,20 @@ import SwiftUI
             repository: InMemoryGameStateRepository(),
             reducer: GameReducer()
         )
-        let bricks: [Brick] = []
+        let brickService = BrickService(adapter: JsonBrickLayoutAdapter())
         let viewModel = GameViewModel(
             session: session,
             configurationService: configurationService,
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService,
-            nodeCreator: SpriteKitNodeCreator(bricks: bricks),
+            nodeCreator: SpriteKitNodeCreator(
+                brickService: brickService,
+                gameConfigurationService: configurationService
+            ),
             collisionRouter: DefaultCollisionRouter(
                 brickIdentifier: NodeNameBrickIdentifier()
             ),
-            bricks: bricks
+            brickService: brickService
         )
 
         GameView()

@@ -1,20 +1,24 @@
 import AppKit
 import Foundation
 import SpriteKit
-import os.log
 
 internal struct SpriteKitNodeCreator: NodeCreator {
-    private let brickSpecs: [BrickSpec]
+    private let brickService: BrickService
+    private let gameConfigurationService: GameConfigurationService
     
     internal init(
-        bricks: [Brick]
+        brickService: BrickService,
+        gameConfigurationService: GameConfigurationService
     ) {
-        self.brickSpecs = bricks.map { brick in
-            BrickSpec(brick: brick)
-        }
+        self.brickService = brickService
+        self.gameConfigurationService = gameConfigurationService
     }
 
-    func createNodes() -> [NodeNames: SKNode] {
+    func createNodes() throws -> [NodeNames: SKNode] {
+        let layoutName = gameConfigurationService.getGameConfiguration().layoutFileName
+        let bricks = try brickService.load(named: layoutName)
+        let brickSpecs = bricks.map { BrickSpec.init(brick: $0) }
+
         return [
             .paddle: PaddleSprite(position: CGPoint(x: 160, y: 40)),
             .brickLayout: ClassicBricksLayout(brickSpecs: brickSpecs),

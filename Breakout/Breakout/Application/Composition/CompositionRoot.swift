@@ -105,14 +105,10 @@ extension CompositionRoot {
             repository: repository,
             reducer: reducer
         )
+        
+        let brickService = BrickService(adapter: JsonBrickLayoutAdapter())
 
-        let bricks = BrickFactory.makeBricks(from: loadBrickLayout(
-            configurationService: configurationService,
-            loadBrickLayoutService: LoadBrickLayoutService(
-                adapter: JsonBrickLayoutAdapter()
-            ))
-        )
-        let nodeCreator = SpriteKitNodeCreator(bricks: bricks)
+        let nodeCreator = SpriteKitNodeCreator(brickService: brickService, gameConfigurationService: configurationService)
 
         let collisionRouter = DefaultCollisionRouter(
             brickIdentifier: NodeNameBrickIdentifier()
@@ -125,29 +121,10 @@ extension CompositionRoot {
             gameResultService: gameResultService,
             nodeCreator: nodeCreator,
             collisionRouter: collisionRouter,
-            bricks: bricks
+            brickService: brickService
         )
 
         return (reducer, viewModel)
-    }
-
-    static private func loadBrickLayout(
-        configurationService: GameConfigurationService,
-        loadBrickLayoutService: LoadBrickLayoutService
-    ) -> [BrickLayoutData] {
-        let cfg = configurationService.getGameConfiguration()
-
-        do {
-            let domainBricks = try loadBrickLayoutService.load(
-                named: cfg.layoutFileName
-            )
-            return domainBricks
-        } catch {
-            Logger().error(
-                "Failed to load brick layout \(cfg.layoutFileName) Using empty layout as fallback."
-            )
-            return []
-        }
     }
 
 }
