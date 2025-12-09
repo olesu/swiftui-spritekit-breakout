@@ -5,15 +5,32 @@ import Testing
 
 @MainActor
 struct GameViewModelTest {
-    @Test func startsANewGame() throws {
-        let (m, stateRepository) = makeGameViewModel(with: .initial)
 
-        let _ = try m.startNewGame()
+    @Test func startNewGameCreatesScene() throws {
+        let (vm, _) = makeGameViewModel(with: .initial)
+        let scene = try vm.startNewGame()
 
-        #expect(
-            stateRepository.load() == GameState.initial.with(status: .playing)
-        )
+        #expect(scene.size == vm.sceneSize)
     }
+    
+    @Test func startNewGameInitializesDomain() throws {
+        let (vm, repo) = makeGameViewModel(with: .initial)
+
+        _ = try vm.startNewGame()
+
+        #expect(repo.load().status == .playing)
+    }
+
+    @Test func startNewGameUpdatesUIState() throws {
+        let (vm, _) = makeGameViewModel(with: .initial)
+
+        _ = try vm.startNewGame()
+
+        #expect(vm.remainingLives == GameState.initial.lives)
+        #expect(vm.currentScore == 0)
+        #expect(vm.gameStatus == .playing)
+    }
+
 
     private func makeGameViewModel(with state: GameState) -> (
         GameViewModel, GameStateRepository

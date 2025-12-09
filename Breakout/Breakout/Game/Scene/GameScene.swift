@@ -11,7 +11,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
 
     private var brickNodeManager: BrickNodeManager?
 
-    internal var onBallResetComplete: (() -> Void)?
+    var onBallResetComplete: (() -> Void)?
 
     private let ballController: BallController
 

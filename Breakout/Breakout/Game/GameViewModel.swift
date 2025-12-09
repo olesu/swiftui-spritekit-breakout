@@ -17,7 +17,7 @@ final class GameViewModel {
     let layoutFileName: String
 
     // UI callbacks to GameScene
-    var onBallResetNeeded: (() -> Void)?
+    private var onBallResetNeeded: (() -> Void)?
 
     init(
         session: GameSession,
