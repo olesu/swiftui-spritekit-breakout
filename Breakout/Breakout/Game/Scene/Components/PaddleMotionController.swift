@@ -1,11 +1,12 @@
 import SpriteKit
 
 class PaddleMotionController {
-    let paddle: SKSpriteNode
     let speed: CGFloat
     let sceneWidth: CGFloat
 
-    init(paddle: SKSpriteNode, speed: CGFloat, sceneWidth: CGFloat) {
+    private(set) var paddle: Paddle
+
+    init(paddle: Paddle, speed: CGFloat, sceneWidth: CGFloat) {
         self.paddle = paddle
         self.speed = speed
         self.sceneWidth = sceneWidth
@@ -32,13 +33,13 @@ class PaddleMotionController {
         let amount = speed * CGFloat(dt)
 
         if isMovingRight {
-            paddle.position.x += amount
+            paddle = paddle.moveBy(amount: +amount)
         }
         if isMovingLeft {
-            paddle.position.x -= amount
+            paddle = paddle.moveBy(amount: -amount)
         }
         
-        paddle.position.x = clampedX(paddle.position.x)
+        paddle = paddle.moveTo(clampedX(paddle.x))
     }
 
     func stop() {
@@ -49,7 +50,7 @@ class PaddleMotionController {
     func overridePosition(x: CGFloat) {
         isOverriding = true
 
-        paddle.position.x = clampedX(x)
+        paddle = paddle.moveTo(clampedX(x))
     }
     
     func endOverride() {
@@ -57,9 +58,8 @@ class PaddleMotionController {
     }
     
     private func clampedX(_ x: CGFloat) -> CGFloat {
-        let halfWidth = paddle.size.width / 2
-        let minX = halfWidth
-        let maxX = sceneWidth - halfWidth
+        let minX = paddle.halfWidth
+        let maxX = sceneWidth - paddle.halfWidth
         
         return max(minX, min(maxX, x))
     }

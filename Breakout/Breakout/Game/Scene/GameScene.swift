@@ -72,9 +72,14 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     private func initPaddleMotionAndInput() {
-        guard let paddle = paddleNode else { return }
+        guard let paddleNode = paddleNode else { return }
         let motion = PaddleMotionController(
-            paddle: paddle,
+            paddle: Paddle(
+                x: paddleNode.position.x,
+                y: paddleNode.position.y,
+                w: paddleNode.size.width,
+                h: paddleNode.size.height
+                ),
             speed: paddleSpeed,
             sceneWidth: size.width
         )
@@ -90,11 +95,12 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         }
 
         let dt = currentTime - lastUpdateTime
-        paddleMotion?.update(deltaTime: dt)
+        paddleMotion?.update(deltaTime: dt) // TODO: Should probably return next position
 
         if let ball = ballNode,
             let paddle = paddleNode
         {
+            paddle.position.x = CGFloat(paddleMotion?.paddle.x ?? -1) // TODO: Should be obvious! But we do need to mutate the sprite position somewhere
             ballController.update(ball: ball, paddle: paddle)
         }
         lastUpdateTime = currentTime

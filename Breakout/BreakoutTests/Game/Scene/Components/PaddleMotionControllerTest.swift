@@ -6,8 +6,7 @@ import SpriteKit
 struct PaddleMotionControllerTest {
 
     @Test func movesRightBySpeedTimesDeltaTime() {
-        let paddle = SKSpriteNode(color: .white, size: CGSize(width: 50, height: 10))
-        paddle.position = CGPoint(x: 100, y: 0)
+        let paddle = makePaddle()
         
         let controller = PaddleMotionController(
             paddle: paddle,
@@ -18,12 +17,11 @@ struct PaddleMotionControllerTest {
         controller.startRight()
         controller.update(deltaTime: 1.0)
         
-        #expect(paddle.position.x <= controller.sceneWidth - paddle.size.width / 2)
+        #expect(controller.paddle.x <= controller.sceneWidth - controller.paddle.w / 2)
     }
     
     @Test func stopsRightMotionWHenStopped() {
-        let paddle = SKSpriteNode(color: .white, size: CGSize(width: 50, height: 10))
-        paddle.position = CGPoint(x: 100, y: 0)
+        let paddle = makePaddle()
         
         let controller = PaddleMotionController(
             paddle: paddle,
@@ -37,12 +35,11 @@ struct PaddleMotionControllerTest {
         controller.stop()
         controller.update(deltaTime: 1.0)
         
-        #expect(paddle.position.x <= controller.sceneWidth - paddle.size.width / 2)
+        #expect(controller.paddle.x <= controller.sceneWidth - controller.paddle.w / 2)
     }
     
     @Test func stopsLeftMotionWHenStopped() {
-        let paddle = SKSpriteNode(color: .white, size: CGSize(width: 50, height: 10))
-        paddle.position = CGPoint(x: 200, y: 0)
+        let paddle = makePaddle()
         
         let controller = PaddleMotionController(
             paddle: paddle,
@@ -56,12 +53,11 @@ struct PaddleMotionControllerTest {
         controller.stop()
         controller.update(deltaTime: 1.0)
         
-        #expect(paddle.position.x >= paddle.size.width / 2)
+        #expect(controller.paddle.x >= controller.paddle.w / 2)
     }
     
     @Test func movesLeftBySpeedTimesDeltaTime() {
-        let paddle = SKSpriteNode(color: .white, size: CGSize(width: 50, height: 10))
-        paddle.position = CGPoint(x: 200, y: 0)
+        let paddle = makePaddle()
         
         let controller = PaddleMotionController(
             paddle: paddle,
@@ -72,12 +68,11 @@ struct PaddleMotionControllerTest {
         controller.startLeft()
         controller.update(deltaTime: 1.0)
         
-        #expect(paddle.position.x >= paddle.size.width / 2)
+        #expect(controller.paddle.x >= controller.paddle.w / 2)
     }
 
     @Test func doesNotMovePastLeftBoundary() {
-        let paddle = SKSpriteNode(color: .white, size: CGSize(width: 50, height: 10))
-        paddle.position = CGPoint(x: 10, y: 0)
+        let paddle = makePaddle()
         
         let controller = PaddleMotionController(
             paddle: paddle,
@@ -88,12 +83,11 @@ struct PaddleMotionControllerTest {
         controller.startLeft()
         controller.update(deltaTime: 1.0)
         
-        #expect(paddle.position.x >= 0)
+        #expect(controller.paddle.x >= 0)
     }
 
     @Test func doesNotMovePastRightBoundary() {
-        let paddle = SKSpriteNode(color: .white, size: CGSize(width: 50, height: 10))
-        paddle.position = CGPoint(x: 290, y: 0)
+        let paddle = makePaddle()
 
         let controller = PaddleMotionController(
             paddle: paddle,
@@ -104,12 +98,11 @@ struct PaddleMotionControllerTest {
         controller.startRight()
         controller.update(deltaTime: 1.0) // would try to move to 490
 
-        #expect(paddle.position.x <= 300)
+        #expect(controller.paddle.x <= 300)
     }
     
     @Test func clampsLeftConsideringPaddleWidth() {
-        let paddle = SKSpriteNode(color: .white, size: CGSize(width: 50, height: 10))
-        paddle.position = CGPoint(x: 10, y: 0)
+        let paddle = makePaddle()
         
         let controller = PaddleMotionController(
             paddle: paddle,
@@ -120,13 +113,12 @@ struct PaddleMotionControllerTest {
         controller.startLeft()
         controller.update(deltaTime: 1.0)
         
-        let leftEdge = paddle.position.x - paddle.size.width / 2.0
+        let leftEdge = controller.paddle.x - controller.paddle.w / 2.0
         #expect(leftEdge >= 0)
     }
     
     @Test func switchesDirectionWithoutStopping() {
-        let paddle = SKSpriteNode(color: .white, size: CGSize(width: 50, height: 10))
-        paddle.position = CGPoint(x: 100, y: 0)
+        let paddle = makePaddle()
 
         let controller = PaddleMotionController(
             paddle: paddle,
@@ -140,12 +132,11 @@ struct PaddleMotionControllerTest {
         controller.startLeft()
         controller.update(deltaTime: 1.0)
 
-        #expect(abs(paddle.position.x - 100) < 0.001)
+        #expect(abs(controller.paddle.x - 100) < 0.001)
     }
 
     @Test func draggingOverridesKeyboardMovement() {
-        let paddle = SKSpriteNode(color: .white, size: CGSize(width: 50, height: 10))
-        paddle.position = CGPoint(x: 100, y: 0)
+        let paddle = makePaddle()
 
         let controller = PaddleMotionController(
             paddle: paddle,
@@ -159,12 +150,11 @@ struct PaddleMotionControllerTest {
         controller.overridePosition(x: 50)
         controller.update(deltaTime: 1.0)
 
-        #expect(abs(paddle.position.x - 50) < 0.001)
+        #expect(abs(controller.paddle.x - 50) < 0.001)
     }
 
     @Test func movementResumesAfterDragEnds() {
-        let paddle = SKSpriteNode(color: .white, size: CGSize(width: 50, height: 10))
-        paddle.position = CGPoint(x: 100, y: 0)
+        let paddle = makePaddle()
 
         let controller = PaddleMotionController(
             paddle: paddle,
@@ -181,12 +171,11 @@ struct PaddleMotionControllerTest {
         controller.endOverride()
         controller.update(deltaTime: 1.0)
 
-        #expect(abs(paddle.position.x - 250) < 0.001)
+        #expect(abs(controller.paddle.x - 250) < 0.001)
     }
 
     @Test func overridePositionIsClamped() {
-        let paddle = SKSpriteNode(color: .white, size: CGSize(width: 50, height: 10))
-        paddle.position = CGPoint(x: 100, y: 0)
+        let paddle = makePaddle()
 
         let controller = PaddleMotionController(
             paddle: paddle,
@@ -196,13 +185,11 @@ struct PaddleMotionControllerTest {
 
         controller.overridePosition(x: -100)
 
-        let halfWidth = paddle.size.width / 2
-        #expect(paddle.position.x >= halfWidth)
+        #expect(controller.paddle.x >= paddle.halfWidth)
     }
 
     @Test func overrideDoesNotClearIntent() {
-        let paddle = SKSpriteNode(color: .white, size: CGSize(width: 50, height: 10))
-        paddle.position = CGPoint(x: 100, y: 0)
+        let paddle = makePaddle()
 
         let controller = PaddleMotionController(
             paddle: paddle,
@@ -216,7 +203,11 @@ struct PaddleMotionControllerTest {
 
         controller.update(deltaTime: 1.0)
 
-        #expect(paddle.position.x > 150) // intent restored
+        #expect(controller.paddle.x > 150) // intent restored
+    }
+    
+    private func makePaddle() -> Paddle {
+        .init(x: 100, y: 0, w: 50, h: 10)
     }
 
 }
