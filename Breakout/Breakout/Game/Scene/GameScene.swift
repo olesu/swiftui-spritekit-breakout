@@ -5,14 +5,14 @@ import SpriteKit
 internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let gameNodes: [NodeNames: SKNode]
     private let onGameEvent: (GameEvent) -> Void
+    private let onBallResetComplete: (() -> Void)
     private let collisionRouter: CollisionRouter
 
     private var brickNodeManager: BrickNodeManager?
 
-    var onBallResetComplete: (() -> Void)?
 
     private let ballController: BallController
-    private let paddleMotion: PaddleMotionController
+    private let paddleMotionController: PaddleMotionController
 
     private var paddleInput: PaddleInputController?
     private let paddleBounceApplier = PaddleBounceApplier()  // TODO: Inject
@@ -26,14 +26,16 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         size: CGSize,
         nodes: [NodeNames: SKNode],
         onGameEvent: @escaping (GameEvent) -> Void,
+        onBallResetComplete: @escaping () -> Void,
         collisionRouter: CollisionRouter,
-        paddleMotion: PaddleMotionController
+        paddleMotionController: PaddleMotionController
     ) {
         self.gameNodes = nodes
         self.onGameEvent = onGameEvent
+        self.onBallResetComplete = onBallResetComplete
         self.ballController = BallController()  // TODO: Inject
         self.collisionRouter = collisionRouter
-        self.paddleMotion = paddleMotion
+        self.paddleMotionController = paddleMotionController
         super.init(size: size)
     }
 
@@ -72,7 +74,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     private func initPaddleMotionAndInput() {
-        paddleInput = PaddleInputController(motion: paddleMotion)
+        paddleInput = PaddleInputController(motion: paddleMotionController)
     }
 
     override internal func update(_ currentTime: TimeInterval) {
@@ -82,12 +84,12 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         }
 
         let dt = currentTime - lastUpdateTime
-        paddleMotion.update(deltaTime: dt) // TODO: Should probably return next position
+        paddleMotionController.update(deltaTime: dt) // TODO: Should probably return next position
 
         if let ball = ballNode,
             let paddle = paddleNode
         {
-            paddle.position.x = CGFloat(paddleMotion.paddle.x ?? -1) // TODO: Should be obvious! But we do need to mutate the sprite position somewhere
+            paddle.position.x = CGFloat(paddleMotionController.paddle.x) // TODO: Should be obvious! But we do need to mutate the sprite position somewhere
             ballController.update(ball: ball, paddle: paddle)
         }
         lastUpdateTime = currentTime
@@ -154,7 +156,7 @@ extension GameScene {
             else { return }
 
             self.ballController.performReset(ball: ball, at: resetPosition())
-            self.onBallResetComplete?()
+            self.onBallResetComplete()
         }
 
         run(.sequence([wait, reset]))

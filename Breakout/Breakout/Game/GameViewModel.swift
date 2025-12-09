@@ -1,6 +1,6 @@
 import Foundation
-import SwiftUI
 import SpriteKit
+import SwiftUI
 
 @Observable
 final class GameViewModel {
@@ -8,8 +8,8 @@ final class GameViewModel {
     private let screenNavigationService: ScreenNavigationService
     private let gameResultService: GameResultService
     private let nodeCreator: NodeCreator
-    private let collisionRouter: CollisionRouter
     private let brickService: BrickService
+    private let gameSceneBuilder: GameSceneBuilder
 
     // UI configuration (safe as stored properties)
     let sceneSize: CGSize
@@ -25,15 +25,18 @@ final class GameViewModel {
         screenNavigationService: ScreenNavigationService,
         gameResultService: GameResultService,
         nodeCreator: NodeCreator,
-        collisionRouter: CollisionRouter,
-        brickService: BrickService
+        brickService: BrickService,
+        gameSceneBuilder: GameSceneBuilder
     ) {
         self.session = session
         self.screenNavigationService = screenNavigationService
         self.gameResultService = gameResultService
 
         let config = configurationService.getGameConfiguration()
-        self.sceneSize = CGSize(width: config.sceneWidth, height: config.sceneHeight)
+        self.sceneSize = CGSize(
+            width: config.sceneWidth,
+            height: config.sceneHeight
+        )
         self.brickArea = CGRect(
             x: config.brickArea.x,
             y: config.brickArea.y,
@@ -42,8 +45,8 @@ final class GameViewModel {
         )
         self.layoutFileName = config.layoutFileName
         self.nodeCreator = nodeCreator
-        self.collisionRouter = collisionRouter
         self.brickService = brickService
+        self.gameSceneBuilder = gameSceneBuilder
     }
 
     var currentScore: Int = 0
@@ -60,23 +63,32 @@ extension GameViewModel {
         // TODO: Send bricks into session.startGame instead of reset???
         // TODO: Let startGame handle resetting
         // TODO: If dictionary is needed in session, let session create it
-        session.reset(bricks: Dictionary(uniqueKeysWithValues: bricks.map { ($0.id, $0) }))
+        session.reset(
+            bricks: Dictionary(uniqueKeysWithValues: bricks.map { ($0.id, $0) })
+        )
         session.startGame()
 
         currentScore = session.state.score
         remainingLives = session.state.lives
         gameStatus = session.state.status
+
+        let scene = gameSceneBuilder.makeScene(
+            with: nodes,
+            onGameEvent: { [weak self] event in self?.handleGameEvent(event) },
+            onBallResetComplete: { [weak self] in self?.acknowledgeBallReset() }
+        )
+        wireSceneCallbacks(scene)
         
-        return makeScene(with: nodes)
+        return scene
     }
-    
+
     private func handleGameEvent(_ event: GameEvent) {
         session.apply(event)
-        
+
         currentScore = session.state.score
         remainingLives = session.state.lives
         gameStatus = session.state.status
-        
+
         // TODO: Seems misplaced
         if session.state.ballResetNeeded {
             onBallResetNeeded?()
@@ -103,49 +115,9 @@ extension GameViewModel {
 }
 
 extension GameViewModel {
-    func makeScene(with nodes: [NodeNames: SKNode]) -> GameScene {
-        guard let paddleNode = nodes[.paddle] as? SKSpriteNode else {
-            fatalError("Missing paddle node")
-        }
-        let scene = GameScene(
-            size: sceneSize,
-            nodes: nodes,
-            onGameEvent: { [weak self] event in self?.handleGameEvent(event) },
-            collisionRouter: collisionRouter,
-            paddleMotion: makePaddleMotionController(paddleNode: paddleNode, sceneWidth: sceneSize.width)
-            )
-        
-        wireSceneCallbacks(scene)
-        
-        return scene
-    }
-    
-    private func makePaddleMotionController(paddleNode: SKSpriteNode, sceneWidth: CGFloat) -> PaddleMotionController {
-        let paddleSpeed = 450.0
-
-        let result = PaddleMotionController(
-            paddle: Paddle(
-                x: paddleNode.position.x,
-                y: paddleNode.position.y,
-                w: paddleNode.size.width,
-                h: paddleNode.size.height
-                ),
-            speed: paddleSpeed,
-            sceneWidth: sceneWidth
-        )
-
-        return result
-
-    }
-    
     private func wireSceneCallbacks(_ scene: GameScene) {
-        scene.onBallResetComplete = { [weak self] in
-            self?.acknowledgeBallReset()
-        }
         onBallResetNeeded = { [weak scene] in
             scene?.resetBall()
         }
     }
-
-
 }

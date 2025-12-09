@@ -45,10 +45,10 @@ struct GameViewModelTest {
             screenNavigationService: FakeScreenNavigationService(),
             gameResultService: FakeGameResultService(),
             nodeCreator: FakeNodeCreator(),
-            collisionRouter: FakeCollisionRouter(),
             brickService: BrickService(
                 adapter: FakeBrickLayoutAdapter()
-            )
+            ),
+            gameSceneBuilder: FakeGameSceneBuilder()
 
         )
         return (model, repository)
