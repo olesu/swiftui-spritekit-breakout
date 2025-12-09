@@ -2,15 +2,21 @@ import Foundation
 import SpriteKit
 
 final class BrickNodeManager: NodeManager {
-    private let brickLayout: SKNode
+    private let nodesByName: [NodeNames: SKNode]
 
-    let allNodes: [SKNode]
+    private var brickLayout: SKNode {
+        nodesByName
+            .filter { $0.key == .brickLayout }
+            .map { $1 }
+            .first ?? SKNode()
+    }
+
+    var allNodes: [SKNode] {
+        nodesByName.map { $1 }
+    }
 
     init(nodes: [NodeNames: SKNode]) {
-        guard let brickLayout = nodes[.brickLayout] else { fatalError("No brick layout node found") }
-        
-        self.allNodes = nodes.map { $1 }
-        self.brickLayout = brickLayout
+        self.nodesByName = nodes
     }
 
     func remove(brickId: BrickId) {
