@@ -31,6 +31,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         paddleMotionController: PaddleMotionController
     ) {
         self.gameNodes = nodes
+        self.nodeManager = BrickNodeManager(nodes: gameNodes)
         self.onGameEvent = onGameEvent
         self.onBallResetComplete = onBallResetComplete
         self.ballController = BallController()  // TODO: Inject
@@ -48,7 +49,6 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         addGameNodes()
         addGradientBackground()
         cacheImportantNodes()
-        createBrickManagerIfPossible()
         initPaddleMotionAndInput()
     }
 
@@ -65,12 +65,6 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
             paddleNode != nil,
             "GameScene: Missing .paddle in node dictionary"
         )
-    }
-
-    private func createBrickManagerIfPossible() {
-        if let brickLayout = gameNodes[.brickLayout] {
-            nodeManager = BrickNodeManager(brickLayout: brickLayout)
-        }
     }
 
     private func initPaddleMotionAndInput() {

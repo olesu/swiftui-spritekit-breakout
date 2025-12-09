@@ -10,7 +10,7 @@ struct BrickNodeManagerTest {
         let brickLayout = SKNode()
         brickLayout.addChild(brick)
 
-        let manager = BrickNodeManager(brickLayout: brickLayout)
+        let manager = BrickNodeManager(nodes: [.brickLayout: brickLayout])
 
         #expect(brick.parent != nil)
 

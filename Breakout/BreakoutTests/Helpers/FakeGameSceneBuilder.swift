@@ -9,7 +9,12 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
         onGameEvent: @escaping (GameEvent) -> Void,
         onBallResetComplete: @escaping () -> Void
     ) -> GameScene {
-        GameScene(
+        // Ensure nodes contains a .brickLayout
+        let nodes: [NodeNames: SKNode] = [
+            .brickLayout: SKNode()
+        ]
+        
+        return GameScene(
             size: CGSize(width: 320, height: 480),
             nodes: nodes,
             onGameEvent: onGameEvent,
