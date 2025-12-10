@@ -1,31 +1,51 @@
-struct GameSession {
-    let repository: GameStateRepository
-    let reducer: GameReducer
+import Foundation
+
+@Observable
+final class GameSession {
+    private let repository: GameStateRepository
+    private let reducer: GameReducer
     
     var state: GameState {
-        repository.load()
+        didSet {}
+    }
+    
+    init(repository: GameStateRepository, reducer: GameReducer) {
+        self.repository = repository
+        self.reducer = reducer
+        
+        self.state = repository.load()
     }
     
     func startGame(bricks: [Brick]) {
         reset(bricks: bricks)
-        repository.save(reducer.start(state))
+        let newState = reducer.start(state)
+        repository.save(newState)
+        state = newState
     }
     
     func apply(_ event: GameEvent) {
-        repository.save(reducer.reduce(state, event: event))
+        let newState = reducer.reduce(state, event: event)
+        repository.save(newState)
+        state = newState
     }
     
     private func reset(bricks: [Brick]) {
         let bricks = Dictionary(uniqueKeysWithValues: bricks.map { ($0.id, $0) })
         
-        repository.save(.initial.with(bricks: bricks))
+        let newState = GameState.initial.with(bricks: bricks)
+        repository.save(newState)
+        state = newState
     }
     
     func announceBallResetInProgress() {
-        repository.save(reducer.announcedBallResetInProgress(state))
+        let newState = reducer.announcedBallResetInProgress(state)
+        repository.save(newState)
+        state = newState
     }
     
     func acknowledgeBallReset() {
-        repository.save(reducer.acknowledgeBallReset(state))
+        let newState = reducer.acknowledgeBallReset(state)
+        repository.save(newState)
+        state = newState
     }
 }

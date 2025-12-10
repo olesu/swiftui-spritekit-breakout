@@ -47,12 +47,34 @@ final class GameViewModel {
         self.nodeCreator = nodeCreator
         self.brickService = brickService
         self.gameSceneBuilder = gameSceneBuilder
+        
+        startTracking()
     }
 
     var currentScore: Int = 0
     var remainingLives: Int = 0
     var gameStatus: GameStatus = .idle
 
+}
+
+extension GameViewModel {
+    private func startTracking() {
+        withObservationTracking {
+            updateFromSession()
+        } onChange: { [weak self] in
+            Task { @MainActor [weak self] in
+                self?.startTracking()
+            }
+        }
+    }
+
+    private func updateFromSession() {
+        let s = session.state
+
+        currentScore = s.score
+        remainingLives = s.lives
+        gameStatus = s.status
+    }
 }
 
 extension GameViewModel {
@@ -72,16 +94,12 @@ extension GameViewModel {
             gameSession: session
         )
         wireSceneCallbacks(scene)
-        
+
         return scene
     }
 
     private func handleGameEvent(_ event: GameEvent) {
         session.apply(event)
-
-        currentScore = session.state.score
-        remainingLives = session.state.lives
-        gameStatus = session.state.status
 
         // Handle game over
         let state = session.state
