@@ -4,7 +4,6 @@ import SpriteKit
 
 internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let gameNodes: [NodeNames: SKNode]
-    private let onGameEvent: (GameEvent) -> Void
     private let collisionRouter: CollisionRouter
 
     private var nodeManager: NodeManager?
@@ -27,14 +26,12 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     internal init(
         size: CGSize,
         nodes: [NodeNames: SKNode],
-        onGameEvent: @escaping (GameEvent) -> Void,
         collisionRouter: CollisionRouter,
         paddleMotionController: PaddleMotionController,
         gameSession: GameSession
     ) {
         self.gameNodes = nodes
         self.nodeManager = BrickNodeManager(nodes: gameNodes)
-        self.onGameEvent = onGameEvent
         self.ballController = BallController()  // TODO: Inject
         self.collisionRouter = collisionRouter
         self.paddleMotionController = paddleMotionController
@@ -137,12 +134,12 @@ extension GameScene {
     }
     
     private func handleBallHitBrick(_ brickId: BrickId) {
-        onGameEvent(.brickHit(brickID: brickId))
+        gameSession.apply(.brickHit(brickID: brickId))
         nodeManager?.remove(brickId: brickId)
     }
     
     private func handleBallHitGutter() {
-        onGameEvent(.ballLost)
+        gameSession.apply(.ballLost)
     }
     
     private func handleBallHitPaddle() {

@@ -15,9 +15,11 @@ final class GameViewModel {
     let sceneSize: CGSize
     let brickArea: CGRect
     let layoutFileName: String
-
-    // UI callbacks to GameScene
-    private var onBallResetNeeded: (() -> Void)?
+    
+    var currentScore: Int = 0
+    var remainingLives: Int = 0
+    var gameStatus: GameStatus = .idle
+    private var lastStatus: GameStatus = .idle
 
     init(
         session: GameSession,
@@ -47,13 +49,9 @@ final class GameViewModel {
         self.nodeCreator = nodeCreator
         self.brickService = brickService
         self.gameSceneBuilder = gameSceneBuilder
-        
+
         startTracking()
     }
-
-    var currentScore: Int = 0
-    var remainingLives: Int = 0
-    var gameStatus: GameStatus = .idle
 
 }
 
@@ -70,10 +68,27 @@ extension GameViewModel {
 
     private func updateFromSession() {
         let s = session.state
+        
+        if gameStatus != s.status {
+            handleStateSideEffects(newState: s)
+        }
 
         currentScore = s.score
         remainingLives = s.lives
         gameStatus = s.status
+    }
+
+    private func handleStateSideEffects(newState: GameState) {
+        switch newState.status {
+        case .gameOver, .won:
+            gameResultService.save(
+                didWin: newState.status == .won,
+                score: newState.score
+            )
+            screenNavigationService.navigate(to: .gameEnd)
+        default:
+            break
+        }
     }
 }
 
@@ -90,36 +105,10 @@ extension GameViewModel {
 
         let scene = gameSceneBuilder.makeScene(
             with: nodes,
-            onGameEvent: { [weak self] event in self?.handleGameEvent(event) },
             gameSession: session
         )
-        wireSceneCallbacks(scene)
 
         return scene
     }
 
-    private func handleGameEvent(_ event: GameEvent) {
-        session.apply(event)
-
-        // Handle game over
-        let state = session.state
-        switch state.status {
-        case .gameOver, .won:
-            gameResultService.save(
-                didWin: state.status == .won,
-                score: state.score
-            )
-            screenNavigationService.navigate(to: .gameEnd)
-        default:
-            break
-        }
-    }
-}
-
-extension GameViewModel {
-    private func wireSceneCallbacks(_ scene: GameScene) {
-        onBallResetNeeded = { [weak scene] in
-            scene?.resetBall()
-        }
-    }
 }

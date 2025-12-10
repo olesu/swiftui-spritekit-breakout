@@ -6,7 +6,6 @@ import SpriteKit
 final class FakeGameSceneBuilder: GameSceneBuilder {
     func makeScene(
         with nodes: [NodeNames: SKNode],
-        onGameEvent: @escaping (GameEvent) -> Void,
         gameSession: GameSession,
     ) -> GameScene {
         // Ensure nodes contains a .brickLayout
@@ -17,7 +16,6 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
         return GameScene(
             size: CGSize(width: 320, height: 480),
             nodes: nodes,
-            onGameEvent: onGameEvent,
             collisionRouter: FakeCollisionRouter(),
             paddleMotionController: PaddleMotionController(
                 paddle: Paddle(x: 0, y: 0, w: 0, h: 0),

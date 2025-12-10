@@ -14,7 +14,6 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
 
     func makeScene(
         with nodes: [NodeNames: SKNode],
-        onGameEvent: @escaping (GameEvent) -> Void,
         gameSession: GameSession,
     ) -> GameScene {
         guard let paddleNode = nodes[.paddle] as? SKSpriteNode else {
@@ -28,7 +27,6 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         let scene = GameScene(
             size: CGSize(width: sceneWidth, height: sceneHeight),
             nodes: nodes,
-            onGameEvent: onGameEvent,
             collisionRouter: collisionRouter,
             paddleMotionController: makePaddleMotionController(
                 paddleNode: paddleNode,
