@@ -2,8 +2,14 @@ import SpriteKit
 
 @testable import Breakout
 
-struct FakeNodeCreator: NodeCreator {
-    func createNodes() -> [Breakout.NodeNames : SKNode] {
-        return [.paddle: SKSpriteNode()]
+struct FakeBrickLayoutFactory: BrickLayoutFactory {
+    let brickLayout = SKNode()
+    
+    func createBrickLayout() -> SKNode {
+        return brickLayout
+    }
+    
+    func addToBrickLayout(_ node: SKNode) {
+        brickLayout.addChild(node)
     }
 }

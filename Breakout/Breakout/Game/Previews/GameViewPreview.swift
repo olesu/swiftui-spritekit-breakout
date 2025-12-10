@@ -20,11 +20,11 @@ import SwiftUI
             brickIdentifier: NodeNameBrickIdentifier()
         )
         let brickService = BrickService(adapter: JsonBrickLayoutAdapter())
-        let nodeCreator = SpriteKitNodeCreator(session: session)
+        let brickLayoutFactory = ClassicBrickLayoutFactory(session: session)
         let sceneBuilder = DefaultGameSceneBuilder(
             gameConfigurationService: configurationService,
             collisionRouter: collisionRouter,
-            nodeCreator: nodeCreator,
+            brickLayoutFactory: brickLayoutFactory,
             session: session
         )
         let viewModel = GameViewModel(

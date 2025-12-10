@@ -110,7 +110,7 @@ extension CompositionRoot {
 
         let brickService = BrickService(adapter: JsonBrickLayoutAdapter())
 
-        let nodeCreator = SpriteKitNodeCreator(session: session)
+        let brickLayoutFactory = ClassicBrickLayoutFactory(session: session)
 
         let collisionRouter = DefaultCollisionRouter(
             brickIdentifier: NodeNameBrickIdentifier()
@@ -119,7 +119,7 @@ extension CompositionRoot {
         let gameSceneBuilder = DefaultGameSceneBuilder(
             gameConfigurationService: configurationService,
             collisionRouter: collisionRouter,
-            nodeCreator: nodeCreator,
+            brickLayoutFactory: brickLayoutFactory,
             session: session
         )
 

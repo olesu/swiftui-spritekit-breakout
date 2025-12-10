@@ -3,46 +3,40 @@ import SpriteKit
 struct DefaultGameSceneBuilder: GameSceneBuilder {
     private let gameConfigurationService: GameConfigurationService
     private let collisionRouter: CollisionRouter
-    private let nodeCreator: NodeCreator
+    private let brickLayoutFactory: BrickLayoutFactory
     private let session: GameSession
 
     init(
         gameConfigurationService: GameConfigurationService,
         collisionRouter: CollisionRouter,
-        nodeCreator: NodeCreator,
+        brickLayoutFactory: BrickLayoutFactory,
         session: GameSession
     ) {
         self.gameConfigurationService = gameConfigurationService
         self.collisionRouter = collisionRouter
-        self.nodeCreator = nodeCreator
+        self.brickLayoutFactory = brickLayoutFactory
         self.session = session
     }
 
     func makeScene() -> GameScene {
-        let nodes = nodeCreator.createNodes()
-
-        guard let paddleNode = nodes[.paddle] as? SKSpriteNode else {
-            // TODO throw instead of fatalError
-            fatalError("Missing paddle node")
-        }
-
         let c = gameConfigurationService.getGameConfiguration()
         let sceneWidth = c.sceneWidth
         let sceneHeight = c.sceneHeight
         
+        let nodeManager = DefaultNodeManager(brickLayoutFactory: brickLayoutFactory)
+        
         let paddleMotionController = makePaddleMotionController(
-            paddleNode: paddleNode,
+            paddleNode: nodeManager.paddle,
             sceneWidth: sceneWidth
         )
         let paddleInputController = PaddleInputController(motion: paddleMotionController)
 
         let scene = GameScene(
             size: CGSize(width: sceneWidth, height: sceneHeight),
-            nodes: nodes,
             collisionRouter: collisionRouter,
             paddleMotionController: paddleMotionController,
             gameSession: session,
-            nodeManager: BrickNodeManager(nodes: nodes),
+            nodeManager: nodeManager,
             ballController: BallController(),
             paddleInputController: paddleInputController
         )

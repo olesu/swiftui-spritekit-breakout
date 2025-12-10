@@ -3,7 +3,6 @@ import Foundation
 import SpriteKit
 
 internal final class GameScene: SKScene, SKPhysicsContactDelegate {
-    private let gameNodes: [NodeNames: SKNode]
     private let collisionRouter: CollisionRouter
     private let nodeManager: NodeManager
     private let gameSession: GameSession
@@ -13,15 +12,10 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let paddleBounceApplier = PaddleBounceApplier()  // TODO: Inject
 
     private var lastUpdateTime: TimeInterval = 0
-
-    private weak var ballNode: SKSpriteNode?
-    private weak var paddleNode: SKSpriteNode?
-    
     private var localResetInProgress: Bool = false
-    
+
     internal init(
         size: CGSize,
-        nodes: [NodeNames: SKNode],
         collisionRouter: CollisionRouter,
         paddleMotionController: PaddleMotionController,
         gameSession: GameSession,
@@ -29,7 +23,6 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         ballController: BallController,
         paddleInputController: PaddleInputController
     ) {
-        self.gameNodes = nodes
         self.nodeManager = nodeManager
         self.ballController = ballController
         self.collisionRouter = collisionRouter
@@ -47,22 +40,18 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.contactDelegate = self
         addGameNodes()
         addGradientBackground()
-        cacheImportantNodes()
     }
 
     private func addGameNodes() {
-        nodeManager.allNodes.forEach(addChild)
-    }
-
-    private func cacheImportantNodes() {
-        ballNode = gameNodes[.ball] as? SKSpriteNode
-        paddleNode = gameNodes[.paddle] as? SKSpriteNode
-
-        assert(ballNode != nil, "GameScene: Missing .ball in node dictionary")
-        assert(
-            paddleNode != nil,
-            "GameScene: Missing .paddle in node dictionary"
-        )
+        addChild(nodeManager.topWall)
+        addChild(nodeManager.leftWall)
+        addChild(nodeManager.rightWall)
+        addChild(nodeManager.gutter)
+        
+        addChild(nodeManager.bricks)
+        
+        addChild(nodeManager.paddle)
+        addChild(nodeManager.ball)
     }
 
     override internal func update(_ currentTime: TimeInterval) {
@@ -73,7 +62,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
 
         let dt = currentTime - lastUpdateTime
         let resetNeeded = gameSession.state.ballResetNeeded
-        
+
         if resetNeeded && !localResetInProgress {
             localResetInProgress = true
             gameSession.announceBallResetInProgress()
@@ -86,17 +75,15 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
 
         lastUpdateTime = currentTime
     }
-    
+
     private func updateBallAndPaddle(deltaTime dt: TimeInterval) {
-        paddleMotionController.update(deltaTime: dt) // TODO: Should probably return next position
+        paddleMotionController.update(deltaTime: dt)  // TODO: Should probably return next position
 
-        if let ball = ballNode,
-            let paddle = paddleNode
-        {
-            paddle.position.x = CGFloat(paddleMotionController.paddle.x) // TODO: Should be obvious! But we do need to mutate the sprite position somewhere
-            ballController.update(ball: ball, paddle: paddle)
-        }
+        let paddle = nodeManager.paddle
+        let ball = nodeManager.ball
 
+        paddle.position.x = CGFloat(paddleMotionController.paddle.x)  // TODO: Should be obvious! But we do need to mutate the sprite position somewhere
+        ballController.update(ball: ball, paddle: paddle)
     }
 
     private func addGradientBackground() {
@@ -127,16 +114,16 @@ extension GameScene {
             break
         }
     }
-    
+
     private func handleBallHitBrick(_ brickId: BrickId) {
         gameSession.apply(.brickHit(brickID: brickId))
         nodeManager.remove(brickId: brickId)
     }
-    
+
     private func handleBallHitGutter() {
         gameSession.apply(.ballLost)
     }
-    
+
     private func handleBallHitPaddle() {
         adjustBallVelocityForPaddleHit()
     }
@@ -145,27 +132,22 @@ extension GameScene {
 // MARK: - Ball Control
 extension GameScene {
     internal func resetBall() {
-        guard
-            let ball = ballNode
-        else { return }
+        ballController.prepareReset(ball: nodeManager.ball)
 
-        ballController.prepareReset(ball: ball)
-
-//        let wait = SKAction.wait(forDuration: 0.5)
+        //        let wait = SKAction.wait(forDuration: 0.5)
 
         let reset = SKAction.run { [weak self] in
             guard
-                let self,
-                let ball = self.ballNode
+                let self
             else { return }
 
-            self.ballController.performReset(ball: ball, at: resetPosition())
-            
+            self.ballController.performReset(ball: nodeManager.ball, at: resetPosition())
+
             gameSession.acknowledgeBallReset()
             localResetInProgress = false
         }
 
-        run(.sequence([/*wait,*/ reset]))
+        run(.sequence([ /*wait,*/reset]))
     }
 
     private func resetPosition() -> CGPoint {
@@ -173,19 +155,11 @@ extension GameScene {
     }
 
     internal func launchBall() {
-        guard
-            let ball = ballNode
-        else { return }
-
-        ballController.launch(ball: ball)
+        ballController.launch(ball: nodeManager.ball)
     }
 
     private func adjustBallVelocityForPaddleHit() {
-        guard let ball = ballNode,
-            let paddle = paddleNode
-        else { return }
-
-        paddleBounceApplier.applyBounce(ball: ball, paddle: paddle)
+        paddleBounceApplier.applyBounce(ball: nodeManager.ball, paddle: nodeManager.paddle)
     }
 }
 
