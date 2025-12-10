@@ -21,7 +21,9 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
 
     private weak var ballNode: SKSpriteNode?
     private weak var paddleNode: SKSpriteNode?
-
+    
+    private var localResetInProgress: Bool = false
+    
     internal init(
         size: CGSize,
         nodes: [NodeNames: SKNode],
@@ -78,11 +80,17 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         }
 
         let dt = currentTime - lastUpdateTime
+        let resetNeeded = gameSession.state.ballResetNeeded
         
-        if gameSession.state.ballResetNeeded {
+        if resetNeeded && !localResetInProgress {
+            localResetInProgress = true
+            gameSession.announceBallResetInProgress()
             resetBall()
         }
-        updateBallAndPaddle(deltaTime: dt)
+
+        if !localResetInProgress {
+            updateBallAndPaddle(deltaTime: dt)
+        }
 
         lastUpdateTime = currentTime
     }
@@ -151,7 +159,7 @@ extension GameScene {
 
         ballController.prepareReset(ball: ball)
 
-        let wait = SKAction.wait(forDuration: 0.5)
+//        let wait = SKAction.wait(forDuration: 0.5)
 
         let reset = SKAction.run { [weak self] in
             guard
@@ -160,10 +168,12 @@ extension GameScene {
             else { return }
 
             self.ballController.performReset(ball: ball, at: resetPosition())
+            
             gameSession.acknowledgeBallReset()
+            localResetInProgress = false
         }
 
-        run(.sequence([wait, reset]))
+        run(.sequence([/*wait,*/ reset]))
     }
 
     private func resetPosition() -> CGPoint {

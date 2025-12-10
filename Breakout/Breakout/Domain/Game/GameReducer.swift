@@ -20,9 +20,18 @@ struct GameReducer {
             return reduceBallLost(state)
         }
     }
+    
+    func announcedBallResetInProgress(_ state: GameState) -> GameState {
+        guard state.ballResetNeeded else {
+            return state
+        }
+        return state
+            .with(ballResetNeeded: false)
+            .with(ballResetInProgress: true)
+    }
 
     func acknowledgeBallReset(_ state: GameState) -> GameState {
-        return state.with(ballResetNeeded: false)
+        return state.with(ballResetInProgress: false)
     }
 
     private func reduceBrickHit(id: BrickId, state: GameState) -> GameState {

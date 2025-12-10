@@ -65,7 +65,7 @@ struct GameSessionTest {
     }
     
     @Test
-    func acknowledgingBallResetClearsFlagAndPersistsState() {
+    func announcingBallResetInProgressClearsFlagAndPersistsState() {
         let repository = InMemoryGameStateRepository()
         repository.save(
             GameState.initial
@@ -76,11 +76,83 @@ struct GameSessionTest {
         let session = GameSession(repository: repository, reducer: GameReducer())
 
         // When acknowledging the ball reset
-        session.acknowledgeBallReset()
+        session.announceBallResetInProgress()
 
         // Then the persisted state should have the flag cleared
         let saved = repository.load()
         #expect(saved.ballResetNeeded == false)
+    }
+
+    @Test
+    func acknowledgingBallResetClearsFlagAndPersistsState() {
+        let repository = InMemoryGameStateRepository()
+        repository.save(
+            GameState.initial
+                .with(ballResetNeeded: true)
+                .with(status: .playing)
+        )
+
+        let session = GameSession(repository: repository, reducer: GameReducer())
+
+        session.acknowledgeBallReset()
+
+        let saved = repository.load()
+        #expect(saved.ballResetInProgress == false)
+    }
+
+    @Test
+    func sessionShouldNotAcknowledgeResetAsLongAsBallResetIsNeeded() {
+        let repository = InMemoryGameStateRepository()
+        repository.save(
+            GameState.initial
+                .with(ballResetNeeded: true)
+                .with(status: .playing)
+        )
+
+        let session = GameSession(repository: repository, reducer: GameReducer())
+
+        session.acknowledgeBallReset()
+
+        let saved = repository.load()
+        #expect(saved.ballResetNeeded == true)
+        #expect(saved.ballResetInProgress == false)
+    }
+
+    @Test
+    func sessionCannotAnnounceResetInProgressUnlessResetWasNeeded() {
+        let repository = InMemoryGameStateRepository()
+        repository.save(
+            GameState.initial
+                .with(ballResetNeeded: false)
+                .with(status: .playing)
+        )
+
+        let session = GameSession(repository: repository, reducer: GameReducer())
+
+        session.announceBallResetInProgress()
+
+        let saved = repository.load()
+        #expect(saved.ballResetNeeded == false)
+        #expect(saved.ballResetInProgress == false)
+    }
+
+    @Test
+    func losingTheFinalBallMustNeverProduceBallResetInProgress() {
+        let repository = InMemoryGameStateRepository()
+        repository.save(
+            GameState.initial
+                .with(ballResetNeeded: false)
+                .with(status: .playing)
+                .with(lives: 1)
+        )
+
+        let session = GameSession(repository: repository, reducer: GameReducer())
+
+        session.apply(.ballLost)
+
+        let saved = repository.load()
+        #expect(saved.ballResetNeeded == false)
+        #expect(saved.ballResetInProgress == false)
     }
 
 }

@@ -6,13 +6,15 @@ nonisolated struct GameState: Equatable {
     let status: GameStatus
     let bricks: [BrickId: Brick]
     let ballResetNeeded: Bool
+    let ballResetInProgress: Bool
 
     static let initial = GameState(
         score: 0,
         lives: 3,
         status: .idle,
         bricks: [:],
-        ballResetNeeded: false
+        ballResetNeeded: false,
+        ballResetInProgress: false
     )
 
     func with(score: Int) -> GameState {
@@ -21,7 +23,8 @@ nonisolated struct GameState: Equatable {
             lives: lives,
             status: status,
             bricks: bricks,
-            ballResetNeeded: ballResetNeeded
+            ballResetNeeded: ballResetNeeded,
+            ballResetInProgress: ballResetInProgress
         )
     }
 
@@ -31,7 +34,8 @@ nonisolated struct GameState: Equatable {
             lives: lives,
             status: status,
             bricks: bricks,
-            ballResetNeeded: ballResetNeeded
+            ballResetNeeded: ballResetNeeded,
+            ballResetInProgress: ballResetInProgress
         )
     }
 
@@ -41,7 +45,8 @@ nonisolated struct GameState: Equatable {
             lives: lives,
             status: status,
             bricks: bricks,
-            ballResetNeeded: ballResetNeeded
+            ballResetNeeded: ballResetNeeded,
+            ballResetInProgress: ballResetInProgress
         )
     }
 
@@ -51,7 +56,8 @@ nonisolated struct GameState: Equatable {
             lives: lives,
             status: status,
             bricks: bricks,
-            ballResetNeeded: ballResetNeeded
+            ballResetNeeded: ballResetNeeded,
+            ballResetInProgress: ballResetInProgress
         )
     }
 
@@ -61,7 +67,19 @@ nonisolated struct GameState: Equatable {
             lives: lives,
             status: status,
             bricks: bricks,
-            ballResetNeeded: ballResetNeeded
+            ballResetNeeded: ballResetNeeded,
+            ballResetInProgress: ballResetInProgress
+        )
+    }
+
+    func with(ballResetInProgress: Bool) -> GameState {
+        GameState(
+            score: score,
+            lives: lives,
+            status: status,
+            bricks: bricks,
+            ballResetNeeded: ballResetNeeded,
+            ballResetInProgress: ballResetInProgress
         )
     }
 }

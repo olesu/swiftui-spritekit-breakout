@@ -21,6 +21,10 @@ struct GameSession {
         repository.save(.initial.with(bricks: bricks))
     }
     
+    func announceBallResetInProgress() {
+        repository.save(reducer.announcedBallResetInProgress(state))
+    }
+    
     func acknowledgeBallReset() {
         repository.save(reducer.acknowledgeBallReset(state))
     }
