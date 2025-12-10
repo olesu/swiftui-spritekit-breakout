@@ -61,7 +61,7 @@ struct GameView: View {
             .onAppear {
                 do {
                     try viewModel.startNewGame()
-                    scene = try sceneBuilder.makeScene(for: viewModel.session)
+                    scene = sceneBuilder.makeScene()
                 } catch {
                     // TODO
                 }

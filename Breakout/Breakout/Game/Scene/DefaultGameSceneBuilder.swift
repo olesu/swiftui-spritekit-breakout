@@ -4,26 +4,31 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
     private let gameConfigurationService: GameConfigurationService
     private let collisionRouter: CollisionRouter
     private let nodeCreator: NodeCreator
+    private let session: GameSession
 
     init(
         gameConfigurationService: GameConfigurationService,
         collisionRouter: CollisionRouter,
-        nodeCreator: NodeCreator
+        nodeCreator: NodeCreator,
+        session: GameSession
     ) {
         self.gameConfigurationService = gameConfigurationService
         self.collisionRouter = collisionRouter
         self.nodeCreator = nodeCreator
+        self.session = session
     }
 
-    func makeScene(for session: GameSession) throws -> GameScene {
-        let nodes = try nodeCreator.createNodes()
+    func makeScene() -> GameScene {
+        let nodes = nodeCreator.createNodes()
+
         guard let paddleNode = nodes[.paddle] as? SKSpriteNode else {
+            // TODO throw instead of fatalError
             fatalError("Missing paddle node")
         }
-        let sceneWidth = gameConfigurationService.getGameConfiguration()
-            .sceneWidth
-        let sceneHeight = gameConfigurationService.getGameConfiguration()
-            .sceneHeight
+
+        let c = gameConfigurationService.getGameConfiguration()
+        let sceneWidth = c.sceneWidth
+        let sceneHeight = c.sceneHeight
 
         let scene = GameScene(
             size: CGSize(width: sceneWidth, height: sceneHeight),

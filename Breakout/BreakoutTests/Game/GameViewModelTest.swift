@@ -44,7 +44,6 @@ struct GameViewModelTest {
             brickService: BrickService(
                 adapter: FakeBrickLayoutAdapter()
             ),
-            gameSceneBuilder: FakeGameSceneBuilder()
 
         )
         return (model, repository)

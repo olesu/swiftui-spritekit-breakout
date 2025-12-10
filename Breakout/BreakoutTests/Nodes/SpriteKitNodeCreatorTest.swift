@@ -5,17 +5,16 @@ import Testing
 
 @MainActor
 struct SpriteKitNodeCreatorTest {
-    private let brickService = BrickService(adapter: FakeBrickLayoutAdapter())
-    
-    @Test func createsNodesFromBrickSpec() throws {
+    @Test func createsNodesFromBrickSpec() {
         let creator = SpriteKitNodeCreator(
-            brickService: brickService,
-            gameConfigurationService: FakeGameConfigurationService(),
+            session: GameSession(
+                repository: InMemoryGameStateRepository(),
+                reducer: GameReducer()
+            )
         )
 
-        let nodes = try creator.createNodes()
+        let nodes = creator.createNodes()
 
         #expect(nodes.count == 7)
     }
 }
-

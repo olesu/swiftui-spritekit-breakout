@@ -4,7 +4,7 @@ import SpriteKit
 @testable import Breakout
 
 final class FakeGameSceneBuilder: GameSceneBuilder {
-    func makeScene(for session: GameSession) -> GameScene {
+    func makeScene() -> GameScene {
         // Ensure nodes contains a .brickLayout
         let nodes: [NodeNames: SKNode] = [
             .brickLayout: SKNode()
