@@ -5,15 +5,11 @@ import SpriteKit
 internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let gameNodes: [NodeNames: SKNode]
     private let collisionRouter: CollisionRouter
-
-    private var nodeManager: NodeManager?
-
+    private let nodeManager: NodeManager
     private let gameSession: GameSession
-    
     private let ballController: BallController
     private let paddleMotionController: PaddleMotionController
-
-    private var paddleInput: PaddleInputController?
+    private let paddleInputController: PaddleInputController
     private let paddleBounceApplier = PaddleBounceApplier()  // TODO: Inject
 
     private var lastUpdateTime: TimeInterval = 0
@@ -28,14 +24,18 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         nodes: [NodeNames: SKNode],
         collisionRouter: CollisionRouter,
         paddleMotionController: PaddleMotionController,
-        gameSession: GameSession
+        gameSession: GameSession,
+        nodeManager: NodeManager,
+        ballController: BallController,
+        paddleInputController: PaddleInputController
     ) {
         self.gameNodes = nodes
-        self.nodeManager = BrickNodeManager(nodes: gameNodes)
-        self.ballController = BallController()  // TODO: Inject
+        self.nodeManager = nodeManager
+        self.ballController = ballController
         self.collisionRouter = collisionRouter
         self.paddleMotionController = paddleMotionController
         self.gameSession = gameSession
+        self.paddleInputController = paddleInputController
         super.init(size: size)
     }
 
@@ -48,11 +48,10 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         addGameNodes()
         addGradientBackground()
         cacheImportantNodes()
-        initPaddleMotionAndInput()
     }
 
     private func addGameNodes() {
-        nodeManager?.allNodes.forEach(addChild)
+        nodeManager.allNodes.forEach(addChild)
     }
 
     private func cacheImportantNodes() {
@@ -64,10 +63,6 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
             paddleNode != nil,
             "GameScene: Missing .paddle in node dictionary"
         )
-    }
-
-    private func initPaddleMotionAndInput() {
-        paddleInput = PaddleInputController(motion: paddleMotionController)
     }
 
     override internal func update(_ currentTime: TimeInterval) {
@@ -135,7 +130,7 @@ extension GameScene {
     
     private func handleBallHitBrick(_ brickId: BrickId) {
         gameSession.apply(.brickHit(brickID: brickId))
-        nodeManager?.remove(brickId: brickId)
+        nodeManager.remove(brickId: brickId)
     }
     
     private func handleBallHitGutter() {
@@ -197,26 +192,26 @@ extension GameScene {
 // Mark: - Paddle Intent API
 extension GameScene {
     func movePaddle(to point: CGPoint) {
-        paddleInput?.movePaddle(to: point)
+        paddleInputController.movePaddle(to: point)
     }
 
     func endPaddleOverride() {
-        paddleInput?.endPaddleOverride()
+        paddleInputController.endPaddleOverride()
     }
 
     func pressLeft() {
-        paddleInput?.pressLeft()
+        paddleInputController.pressLeft()
     }
 
     func pressRight() {
-        paddleInput?.pressRight()
+        paddleInputController.pressRight()
     }
 
     func releaseLeft() {
-        paddleInput?.releaseLeft()
+        paddleInputController.releaseLeft()
     }
 
     func releaseRight() {
-        paddleInput?.releaseRight()
+        paddleInputController.releaseRight()
     }
 }

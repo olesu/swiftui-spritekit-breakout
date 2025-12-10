@@ -29,16 +29,22 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         let c = gameConfigurationService.getGameConfiguration()
         let sceneWidth = c.sceneWidth
         let sceneHeight = c.sceneHeight
+        
+        let paddleMotionController = makePaddleMotionController(
+            paddleNode: paddleNode,
+            sceneWidth: sceneWidth
+        )
+        let paddleInputController = PaddleInputController(motion: paddleMotionController)
 
         let scene = GameScene(
             size: CGSize(width: sceneWidth, height: sceneHeight),
             nodes: nodes,
             collisionRouter: collisionRouter,
-            paddleMotionController: makePaddleMotionController(
-                paddleNode: paddleNode,
-                sceneWidth: sceneWidth
-            ),
-            gameSession: session
+            paddleMotionController: paddleMotionController,
+            gameSession: session,
+            nodeManager: BrickNodeManager(nodes: nodes),
+            ballController: BallController(),
+            paddleInputController: paddleInputController
         )
 
         return scene
