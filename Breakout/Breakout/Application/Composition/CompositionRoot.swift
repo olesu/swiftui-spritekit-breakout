@@ -25,7 +25,8 @@ enum CompositionRoot {
             gameService: game.reducer,
             idleViewModel: navigation.idleViewModel,
             gameViewModel: game.viewModel,
-            gameEndViewModel: gameResult.gameEndViewModel
+            gameEndViewModel: gameResult.gameEndViewModel,
+            sceneBuilder: game.sceneBuilder
         )
     }
 }
@@ -96,7 +97,8 @@ extension CompositionRoot {
         screenNavigationService: DefaultScreenNavigationService
     ) -> (
         reducer: GameReducer,
-        viewModel: GameViewModel
+        viewModel: GameViewModel,
+        sceneBuilder: GameSceneBuilder
     ) {
         let repository = InMemoryGameStateRepository()
         let reducer = GameReducer()
@@ -120,6 +122,7 @@ extension CompositionRoot {
         let gameSceneBuilder = DefaultGameSceneBuilder(
             gameConfigurationService: configurationService,
             collisionRouter: collisionRouter,
+            nodeCreator: nodeCreator
         )
 
         let viewModel = GameViewModel(
@@ -127,12 +130,11 @@ extension CompositionRoot {
             configurationService: configurationService,
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService,
-            nodeCreator: nodeCreator,
             brickService: brickService,
             gameSceneBuilder: gameSceneBuilder
         )
 
-        return (reducer, viewModel)
+        return (reducer, viewModel, gameSceneBuilder)
     }
 
 }

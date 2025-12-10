@@ -4,10 +4,9 @@ import SwiftUI
 
 @Observable
 final class GameViewModel {
-    private let session: GameSession
+    let session: GameSession
     private let screenNavigationService: ScreenNavigationService
     private let gameResultService: GameResultService
-    private let nodeCreator: NodeCreator
     private let brickService: BrickService
     private let gameSceneBuilder: GameSceneBuilder
 
@@ -26,7 +25,6 @@ final class GameViewModel {
         configurationService: GameConfigurationService,
         screenNavigationService: ScreenNavigationService,
         gameResultService: GameResultService,
-        nodeCreator: NodeCreator,
         brickService: BrickService,
         gameSceneBuilder: GameSceneBuilder
     ) {
@@ -46,7 +44,6 @@ final class GameViewModel {
             height: config.brickArea.height
         )
         self.layoutFileName = config.layoutFileName
-        self.nodeCreator = nodeCreator
         self.brickService = brickService
         self.gameSceneBuilder = gameSceneBuilder
 
@@ -93,22 +90,10 @@ extension GameViewModel {
 }
 
 extension GameViewModel {
-    func startNewGame() throws -> GameScene {
-        let nodes = try nodeCreator.createNodes()
+    func startNewGame() throws {
         let bricks = try brickService.load(named: layoutFileName)
 
         session.startGame(bricks: bricks)
-
-        currentScore = session.state.score
-        remainingLives = session.state.lives
-        gameStatus = session.state.status
-
-        let scene = gameSceneBuilder.makeScene(
-            with: nodes,
-            gameSession: session
-        )
-
-        return scene
     }
 
 }

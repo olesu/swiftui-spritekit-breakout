@@ -3,19 +3,20 @@ import SpriteKit
 struct DefaultGameSceneBuilder: GameSceneBuilder {
     private let gameConfigurationService: GameConfigurationService
     private let collisionRouter: CollisionRouter
+    private let nodeCreator: NodeCreator
 
     init(
         gameConfigurationService: GameConfigurationService,
-        collisionRouter: CollisionRouter
+        collisionRouter: CollisionRouter,
+        nodeCreator: NodeCreator
     ) {
         self.gameConfigurationService = gameConfigurationService
         self.collisionRouter = collisionRouter
+        self.nodeCreator = nodeCreator
     }
 
-    func makeScene(
-        with nodes: [NodeNames: SKNode],
-        gameSession: GameSession,
-    ) -> GameScene {
+    func makeScene(for session: GameSession) throws -> GameScene {
+        let nodes = try nodeCreator.createNodes()
         guard let paddleNode = nodes[.paddle] as? SKSpriteNode else {
             fatalError("Missing paddle node")
         }
@@ -32,7 +33,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
                 paddleNode: paddleNode,
                 sceneWidth: sceneWidth
             ),
-            gameSession: gameSession
+            gameSession: session
         )
 
         return scene

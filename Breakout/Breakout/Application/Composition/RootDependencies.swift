@@ -9,4 +9,5 @@ struct RootDependencies {
     let idleViewModel: IdleViewModel
     let gameViewModel: GameViewModel
     let gameEndViewModel: GameEndViewModel
+    let sceneBuilder: GameSceneBuilder
 }

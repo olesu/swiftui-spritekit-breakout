@@ -6,6 +6,12 @@ struct GameView: View {
     @Environment(GameViewModel.self) private var viewModel: GameViewModel
     @State private var scene: GameScene?
     @FocusState private var isFocused: Bool
+    
+    private let sceneBuilder: GameSceneBuilder
+    
+    init(sceneBuilder: GameSceneBuilder) {
+        self.sceneBuilder = sceneBuilder
+    }
 
     var body: some View {
         ZStack {
@@ -54,7 +60,8 @@ struct GameView: View {
             }
             .onAppear {
                 do {
-                    scene = try viewModel.startNewGame()
+                    try viewModel.startNewGame()
+                    scene = try sceneBuilder.makeScene(for: viewModel.session)
                 } catch {
                     // TODO
                 }

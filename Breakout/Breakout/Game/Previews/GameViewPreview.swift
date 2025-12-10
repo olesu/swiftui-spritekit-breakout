@@ -20,22 +20,25 @@ import SwiftUI
             brickIdentifier: NodeNameBrickIdentifier()
         )
         let brickService = BrickService(adapter: JsonBrickLayoutAdapter())
+        let nodeCreator = SpriteKitNodeCreator(
+            brickService: brickService,
+            gameConfigurationService: configurationService
+        )
+        let sceneBuilder = DefaultGameSceneBuilder(
+            gameConfigurationService: configurationService,
+            collisionRouter: collisionRouter,
+            nodeCreator: nodeCreator
+        )
         let viewModel = GameViewModel(
             session: session,
             configurationService: configurationService,
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService,
-            nodeCreator: SpriteKitNodeCreator(
-                brickService: brickService,
-                gameConfigurationService: configurationService
-            ),
             brickService: brickService,
-            gameSceneBuilder: DefaultGameSceneBuilder(
-                gameConfigurationService: configurationService, collisionRouter: collisionRouter
-            )
+            gameSceneBuilder: sceneBuilder
         )
 
-        GameView()
+        GameView(sceneBuilder: sceneBuilder)
             .environment(viewModel)
             .frame(
                 width: configurationService.getGameConfiguration().sceneWidth

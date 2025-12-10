@@ -14,7 +14,7 @@ struct RootView: View {
                 IdleView()
                     .environment(deps.idleViewModel)
             case .game:
-                GameView()
+                GameView(sceneBuilder: deps.sceneBuilder)
                     .environment(deps.gameViewModel)
             case .gameEnd:
                 GameEndView()

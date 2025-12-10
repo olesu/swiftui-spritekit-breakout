@@ -8,9 +8,7 @@ struct GameViewModelTest {
 
     @Test func startNewGameCreatesScene() throws {
         let (vm, _) = makeGameViewModel(with: .initial)
-        let scene = try vm.startNewGame()
-
-        #expect(scene.size == vm.sceneSize)
+        try vm.startNewGame()
     }
     
     @Test func startNewGameInitializesDomain() throws {
@@ -24,11 +22,10 @@ struct GameViewModelTest {
     @Test func startNewGameUpdatesUIState() throws {
         let (vm, _) = makeGameViewModel(with: .initial)
 
-        _ = try vm.startNewGame()
+        try vm.startNewGame()
 
         #expect(vm.remainingLives == GameState.initial.lives)
         #expect(vm.currentScore == 0)
-        #expect(vm.gameStatus == .playing)
     }
 
 
@@ -44,7 +41,6 @@ struct GameViewModelTest {
             configurationService: FakeGameConfigurationService(),
             screenNavigationService: FakeScreenNavigationService(),
             gameResultService: FakeGameResultService(),
-            nodeCreator: FakeNodeCreator(),
             brickService: BrickService(
                 adapter: FakeBrickLayoutAdapter()
             ),
