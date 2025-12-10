@@ -69,7 +69,7 @@ extension GameViewModel {
         let scene = gameSceneBuilder.makeScene(
             with: nodes,
             onGameEvent: { [weak self] event in self?.handleGameEvent(event) },
-            onBallResetComplete: { [weak self] in self?.acknowledgeBallReset() }
+            gameSession: session
         )
         wireSceneCallbacks(scene)
         
@@ -82,11 +82,6 @@ extension GameViewModel {
         currentScore = session.state.score
         remainingLives = session.state.lives
         gameStatus = session.state.status
-
-        // TODO: Seems misplaced
-        if session.state.ballResetNeeded {
-            onBallResetNeeded?()
-        }
 
         // Handle game over
         let state = session.state
@@ -101,11 +96,6 @@ extension GameViewModel {
             break
         }
     }
-
-    private func acknowledgeBallReset() {
-        session.acknowledgeBallReset()
-    }
-
 }
 
 extension GameViewModel {

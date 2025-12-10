@@ -7,20 +7,27 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
     func makeScene(
         with nodes: [NodeNames: SKNode],
         onGameEvent: @escaping (GameEvent) -> Void,
-        onBallResetComplete: @escaping () -> Void
+        gameSession: GameSession,
     ) -> GameScene {
         // Ensure nodes contains a .brickLayout
         let nodes: [NodeNames: SKNode] = [
             .brickLayout: SKNode()
         ]
-        
+
         return GameScene(
             size: CGSize(width: 320, height: 480),
             nodes: nodes,
             onGameEvent: onGameEvent,
-            onBallResetComplete: onBallResetComplete,
             collisionRouter: FakeCollisionRouter(),
-            paddleMotionController: PaddleMotionController(paddle: Paddle(x: 0, y: 0, w: 0, h: 0), speed: 0, sceneWidth: 0)
+            paddleMotionController: PaddleMotionController(
+                paddle: Paddle(x: 0, y: 0, w: 0, h: 0),
+                speed: 0,
+                sceneWidth: 0
+            ),
+            gameSession: GameSession(
+                repository: InMemoryGameStateRepository(),
+                reducer: GameReducer()
+            )
         )
     }
 

@@ -5,12 +5,12 @@ import SpriteKit
 internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let gameNodes: [NodeNames: SKNode]
     private let onGameEvent: (GameEvent) -> Void
-    private let onBallResetComplete: (() -> Void)
     private let collisionRouter: CollisionRouter
 
     private var nodeManager: NodeManager?
 
-
+    private let gameSession: GameSession
+    
     private let ballController: BallController
     private let paddleMotionController: PaddleMotionController
 
@@ -26,17 +26,17 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         size: CGSize,
         nodes: [NodeNames: SKNode],
         onGameEvent: @escaping (GameEvent) -> Void,
-        onBallResetComplete: @escaping () -> Void,
         collisionRouter: CollisionRouter,
-        paddleMotionController: PaddleMotionController
+        paddleMotionController: PaddleMotionController,
+        gameSession: GameSession
     ) {
         self.gameNodes = nodes
         self.nodeManager = BrickNodeManager(nodes: gameNodes)
         self.onGameEvent = onGameEvent
-        self.onBallResetComplete = onBallResetComplete
         self.ballController = BallController()  // TODO: Inject
         self.collisionRouter = collisionRouter
         self.paddleMotionController = paddleMotionController
+        self.gameSession = gameSession
         super.init(size: size)
     }
 
@@ -78,6 +78,16 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         }
 
         let dt = currentTime - lastUpdateTime
+        
+        if gameSession.state.ballResetNeeded {
+            resetBall()
+        }
+        updateBallAndPaddle(deltaTime: dt)
+
+        lastUpdateTime = currentTime
+    }
+    
+    private func updateBallAndPaddle(deltaTime dt: TimeInterval) {
         paddleMotionController.update(deltaTime: dt) // TODO: Should probably return next position
 
         if let ball = ballNode,
@@ -86,7 +96,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
             paddle.position.x = CGFloat(paddleMotionController.paddle.x) // TODO: Should be obvious! But we do need to mutate the sprite position somewhere
             ballController.update(ball: ball, paddle: paddle)
         }
-        lastUpdateTime = currentTime
+
     }
 
     private func addGradientBackground() {
@@ -150,7 +160,7 @@ extension GameScene {
             else { return }
 
             self.ballController.performReset(ball: ball, at: resetPosition())
-            self.onBallResetComplete()
+            gameSession.acknowledgeBallReset()
         }
 
         run(.sequence([wait, reset]))

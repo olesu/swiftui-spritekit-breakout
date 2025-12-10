@@ -15,7 +15,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
     func makeScene(
         with nodes: [NodeNames: SKNode],
         onGameEvent: @escaping (GameEvent) -> Void,
-        onBallResetComplete: @escaping () -> Void
+        gameSession: GameSession,
     ) -> GameScene {
         guard let paddleNode = nodes[.paddle] as? SKSpriteNode else {
             fatalError("Missing paddle node")
@@ -29,12 +29,12 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
             size: CGSize(width: sceneWidth, height: sceneHeight),
             nodes: nodes,
             onGameEvent: onGameEvent,
-            onBallResetComplete: onBallResetComplete,
             collisionRouter: collisionRouter,
             paddleMotionController: makePaddleMotionController(
                 paddleNode: paddleNode,
                 sceneWidth: sceneWidth
-            )
+            ),
+            gameSession: gameSession
         )
 
         return scene
