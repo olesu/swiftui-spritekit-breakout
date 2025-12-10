@@ -8,9 +8,7 @@ struct PaddleTest {
         let paddle = makePaddle(x: 10)
         
         #expect(paddle.x == 10)
-        #expect(paddle.y == 20)
         #expect(paddle.w == 100)
-        #expect(paddle.h == 20)
     }
     
     @Test func canMoveByAnAmount() {
@@ -30,7 +28,7 @@ struct PaddleTest {
     }
     
     private func makePaddle(x: Double) -> Paddle {
-        .init(x: x, y: 20, w: 100, h: 20)
+        .init(x: x, w: 100)
     }
 
 }

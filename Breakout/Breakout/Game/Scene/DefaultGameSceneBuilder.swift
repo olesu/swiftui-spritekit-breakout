@@ -26,7 +26,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         let nodeManager = DefaultNodeManager(brickLayoutFactory: brickLayoutFactory)
         
         let paddleMotionController = makePaddleMotionController(
-            paddleNode: nodeManager.paddle,
+            paddle: nodeManager.paddle,
             sceneWidth: sceneWidth
         )
         let paddleInputController = PaddleInputController(motion: paddleMotionController)
@@ -45,17 +45,15 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
     }
 
     private func makePaddleMotionController(
-        paddleNode: SKSpriteNode,
+        paddle: SKSpriteNode,
         sceneWidth: CGFloat
     ) -> PaddleMotionController {
         let paddleSpeed = 450.0
 
         let result = PaddleMotionController(
             paddle: Paddle(
-                x: paddleNode.position.x,
-                y: paddleNode.position.y,
-                w: paddleNode.size.width,
-                h: paddleNode.size.height
+                x: paddle.position.x,
+                w: paddle.size.width,
             ),
             speed: paddleSpeed,
             sceneWidth: sceneWidth

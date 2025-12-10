@@ -17,7 +17,7 @@ struct PaddleMotionControllerTest {
         controller.startRight()
         controller.update(deltaTime: 1.0)
         
-        #expect(controller.paddle.x <= controller.sceneWidth - controller.paddle.w / 2)
+        #expect(controller.paddle.x <= controller.sceneWidth - controller.paddle.halfWidth)
     }
     
     @Test func stopsRightMotionWHenStopped() {
@@ -35,7 +35,7 @@ struct PaddleMotionControllerTest {
         controller.stop()
         controller.update(deltaTime: 1.0)
         
-        #expect(controller.paddle.x <= controller.sceneWidth - controller.paddle.w / 2)
+        #expect(controller.paddle.x <= controller.sceneWidth - controller.paddle.halfWidth)
     }
     
     @Test func stopsLeftMotionWHenStopped() {
@@ -53,7 +53,7 @@ struct PaddleMotionControllerTest {
         controller.stop()
         controller.update(deltaTime: 1.0)
         
-        #expect(controller.paddle.x >= controller.paddle.w / 2)
+        #expect(controller.paddle.x >= controller.paddle.halfWidth)
     }
     
     @Test func movesLeftBySpeedTimesDeltaTime() {
@@ -68,7 +68,7 @@ struct PaddleMotionControllerTest {
         controller.startLeft()
         controller.update(deltaTime: 1.0)
         
-        #expect(controller.paddle.x >= controller.paddle.w / 2)
+        #expect(controller.paddle.x >= controller.paddle.halfWidth)
     }
 
     @Test func doesNotMovePastLeftBoundary() {
@@ -96,7 +96,7 @@ struct PaddleMotionControllerTest {
         )
 
         controller.startRight()
-        controller.update(deltaTime: 1.0) // would try to move to 490
+        controller.update(deltaTime: 1.0)
 
         #expect(controller.paddle.x <= 300)
     }
@@ -113,7 +113,7 @@ struct PaddleMotionControllerTest {
         controller.startLeft()
         controller.update(deltaTime: 1.0)
         
-        let leftEdge = controller.paddle.x - controller.paddle.w / 2.0
+        let leftEdge = controller.paddle.x - controller.paddle.halfWidth
         #expect(leftEdge >= 0)
     }
     
@@ -203,11 +203,11 @@ struct PaddleMotionControllerTest {
 
         controller.update(deltaTime: 1.0)
 
-        #expect(controller.paddle.x > 150) // intent restored
+        #expect(controller.paddle.x > 150)
     }
     
     private func makePaddle() -> Paddle {
-        .init(x: 100, y: 0, w: 50, h: 10)
+        .init(x: 100, w: 50)
     }
 
 }

@@ -29,6 +29,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         self.paddleMotionController = paddleMotionController
         self.gameSession = gameSession
         self.paddleInputController = paddleInputController
+        
         super.init(size: size)
     }
 
@@ -36,24 +37,9 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func didMove(to view: SKView) {
-        physicsWorld.contactDelegate = self
-        addGameNodes()
-        addGradientBackground()
-    }
+}
 
-    private func addGameNodes() {
-        addChild(nodeManager.topWall)
-        addChild(nodeManager.leftWall)
-        addChild(nodeManager.rightWall)
-        addChild(nodeManager.gutter)
-        
-        addChild(nodeManager.bricks)
-        
-        addChild(nodeManager.paddle)
-        addChild(nodeManager.ball)
-    }
-
+extension GameScene {
     override internal func update(_ currentTime: TimeInterval) {
         guard lastUpdateTime > 0 else {
             lastUpdateTime = currentTime
@@ -77,19 +63,33 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     private func updateBallAndPaddle(deltaTime dt: TimeInterval) {
-        paddleMotionController.update(deltaTime: dt)  // TODO: Should probably return next position
+        paddleMotionController.update(deltaTime: dt)
+        nodeManager.paddle.position.x = CGFloat(paddleMotionController.paddle.x)
+        ballController.update(ball: nodeManager.ball, paddle: nodeManager.paddle)
+    }
+}
 
-        let paddle = nodeManager.paddle
-        let ball = nodeManager.ball
-
-        paddle.position.x = CGFloat(paddleMotionController.paddle.x)  // TODO: Should be obvious! But we do need to mutate the sprite position somewhere
-        ballController.update(ball: ball, paddle: paddle)
+// MARK: - didMove (add nodes)
+extension GameScene {
+    override func didMove(to view: SKView) {
+        physicsWorld.contactDelegate = self
+        addGameNodes()
     }
 
-    private func addGradientBackground() {
+    private func addGameNodes() {
         addChild(GradientBackground.create(with: size))
-    }
+        
+        addChild(nodeManager.topWall)
+        addChild(nodeManager.leftWall)
+        addChild(nodeManager.rightWall)
+        addChild(nodeManager.gutter)
+        
+        addChild(nodeManager.bricks)
+        
+        addChild(nodeManager.paddle)
+        addChild(nodeManager.ball)
 
+    }
 }
 
 // MARK: - Physics Contact Delegate

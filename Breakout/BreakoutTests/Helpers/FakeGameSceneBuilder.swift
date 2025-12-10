@@ -7,7 +7,7 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
     func makeScene() -> GameScene {
         let ballController = BallController()
         let paddleMotionController = PaddleMotionController(
-            paddle: Paddle(x: 0, y: 0, w: 0, h: 0),
+            paddle: Paddle(x: 0, w: 0),
             speed: 0,
             sceneWidth: 0
         )
