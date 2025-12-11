@@ -37,7 +37,8 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
             paddleMotionController: paddleMotionController,
             gameSession: session,
             nodeManager: nodeManager,
-            ballController: BallController(),
+            ballLaunchController: BallLaunchController(),
+            ballMotionController: BallMotionController(),
             paddleInputController: paddleInputController
         )
 

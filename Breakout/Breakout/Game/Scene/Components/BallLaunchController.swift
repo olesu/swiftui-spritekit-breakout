@@ -1,6 +1,6 @@
 import SpriteKit
 
-final class BallController {
+final class BallLaunchController {
     private let launchVector = CGVector(dx: 0, dy: 400)
     private let disabledMask: UInt32 = 0x0
 

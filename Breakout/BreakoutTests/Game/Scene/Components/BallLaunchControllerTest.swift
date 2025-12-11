@@ -4,13 +4,13 @@ import Testing
 @testable import Breakout
 
 @MainActor
-struct BallControllerTest {
+struct BallLaunchControllerTest {
+    let controller = TD.ballLaunchController()
+    let paddle = TD.paddle()
+    let ball = TD.ball()
+
 
     @Test func clampsBallCenteredAboveThePaddle() {
-        let controller = TD.ballController()
-        let paddle = TD.paddle()
-        let ball = TD.ball()
-
         paddle.position = TD.paddleStartPosition()
 
         controller.clamp(ball: ball, to: paddle)
@@ -20,9 +20,6 @@ struct BallControllerTest {
     }
 
     @Test func launchesBallWithUpwardVelocity() {
-        let controller = TD.ballController()
-        let ball = TD.ball()
-
         ball.physicsBody = TD.ballPhysicsBody()
 
         controller.launch(ball: ball)
@@ -33,10 +30,6 @@ struct BallControllerTest {
     }
 
     @Test func resetClampsBallToThePaddle() {
-        let controller = TD.ballController()
-        let ball = TD.ball()
-        let paddle = TD.paddle()
-
         paddle.position = TD.paddleStartPosition()
 
         ball.position = CGPoint(x: 999, y: 999)
@@ -53,9 +46,6 @@ struct BallControllerTest {
     }
     
     @Test func clampStopsBallMovement() {
-        let controller = TD.ballController()
-        let ball = TD.ball()
-        
         ball.physicsBody = TD.ballPhysicsBody()
         ball.physicsBody?.velocity = CGVector(dx: 10, dy: 10)
         
@@ -65,10 +55,6 @@ struct BallControllerTest {
     }
     
     @Test func clampedBallFollowsPaddle() {
-        let controller = TD.ballController()
-        let ball = TD.ball()
-        let paddle = TD.paddle()
-
         paddle.position = TD.paddleStartPosition()
         ball.physicsBody = TD.ballPhysicsBody()
         
@@ -84,10 +70,6 @@ struct BallControllerTest {
     }
     
     @Test func launchedBallDoesNotFollowPaddle() {
-        let controller = TD.ballController()
-        let ball = TD.ball()
-        let paddle = TD.paddle()
-
         paddle.position = TD.paddleStartPosition()
         ball.physicsBody = TD.ballPhysicsBody()
         
@@ -104,9 +86,6 @@ struct BallControllerTest {
     }
     
     @Test func prepareResetDisablesPhysicsAndHidesBall() {
-        let controller = TD.ballController()
-        let ball = TD.ball()
-        
         ball.physicsBody = TD.ballPhysicsBody()
         
         controller.prepareReset(ball: ball)
@@ -118,9 +97,6 @@ struct BallControllerTest {
     }
     
     @Test func performResetRestoresPhysicsAndVisibility() {
-        let controller = TD.ballController()
-        let ball = TD.ball()
-        
         ball.physicsBody = TD.ballPhysicsBody()
         ball.physicsBody?.velocity = CGVector(dx: 123, dy: -456)
         ball.physicsBody?.angularVelocity = .pi
@@ -150,8 +126,6 @@ struct BallControllerTest {
     }
     
     @Test func performResetSetsStateToClamped() {
-        let controller = TD.ballController()
-        let ball = TD.ball()
         ball.physicsBody = TD.ballPhysicsBody()
         
         controller.launch(ball: ball)
@@ -162,8 +136,6 @@ struct BallControllerTest {
     }
     
     @Test func performResetClampsBallAndFollowsPaddle() {
-        let controller = TD.ballController()
-        let ball = TD.ball()
         ball.physicsBody = TD.ballPhysicsBody()
         let paddle = TD.paddle()
 
@@ -180,10 +152,6 @@ struct BallControllerTest {
     }
 
     @Test func performWorldResetDoesNotClampBall() {
-        let controller = TD.ballController()
-        let ball = TD.ball()
-        let paddle = TD.paddle()
-
         ball.physicsBody = TD.ballPhysicsBody()
 
         controller.prepareReset(ball: ball)
@@ -203,10 +171,6 @@ struct BallControllerTest {
     }
 
     @Test func performPaddleResetClampsBallToPaddle() {
-        let controller = TD.ballController()
-        let ball = TD.ball()
-        let paddle = TD.paddle()
-
         ball.physicsBody = TD.ballPhysicsBody()
         paddle.position = TD.paddleStartPosition()
 
@@ -219,10 +183,6 @@ struct BallControllerTest {
     }
 
     @Test func performPaddleResetMakesBallFollowPaddle() {
-        let controller = TD.ballController()
-        let ball = TD.ball()
-        let paddle = TD.paddle()
-        
         ball.physicsBody = TD.ballPhysicsBody()
         paddle.position = TD.paddleStartPosition()
 
@@ -244,8 +204,8 @@ struct BallControllerTest {
 }
 
 private enum TD {
-    static func ballController() -> BallController {
-        BallController()
+    static func ballLaunchController() -> BallLaunchController {
+        BallLaunchController()
     }
 
     static func ball() -> SKSpriteNode {

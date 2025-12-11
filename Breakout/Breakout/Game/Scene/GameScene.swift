@@ -6,7 +6,8 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let collisionRouter: CollisionRouter
     private let nodeManager: NodeManager
     private let gameSession: GameSession
-    private let ballController: BallController
+    private let ballLaunchController: BallLaunchController
+    private let ballMotionController: BallMotionController
     private let paddleMotionController: PaddleMotionController
     private let paddleInputController: PaddleInputController
     private let paddleBounceApplier = PaddleBounceApplier()  // TODO: Inject
@@ -20,11 +21,13 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         paddleMotionController: PaddleMotionController,
         gameSession: GameSession,
         nodeManager: NodeManager,
-        ballController: BallController,
+        ballLaunchController: BallLaunchController,
+        ballMotionController: BallMotionController,
         paddleInputController: PaddleInputController
     ) {
         self.nodeManager = nodeManager
-        self.ballController = ballController
+        self.ballLaunchController = ballLaunchController
+        self.ballMotionController = ballMotionController
         self.collisionRouter = collisionRouter
         self.paddleMotionController = paddleMotionController
         self.gameSession = gameSession
@@ -65,7 +68,7 @@ extension GameScene {
     private func updateBallAndPaddle(deltaTime dt: TimeInterval) {
         paddleMotionController.update(deltaTime: dt)
         nodeManager.paddle.position.x = CGFloat(paddleMotionController.paddle.x)
-        ballController.update(ball: nodeManager.ball, paddle: nodeManager.paddle)
+        ballLaunchController.update(ball: nodeManager.ball, paddle: nodeManager.paddle)
     }
 }
 
@@ -132,7 +135,7 @@ extension GameScene {
 // MARK: - Ball Control
 extension GameScene {
     internal func resetBall() {
-        ballController.prepareReset(ball: nodeManager.ball)
+        ballLaunchController.prepareReset(ball: nodeManager.ball)
 
         //        let wait = SKAction.wait(forDuration: 0.5)
 
@@ -141,7 +144,7 @@ extension GameScene {
                 let self
             else { return }
 
-            self.ballController.performReset(ball: nodeManager.ball, at: resetPosition())
+            self.ballLaunchController.performReset(ball: nodeManager.ball, at: resetPosition())
 
             gameSession.acknowledgeBallReset()
             localResetInProgress = false
@@ -155,10 +158,11 @@ extension GameScene {
     }
 
     internal func launchBall() {
-        ballController.launch(ball: nodeManager.ball)
+        ballLaunchController.launch(ball: nodeManager.ball)
     }
 
     private func adjustBallVelocityForPaddleHit() {
+        ballMotionController.update(ball: nodeManager.ball, speedMultiplier: 1.03)
         paddleBounceApplier.applyBounce(ball: nodeManager.ball, paddle: nodeManager.paddle)
     }
 }

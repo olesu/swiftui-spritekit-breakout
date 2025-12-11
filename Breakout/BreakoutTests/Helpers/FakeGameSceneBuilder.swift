@@ -5,7 +5,7 @@ import SpriteKit
 
 final class FakeGameSceneBuilder: GameSceneBuilder {
     func makeScene() -> GameScene {
-        let ballController = BallController()
+        let ballLaunchController = BallLaunchController()
         let paddleMotionController = PaddleMotionController(
             paddle: Paddle(x: 0, w: 0),
             speed: 0,
@@ -22,7 +22,8 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
                 reducer: GameReducer()
             ),
             nodeManager: DefaultNodeManager(brickLayoutFactory: FakeBrickLayoutFactory()),
-            ballController: ballController,
+            ballLaunchController: ballLaunchController,
+            ballMotionController: BallMotionController(),
             paddleInputController: paddleInputController
         )
     }
