@@ -22,14 +22,27 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         let c = gameConfigurationService.getGameConfiguration()
         let sceneWidth = c.sceneWidth
         let sceneHeight = c.sceneHeight
-        
+
         let nodeManager = DefaultNodeManager(brickLayoutFactory: brickLayoutFactory)
-        
+
         let paddleMotionController = makePaddleMotionController(
             paddle: nodeManager.paddle,
             sceneWidth: sceneWidth
         )
         let paddleInputController = PaddleInputController(motion: paddleMotionController)
+
+        let ballLaunchController = BallLaunchController()
+        let ballMotionController = BallMotionController()
+        let paddleBounceApplier = PaddleBounceApplier()
+
+        // Build the dedicated physics contact handler and inject all collaborators it needs.
+        let contactHandler = GamePhysicsContactHandler(
+            collisionRouter: collisionRouter,
+            gameSession: session,
+            nodeManager: nodeManager,
+            ballMotionController: ballMotionController,
+            paddleBounceApplier: paddleBounceApplier
+        )
 
         let scene = GameScene(
             size: CGSize(width: sceneWidth, height: sceneHeight),
@@ -37,10 +50,11 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
             paddleMotionController: paddleMotionController,
             gameSession: session,
             nodeManager: nodeManager,
-            ballLaunchController: BallLaunchController(),
-            ballMotionController: BallMotionController(),
+            ballLaunchController: ballLaunchController,
+            ballMotionController: ballMotionController,
             paddleInputController: paddleInputController,
-            paddleBounceApplier: PaddleBounceApplier()
+            paddleBounceApplier: paddleBounceApplier,
+            contactHandler: contactHandler
         )
 
         return scene
@@ -55,14 +69,12 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         let result = PaddleMotionController(
             paddle: Paddle(
                 x: paddle.position.x,
-                w: paddle.size.width,
+                w: paddle.size.width
             ),
             speed: paddleSpeed,
             sceneWidth: sceneWidth
         )
 
         return result
-
     }
-
 }

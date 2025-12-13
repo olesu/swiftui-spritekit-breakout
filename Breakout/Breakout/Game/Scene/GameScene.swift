@@ -2,7 +2,34 @@ import AppKit
 import Foundation
 import SpriteKit
 
-internal final class GameScene: SKScene, SKPhysicsContactDelegate {
+// Coordinates game objects, input, physics, and session state for a Breakout scene.
+///
+/// GameScene owns the per-frame update loop, routes physics contacts via CollisionRouter,
+/// and orchestrates paddle and ball behavior through its controllers. It also reflects
+/// gameplay events into GameSession (e.g., brick hits, ball loss) and handles ball reset
+/// flow when the session requests it.
+///
+/// Responsibilities:
+/// - Ticks paddle motion each frame and applies clamped X to the paddle node.
+/// - Keeps a clamped ball attached to the paddle until launch (via BallLaunchController).
+/// - Applies speed and angle adjustments when the ball hits the paddle.
+/// - Routes SpriteKit contacts to high-level events with CollisionRouter.
+/// - Initiates and completes ball resets when GameSession.state.ballResetNeeded is true.
+///
+/// Update loop:
+/// - On first frame, captures the start time.
+/// - Each subsequent frame computes delta time and, if not resetting, updates paddle and ball.
+/// - When a reset is needed, prepares the ball, schedules a reset action, and updates session state.
+///
+/// - Important: GameScene must be the SKPhysicsContactDelegate of its physicsWorld
+///   (set in didMove(to:)) so it can translate contacts into game events.
+///
+/// - Note: The scene expects NodeManager to supply preconfigured nodes (with physics bodies
+///   and categories) and uses those nodes directly.
+///
+/// - SeeAlso: BallLaunchController, BallMotionController, PaddleMotionController,
+///   PaddleInputController, PaddleBounceApplier, CollisionRouter, GameSession.
+final class GameScene: SKScene {
     private let collisionRouter: CollisionRouter
     private let nodeManager: NodeManager
     private let gameSession: GameSession
@@ -11,11 +38,12 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let paddleMotionController: PaddleMotionController
     private let paddleInputController: PaddleInputController
     private let paddleBounceApplier: PaddleBounceApplier
+    private let contactHandler: GamePhysicsContactHandler
 
     private var lastUpdateTime: TimeInterval = 0
     private var localResetInProgress: Bool = false
 
-    internal init(
+    init(
         size: CGSize,
         collisionRouter: CollisionRouter,
         paddleMotionController: PaddleMotionController,
@@ -24,7 +52,8 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         ballLaunchController: BallLaunchController,
         ballMotionController: BallMotionController,
         paddleInputController: PaddleInputController,
-        paddleBounceApplier: PaddleBounceApplier
+        paddleBounceApplier: PaddleBounceApplier,
+        contactHandler: GamePhysicsContactHandler
     ) {
         self.nodeManager = nodeManager
         self.ballLaunchController = ballLaunchController
@@ -34,7 +63,8 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         self.gameSession = gameSession
         self.paddleInputController = paddleInputController
         self.paddleBounceApplier = paddleBounceApplier
-        
+        self.contactHandler = contactHandler
+
         super.init(size: size)
     }
 
@@ -45,7 +75,22 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
 }
 
 extension GameScene {
-    override internal func update(_ currentTime: TimeInterval) {
+    /// Advances the scene by one frame, updating input-driven motion and handling resets.
+    ///
+    /// On the first invocation, this method initializes the timing reference and returns
+    /// without updating game objects. On subsequent frames it:
+    /// - Computes delta time since the previous frame.
+    /// - Checks gameSession.state.ballResetNeeded and, if needed, initiates a local reset
+    ///   (guarded by localResetInProgress) by calling resetBall() and announcing progress
+    ///   to GameSession.
+    /// - If no reset is in progress, updates the paddle motion via PaddleMotionController,
+    ///   applies the clamped X position to the paddle node, and keeps a clamped ball attached
+    ///   to the paddle via BallLaunchController.update(ball:paddle:).
+    /// - Updates lastUpdateTime at the end of the frame.
+    ///
+    /// - Parameter currentTime: The current system time, provided by SpriteKit, used to compute
+    ///   frame delta time.
+    override func update(_ currentTime: TimeInterval) {
         guard lastUpdateTime > 0 else {
             lastUpdateTime = currentTime
             return
@@ -70,73 +115,48 @@ extension GameScene {
     private func updateBallAndPaddle(deltaTime dt: TimeInterval) {
         paddleMotionController.update(deltaTime: dt)
         nodeManager.paddle.position.x = CGFloat(paddleMotionController.paddle.x)
-        ballLaunchController.update(ball: nodeManager.ball, paddle: nodeManager.paddle)
+        ballLaunchController.update(
+            ball: nodeManager.ball,
+            paddle: nodeManager.paddle
+        )
     }
 }
 
 // MARK: - didMove (add nodes)
 extension GameScene {
+    /// Called by SpriteKit after the scene has been presented by a view.
+    ///
+    /// This method finalizes scene setup by:
+    /// - Assigning a dedicated physics contact handler as the physicsWorld.contactDelegate
+    ///   so physics contacts can be routed through `CollisionRouter`.
+    /// - Adding all game nodes (background, walls, gutter, bricks, paddle, ball)
+    ///   provided by `NodeManager` to the scene via `addGameNodes()`.
+    ///
+    /// - Parameter view: The SKView that is now presenting this scene.
     override func didMove(to view: SKView) {
-        physicsWorld.contactDelegate = self
+        physicsWorld.contactDelegate = contactHandler
         addGameNodes()
     }
 
     private func addGameNodes() {
         addChild(GradientBackground.create(with: size))
-        
+
         addChild(nodeManager.topWall)
         addChild(nodeManager.leftWall)
         addChild(nodeManager.rightWall)
         addChild(nodeManager.gutter)
-        
+
         addChild(nodeManager.bricks)
-        
+
         addChild(nodeManager.paddle)
         addChild(nodeManager.ball)
 
     }
 }
 
-// MARK: - Physics Contact Delegate
-extension GameScene {
-    internal func didBegin(_ contact: SKPhysicsContact) {
-        let result = collisionRouter.route(
-            Collision(
-                categoryA: contact.bodyA.categoryBitMask,
-                nodeA: contact.bodyA.node,
-                categoryB: contact.bodyB.categoryBitMask,
-                nodeB: contact.bodyB.node
-            )
-        )
-        switch result {
-        case .ballHitBrick(let brickId):
-            handleBallHitBrick(brickId)
-        case .ballHitGutter:
-            handleBallHitGutter()
-        case .ballHitPaddle:
-            handleBallHitPaddle()
-        case .none:
-            break
-        }
-    }
-
-    private func handleBallHitBrick(_ brickId: BrickId) {
-        gameSession.apply(.brickHit(brickID: brickId))
-        nodeManager.remove(brickId: brickId)
-    }
-
-    private func handleBallHitGutter() {
-        gameSession.apply(.ballLost)
-    }
-
-    private func handleBallHitPaddle() {
-        adjustBallVelocityForPaddleHit()
-    }
-}
-
 // MARK: - Ball Control
 extension GameScene {
-    internal func resetBall() {
+    func resetBall() {
         ballLaunchController.prepareReset(ball: nodeManager.ball)
 
         //        let wait = SKAction.wait(forDuration: 0.5)
@@ -146,7 +166,10 @@ extension GameScene {
                 let self
             else { return }
 
-            self.ballLaunchController.performReset(ball: nodeManager.ball, at: resetPosition())
+            self.ballLaunchController.performReset(
+                ball: nodeManager.ball,
+                at: resetPosition()
+            )
 
             gameSession.acknowledgeBallReset()
             localResetInProgress = false
@@ -159,13 +182,19 @@ extension GameScene {
         .init(x: size.width / 2, y: 50)
     }
 
-    internal func launchBall() {
+    func launchBall() {
         ballLaunchController.launch(ball: nodeManager.ball)
     }
 
     private func adjustBallVelocityForPaddleHit() {
-        ballMotionController.update(ball: nodeManager.ball, speedMultiplier: 1.03)
-        paddleBounceApplier.applyBounce(ball: nodeManager.ball, paddle: nodeManager.paddle)
+        ballMotionController.update(
+            ball: nodeManager.ball,
+            speedMultiplier: 1.03
+        )
+        paddleBounceApplier.applyBounce(
+            ball: nodeManager.ball,
+            paddle: nodeManager.paddle
+        )
     }
 }
 
