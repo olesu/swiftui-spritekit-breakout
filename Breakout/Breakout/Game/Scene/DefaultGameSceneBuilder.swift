@@ -35,7 +35,6 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         let ballMotionController = BallMotionController()
         let paddleBounceApplier = PaddleBounceApplier()
 
-        // Build the dedicated physics contact handler and inject all collaborators it needs.
         let contactHandler = GamePhysicsContactHandler(
             collisionRouter: collisionRouter,
             gameSession: session,
@@ -46,7 +45,6 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
 
         let scene = GameScene(
             size: CGSize(width: sceneWidth, height: sceneHeight),
-            collisionRouter: collisionRouter,
             paddleMotionController: paddleMotionController,
             gameSession: session,
             nodeManager: nodeManager,
