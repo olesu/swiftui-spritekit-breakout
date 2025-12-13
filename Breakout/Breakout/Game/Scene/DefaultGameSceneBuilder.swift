@@ -39,7 +39,8 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
             nodeManager: nodeManager,
             ballLaunchController: BallLaunchController(),
             ballMotionController: BallMotionController(),
-            paddleInputController: paddleInputController
+            paddleInputController: paddleInputController,
+            paddleBounceApplier: PaddleBounceApplier()
         )
 
         return scene

@@ -10,7 +10,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
     private let ballMotionController: BallMotionController
     private let paddleMotionController: PaddleMotionController
     private let paddleInputController: PaddleInputController
-    private let paddleBounceApplier = PaddleBounceApplier()  // TODO: Inject
+    private let paddleBounceApplier: PaddleBounceApplier
 
     private var lastUpdateTime: TimeInterval = 0
     private var localResetInProgress: Bool = false
@@ -23,7 +23,8 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         nodeManager: NodeManager,
         ballLaunchController: BallLaunchController,
         ballMotionController: BallMotionController,
-        paddleInputController: PaddleInputController
+        paddleInputController: PaddleInputController,
+        paddleBounceApplier: PaddleBounceApplier
     ) {
         self.nodeManager = nodeManager
         self.ballLaunchController = ballLaunchController
@@ -32,6 +33,7 @@ internal final class GameScene: SKScene, SKPhysicsContactDelegate {
         self.paddleMotionController = paddleMotionController
         self.gameSession = gameSession
         self.paddleInputController = paddleInputController
+        self.paddleBounceApplier = paddleBounceApplier
         
         super.init(size: size)
     }

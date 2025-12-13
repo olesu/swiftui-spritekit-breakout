@@ -24,7 +24,8 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
             nodeManager: DefaultNodeManager(brickLayoutFactory: FakeBrickLayoutFactory()),
             ballLaunchController: ballLaunchController,
             ballMotionController: BallMotionController(),
-            paddleInputController: paddleInputController
+            paddleInputController: paddleInputController,
+            paddleBounceApplier: PaddleBounceApplier()
         )
     }
 
