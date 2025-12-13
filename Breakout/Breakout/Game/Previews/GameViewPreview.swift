@@ -29,7 +29,7 @@ import SwiftUI
         )
         let viewModel = GameViewModel(
             session: session,
-            configurationService: configurationService,
+            gameConfigurationService: configurationService,
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService,
             brickService: brickService,
