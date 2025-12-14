@@ -107,14 +107,20 @@ extension GameScene {
         let dt = currentTime - lastUpdateTime
         let resetNeeded = gameSession.state.ballResetNeeded
 
+        var pendingActions: [SKAction] = []
+
         if resetNeeded && !localResetInProgress {
             localResetInProgress = true
             gameSession.announceBallResetInProgress()
-            resetBall()
+            pendingActions.append(makeBallResetAction())
         }
 
         if !localResetInProgress {
             updateBallAndPaddle(deltaTime: dt)
+        }
+
+        if pendingActions.count > 0 {
+            run(.sequence(pendingActions))
         }
 
         lastUpdateTime = currentTime
@@ -173,24 +179,24 @@ extension GameScene {
     /// ball at the scene’s reset position and acknowledging the reset in `GameSession`.
     func resetBall() {
         ballLaunchController.prepareReset(ball: nodeManager.ball)
+        performBallResetNow()
+    }
 
-        //        let wait = SKAction.wait(forDuration: 0.5)
+    /// Performs the ball reset immediately without scheduling via SpriteKit actions.
+    private func performBallResetNow() {
+        ballLaunchController.performReset(
+            ball: nodeManager.ball,
+            at: resetPosition()
+        )
+        gameSession.acknowledgeBallReset()
+        localResetInProgress = false
+    }
 
-        let reset = SKAction.run { [weak self] in
-            guard
-                let self
-            else { return }
-
-            self.ballLaunchController.performReset(
-                ball: nodeManager.ball,
-                at: resetPosition()
-            )
-
-            gameSession.acknowledgeBallReset()
-            localResetInProgress = false
+    /// Creates an action that performs the ball reset when run.
+    private func makeBallResetAction() -> SKAction {
+        SKAction.run { [weak self] in
+            self?.performBallResetNow()
         }
-
-        run(.sequence([ /*wait,*/reset]))
     }
 
     /// Returns the default world-space position used when resetting the ball.
