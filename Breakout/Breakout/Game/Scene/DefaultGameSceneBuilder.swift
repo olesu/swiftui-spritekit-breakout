@@ -42,6 +42,13 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
             ballMotionController: ballMotionController,
             paddleBounceApplier: paddleBounceApplier
         )
+        
+        let gameLoopController = GameLoopController(
+            session: session,
+            ballLaunch: ballLaunchController,
+            paddleMotion: paddleMotionController,
+            nodes: nodeManager
+        )
 
         let scene = GameScene(
             size: CGSize(width: sceneWidth, height: sceneHeight),
@@ -52,7 +59,8 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
             ballMotionController: ballMotionController,
             paddleInputController: paddleInputController,
             paddleBounceApplier: paddleBounceApplier,
-            contactHandler: contactHandler
+            contactHandler: contactHandler,
+            gameLoopController: gameLoopController
         )
 
         return scene

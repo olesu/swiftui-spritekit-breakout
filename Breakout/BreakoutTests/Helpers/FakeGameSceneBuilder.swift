@@ -22,6 +22,12 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
         let nodeManager = DefaultNodeManager(brickLayoutFactory: FakeBrickLayoutFactory())
         let ballMotionController = BallMotionController()
         let paddleBounceApplier = PaddleBounceApplier()
+        let gameLoopController = GameLoopController(
+            session: gameSession,
+            ballLaunch: ballLaunchController,
+            paddleMotion: paddleMotionController,
+            nodes: nodeManager
+        )
 
         return GameScene(
             size: CGSize(width: 320, height: 480),
@@ -43,7 +49,8 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
                 nodeManager: nodeManager,
                 ballMotionController: ballMotionController,
                 paddleBounceApplier: paddleBounceApplier
-            )
+            ),
+            gameLoopController: gameLoopController
         )
     }
 

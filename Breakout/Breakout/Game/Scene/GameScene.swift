@@ -1,4 +1,3 @@
-import AppKit
 import Foundation
 import SpriteKit
 
@@ -17,7 +16,7 @@ import SpriteKit
 /// Update loop:
 /// - On first frame, captures the start time.
 /// - Each subsequent frame computes delta time and, if not resetting, updates paddle and ball.
-/// - When a reset is needed, prepares the ball, schedules a reset action, and updates session state.
+/// - When a reset is needed, performs an immediate reset and updates session state.
 ///
 /// - Important: A dedicated `GamePhysicsContactHandler` is assigned as the
 ///   `physicsWorld.contactDelegate` in `didMove(to:)` and is responsible for translating
@@ -37,6 +36,7 @@ final class GameScene: SKScene {
     private let paddleInputController: PaddleInputController
     private let paddleBounceApplier: PaddleBounceApplier
     private let contactHandler: GamePhysicsContactHandler
+    private let gameLoopController: GameLoopController
 
     private var lastUpdateTime: TimeInterval = 0
 
@@ -61,7 +61,8 @@ final class GameScene: SKScene {
         ballMotionController: BallMotionController,
         paddleInputController: PaddleInputController,
         paddleBounceApplier: PaddleBounceApplier,
-        contactHandler: GamePhysicsContactHandler
+        contactHandler: GamePhysicsContactHandler,
+        gameLoopController: GameLoopController
     ) {
         self.nodeManager = nodeManager
         self.ballLaunchController = ballLaunchController
@@ -71,6 +72,7 @@ final class GameScene: SKScene {
         self.paddleInputController = paddleInputController
         self.paddleBounceApplier = paddleBounceApplier
         self.contactHandler = contactHandler
+        self.gameLoopController = gameLoopController
 
         super.init(size: size)
     }
@@ -103,32 +105,11 @@ extension GameScene {
             return
         }
 
-        doUpdate(deltaTime: currentTime - lastUpdateTime)
+        gameLoopController.step(deltaTime: currentTime - lastUpdateTime, sceneSize: size)
 
         lastUpdateTime = currentTime
     }
     
-    private func doUpdate(deltaTime dt: TimeInterval) {
-        if gameSession.state.ballResetNeeded {
-            gameSession.announceBallResetInProgress()
-            ballLaunchController.performReset(
-                ball: nodeManager.ball,
-                at: .init(x: size.width / 2, y: 50)
-            )
-            gameSession.acknowledgeBallReset()
-        } else {
-            paddleMotionController.update(deltaTime: dt)
-            nodeManager.paddle.position.x = CGFloat(
-                paddleMotionController.paddle.x
-            )
-            ballLaunchController.update(
-                ball: nodeManager.ball,
-                paddle: nodeManager.paddle
-            )
-        }
-
-    }
-
 }
 
 // MARK: - didMove (add nodes)
@@ -171,17 +152,6 @@ extension GameScene {
         ballLaunchController.launch(ball: nodeManager.ball)
     }
 
-    /// Slightly increases ball speed and adjusts its bounce vector after a paddle hit.
-    private func adjustBallVelocityForPaddleHit() {
-        ballMotionController.update(
-            ball: nodeManager.ball,
-            speedMultiplier: 1.03
-        )
-        paddleBounceApplier.applyBounce(
-            ball: nodeManager.ball,
-            paddle: nodeManager.paddle
-        )
-    }
 }
 
 // Mark: - Paddle Intent API
