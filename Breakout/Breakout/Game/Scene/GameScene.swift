@@ -105,18 +105,32 @@ extension GameScene {
         }
 
         let dt = currentTime - lastUpdateTime
-        let resetNeeded = gameSession.state.ballResetNeeded
-
         var pendingActions: [SKAction] = []
 
-        if resetNeeded && !localResetInProgress {
-            localResetInProgress = true
-            gameSession.announceBallResetInProgress()
-            pendingActions.append(makeBallResetAction())
+        if gameSession.state.ballResetNeeded && !localResetInProgress {
+            let action = SKAction.run { [weak self] in
+                guard let scene = self else { return }
+                
+                scene.localResetInProgress = true
+                scene.gameSession.announceBallResetInProgress()
+                scene.ballLaunchController.performReset(
+                    ball: scene.nodeManager.ball,
+                    at: .init(x: scene.size.width / 2, y: 50)
+                )
+                scene.gameSession.acknowledgeBallReset()
+                scene.localResetInProgress = false
+            }
+
+            pendingActions.append(action)
         }
 
         if !localResetInProgress {
-            updateBallAndPaddle(deltaTime: dt)
+            paddleMotionController.update(deltaTime: dt)
+            nodeManager.paddle.position.x = CGFloat(paddleMotionController.paddle.x)
+            ballLaunchController.update(
+                ball: nodeManager.ball,
+                paddle: nodeManager.paddle
+            )
         }
 
         if pendingActions.count > 0 {
@@ -126,18 +140,6 @@ extension GameScene {
         lastUpdateTime = currentTime
     }
 
-    /// Updates the logical paddle position and applies it to the scene, then
-    /// keeps a clamped ball attached to the paddle when appropriate.
-    ///
-    /// - Parameter dt: Delta time since the previous frame.
-    private func updateBallAndPaddle(deltaTime dt: TimeInterval) {
-        paddleMotionController.update(deltaTime: dt)
-        nodeManager.paddle.position.x = CGFloat(paddleMotionController.paddle.x)
-        ballLaunchController.update(
-            ball: nodeManager.ball,
-            paddle: nodeManager.paddle
-        )
-    }
 }
 
 // MARK: - didMove (add nodes)
@@ -175,35 +177,6 @@ extension GameScene {
 
 // MARK: - Ball Control
 extension GameScene {
-    /// Initiates a local ball reset by disabling physics/visibility, then restoring the
-    /// ball at the scene’s reset position and acknowledging the reset in `GameSession`.
-    func resetBall() {
-        ballLaunchController.prepareReset(ball: nodeManager.ball)
-        performBallResetNow()
-    }
-
-    /// Performs the ball reset immediately without scheduling via SpriteKit actions.
-    private func performBallResetNow() {
-        ballLaunchController.performReset(
-            ball: nodeManager.ball,
-            at: resetPosition()
-        )
-        gameSession.acknowledgeBallReset()
-        localResetInProgress = false
-    }
-
-    /// Creates an action that performs the ball reset when run.
-    private func makeBallResetAction() -> SKAction {
-        SKAction.run { [weak self] in
-            self?.performBallResetNow()
-        }
-    }
-
-    /// Returns the default world-space position used when resetting the ball.
-    private func resetPosition() -> CGPoint {
-        .init(x: size.width / 2, y: 50)
-    }
-
     /// Launches the ball if it is currently clamped to the paddle.
     func launchBall() {
         ballLaunchController.launch(ball: nodeManager.ball)
