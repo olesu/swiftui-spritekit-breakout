@@ -39,7 +39,6 @@ final class GameScene: SKScene {
     private let contactHandler: GamePhysicsContactHandler
 
     private var lastUpdateTime: TimeInterval = 0
-    private var localResetInProgress: Bool = false
 
     /// Creates a game scene that orchestrates gameplay using injected collaborators.
     ///
@@ -104,20 +103,20 @@ extension GameScene {
             return
         }
 
-        let dt = currentTime - lastUpdateTime
+        doUpdate(deltaTime: currentTime - lastUpdateTime)
 
-        if gameSession.state.ballResetNeeded && !localResetInProgress {
-            localResetInProgress = true
+        lastUpdateTime = currentTime
+    }
+    
+    private func doUpdate(deltaTime dt: TimeInterval) {
+        if gameSession.state.ballResetNeeded {
             gameSession.announceBallResetInProgress()
             ballLaunchController.performReset(
                 ball: nodeManager.ball,
                 at: .init(x: size.width / 2, y: 50)
             )
             gameSession.acknowledgeBallReset()
-            localResetInProgress = false
-        }
-
-        if !localResetInProgress {
+        } else {
             paddleMotionController.update(deltaTime: dt)
             nodeManager.paddle.position.x = CGFloat(
                 paddleMotionController.paddle.x
@@ -128,7 +127,6 @@ extension GameScene {
             )
         }
 
-        lastUpdateTime = currentTime
     }
 
 }
