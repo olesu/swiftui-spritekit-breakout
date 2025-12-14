@@ -3,20 +3,20 @@ import SpriteKit
 
 // Coordinates game objects, input, and session state for a Breakout scene.
 ///
-/// GameScene owns the per-frame update loop and orchestrates paddle and ball behavior
-/// through its controllers. It also reflects gameplay events into `GameSession` (e.g.,
-/// brick hits, ball loss) and handles ball reset flow when the session requests it.
+/// GameScene owns the SpriteKit lifecycle and delegates game logic to injected controllers.
+/// It orchestrates paddle and ball behavior through its controllers and reflects gameplay events
+/// into `GameSession` (e.g., brick hits, ball loss).
 ///
 /// Responsibilities:
 /// - Ticks paddle motion each frame and applies clamped X to the paddle node.
 /// - Keeps a clamped ball attached to the paddle until launch (via `BallLaunchController`).
 /// - Applies speed and angle adjustments when the ball hits the paddle.
-/// - Initiates and completes ball resets when `GameSession.state.ballResetNeeded` is true.
+/// - Delegates immediate ball resets to `GameLoopController` when `GameSession.state.ballResetNeeded` is true.
 ///
 /// Update loop:
 /// - On first frame, captures the start time.
-/// - Each subsequent frame computes delta time and, if not resetting, updates paddle and ball.
-/// - When a reset is needed, performs an immediate reset and updates session state.
+/// - Each subsequent frame computes delta time and delegates to `GameLoopController.step(deltaTime:sceneSize:)`.
+/// - The controller performs an immediate reset and updates session state when needed; otherwise it advances paddle and ball.
 ///
 /// - Important: A dedicated `GamePhysicsContactHandler` is assigned as the
 ///   `physicsWorld.contactDelegate` in `didMove(to:)` and is responsible for translating
@@ -29,12 +29,8 @@ import SpriteKit
 ///   `PaddleInputController`, `PaddleBounceApplier`, `GameSession`, `GamePhysicsContactHandler`.
 final class GameScene: SKScene {
     private let nodeManager: NodeManager
-    private let gameSession: GameSession
     private let ballLaunchController: BallLaunchController
-    private let ballMotionController: BallMotionController
-    private let paddleMotionController: PaddleMotionController
     private let paddleInputController: PaddleInputController
-    private let paddleBounceApplier: PaddleBounceApplier
     private let contactHandler: GamePhysicsContactHandler
     private let gameLoopController: GameLoopController
 
@@ -44,33 +40,21 @@ final class GameScene: SKScene {
     ///
     /// - Parameters:
     ///   - size: The scene size in points.
-    ///   - paddleMotionController: Updates the logical paddle model from input each frame.
-    ///   - gameSession: Owns persistent game state and reduces events.
     ///   - nodeManager: Provides the SpriteKit nodes used by the scene (paddle, ball, walls, bricks).
     ///   - ballLaunchController: Clamps, launches, and resets the ball relative to the paddle/world.
-    ///   - ballMotionController: Applies speed adjustments to the ball on specific events.
     ///   - paddleInputController: Interprets user input and drives paddle motion/overrides.
-    ///   - paddleBounceApplier: Adjusts the ball’s bounce vector on paddle contact.
     ///   - contactHandler: Dedicated physics contact handler assigned to `physicsWorld.contactDelegate`.
     init(
         size: CGSize,
-        paddleMotionController: PaddleMotionController,
-        gameSession: GameSession,
         nodeManager: NodeManager,
         ballLaunchController: BallLaunchController,
-        ballMotionController: BallMotionController,
         paddleInputController: PaddleInputController,
-        paddleBounceApplier: PaddleBounceApplier,
         contactHandler: GamePhysicsContactHandler,
         gameLoopController: GameLoopController
     ) {
         self.nodeManager = nodeManager
         self.ballLaunchController = ballLaunchController
-        self.ballMotionController = ballMotionController
-        self.paddleMotionController = paddleMotionController
-        self.gameSession = gameSession
         self.paddleInputController = paddleInputController
-        self.paddleBounceApplier = paddleBounceApplier
         self.contactHandler = contactHandler
         self.gameLoopController = gameLoopController
 
@@ -89,13 +73,7 @@ extension GameScene {
     /// On the first invocation, this method initializes the timing reference and returns
     /// without updating game objects. On subsequent frames it:
     /// - Computes delta time since the previous frame.
-    /// - Checks `gameSession.state.ballResetNeeded` and, if needed, initiates a local reset
-    ///   (guarded by `localResetInProgress`) by calling `resetBall()` and announcing progress
-    ///   to `GameSession`.
-    /// - If no reset is in progress, updates the paddle motion via `PaddleMotionController`,
-    ///   applies the clamped X position to the paddle node, and keeps a clamped ball attached
-    ///   to the paddle via `BallLaunchController.update(ball:paddle:)`.
-    /// - Updates `lastUpdateTime` at the end of the frame.
+    /// - Delegates to `GameLoopController.step(deltaTime:sceneSize:)` to perform per-frame updates.
     ///
     /// - Parameter currentTime: The current system time, provided by SpriteKit, used to compute
     ///   frame delta time.
@@ -187,3 +165,4 @@ extension GameScene {
         paddleInputController.releaseRight()
     }
 }
+

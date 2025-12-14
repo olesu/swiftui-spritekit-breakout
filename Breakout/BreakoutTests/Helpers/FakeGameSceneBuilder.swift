@@ -31,18 +31,11 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
 
         return GameScene(
             size: CGSize(width: 320, height: 480),
-            paddleMotionController: paddleMotionController,
-            gameSession: GameSession(
-                repository: InMemoryGameStateRepository(),
-                reducer: GameReducer()
-            ),
             nodeManager: DefaultNodeManager(
                 brickLayoutFactory: FakeBrickLayoutFactory()
             ),
             ballLaunchController: ballLaunchController,
-            ballMotionController: BallMotionController(),
             paddleInputController: paddleInputController,
-            paddleBounceApplier: PaddleBounceApplier(),
             contactHandler: GamePhysicsContactHandler(
                 collisionRouter: collisionRouter,
                 gameSession: gameSession,
