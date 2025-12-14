@@ -105,36 +105,27 @@ extension GameScene {
         }
 
         let dt = currentTime - lastUpdateTime
-        var pendingActions: [SKAction] = []
 
         if gameSession.state.ballResetNeeded && !localResetInProgress {
-            let action = SKAction.run { [weak self] in
-                guard let scene = self else { return }
-                
-                scene.localResetInProgress = true
-                scene.gameSession.announceBallResetInProgress()
-                scene.ballLaunchController.performReset(
-                    ball: scene.nodeManager.ball,
-                    at: .init(x: scene.size.width / 2, y: 50)
-                )
-                scene.gameSession.acknowledgeBallReset()
-                scene.localResetInProgress = false
-            }
-
-            pendingActions.append(action)
+            localResetInProgress = true
+            gameSession.announceBallResetInProgress()
+            ballLaunchController.performReset(
+                ball: nodeManager.ball,
+                at: .init(x: size.width / 2, y: 50)
+            )
+            gameSession.acknowledgeBallReset()
+            localResetInProgress = false
         }
 
         if !localResetInProgress {
             paddleMotionController.update(deltaTime: dt)
-            nodeManager.paddle.position.x = CGFloat(paddleMotionController.paddle.x)
+            nodeManager.paddle.position.x = CGFloat(
+                paddleMotionController.paddle.x
+            )
             ballLaunchController.update(
                 ball: nodeManager.ball,
                 paddle: nodeManager.paddle
             )
-        }
-
-        if pendingActions.count > 0 {
-            run(.sequence(pendingActions))
         }
 
         lastUpdateTime = currentTime
