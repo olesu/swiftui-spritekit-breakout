@@ -1,13 +1,7 @@
 import SpriteKit
 
 final class PaddleInputController {
-    private let motion: PaddleMotionController
-    
-    init(motion: PaddleMotionController) {
-        self.motion = motion
-    }
-    
-    private struct KeyState {
+    struct KeyState {
         var left = false
         var right = false
 
@@ -28,38 +22,22 @@ final class PaddleInputController {
 
     func pressLeft() {
         keyState.left = true
-        applyKeyState()
     }
 
     func releaseLeft() {
         keyState.left = false
-        applyKeyState()
     }
 
     func pressRight() {
         keyState.right = true
-        applyKeyState()
     }
 
     func releaseRight() {
         keyState.right = false
-        applyKeyState()
     }
 
-    private func applyKeyState() {
-        switch keyState.movement {
-        case .left:
-            motion.startLeft()
-        case .right:
-            motion.startRight()
-        case .none:
-            motion.stop()
-        }
+    func movement() -> KeyState.Movement {
+        keyState.movement
     }
-
-    func movePaddle(to location: CGPoint) {
-        motion.overridePosition(x: location.x)
-    }
-    func endPaddleOverride() { motion.endOverride() }
 
 }

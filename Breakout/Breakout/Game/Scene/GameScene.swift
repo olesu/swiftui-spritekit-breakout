@@ -30,9 +30,8 @@ import SpriteKit
 final class GameScene: SKScene {
     private let nodeManager: NodeManager
     private let ballLaunchController: BallLaunchController
-    private let paddleInputController: PaddleInputController
     private let contactHandler: GamePhysicsContactHandler
-    private let gameLoopController: GameLoopController
+    private let gameController: GameController
 
     private var lastUpdateTime: TimeInterval = 0
 
@@ -48,15 +47,13 @@ final class GameScene: SKScene {
         size: CGSize,
         nodeManager: NodeManager,
         ballLaunchController: BallLaunchController,
-        paddleInputController: PaddleInputController,
         contactHandler: GamePhysicsContactHandler,
-        gameLoopController: GameLoopController
+        gameController: GameController,
     ) {
         self.nodeManager = nodeManager
         self.ballLaunchController = ballLaunchController
-        self.paddleInputController = paddleInputController
         self.contactHandler = contactHandler
-        self.gameLoopController = gameLoopController
+        self.gameController = gameController
 
         super.init(size: size)
     }
@@ -83,7 +80,7 @@ extension GameScene {
             return
         }
 
-        gameLoopController.step(deltaTime: currentTime - lastUpdateTime, sceneSize: size)
+        gameController.step(deltaTime: currentTime - lastUpdateTime, sceneSize: size)
 
         lastUpdateTime = currentTime
     }
@@ -137,32 +134,32 @@ extension GameScene {
     /// Moves the paddle to a world-space point (typically from mouse/touch input),
     /// temporarily overriding continuous left/right input.
     func movePaddle(to point: CGPoint) {
-        paddleInputController.movePaddle(to: point)
+        gameController.movePaddle(to: point)
     }
 
     /// Ends any temporary position override, returning control to continuous input.
     func endPaddleOverride() {
-        paddleInputController.endPaddleOverride()
+        gameController.endPaddleOverride()
     }
 
     /// Begins continuous motion to the left.
     func pressLeft() {
-        paddleInputController.pressLeft()
+        gameController.pressLeft()
     }
 
     /// Begins continuous motion to the right.
     func pressRight() {
-        paddleInputController.pressRight()
+        gameController.pressRight()
     }
 
     /// Stops continuous left motion if active.
     func releaseLeft() {
-        paddleInputController.releaseLeft()
+        gameController.releaseLeft()
     }
 
     /// Stops continuous right motion if active.
     func releaseRight() {
-        paddleInputController.releaseRight()
+        gameController.releaseRight()
     }
 }
 

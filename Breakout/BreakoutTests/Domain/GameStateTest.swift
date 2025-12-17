@@ -5,7 +5,7 @@ import Testing
 
 @MainActor
 struct GameStateTest {
-    @Test func testInitialGameState_hasDefaultValues() {
+    @Test func hasInitialDefaultValues() {
         let state = GameState.initial
 
         #expect(state.score == 0)
@@ -15,7 +15,7 @@ struct GameStateTest {
         #expect(state.ballResetNeeded == false)
     }
 
-    @Test func testWithScore_updatesScore_keepsOtherFieldsUnchanged() {
+    @Test func shouldUpdateScoreAndKeepOtherFieldsUnchanged() {
         let state = GameState.initial
         let updated = state.with(score: 10)
 
@@ -26,7 +26,7 @@ struct GameStateTest {
         #expect(updated.ballResetNeeded == false)
     }
 
-    @Test func testWithLives_updatesLives_keepsOtherFieldsUnchanged() {
+    @Test func shouldUpdateLivesAndKeepOtherFieldsUnchanged() {
         let state = GameState.initial
         let updated = state.with(lives: 5)
 
@@ -37,7 +37,7 @@ struct GameStateTest {
         #expect(updated.ballResetNeeded == false)
     }
 
-    @Test func testWithStatus_updatesStatus_keepsOtherFieldsUnchanged() {
+    @Test func shouldUpdateStatusAndKeepOtherFieldsUnchanged() {
         let state = GameState.initial
         let updated = state.with(status: .playing)
 
@@ -48,7 +48,7 @@ struct GameStateTest {
         #expect(updated.ballResetNeeded == false)
     }
 
-    @Test func testWithBricks_updatesBricks_keepsOtherFieldsUnchanged() {
+    @Test func shouldUpdateBricksAndKeepOtherFieldsUnchanged() {
         let state = GameState.initial
         let brick = Brick(id: BrickId(of: "1"), color: .red, position: .zero)
         let bricks: [BrickId: Brick] = [brick.id: brick]
@@ -62,7 +62,7 @@ struct GameStateTest {
         #expect(updated.ballResetNeeded == false)
     }
 
-    @Test func testWithBallResetNeeded_updatesBallResetFlag_keepsOtherFieldsUnchanged() {
+    @Test func shouldUpdateBallResetNeededAndKeepOtherFieldsUnchanged() {
         let state = GameState.initial
         let updated = state.with(ballResetNeeded: true)
 

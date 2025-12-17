@@ -23,13 +23,15 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         let sceneWidth = c.sceneWidth
         let sceneHeight = c.sceneHeight
 
-        let nodeManager = DefaultNodeManager(brickLayoutFactory: brickLayoutFactory)
+        let nodeManager = DefaultNodeManager(
+            brickLayoutFactory: brickLayoutFactory
+        )
 
         let paddleMotionController = makePaddleMotionController(
             paddle: nodeManager.paddle,
             sceneWidth: sceneWidth
         )
-        let paddleInputController = PaddleInputController(motion: paddleMotionController)
+        let paddleInputController = PaddleInputController()
 
         let ballLaunchController = BallLaunchController()
         let ballMotionController = BallMotionController()
@@ -42,21 +44,19 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
             ballMotionController: ballMotionController,
             paddleBounceApplier: paddleBounceApplier
         )
-        
-        let gameLoopController = GameLoopController(
-            session: session,
-            ballLaunch: ballLaunchController,
-            paddleMotion: paddleMotionController,
-            nodes: nodeManager
-        )
 
         let scene = GameScene(
             size: CGSize(width: sceneWidth, height: sceneHeight),
             nodeManager: nodeManager,
             ballLaunchController: ballLaunchController,
-            paddleInputController: paddleInputController,
             contactHandler: contactHandler,
-            gameLoopController: gameLoopController
+            gameController: GameController(
+                ballLaunchController: ballLaunchController,
+                paddleInputController: paddleInputController,
+                paddleMotionController: paddleMotionController,
+                gameSession: session,
+                nodeManager: nodeManager,
+            ),
         )
 
         return scene
