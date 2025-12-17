@@ -3,6 +3,7 @@ import Testing
 
 @testable import Breakout
 
+@MainActor
 struct GameReducerTest {
     let reducer = GameReducer()
 

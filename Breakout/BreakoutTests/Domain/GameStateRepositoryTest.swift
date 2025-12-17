@@ -3,6 +3,7 @@ import Testing
 
 @testable import Breakout
 
+@MainActor
 struct GameStateRepositoryTest {
     @Test func testSaveAndLoad_persistsGameState() {
         let repository = InMemoryGameStateRepository()

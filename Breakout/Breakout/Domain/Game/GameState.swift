@@ -5,16 +5,22 @@ struct GameState: Equatable {
     let lives: Int
     let status: GameStatus
     let bricks: [BrickId: Brick]
-    let ballResetNeeded: Bool
-    let ballResetInProgress: Bool
-
+    let ball: Ball
+    
+    var ballResetNeeded: Bool {
+        ball.resetNeeded
+    }
+    
+    var ballResetInProgress: Bool {
+        ball.resetInProgress
+    }
+    
     static let initial = GameState(
         score: 0,
         lives: 3,
         status: .idle,
         bricks: [:],
-        ballResetNeeded: false,
-        ballResetInProgress: false
+        ball: Ball.initial
     )
 
     func with(score: Int) -> GameState {
@@ -23,8 +29,7 @@ struct GameState: Equatable {
             lives: lives,
             status: status,
             bricks: bricks,
-            ballResetNeeded: ballResetNeeded,
-            ballResetInProgress: ballResetInProgress
+            ball: ball
         )
     }
 
@@ -34,8 +39,7 @@ struct GameState: Equatable {
             lives: lives,
             status: status,
             bricks: bricks,
-            ballResetNeeded: ballResetNeeded,
-            ballResetInProgress: ballResetInProgress
+            ball: ball
         )
     }
 
@@ -45,8 +49,7 @@ struct GameState: Equatable {
             lives: lives,
             status: status,
             bricks: bricks,
-            ballResetNeeded: ballResetNeeded,
-            ballResetInProgress: ballResetInProgress
+            ball: ball
         )
     }
 
@@ -56,8 +59,7 @@ struct GameState: Equatable {
             lives: lives,
             status: status,
             bricks: bricks,
-            ballResetNeeded: ballResetNeeded,
-            ballResetInProgress: ballResetInProgress
+            ball: ball
         )
     }
 
@@ -67,8 +69,7 @@ struct GameState: Equatable {
             lives: lives,
             status: status,
             bricks: bricks,
-            ballResetNeeded: ballResetNeeded,
-            ballResetInProgress: ballResetInProgress
+            ball: ball.with(resetNeeded: ballResetNeeded),
         )
     }
 
@@ -78,8 +79,7 @@ struct GameState: Equatable {
             lives: lives,
             status: status,
             bricks: bricks,
-            ballResetNeeded: ballResetNeeded,
-            ballResetInProgress: ballResetInProgress
+            ball: ball.with(resetInProgress: ballResetInProgress)
         )
     }
 }
