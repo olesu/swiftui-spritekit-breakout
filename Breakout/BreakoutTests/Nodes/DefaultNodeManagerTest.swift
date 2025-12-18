@@ -11,10 +11,11 @@ struct DefaultNodeManagerTest {
         let brickLayoutFactory = FakeBrickLayoutFactory()
         brickLayoutFactory.addToBrickLayout(brick)
         let manager = DefaultNodeManager(brickLayoutFactory: brickLayoutFactory)
-
+        
         #expect(brick.parent != nil)
-
-        manager.remove(brickId: brickId)
+        
+        manager.enqueueRemoval(of: brickId)
+        manager.removeEnqueued()
 
         #expect(brick.parent == nil)
     }

@@ -10,5 +10,6 @@ protocol NodeManager {
     var rightWall: SKSpriteNode { get }
     var gutter: SKSpriteNode { get }
     
-    func remove(brickId: BrickId)
+    func removeEnqueued()
+    func enqueueRemoval(of brickId: BrickId)
 }

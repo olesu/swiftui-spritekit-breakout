@@ -109,7 +109,11 @@ private struct FakeNodeManager: NodeManager {
 
     var gutter: SKSpriteNode = SKSpriteNode()
 
-    func remove(brickId: Breakout.BrickId) {
+    func enqueueRemoval(of brickId: Breakout.BrickId) {
     }
+   
+    func removeEnqueued() {        
+    }
+    
 
 }

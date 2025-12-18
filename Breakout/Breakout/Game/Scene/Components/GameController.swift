@@ -23,6 +23,8 @@ final class GameController {
     }
 
     func step(deltaTime dt: TimeInterval, sceneSize: CGSize) {
+        nodeManager.removeEnqueued()
+        
         if gameSession.state.ballResetNeeded {
             gameSession.announceBallResetInProgress()
             ballLaunchController.performReset(

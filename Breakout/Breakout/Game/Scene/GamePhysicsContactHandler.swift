@@ -67,7 +67,7 @@ final class GamePhysicsContactHandler: NSObject, SKPhysicsContactDelegate {
 
     private func handleBallHitBrick(_ brickId: BrickId) {
         gameSession.apply(.brickHit(brickID: brickId))
-        nodeManager.remove(brickId: brickId)
+        nodeManager.enqueueRemoval(of: brickId)
     }
 
     private func handleBallHitGutter() {

@@ -7,6 +7,8 @@ final class DefaultNodeManager: NodeManager {
     
     let bricks: SKNode
     
+    var removalQueue: Set<BrickId> = []
+    
     let topWall: SKSpriteNode = WallSprite(
         position: CGPoint(x: 160, y: 430),
         size: CGSize(width: 320, height: 10)
@@ -28,7 +30,16 @@ final class DefaultNodeManager: NodeManager {
         self.bricks = brickLayoutFactory.createBrickLayout()
     }
 
-    func remove(brickId: BrickId) {
+    private func remove(brickId: BrickId) {
         bricks.children.first { $0.name == brickId.value }?.removeFromParent()
     }
+
+    func enqueueRemoval(of brickId: BrickId) {
+        removalQueue.insert(brickId)
+    }
+
+    func removeEnqueued() {
+        removalQueue.forEach { remove(brickId: $0) }
+    }
+
 }
