@@ -115,12 +115,15 @@ extension CompositionRoot {
         let collisionRouter = DefaultCollisionRouter(
             brickIdentifier: NodeNameBrickIdentifier()
         )
+        
+        let ballLaunchController = BallLaunchController()
 
         let gameSceneBuilder = DefaultGameSceneBuilder(
             gameConfigurationService: configurationService,
             collisionRouter: collisionRouter,
             brickLayoutFactory: brickLayoutFactory,
-            session: session
+            session: session,
+            ballLaunchController: ballLaunchController
         )
 
         let viewModel = GameViewModel(

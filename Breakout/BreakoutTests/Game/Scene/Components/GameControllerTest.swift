@@ -11,7 +11,6 @@ struct GameControllerTest {
         let paddleMotionController = PaddleMotionController.create()
         let paddleInputController = PaddleInputController()
         let gameController = GameController(
-            ballLaunchController: BallLaunchController(),
             paddleInputController: paddleInputController,
             paddleMotionController: paddleMotionController,
             gameSession: GameSession(
@@ -33,7 +32,6 @@ struct GameControllerTest {
         let paddleMotionController = PaddleMotionController.create()
         let paddleInputController = PaddleInputController()
         let gameController = GameController(
-            ballLaunchController: BallLaunchController(),
             paddleInputController: paddleInputController,
             paddleMotionController: paddleMotionController,
             gameSession: GameSession(
@@ -55,7 +53,6 @@ struct GameControllerTest {
         let paddleMotionController = PaddleMotionController.create()
         let paddleInputController = PaddleInputController()
         let gameController = GameController(
-            ballLaunchController: BallLaunchController(),
             paddleInputController: paddleInputController,
             paddleMotionController: paddleMotionController,
             gameSession: GameSession(
@@ -115,5 +112,16 @@ private struct FakeNodeManager: NodeManager {
     func removeEnqueued() {        
     }
     
+    func moveBall(to position: CGPoint) {
 
+    }
+
+    func clampBallToPaddle(sceneSize: CGSize) {
+        
+    }
+    
+    func updatePaddleAndClampedBall(x: CGFloat) {
+        
+    }
+    
 }

@@ -12,4 +12,9 @@ protocol NodeManager {
     
     func removeEnqueued()
     func enqueueRemoval(of brickId: BrickId)
+    
+    func moveBall(to position: CGPoint)
+    
+    func clampBallToPaddle(sceneSize: CGSize)
+    func updatePaddleAndClampedBall(x: CGFloat)
 }

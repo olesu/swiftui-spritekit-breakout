@@ -2,6 +2,8 @@ import Foundation
 import SpriteKit
 
 final class DefaultNodeManager: NodeManager {
+    let ballLaunchController: BallLaunchController
+    
     let paddle: SKSpriteNode = PaddleSprite(position: CGPoint(x: 160, y: 40))
     let ball: SKSpriteNode = BallSprite(position: CGPoint(x: 160, y: 50))
     
@@ -26,7 +28,11 @@ final class DefaultNodeManager: NodeManager {
         size: CGSize(width: 320, height: 10)
     )
 
-    init(brickLayoutFactory: BrickLayoutFactory) {
+    init(
+        ballLaunchController: BallLaunchController,
+        brickLayoutFactory: BrickLayoutFactory
+    ) {
+        self.ballLaunchController = ballLaunchController
         self.bricks = brickLayoutFactory.createBrickLayout()
     }
 
@@ -40,6 +46,22 @@ final class DefaultNodeManager: NodeManager {
 
     func removeEnqueued() {
         removalQueue.forEach { remove(brickId: $0) }
+    }
+
+    func moveBall(to position: CGPoint) {
+        ball.position = position
+    }
+    
+    func clampBallToPaddle(sceneSize: CGSize) {
+        ballLaunchController.performReset(
+            ball: ball,
+            at: CGPoint(x: sceneSize.width / 2, y: 50)
+        )
+    }
+    
+    func updatePaddleAndClampedBall(x: CGFloat) {
+        paddle.position.x = x
+        ballLaunchController.update(ball: ball, paddle: paddle)
     }
 
 }

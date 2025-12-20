@@ -18,6 +18,7 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
             reducer: GameReducer()
         )
         let nodeManager = DefaultNodeManager(
+            ballLaunchController: ballLaunchController,
             brickLayoutFactory: FakeBrickLayoutFactory()
         )
         let ballMotionController = BallMotionController()
@@ -26,6 +27,7 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
         return GameScene(
             size: CGSize(width: 320, height: 480),
             nodeManager: DefaultNodeManager(
+                ballLaunchController: BallLaunchController(),
                 brickLayoutFactory: FakeBrickLayoutFactory()
             ),
             ballLaunchController: ballLaunchController,
@@ -37,7 +39,6 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
                 paddleBounceApplier: paddleBounceApplier
             ),
             gameController: GameController(
-                ballLaunchController: ballLaunchController,
                 paddleInputController: paddleInputController,
                 paddleMotionController: paddleMotionController,
                 gameSession: gameSession,

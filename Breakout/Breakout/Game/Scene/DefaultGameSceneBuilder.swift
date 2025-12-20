@@ -5,17 +5,20 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
     private let collisionRouter: CollisionRouter
     private let brickLayoutFactory: BrickLayoutFactory
     private let session: GameSession
+    private let ballLaunchController: BallLaunchController
 
     init(
         gameConfigurationService: GameConfigurationService,
         collisionRouter: CollisionRouter,
         brickLayoutFactory: BrickLayoutFactory,
-        session: GameSession
+        session: GameSession,
+        ballLaunchController: BallLaunchController
     ) {
         self.gameConfigurationService = gameConfigurationService
         self.collisionRouter = collisionRouter
         self.brickLayoutFactory = brickLayoutFactory
         self.session = session
+        self.ballLaunchController = ballLaunchController
     }
 
     func makeScene() -> GameScene {
@@ -24,6 +27,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         let sceneHeight = c.sceneHeight
 
         let nodeManager = DefaultNodeManager(
+            ballLaunchController: ballLaunchController,
             brickLayoutFactory: brickLayoutFactory
         )
 
@@ -33,7 +37,6 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         )
         let paddleInputController = PaddleInputController()
 
-        let ballLaunchController = BallLaunchController()
         let ballMotionController = BallMotionController()
         let paddleBounceApplier = PaddleBounceApplier()
 
@@ -51,7 +54,6 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
             ballLaunchController: ballLaunchController,
             contactHandler: contactHandler,
             gameController: GameController(
-                ballLaunchController: ballLaunchController,
                 paddleInputController: paddleInputController,
                 paddleMotionController: paddleMotionController,
                 gameSession: session,

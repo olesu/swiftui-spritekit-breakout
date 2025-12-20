@@ -21,11 +21,13 @@ import SwiftUI
         )
         let brickService = BrickService(adapter: JsonBrickLayoutAdapter())
         let brickLayoutFactory = ClassicBrickLayoutFactory(session: session)
+        let ballLaunchController = BallLaunchController()
         let sceneBuilder = DefaultGameSceneBuilder(
             gameConfigurationService: configurationService,
             collisionRouter: collisionRouter,
             brickLayoutFactory: brickLayoutFactory,
-            session: session
+            session: session,
+            ballLaunchController: ballLaunchController
         )
         let viewModel = GameViewModel(
             session: session,
