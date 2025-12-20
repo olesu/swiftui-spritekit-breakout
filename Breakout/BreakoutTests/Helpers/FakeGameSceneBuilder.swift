@@ -8,8 +8,7 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
         let ballLaunchController = BallLaunchController()
         let paddleMotionController = PaddleMotionController(
             paddle: Paddle(x: 0, w: 0),
-            speed: 0,
-            sceneWidth: 0
+            speed: 0
         )
         let paddleInputController = PaddleInputController()
         let collisionRouter = FakeCollisionRouter()

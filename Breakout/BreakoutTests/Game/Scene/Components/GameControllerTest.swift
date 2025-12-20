@@ -6,6 +6,7 @@ import Testing
 
 @MainActor
 struct GameControllerTest {
+    let sceneSize = CGSize(width: 100, height: 100)
 
     @Test func controlsThePaddleByMovingLeft() {
         let paddleMotionController = PaddleMotionController.create()
@@ -21,9 +22,9 @@ struct GameControllerTest {
         )
 
         gameController.pressLeft()
-        gameController.tickInTest()
+        gameController.tickInTest(sceneSize)
         gameController.releaseLeft()
-        gameController.tickInTest()
+        gameController.tickInTest(sceneSize)
 
         #expect(paddleMotionController.paddle.x == 9.0)
     }
@@ -40,11 +41,10 @@ struct GameControllerTest {
             ),
             nodeManager: FakeNodeManager()
         )
-
         gameController.pressRight()
-        gameController.tickInTest()
+        gameController.tickInTest(sceneSize)
         gameController.releaseRight()
-        gameController.tickInTest()
+        gameController.tickInTest(sceneSize)
 
         #expect(paddleMotionController.paddle.x == 11.0)
     }
@@ -63,21 +63,21 @@ struct GameControllerTest {
         )
 
         gameController.pressRight()
-        gameController.tickInTest()
+        gameController.tickInTest(sceneSize)
         #expect(paddleMotionController.paddle.x == 11.0)
-        gameController.movePaddle(to: CGPoint(x: 3.0, y: 999))
-        gameController.tickInTest()
+        gameController.movePaddle(to: CGPoint(x: 3.0, y: 999), sceneSize: sceneSize)
+        gameController.tickInTest(sceneSize)
         #expect(paddleMotionController.paddle.x == 3.0)
         gameController.endPaddleOverride()
-        gameController.tickInTest()
+        gameController.tickInTest(sceneSize)
         #expect(paddleMotionController.paddle.x == 4.0)
     }
 
 }
 
 extension GameController {
-    fileprivate func tickInTest() {
-        self.step(deltaTime: 1.0, sceneSize: .init(width: 100.0, height: 100.0))
+    fileprivate func tickInTest(_ sceneSize: CGSize) {
+        self.step(deltaTime: 1.0, sceneSize: sceneSize)
     }
 }
 
@@ -85,8 +85,7 @@ extension PaddleMotionController {
     fileprivate static func create() -> PaddleMotionController {
         .init(
             paddle: Paddle(x: 10, w: 1),
-            speed: 1,
-            sceneWidth: 20
+            speed: 1
         )
     }
 }

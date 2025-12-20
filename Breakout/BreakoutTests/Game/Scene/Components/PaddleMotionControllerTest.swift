@@ -4,20 +4,20 @@ import SpriteKit
 @testable import Breakout
 
 struct PaddleMotionControllerTest {
+    private let sceneSize = CGSize(width: 300, height: 100)
 
     @Test func movesRightBySpeedTimesDeltaTime() {
         let paddle = makePaddle()
         
         let controller = PaddleMotionController(
             paddle: paddle,
-            speed: 200,
-            sceneWidth: 300
+            speed: 200
         )
         
         controller.startRight()
-        controller.update(deltaTime: 1.0)
+        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
         
-        #expect(controller.paddle.x <= controller.sceneWidth - controller.paddle.halfWidth)
+        #expect(controller.paddle.x <= sceneSize.width - controller.paddle.halfWidth)
     }
     
     @Test func stopsRightMotionWHenStopped() {
@@ -25,17 +25,16 @@ struct PaddleMotionControllerTest {
         
         let controller = PaddleMotionController(
             paddle: paddle,
-            speed: 200,
-            sceneWidth: 300
+            speed: 200
         )
         
         controller.startRight()
-        controller.update(deltaTime: 1.0)
+        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
         
         controller.stop()
-        controller.update(deltaTime: 1.0)
+        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
         
-        #expect(controller.paddle.x <= controller.sceneWidth - controller.paddle.halfWidth)
+        #expect(controller.paddle.x <= sceneSize.width - controller.paddle.halfWidth)
     }
     
     @Test func stopsLeftMotionWHenStopped() {
@@ -43,15 +42,14 @@ struct PaddleMotionControllerTest {
         
         let controller = PaddleMotionController(
             paddle: paddle,
-            speed: 200,
-            sceneWidth: 300
+            speed: 200
         )
         
         controller.startLeft()
-        controller.update(deltaTime: 1.0)
+        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
         
         controller.stop()
-        controller.update(deltaTime: 1.0)
+        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
         
         #expect(controller.paddle.x >= controller.paddle.halfWidth)
     }
@@ -61,12 +59,11 @@ struct PaddleMotionControllerTest {
         
         let controller = PaddleMotionController(
             paddle: paddle,
-            speed: 200,
-            sceneWidth: 300
+            speed: 200
         )
 
         controller.startLeft()
-        controller.update(deltaTime: 1.0)
+        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
         
         #expect(controller.paddle.x >= controller.paddle.halfWidth)
     }
@@ -76,12 +73,11 @@ struct PaddleMotionControllerTest {
         
         let controller = PaddleMotionController(
             paddle: paddle,
-            speed: 200,
-            sceneWidth: 300
+            speed: 200
         )
         
         controller.startLeft()
-        controller.update(deltaTime: 1.0)
+        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
         
         #expect(controller.paddle.x >= 0)
     }
@@ -91,12 +87,11 @@ struct PaddleMotionControllerTest {
 
         let controller = PaddleMotionController(
             paddle: paddle,
-            speed: 200,
-            sceneWidth: 300
+            speed: 200
         )
 
         controller.startRight()
-        controller.update(deltaTime: 1.0)
+        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
 
         #expect(controller.paddle.x <= 300)
     }
@@ -106,12 +101,11 @@ struct PaddleMotionControllerTest {
         
         let controller = PaddleMotionController(
             paddle: paddle,
-            speed: 200,
-            sceneWidth: 300
+            speed: 200
         )
         
         controller.startLeft()
-        controller.update(deltaTime: 1.0)
+        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
         
         let leftEdge = controller.paddle.x - controller.paddle.halfWidth
         #expect(leftEdge >= 0)
@@ -122,15 +116,14 @@ struct PaddleMotionControllerTest {
 
         let controller = PaddleMotionController(
             paddle: paddle,
-            speed: 100,
-            sceneWidth: 300
+            speed: 100
         )
 
         controller.startRight()
-        controller.update(deltaTime: 1.0)
+        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
 
         controller.startLeft()
-        controller.update(deltaTime: 1.0)
+        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
 
         #expect(abs(controller.paddle.x - 100) < 0.001)
     }
@@ -140,15 +133,14 @@ struct PaddleMotionControllerTest {
 
         let controller = PaddleMotionController(
             paddle: paddle,
-            speed: 200,
-            sceneWidth: 300
+            speed: 200
         )
 
         controller.startRight()
-        controller.update(deltaTime: 1.0)
+        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
 
-        controller.overridePosition(x: 50)
-        controller.update(deltaTime: 1.0)
+        controller.overridePosition(x: 50, sceneSize: sceneSize)
+        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
 
         #expect(abs(controller.paddle.x - 50) < 0.001)
     }
@@ -158,18 +150,17 @@ struct PaddleMotionControllerTest {
 
         let controller = PaddleMotionController(
             paddle: paddle,
-            speed: 100,
-            sceneWidth: 300
+            speed: 100
         )
 
         controller.startRight()
-        controller.update(deltaTime: 1.0)
+        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
 
-        controller.overridePosition(x: 150)
-        controller.update(deltaTime: 1.0)
+        controller.overridePosition(x: 150, sceneSize: sceneSize)
+        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
 
         controller.endOverride()
-        controller.update(deltaTime: 1.0)
+        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
 
         #expect(abs(controller.paddle.x - 250) < 0.001)
     }
@@ -179,11 +170,10 @@ struct PaddleMotionControllerTest {
 
         let controller = PaddleMotionController(
             paddle: paddle,
-            speed: 100,
-            sceneWidth: 300
+            speed: 100
         )
 
-        controller.overridePosition(x: -100)
+        controller.overridePosition(x: -100, sceneSize: sceneSize)
 
         #expect(controller.paddle.x >= paddle.halfWidth)
     }
@@ -193,15 +183,14 @@ struct PaddleMotionControllerTest {
 
         let controller = PaddleMotionController(
             paddle: paddle,
-            speed: 100,
-            sceneWidth: 300
+            speed: 100
         )
 
         controller.startRight()
-        controller.overridePosition(x: 150)
+        controller.overridePosition(x: 150, sceneSize: sceneSize)
         controller.endOverride()
 
-        controller.update(deltaTime: 1.0)
+        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
 
         #expect(controller.paddle.x > 150)
     }

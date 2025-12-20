@@ -134,7 +134,7 @@ extension GameScene {
     /// Moves the paddle to a world-space point (typically from mouse/touch input),
     /// temporarily overriding continuous left/right input.
     func movePaddle(to point: CGPoint) {
-        gameController.movePaddle(to: point)
+        gameController.movePaddle(to: point, sceneSize: size)
     }
 
     /// Ends any temporary position override, returning control to continuous input.

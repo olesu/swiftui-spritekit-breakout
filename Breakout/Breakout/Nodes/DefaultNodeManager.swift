@@ -2,7 +2,7 @@ import Foundation
 import SpriteKit
 
 final class DefaultNodeManager: NodeManager {
-    let ballLaunchController: BallLaunchController
+    private let ballLaunchController: BallLaunchController
     
     let paddle: SKSpriteNode = PaddleSprite(position: CGPoint(x: 160, y: 40))
     let ball: SKSpriteNode = BallSprite(position: CGPoint(x: 160, y: 50))

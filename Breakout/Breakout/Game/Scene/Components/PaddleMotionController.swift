@@ -2,14 +2,12 @@ import SpriteKit
 
 class PaddleMotionController {
     let speed: CGFloat
-    let sceneWidth: CGFloat
 
     private(set) var paddle: Paddle
 
-    init(paddle: Paddle, speed: CGFloat, sceneWidth: CGFloat) {
+    init(paddle: Paddle, speed: CGFloat) {
         self.paddle = paddle
         self.speed = speed
-        self.sceneWidth = sceneWidth
     }
 
     private var isMovingLeft = false
@@ -27,19 +25,17 @@ class PaddleMotionController {
         isMovingRight = true
     }
 
-    func update(deltaTime dt: TimeInterval) {
-        guard !isOverriding else { return }
-        
+    func update(deltaTime dt: TimeInterval, sceneSize: CGSize) {
         let amount = speed * CGFloat(dt)
+        var dx: CGFloat = 0
 
-        if isMovingRight {
-            paddle = paddle.moveBy(amount: +amount)
+        if !isOverriding {
+            if isMovingRight { dx += amount }
+            if isMovingLeft { dx -= amount }
         }
-        if isMovingLeft {
-            paddle = paddle.moveBy(amount: -amount)
-        }
-        
-        paddle = paddle.moveTo(clampedX(paddle.x))
+
+        let newX = paddle.x + dx
+        paddle = paddle.moveTo(clampedX(newX, sceneWidth: sceneSize.width))
     }
 
     func stop() {
@@ -47,20 +43,20 @@ class PaddleMotionController {
         isMovingRight = false
     }
     
-    func overridePosition(x: CGFloat) {
+    func overridePosition(x: CGFloat, sceneSize: CGSize) {
         isOverriding = true
-
-        paddle = paddle.moveTo(clampedX(x))
+        let clamped = clampedX(x, sceneWidth: sceneSize.width)
+        paddle = paddle.moveTo(clamped)
     }
     
     func endOverride() {
         isOverriding = false
     }
     
-    private func clampedX(_ x: CGFloat) -> CGFloat {
+    private func clampedX(_ x: CGFloat, sceneWidth: CGFloat) -> CGFloat {
         let minX = paddle.halfWidth
         let maxX = sceneWidth - paddle.halfWidth
-        
         return max(minX, min(maxX, x))
     }
 }
+

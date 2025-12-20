@@ -27,7 +27,7 @@ final class GameController {
             nodeManager.clampBallToPaddle(sceneSize: sceneSize)
             gameSession.acknowledgeBallReset()
         } else {
-            paddleMotionController.update(deltaTime: dt)
+            paddleMotionController.update(deltaTime: dt, sceneSize: sceneSize)
             nodeManager.updatePaddleAndClampedBall(x: paddleMotionController.paddle.x)
         }
     }
@@ -52,8 +52,8 @@ final class GameController {
         applyMovement()
     }
 
-    func movePaddle(to point: CGPoint) {
-        paddleMotionController.overridePosition(x: point.x)
+    func movePaddle(to point: CGPoint, sceneSize: CGSize) {
+        paddleMotionController.overridePosition(x: point.x, sceneSize: sceneSize)
     }
 
     func endPaddleOverride() {

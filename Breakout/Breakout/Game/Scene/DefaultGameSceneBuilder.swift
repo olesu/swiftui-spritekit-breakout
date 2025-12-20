@@ -33,7 +33,6 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
 
         let paddleMotionController = makePaddleMotionController(
             paddle: nodeManager.paddle,
-            sceneWidth: sceneWidth
         )
         let paddleInputController = PaddleInputController()
 
@@ -65,8 +64,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
     }
 
     private func makePaddleMotionController(
-        paddle: SKSpriteNode,
-        sceneWidth: CGFloat
+        paddle: SKSpriteNode
     ) -> PaddleMotionController {
         let paddleSpeed = 450.0
 
@@ -75,8 +73,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
                 x: paddle.position.x,
                 w: paddle.size.width
             ),
-            speed: paddleSpeed,
-            sceneWidth: sceneWidth
+            speed: paddleSpeed
         )
 
         return result
