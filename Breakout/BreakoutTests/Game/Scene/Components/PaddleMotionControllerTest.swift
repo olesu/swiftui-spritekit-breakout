@@ -9,192 +9,214 @@ struct PaddleMotionControllerTest {
     @Test func movesRightBySpeedTimesDeltaTime() {
         let paddle = makePaddle()
         
-        let controller = PaddleMotionController(
-            paddle: paddle,
-            speed: 200
-        )
+        let controller = PaddleMotionController(speed: 200)
         
         controller.startRight()
-        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
+        let newPaddle = controller.update(paddle: paddle, deltaTime: 1.0, sceneSize: sceneSize)
         
-        #expect(controller.paddle.x <= sceneSize.width - controller.paddle.halfWidth)
+        #expect(newPaddle.x <= sceneSize.width - newPaddle.halfWidth)
     }
     
     @Test func stopsRightMotionWHenStopped() {
         let paddle = makePaddle()
         
-        let controller = PaddleMotionController(
-            paddle: paddle,
-            speed: 200
-        )
+        let controller = PaddleMotionController(speed: 200)
         
         controller.startRight()
-        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
+        let movingPaddle = controller.update(paddle: paddle, deltaTime: 1.0, sceneSize: sceneSize)
         
         controller.stop()
-        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
+        let stoppedPaddle = controller.update(paddle: movingPaddle, deltaTime: 1.0, sceneSize: sceneSize)
         
-        #expect(controller.paddle.x <= sceneSize.width - controller.paddle.halfWidth)
+        #expect(stoppedPaddle.x <= sceneSize.width - stoppedPaddle.halfWidth)
     }
     
     @Test func stopsLeftMotionWHenStopped() {
         let paddle = makePaddle()
-        
-        let controller = PaddleMotionController(
-            paddle: paddle,
-            speed: 200
-        )
-        
-        controller.startLeft()
-        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
-        
-        controller.stop()
-        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
-        
-        #expect(controller.paddle.x >= controller.paddle.halfWidth)
-    }
-    
-    @Test func movesLeftBySpeedTimesDeltaTime() {
-        let paddle = makePaddle()
-        
-        let controller = PaddleMotionController(
-            paddle: paddle,
-            speed: 200
-        )
+        let controller = PaddleMotionController(speed: 200)
 
         controller.startLeft()
-        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
-        
-        #expect(controller.paddle.x >= controller.paddle.halfWidth)
+        let movingPaddle = controller.update(
+            paddle: paddle,
+            deltaTime: 1.0,
+            sceneSize: sceneSize
+        )
+
+        controller.stop()
+        let stoppedPaddle = controller.update(
+            paddle: movingPaddle,
+            deltaTime: 1.0,
+            sceneSize: sceneSize
+        )
+
+        #expect(stoppedPaddle.x >= stoppedPaddle.halfWidth)
+    }
+
+    @Test func movesLeftBySpeedTimesDeltaTime() {
+        let paddle = makePaddle()
+        let controller = PaddleMotionController(speed: 200)
+
+        controller.startLeft()
+        let newPaddle = controller.update(
+            paddle: paddle,
+            deltaTime: 1.0,
+            sceneSize: sceneSize
+        )
+
+        #expect(newPaddle.x >= newPaddle.halfWidth)
     }
 
     @Test func doesNotMovePastLeftBoundary() {
         let paddle = makePaddle()
-        
-        let controller = PaddleMotionController(
-            paddle: paddle,
-            speed: 200
-        )
-        
+        let controller = PaddleMotionController(speed: 200)
+
         controller.startLeft()
-        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
-        
-        #expect(controller.paddle.x >= 0)
+        let newPaddle = controller.update(
+            paddle: paddle,
+            deltaTime: 10.0,
+            sceneSize: sceneSize
+        )
+
+        #expect(newPaddle.x >= newPaddle.halfWidth)
     }
 
     @Test func doesNotMovePastRightBoundary() {
         let paddle = makePaddle()
-
-        let controller = PaddleMotionController(
-            paddle: paddle,
-            speed: 200
-        )
+        let controller = PaddleMotionController(speed: 200)
 
         controller.startRight()
-        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
+        let newPaddle = controller.update(
+            paddle: paddle,
+            deltaTime: 10.0,
+            sceneSize: sceneSize
+        )
 
-        #expect(controller.paddle.x <= 300)
+        #expect(newPaddle.x <= sceneSize.width - newPaddle.halfWidth)
     }
-    
+
     @Test func clampsLeftConsideringPaddleWidth() {
         let paddle = makePaddle()
-        
-        let controller = PaddleMotionController(
-            paddle: paddle,
-            speed: 200
-        )
-        
+        let controller = PaddleMotionController(speed: 200)
+
         controller.startLeft()
-        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
-        
-        let leftEdge = controller.paddle.x - controller.paddle.halfWidth
+        let newPaddle = controller.update(
+            paddle: paddle,
+            deltaTime: 10.0,
+            sceneSize: sceneSize
+        )
+
+        let leftEdge = newPaddle.x - newPaddle.halfWidth
         #expect(leftEdge >= 0)
     }
-    
+
     @Test func switchesDirectionWithoutStopping() {
         let paddle = makePaddle()
-
-        let controller = PaddleMotionController(
-            paddle: paddle,
-            speed: 100
-        )
+        let controller = PaddleMotionController(speed: 100)
 
         controller.startRight()
-        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
+        let afterRight = controller.update(
+            paddle: paddle,
+            deltaTime: 1.0,
+            sceneSize: sceneSize
+        )
 
         controller.startLeft()
-        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
+        let afterLeft = controller.update(
+            paddle: afterRight,
+            deltaTime: 1.0,
+            sceneSize: sceneSize
+        )
 
-        #expect(abs(controller.paddle.x - 100) < 0.001)
+        #expect(abs(afterLeft.x - paddle.x) < 0.001)
     }
 
     @Test func draggingOverridesKeyboardMovement() {
         let paddle = makePaddle()
-
-        let controller = PaddleMotionController(
-            paddle: paddle,
-            speed: 200
-        )
+        let controller = PaddleMotionController(speed: 200)
 
         controller.startRight()
-        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
+        let movedPaddle = controller.update(
+            paddle: paddle,
+            deltaTime: 1.0,
+            sceneSize: sceneSize
+        )
 
-        controller.overridePosition(x: 50, sceneSize: sceneSize)
-        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
+        let overridden = controller.overridePosition(
+            paddle: movedPaddle,
+            x: 50,
+            sceneSize: sceneSize
+        )
 
-        #expect(abs(controller.paddle.x - 50) < 0.001)
+        let afterUpdate = controller.update(
+            paddle: overridden,
+            deltaTime: 1.0,
+            sceneSize: sceneSize
+        )
+
+        #expect(abs(afterUpdate.x - overridden.x) < 0.001)
     }
 
     @Test func movementResumesAfterDragEnds() {
         let paddle = makePaddle()
-
-        let controller = PaddleMotionController(
-            paddle: paddle,
-            speed: 100
-        )
+        let controller = PaddleMotionController(speed: 100)
 
         controller.startRight()
-        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
+        let moved = controller.update(
+            paddle: paddle,
+            deltaTime: 1.0,
+            sceneSize: sceneSize
+        )
 
-        controller.overridePosition(x: 150, sceneSize: sceneSize)
-        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
+        let overridden = controller.overridePosition(
+            paddle: moved,
+            x: 150,
+            sceneSize: sceneSize
+        )
 
         controller.endOverride()
-        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
+        let resumed = controller.update(
+            paddle: overridden,
+            deltaTime: 1.0,
+            sceneSize: sceneSize
+        )
 
-        #expect(abs(controller.paddle.x - 250) < 0.001)
+        #expect(abs(resumed.x - 250) < 0.001)
     }
 
     @Test func overridePositionIsClamped() {
         let paddle = makePaddle()
+        let controller = PaddleMotionController(speed: 100)
 
-        let controller = PaddleMotionController(
+        let overridden = controller.overridePosition(
             paddle: paddle,
-            speed: 100
+            x: -100,
+            sceneSize: sceneSize
         )
 
-        controller.overridePosition(x: -100, sceneSize: sceneSize)
-
-        #expect(controller.paddle.x >= paddle.halfWidth)
+        #expect(overridden.x >= overridden.halfWidth)
     }
 
     @Test func overrideDoesNotClearIntent() {
         let paddle = makePaddle()
-
-        let controller = PaddleMotionController(
-            paddle: paddle,
-            speed: 100
-        )
+        let controller = PaddleMotionController(speed: 100)
 
         controller.startRight()
-        controller.overridePosition(x: 150, sceneSize: sceneSize)
+        let overridden = controller.overridePosition(
+            paddle: paddle,
+            x: 150,
+            sceneSize: sceneSize
+        )
+
         controller.endOverride()
+        let resumed = controller.update(
+            paddle: overridden,
+            deltaTime: 1.0,
+            sceneSize: sceneSize
+        )
 
-        controller.update(deltaTime: 1.0, sceneSize: sceneSize)
-
-        #expect(controller.paddle.x > 150)
+        #expect(resumed.x > overridden.x)
     }
-    
+
     private func makePaddle() -> Paddle {
         .init(x: 100, w: 50)
     }

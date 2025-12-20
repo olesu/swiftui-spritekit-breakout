@@ -9,8 +9,10 @@ struct GameControllerTest {
     let sceneSize = CGSize(width: 100, height: 100)
 
     @Test func controlsThePaddleByMovingLeft() {
-        let paddleMotionController = PaddleMotionController.create()
+        let nodeManager = FakeNodeManager()
+        let paddleMotionController = PaddleMotionController(speed: 1)
         let paddleInputController = PaddleInputController()
+
         let gameController = GameController(
             paddleInputController: paddleInputController,
             paddleMotionController: paddleMotionController,
@@ -18,7 +20,7 @@ struct GameControllerTest {
                 repository: InMemoryGameStateRepository(),
                 reducer: GameReducer()
             ),
-            nodeManager: FakeNodeManager()
+            nodeManager: nodeManager
         )
 
         gameController.pressLeft()
@@ -26,12 +28,14 @@ struct GameControllerTest {
         gameController.releaseLeft()
         gameController.tickInTest(sceneSize)
 
-        #expect(paddleMotionController.paddle.x == 9.0)
+        #expect(nodeManager.lastPaddleX == 9.0)
     }
-
+    
     @Test func controlsThePaddleByMovingRight() {
-        let paddleMotionController = PaddleMotionController.create()
+        let nodeManager = FakeNodeManager()
+        let paddleMotionController = PaddleMotionController(speed: 1)
         let paddleInputController = PaddleInputController()
+
         let gameController = GameController(
             paddleInputController: paddleInputController,
             paddleMotionController: paddleMotionController,
@@ -39,19 +43,22 @@ struct GameControllerTest {
                 repository: InMemoryGameStateRepository(),
                 reducer: GameReducer()
             ),
-            nodeManager: FakeNodeManager()
+            nodeManager: nodeManager
         )
+
         gameController.pressRight()
         gameController.tickInTest(sceneSize)
         gameController.releaseRight()
         gameController.tickInTest(sceneSize)
 
-        #expect(paddleMotionController.paddle.x == 11.0)
+        #expect(nodeManager.lastPaddleX == 11.0)
     }
 
     @Test func movingToAFixedPointOverridesKeyMovement() {
-        let paddleMotionController = PaddleMotionController.create()
+        let nodeManager = FakeNodeManager()
+        let paddleMotionController = PaddleMotionController(speed: 1)
         let paddleInputController = PaddleInputController()
+
         let gameController = GameController(
             paddleInputController: paddleInputController,
             paddleMotionController: paddleMotionController,
@@ -59,18 +66,20 @@ struct GameControllerTest {
                 repository: InMemoryGameStateRepository(),
                 reducer: GameReducer()
             ),
-            nodeManager: FakeNodeManager()
+            nodeManager: nodeManager
         )
 
         gameController.pressRight()
         gameController.tickInTest(sceneSize)
-        #expect(paddleMotionController.paddle.x == 11.0)
+        #expect(nodeManager.lastPaddleX == 11.0)
+
         gameController.movePaddle(to: CGPoint(x: 3.0, y: 999), sceneSize: sceneSize)
         gameController.tickInTest(sceneSize)
-        #expect(paddleMotionController.paddle.x == 3.0)
+        #expect(nodeManager.lastPaddleX == 3.0)
+
         gameController.endPaddleOverride()
         gameController.tickInTest(sceneSize)
-        #expect(paddleMotionController.paddle.x == 4.0)
+        #expect(nodeManager.lastPaddleX == 4.0)
     }
 
 }
@@ -81,46 +90,31 @@ extension GameController {
     }
 }
 
-extension PaddleMotionController {
-    fileprivate static func create() -> PaddleMotionController {
-        .init(
-            paddle: Paddle(x: 10, w: 1),
-            speed: 1
-        )
-    }
-}
+private final class FakeNodeManager: NodeManager {
+    let paddle: SKSpriteNode
+    let ball = SKSpriteNode()
+    let bricks = SKNode()
+    let topWall = SKSpriteNode()
+    let leftWall = SKSpriteNode()
+    let rightWall = SKSpriteNode()
+    let gutter = SKSpriteNode()
 
-private struct FakeNodeManager: NodeManager {
-    var paddle: SKSpriteNode = SKSpriteNode()
+    private(set) var lastPaddleX: CGFloat?
 
-    var ball: SKSpriteNode = SKSpriteNode()
-
-    var bricks: SKNode = SKNode()
-
-    var topWall: SKSpriteNode = SKSpriteNode()
-
-    var leftWall: SKSpriteNode = SKSpriteNode()
-
-    var rightWall: SKSpriteNode = SKSpriteNode()
-
-    var gutter: SKSpriteNode = SKSpriteNode()
-
-    func enqueueRemoval(of brickId: Breakout.BrickId) {
-    }
-   
-    func removeEnqueued() {        
-    }
-    
-    func moveBall(to position: CGPoint) {
-
+    init() {
+        let paddle = SKSpriteNode()
+        paddle.position.x = 10
+        paddle.size.width = 2
+        self.paddle = paddle
     }
 
-    func clampBallToPaddle(sceneSize: CGSize) {
-        
-    }
-    
+    func enqueueRemoval(of brickId: BrickId) {}
+    func removeEnqueued() {}
+    func moveBall(to position: CGPoint) {}
+    func clampBallToPaddle(sceneSize: CGSize) {}
+
     func updatePaddleAndClampedBall(x: CGFloat) {
-        
+        paddle.position.x = x
+        lastPaddleX = x
     }
-    
 }

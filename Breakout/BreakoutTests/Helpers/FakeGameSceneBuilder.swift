@@ -6,10 +6,7 @@ import SpriteKit
 final class FakeGameSceneBuilder: GameSceneBuilder {
     func makeScene() -> GameScene {
         let ballLaunchController = BallLaunchController()
-        let paddleMotionController = PaddleMotionController(
-            paddle: Paddle(x: 0, w: 0),
-            speed: 0
-        )
+        let paddleMotionController = PaddleMotionController(speed: 0)
         let paddleInputController = PaddleInputController()
         let collisionRouter = FakeCollisionRouter()
         let gameSession = GameSession(

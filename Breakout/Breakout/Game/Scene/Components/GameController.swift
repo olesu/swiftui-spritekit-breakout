@@ -1,5 +1,5 @@
-import SpriteKit
 import Foundation
+import SpriteKit
 
 final class GameController {
     private let paddleInputController: PaddleInputController
@@ -21,14 +21,21 @@ final class GameController {
 
     func step(deltaTime dt: TimeInterval, sceneSize: CGSize) {
         nodeManager.removeEnqueued()
-        
+
         if gameSession.state.ballResetNeeded {
             gameSession.announceBallResetInProgress()
             nodeManager.clampBallToPaddle(sceneSize: sceneSize)
             gameSession.acknowledgeBallReset()
         } else {
-            paddleMotionController.update(deltaTime: dt, sceneSize: sceneSize)
-            nodeManager.updatePaddleAndClampedBall(x: paddleMotionController.paddle.x)
+            let newPaddle = paddleMotionController.update(
+                paddle: Paddle(
+                    x: nodeManager.paddle.position.x,
+                    w: nodeManager.paddle.size.width
+                ),
+                deltaTime: dt,
+                sceneSize: sceneSize
+            )
+            nodeManager.updatePaddleAndClampedBall(x: newPaddle.x)
         }
     }
 
@@ -53,7 +60,15 @@ final class GameController {
     }
 
     func movePaddle(to point: CGPoint, sceneSize: CGSize) {
-        paddleMotionController.overridePosition(x: point.x, sceneSize: sceneSize)
+        let newPaddle = paddleMotionController.overridePosition(
+            paddle: Paddle(
+                x: nodeManager.paddle.position.x,
+                w: nodeManager.paddle.size.width
+            ),
+            x: point.x,
+            sceneSize: sceneSize
+        )
+        nodeManager.paddle.position.x = CGFloat(newPaddle.x)
     }
 
     func endPaddleOverride() {
