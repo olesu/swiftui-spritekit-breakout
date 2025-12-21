@@ -88,7 +88,6 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
 
         let scene = GameScene(
             size: CGSize(width: sceneWidth, height: sceneHeight),
-            nodeManager: nodeManager,
             nodes: nodes,
             ballLaunchController: ballLaunchController,
             contactHandler: contactHandler,

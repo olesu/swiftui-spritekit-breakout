@@ -17,12 +17,12 @@ struct DefaultNodeManagerPaddleMovementTest {
         let nodeManager = makeManager(paddle)
 
         nodeManager.startPaddleLeft()
-        nodeManager.updatePaddleAndClampedBall(
+        nodeManager.update(
             deltaTime: 1.0,
             sceneSize: sceneSize
         )
         nodeManager.stopPaddle()
-        nodeManager.updatePaddleAndClampedBall(
+        nodeManager.update(
             deltaTime: 1.0,
             sceneSize: sceneSize
         )
@@ -35,12 +35,12 @@ struct DefaultNodeManagerPaddleMovementTest {
         let nodeManager = makeManager(paddle)
 
         nodeManager.startPaddleRight()
-        nodeManager.updatePaddleAndClampedBall(
+        nodeManager.update(
             deltaTime: 1.0,
             sceneSize: sceneSize
         )
         nodeManager.stopPaddle()
-        nodeManager.updatePaddleAndClampedBall(
+        nodeManager.update(
             deltaTime: 1.0,
             sceneSize: sceneSize
         )
@@ -54,7 +54,7 @@ struct DefaultNodeManagerPaddleMovementTest {
 
         // keyboard movement
         nodeManager.startPaddleRight()
-        nodeManager.updatePaddleAndClampedBall(
+        nodeManager.update(
             deltaTime: 1.0,
             sceneSize: sceneSize
         )
@@ -65,7 +65,7 @@ struct DefaultNodeManagerPaddleMovementTest {
             to: CGPoint(x: 3.0, y: 999),
             sceneSize: sceneSize
         )
-        nodeManager.updatePaddleAndClampedBall(
+        nodeManager.update(
             deltaTime: 1.0,
             sceneSize: sceneSize
         )
@@ -73,7 +73,7 @@ struct DefaultNodeManagerPaddleMovementTest {
 
         // resume keyboard
         nodeManager.endPaddleKeyboardOverride()
-        nodeManager.updatePaddleAndClampedBall(
+        nodeManager.update(
             deltaTime: 1.0,
             sceneSize: sceneSize
         )

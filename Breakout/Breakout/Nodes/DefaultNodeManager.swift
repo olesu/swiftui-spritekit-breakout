@@ -35,20 +35,21 @@ final class DefaultNodeManager: NodeManager {
 
     func removeEnqueued() {
         removalQueue.forEach { remove(brickId: $0) }
+        removalQueue.removeAll()
     }
 
     func moveBall(to position: CGPoint) {
         nodes.ball.position = position
     }
 
-    func clampBallToPaddle(sceneSize: CGSize) {
+    func resetBall(sceneSize: CGSize) {
         ballLaunchController.performReset(
             ball: nodes.ball,
             at: CGPoint(x: sceneSize.width / 2, y: 50)
         )
     }
 
-    func updatePaddleAndClampedBall(
+    func update(
         deltaTime dt: TimeInterval,
         sceneSize: CGSize
     ) {

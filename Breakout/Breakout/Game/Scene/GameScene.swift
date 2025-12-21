@@ -28,7 +28,6 @@ import SpriteKit
 /// - SeeAlso: `BallLaunchController`, `BallMotionController`, `PaddleMotionController`,
 ///   `PaddleInputController`, `PaddleBounceApplier`, `GameSession`, `GamePhysicsContactHandler`.
 final class GameScene: SKScene {
-    private let nodeManager: NodeManager
     private let nodes: SceneNodes
     private let ballLaunchController: BallLaunchController
     private let contactHandler: GamePhysicsContactHandler
@@ -47,13 +46,11 @@ final class GameScene: SKScene {
     ///   - contactHandler: Dedicated physics contact handler assigned to `physicsWorld.contactDelegate`.
     init(
         size: CGSize,
-        nodeManager: NodeManager,
         nodes: SceneNodes,
         ballLaunchController: BallLaunchController,
         contactHandler: GamePhysicsContactHandler,
         gameController: GameController,
     ) {
-        self.nodeManager = nodeManager
         self.nodes = nodes
         self.ballLaunchController = ballLaunchController
         self.contactHandler = contactHandler

@@ -21,10 +21,10 @@ final class GameController {
 
         if gameSession.state.ballResetNeeded {
             gameSession.announceBallResetInProgress()
-            nodeManager.clampBallToPaddle(sceneSize: sceneSize)
+            nodeManager.resetBall(sceneSize: sceneSize)
             gameSession.acknowledgeBallReset()
         } else {
-            nodeManager.updatePaddleAndClampedBall(
+            nodeManager.update(
                 deltaTime: dt,
                 sceneSize: sceneSize
             )

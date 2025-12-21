@@ -28,7 +28,6 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
         )
         return GameScene(
             size: CGSize(width: 320, height: 480),
-            nodeManager: nodeManager,
             nodes: nodes,
             ballLaunchController: ballLaunchController,
             contactHandler: GamePhysicsContactHandler(
