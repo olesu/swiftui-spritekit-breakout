@@ -52,15 +52,7 @@ final class GameController {
     }
 
     func movePaddle(to point: CGPoint, sceneSize: CGSize) {
-        let newPaddle = paddleMotionController.overridePosition(
-            paddle: Paddle(
-                x: nodeManager.paddle.position.x,
-                w: nodeManager.paddle.size.width
-            ),
-            x: point.x,
-            sceneSize: sceneSize
-        )
-        nodeManager.paddle.position.x = CGFloat(newPaddle.x)
+        nodeManager.movePaddle(to: point, sceneSize: sceneSize)
     }
 
     func endPaddleOverride() {

@@ -10,7 +10,9 @@ struct GameControllerTest {
     let paddleMotionController = PaddleMotionController(speed: 1)
 
     @Test func controlsThePaddleByMovingLeft() {
-        let nodeManager = FakeNodeManager(paddleMotionController: paddleMotionController)
+        let nodeManager = FakeNodeManager(
+            paddleMotionController: paddleMotionController
+        )
         let paddleInputController = PaddleInputController()
 
         let gameController = GameController(
@@ -30,9 +32,11 @@ struct GameControllerTest {
 
         #expect(nodeManager.paddle.position.x == 9.0)
     }
-    
+
     @Test func controlsThePaddleByMovingRight() {
-        let nodeManager = FakeNodeManager(paddleMotionController: paddleMotionController)
+        let nodeManager = FakeNodeManager(
+            paddleMotionController: paddleMotionController
+        )
         let paddleInputController = PaddleInputController()
 
         let gameController = GameController(
@@ -54,7 +58,9 @@ struct GameControllerTest {
     }
 
     @Test func movingToAFixedPointOverridesKeyMovement() {
-        let nodeManager = FakeNodeManager(paddleMotionController: paddleMotionController)
+        let nodeManager = FakeNodeManager(
+            paddleMotionController: paddleMotionController
+        )
         let paddleInputController = PaddleInputController()
 
         let gameController = GameController(
@@ -71,7 +77,10 @@ struct GameControllerTest {
         gameController.tickInTest(sceneSize)
         #expect(nodeManager.paddle.position.x == 11.0)
 
-        gameController.movePaddle(to: CGPoint(x: 3.0, y: 999), sceneSize: sceneSize)
+        gameController.movePaddle(
+            to: CGPoint(x: 3.0, y: 999),
+            sceneSize: sceneSize
+        )
         gameController.tickInTest(sceneSize)
         #expect(nodeManager.paddle.position.x == 3.0)
 
@@ -90,17 +99,17 @@ extension GameController {
 
 private final class FakeNodeManager: NodeManager {
     let paddleMotionController: PaddleMotionController
-    
+
     init(paddleMotionController: PaddleMotionController) {
         self.paddleMotionController = paddleMotionController
-        
+
         let paddle = SKSpriteNode()
         paddle.position = CGPoint(x: 10, y: 0)
         paddle.size = CGSize(width: 2, height: 10)
         self.paddle = paddle
-        
+
     }
-    
+
     let paddle: SKSpriteNode
     let ball = SKSpriteNode()
     let bricks = SKNode()
@@ -108,17 +117,28 @@ private final class FakeNodeManager: NodeManager {
     let leftWall = SKSpriteNode()
     let rightWall = SKSpriteNode()
     let gutter = SKSpriteNode()
-    
 
     func enqueueRemoval(of brickId: BrickId) {}
     func removeEnqueued() {}
     func moveBall(to position: CGPoint) {}
     func clampBallToPaddle(sceneSize: CGSize) {}
 
-    func updatePaddleAndClampedBall(deltaTime dt: TimeInterval, sceneSize: CGSize) {
+    func updatePaddleAndClampedBall(
+        deltaTime dt: TimeInterval,
+        sceneSize: CGSize
+    ) {
         let newPaddle = paddleMotionController.update(
             paddle: Paddle(x: paddle.position.x, w: paddle.size.width),
             deltaTime: dt,
+            sceneSize: sceneSize
+        )
+        paddle.position.x = CGFloat(newPaddle.x)
+    }
+
+    func movePaddle(to position: CGPoint, sceneSize: CGSize) {
+        let newPaddle = paddleMotionController.overridePosition(
+            paddle: Paddle(x: paddle.position.x, w: paddle.size.width),
+            x: position.x,
             sceneSize: sceneSize
         )
         paddle.position.x = CGFloat(newPaddle.x)

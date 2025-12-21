@@ -74,5 +74,18 @@ final class DefaultNodeManager: NodeManager {
         paddle.position.x = newPaddle.x
         ballLaunchController.update(ball: ball, paddle: paddle)
     }
+    
+    func movePaddle(to position: CGPoint, sceneSize: CGSize) {
+        let newPaddle = paddleMotionController.overridePosition(
+            paddle: Paddle(
+                x: paddle.position.x,
+                w: paddle.size.width
+            ),
+            x: position.x,
+            sceneSize: sceneSize
+        )
+        paddle.position.x = CGFloat(newPaddle.x)
+
+    }
 
 }

@@ -17,4 +17,5 @@ protocol NodeManager {
     
     func clampBallToPaddle(sceneSize: CGSize)
     func updatePaddleAndClampedBall(deltaTime dt: TimeInterval, sceneSize: CGSize)
+    func movePaddle(to position: CGPoint, sceneSize: CGSize)
 }
