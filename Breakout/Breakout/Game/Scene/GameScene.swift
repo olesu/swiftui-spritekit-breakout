@@ -28,10 +28,12 @@ import SpriteKit
 /// - SeeAlso: `BallLaunchController`, `BallMotionController`, `PaddleMotionController`,
 ///   `PaddleInputController`, `PaddleBounceApplier`, `GameSession`, `GamePhysicsContactHandler`.
 final class GameScene: SKScene {
-    private let nodeManager: DefaultNodeManager
+    private let nodeManager: NodeManager
+    private let nodes: SceneNodes
     private let ballLaunchController: BallLaunchController
     private let contactHandler: GamePhysicsContactHandler
     private let gameController: GameController
+    
 
     private var lastUpdateTime: TimeInterval = 0
 
@@ -45,16 +47,18 @@ final class GameScene: SKScene {
     ///   - contactHandler: Dedicated physics contact handler assigned to `physicsWorld.contactDelegate`.
     init(
         size: CGSize,
-        nodeManager: DefaultNodeManager,
+        nodeManager: NodeManager,
+        nodes: SceneNodes,
         ballLaunchController: BallLaunchController,
         contactHandler: GamePhysicsContactHandler,
         gameController: GameController,
     ) {
         self.nodeManager = nodeManager
+        self.nodes = nodes
         self.ballLaunchController = ballLaunchController
         self.contactHandler = contactHandler
         self.gameController = gameController
-
+        
         super.init(size: size)
     }
 
@@ -105,7 +109,6 @@ extension GameScene {
 
     /// Adds the background, walls, gutter, bricks, paddle, and ball nodes to the scene.
     private func addGameNodes() {
-        let nodes = nodeManager.nodes
         addChild(GradientBackground.create(with: size))
 
         addChild(nodeManager.topWall)
@@ -116,7 +119,7 @@ extension GameScene {
         addChild(nodeManager.bricks)
 
         addChild(nodes.paddle)
-        addChild(nodeManager.ball)
+        addChild(nodes.ball)
 
     }
 }
@@ -125,7 +128,7 @@ extension GameScene {
 extension GameScene {
     /// Launches the ball if it is currently clamped to the paddle.
     func launchBall() {
-        ballLaunchController.launch(ball: nodeManager.ball)
+        ballLaunchController.launch(ball: nodes.ball)
     }
 
 }

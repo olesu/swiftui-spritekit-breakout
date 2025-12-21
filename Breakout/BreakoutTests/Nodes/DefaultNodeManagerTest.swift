@@ -29,11 +29,12 @@ struct DefaultNodeManagerTest {
     }
 
     @Test func movesBall() {
-        let manager = makeManager()
+        let ball = BallSprite(position: .zero)
+        let manager = makeManager(ball: ball)
 
         manager.moveBall(to: CGPoint(x: 200, y: 500))
 
-        #expect(manager.ball.position == CGPoint(x: 200, y: 500))
+        #expect(ball.position == CGPoint(x: 200, y: 500))
     }
 
     @Test func acceleratesBall() {
@@ -64,8 +65,10 @@ struct DefaultNodeManagerTest {
                 bounceCalculator: BounceCalculator()
             ),
             brickLayoutFactory: brickLayoutFactory,
-            nodes: SceneNodes(paddle: paddle),
-            ball: ball
+            nodes: SceneNodes(
+                paddle: paddle,
+                ball: ball,
+            )
         )
     }
 

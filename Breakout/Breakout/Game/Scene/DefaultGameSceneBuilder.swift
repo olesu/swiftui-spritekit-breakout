@@ -36,7 +36,10 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
 
         let ball = BallSprite(position: CGPoint(x: 160, y: 50))
         
-        let nodes = SceneNodes(paddle: paddle)
+        let nodes = SceneNodes(
+            paddle: paddle,
+            ball: ball,
+        )
 
         let paddleBounceApplier = PaddleBounceApplier(
             bounceSpeedPolicy: .classic,
@@ -48,8 +51,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
             paddleMotionController: paddleMotionController,
             paddleBounceApplier: paddleBounceApplier,
             brickLayoutFactory: brickLayoutFactory,
-            nodes: nodes,
-            ball: ball
+            nodes: nodes
         )
 
         let paddleInputController = PaddleInputController()
@@ -63,6 +65,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         let scene = GameScene(
             size: CGSize(width: sceneWidth, height: sceneHeight),
             nodeManager: nodeManager,
+            nodes: nodes,
             ballLaunchController: ballLaunchController,
             contactHandler: contactHandler,
             gameController: GameController(

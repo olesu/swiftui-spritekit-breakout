@@ -8,8 +8,6 @@ final class DefaultNodeManager: NodeManager {
     
     let nodes: SceneNodes
     
-    let ball: SKSpriteNode
-    
     let bricks: SKNode
     
     var removalQueue: Set<BrickId> = []
@@ -36,15 +34,13 @@ final class DefaultNodeManager: NodeManager {
         paddleMotionController: PaddleMotionController,
         paddleBounceApplier: PaddleBounceApplier,
         brickLayoutFactory: BrickLayoutFactory,
-        nodes: SceneNodes,
-        ball: BallSprite
+        nodes: SceneNodes
     ) {
         self.ballLaunchController = ballLaunchController
         self.paddleMotionController = paddleMotionController
         self.paddleBounceApplier = paddleBounceApplier
         self.bricks = brickLayoutFactory.createBrickLayout()
         self.nodes = nodes
-        self.ball = ball
     }
 
     private func remove(brickId: BrickId) {
@@ -60,12 +56,12 @@ final class DefaultNodeManager: NodeManager {
     }
 
     func moveBall(to position: CGPoint) {
-        ball.position = position
+        nodes.ball.position = position
     }
     
     func clampBallToPaddle(sceneSize: CGSize) {
         ballLaunchController.performReset(
-            ball: ball,
+            ball: nodes.ball,
             at: CGPoint(x: sceneSize.width / 2, y: 50)
         )
     }
@@ -80,7 +76,7 @@ final class DefaultNodeManager: NodeManager {
             sceneSize: sceneSize
         )
         nodes.paddle.position.x = newPaddle.x
-        ballLaunchController.update(ball: ball, paddle: nodes.paddle)
+        ballLaunchController.update(ball: nodes.ball, paddle: nodes.paddle)
     }
     
     func beginPaddleKeyboardOverride(to position: CGPoint, sceneSize: CGSize) {
@@ -113,7 +109,7 @@ final class DefaultNodeManager: NodeManager {
     }
     
     func ballHitPaddle() {
-        paddleBounceApplier.applyBounce(ball: ball, paddle: nodes.paddle)
+        paddleBounceApplier.applyBounce(ball: nodes.ball, paddle: nodes.paddle)
 
     }
     

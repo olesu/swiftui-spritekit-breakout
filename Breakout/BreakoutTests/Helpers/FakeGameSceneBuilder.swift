@@ -19,19 +19,20 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
             reducer: GameReducer()
         )
         let nodes = SceneNodes(
-            paddle: PaddleSprite(position: .zero, size: .zero)
+            paddle: PaddleSprite(position: .zero, size: .zero),
+            ball: BallSprite(position: .zero)
         )
         let nodeManager = DefaultNodeManager(
             ballLaunchController: ballLaunchController,
             paddleMotionController: paddleMotionController,
             paddleBounceApplier: paddleBounceApplier,
             brickLayoutFactory: FakeBrickLayoutFactory(),
-            nodes: nodes,
-            ball: BallSprite(position: .zero)
+            nodes: nodes
         )
         return GameScene(
             size: CGSize(width: 320, height: 480),
             nodeManager: nodeManager,
+            nodes: nodes,
             ballLaunchController: ballLaunchController,
             contactHandler: GamePhysicsContactHandler(
                 collisionRouter: collisionRouter,
