@@ -17,9 +17,9 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
             ballLaunchController: ballLaunchController,
             paddleMotionController: paddleMotionController,
             brickLayoutFactory: FakeBrickLayoutFactory(),
-            paddle: PaddleSprite(position: .zero, size: .zero)
+            paddle: PaddleSprite(position: .zero, size: .zero),
+            ball: BallSprite(position: .zero)
         )
-        let ballMotionController = BallMotionController()
         let paddleBounceApplier = PaddleBounceApplier()
 
         return GameScene(
@@ -30,7 +30,6 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
                 collisionRouter: collisionRouter,
                 gameSession: gameSession,
                 nodeManager: nodeManager,
-                ballMotionController: ballMotionController,
                 paddleBounceApplier: paddleBounceApplier
             ),
             gameController: GameController(

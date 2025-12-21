@@ -10,15 +10,11 @@ struct DefaultNodeManagerPaddleMovementTest {
     let paddlePosition = CGPoint(x: 10, y: 0)
     let paddleSize = CGSize(width: 2, height: 20)
     let paddleMotionController = PaddleMotionController(speed: 1)
+    let ball = BallSprite(position: .zero)
 
     @Test func controlsThePaddleByMovingLeft() {
         let paddle = PaddleSprite(position: paddlePosition, size: paddleSize)
-        let nodeManager = DefaultNodeManager(
-            ballLaunchController: BallLaunchController(),
-            paddleMotionController: paddleMotionController,
-            brickLayoutFactory: FakeBrickLayoutFactory(),
-            paddle: paddle
-        )
+        let nodeManager = makeManager(paddle)
 
         nodeManager.startPaddleLeft()
         nodeManager.updatePaddleAndClampedBall(deltaTime: 1.0, sceneSize: sceneSize)
@@ -30,12 +26,7 @@ struct DefaultNodeManagerPaddleMovementTest {
 
     @Test func controlsThePaddleByMovingRight() {
         let paddle = PaddleSprite(position: paddlePosition, size: paddleSize)
-        let nodeManager = DefaultNodeManager(
-            ballLaunchController: BallLaunchController(),
-            paddleMotionController: paddleMotionController,
-            brickLayoutFactory: FakeBrickLayoutFactory(),
-            paddle: paddle
-        )
+        let nodeManager = makeManager(paddle)
 
         nodeManager.startPaddleRight()
         nodeManager.updatePaddleAndClampedBall(deltaTime: 1.0, sceneSize: sceneSize)
@@ -47,12 +38,7 @@ struct DefaultNodeManagerPaddleMovementTest {
 
     @Test func movingToAFixedPointOverridesKeyMovement() {
         let paddle = PaddleSprite(position: paddlePosition, size: paddleSize)
-        let nodeManager = DefaultNodeManager(
-            ballLaunchController: BallLaunchController(),
-            paddleMotionController: paddleMotionController,
-            brickLayoutFactory: FakeBrickLayoutFactory(),
-            paddle: paddle
-        )
+        let nodeManager = makeManager(paddle)
 
         // keyboard movement
         nodeManager.startPaddleRight()
@@ -68,6 +54,16 @@ struct DefaultNodeManagerPaddleMovementTest {
         nodeManager.endPaddleOverride()
         nodeManager.updatePaddleAndClampedBall(deltaTime: 1.0, sceneSize: sceneSize)
         #expect(paddle.position.x == 4.0)
+    }
+    
+    private func makeManager(_ paddle: PaddleSprite) -> DefaultNodeManager {
+        DefaultNodeManager(
+            ballLaunchController: BallLaunchController(),
+            paddleMotionController: paddleMotionController,
+            brickLayoutFactory: FakeBrickLayoutFactory(),
+            paddle: paddle,
+            ball: ball
+        )
     }
 
 }

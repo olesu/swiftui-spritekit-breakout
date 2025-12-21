@@ -18,12 +18,7 @@ struct DefaultNodeManagerTest {
 
         let brickLayoutFactory = FakeBrickLayoutFactory()
         brickLayoutFactory.addToBrickLayout(brick)
-        let manager = DefaultNodeManager(
-            ballLaunchController: ballLaunchController,
-            paddleMotionController: paddleMotionController,
-            brickLayoutFactory: brickLayoutFactory,
-            paddle: paddle
-        )
+        let manager = makeManager(brickLayoutFactory)
 
         #expect(brick.parent != nil)
 
@@ -34,16 +29,40 @@ struct DefaultNodeManagerTest {
     }
 
     @Test func movesBall() {
-        let manager = DefaultNodeManager(
-            ballLaunchController: ballLaunchController,
-            paddleMotionController: paddleMotionController,
-            brickLayoutFactory: FakeBrickLayoutFactory(),
-            paddle: paddle
-        )
+        let manager = makeManager()
 
         manager.moveBall(to: CGPoint(x: 200, y: 500))
 
         #expect(manager.ball.position == CGPoint(x: 200, y: 500))
+    }
+
+    @Test func acceleratesBall() {
+        let ball = BallSprite(position: .zero)
+        let manager = makeManager(ball: ball)
+
+        ball.physicsBody?.velocity = .init(dx: 1.0, dy: 1.0)
+        manager.ballAccelerated()
+        
+        guard let velocity = ball.physicsBody?.velocity else {
+            #expect(Bool(false), "ball lacked velocity")
+            return
+        }
+
+        #expect(velocity.dx  - 1.03 < 0.001)
+        #expect(velocity.dy  - 1.03 < 0.001)
+    }
+
+    private func makeManager(
+        _ brickLayoutFactory: BrickLayoutFactory = FakeBrickLayoutFactory(),
+        ball: BallSprite = BallSprite(position: .zero)
+    ) -> DefaultNodeManager {
+        return DefaultNodeManager(
+            ballLaunchController: ballLaunchController,
+            paddleMotionController: paddleMotionController,
+            brickLayoutFactory: brickLayoutFactory,
+            paddle: paddle,
+            ball: ball
+        )
     }
 
 }

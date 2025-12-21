@@ -10,16 +10,22 @@ protocol NodeManager {
     var rightWall: SKSpriteNode { get }
     var gutter: SKSpriteNode { get }
     
+    // MARK: bricks
     func removeEnqueued()
     func enqueueRemoval(of brickId: BrickId)
-    
-    func moveBall(to position: CGPoint)
-    
-    func clampBallToPaddle(sceneSize: CGSize)
-    func updatePaddleAndClampedBall(deltaTime dt: TimeInterval, sceneSize: CGSize)
+
+    // MARK: paddle
     func movePaddle(to position: CGPoint, sceneSize: CGSize)
     func endPaddleOverride()
     func startPaddleLeft()
     func startPaddleRight()
     func stopPaddle()
+    
+    // MARK: ball
+    func moveBall(to position: CGPoint)
+    func ballAccelerated()
+    
+    // MARK: ball and paddle
+    func clampBallToPaddle(sceneSize: CGSize)
+    func updatePaddleAndClampedBall(deltaTime dt: TimeInterval, sceneSize: CGSize)
 }

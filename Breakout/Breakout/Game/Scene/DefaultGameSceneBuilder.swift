@@ -31,24 +31,25 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         
         
         let paddle = PaddleSprite(position: CGPoint(x: 160, y: 40), size: CGSize(width: 60, height: 12))
+        
+        let ball = BallSprite(position: CGPoint(x: 160, y: 50))
 
         let nodeManager = DefaultNodeManager(
             ballLaunchController: ballLaunchController,
             paddleMotionController: paddleMotionController,
             brickLayoutFactory: brickLayoutFactory,
-            paddle: paddle
+            paddle: paddle,
+            ball: ball
         )
 
         let paddleInputController = PaddleInputController()
 
-        let ballMotionController = BallMotionController()
         let paddleBounceApplier = PaddleBounceApplier()
 
         let contactHandler = GamePhysicsContactHandler(
             collisionRouter: collisionRouter,
             gameSession: session,
             nodeManager: nodeManager,
-            ballMotionController: ballMotionController,
             paddleBounceApplier: paddleBounceApplier
         )
 

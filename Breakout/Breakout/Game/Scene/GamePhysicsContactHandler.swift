@@ -11,20 +11,18 @@ final class GamePhysicsContactHandler: NSObject, SKPhysicsContactDelegate {
     private let collisionRouter: CollisionRouter
     private let gameSession: GameSession
     private let nodeManager: NodeManager
-    private let ballMotionController: BallMotionController
+    // TODO: delegate to node manager
     private let paddleBounceApplier: PaddleBounceApplier
 
     init(
         collisionRouter: CollisionRouter,
         gameSession: GameSession,
         nodeManager: NodeManager,
-        ballMotionController: BallMotionController,
         paddleBounceApplier: PaddleBounceApplier
     ) {
         self.collisionRouter = collisionRouter
         self.gameSession = gameSession
         self.nodeManager = nodeManager
-        self.ballMotionController = ballMotionController
         self.paddleBounceApplier = paddleBounceApplier
     }
 
@@ -76,7 +74,7 @@ final class GamePhysicsContactHandler: NSObject, SKPhysicsContactDelegate {
 
     private func handleBallHitPaddle() {
         // Match GameScene behavior: speed up slightly and adjust bounce.
-        ballMotionController.update(ball: nodeManager.ball, speedMultiplier: 1.03)
+        nodeManager.ballAccelerated()
         paddleBounceApplier.applyBounce(ball: nodeManager.ball, paddle: nodeManager.paddle)
     }
 }
