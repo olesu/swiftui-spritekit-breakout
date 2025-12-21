@@ -46,12 +46,12 @@ struct DefaultNodeManagerPaddleMovementTest {
         #expect(nodeManager.paddle.position.x == 11.0)
 
         // drag override
-        nodeManager.movePaddle(to: CGPoint(x: 3.0, y: 999), sceneSize: sceneSize)
+        nodeManager.beginPaddleKeyboardOverride(to: CGPoint(x: 3.0, y: 999), sceneSize: sceneSize)
         nodeManager.updatePaddleAndClampedBall(deltaTime: 1.0, sceneSize: sceneSize)
         #expect(nodeManager.paddle.position.x == 3.0)
 
         // resume keyboard
-        nodeManager.endPaddleOverride()
+        nodeManager.endPaddleKeyboardOverride()
         nodeManager.updatePaddleAndClampedBall(deltaTime: 1.0, sceneSize: sceneSize)
         #expect(paddle.position.x == 4.0)
     }

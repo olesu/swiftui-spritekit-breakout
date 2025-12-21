@@ -24,7 +24,10 @@ final class GameController {
             nodeManager.clampBallToPaddle(sceneSize: sceneSize)
             gameSession.acknowledgeBallReset()
         } else {
-            nodeManager.updatePaddleAndClampedBall(deltaTime: dt, sceneSize: sceneSize)
+            nodeManager.updatePaddleAndClampedBall(
+                deltaTime: dt,
+                sceneSize: sceneSize
+            )
         }
     }
 
@@ -49,11 +52,11 @@ final class GameController {
     }
 
     func movePaddle(to point: CGPoint, sceneSize: CGSize) {
-        nodeManager.movePaddle(to: point, sceneSize: sceneSize)
+        nodeManager.beginPaddleKeyboardOverride(to: point, sceneSize: sceneSize)
     }
 
     func endPaddleOverride() {
-        nodeManager.endPaddleOverride()
+        nodeManager.endPaddleKeyboardOverride()
     }
 
     private func applyMovement() {

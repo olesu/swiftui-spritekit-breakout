@@ -82,7 +82,7 @@ final class DefaultNodeManager: NodeManager {
         ballLaunchController.update(ball: ball, paddle: paddle)
     }
     
-    func movePaddle(to position: CGPoint, sceneSize: CGSize) {
+    func beginPaddleKeyboardOverride(to position: CGPoint, sceneSize: CGSize) {
         let newPaddle = paddleMotionController.overridePosition(
             paddle: Paddle(
                 x: paddle.position.x,
@@ -95,7 +95,7 @@ final class DefaultNodeManager: NodeManager {
 
     }
     
-    func endPaddleOverride() {
+    func endPaddleKeyboardOverride() {
         paddleMotionController.endOverride()
     }
     
