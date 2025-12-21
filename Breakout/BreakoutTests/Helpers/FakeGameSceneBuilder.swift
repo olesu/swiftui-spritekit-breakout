@@ -18,11 +18,7 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
             repository: InMemoryGameStateRepository(),
             reducer: GameReducer()
         )
-        let nodes = SceneNodes(
-            paddle: PaddleSprite(position: .zero, size: .zero),
-            ball: BallSprite(position: .zero),
-            bricks: FakeBrickLayoutFactory().createBrickLayout(),
-        )
+        let nodes = SceneNodes.createValid()
         let nodeManager = DefaultNodeManager(
             ballLaunchController: ballLaunchController,
             paddleMotionController: paddleMotionController,

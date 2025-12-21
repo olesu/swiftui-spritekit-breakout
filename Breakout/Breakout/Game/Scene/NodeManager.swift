@@ -1,11 +1,6 @@
 import SpriteKit
 
 protocol NodeManager {
-    var topWall: SKSpriteNode { get }
-    var leftWall: SKSpriteNode { get }
-    var rightWall: SKSpriteNode { get }
-    var gutter: SKSpriteNode { get }
-    
     // MARK: bricks
     func removeEnqueued()
     func enqueueRemoval(of brickId: BrickId)

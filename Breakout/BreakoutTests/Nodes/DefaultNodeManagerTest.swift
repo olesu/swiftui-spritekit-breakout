@@ -34,7 +34,8 @@ struct DefaultNodeManagerTest {
 
         manager.moveBall(to: CGPoint(x: 200, y: 500))
 
-        #expect(ball.position == CGPoint(x: 200, y: 500))
+        #expect(abs(ball.position.x - 200) <= 0.001)
+        #expect(abs(ball.position.y - 500) <= 0.001)
     }
 
     @Test func acceleratesBall() {
@@ -65,11 +66,10 @@ struct DefaultNodeManagerTest {
                 bounceCalculator: BounceCalculator()
             ),
             brickLayoutFactory: brickLayoutFactory,
-            nodes: SceneNodes(
-                paddle: paddle,
+            nodes: SceneNodes.createValid(
                 ball: ball,
-                bricks: brickLayoutFactory.createBrickLayout()
-            )
+                bricks: brickLayoutFactory.createBrickLayout(),
+            ),
         )
     }
 

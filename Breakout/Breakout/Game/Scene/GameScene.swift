@@ -111,10 +111,10 @@ extension GameScene {
     private func addGameNodes() {
         addChild(GradientBackground.create(with: size))
 
-        addChild(nodeManager.topWall)
-        addChild(nodeManager.leftWall)
-        addChild(nodeManager.rightWall)
-        addChild(nodeManager.gutter)
+        addChild(nodes.topWall)
+        addChild(nodes.leftWall)
+        addChild(nodes.rightWall)
+        addChild(nodes.gutter)
 
         addChild(nodes.bricks)
 

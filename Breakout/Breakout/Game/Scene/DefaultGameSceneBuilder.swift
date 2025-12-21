@@ -35,13 +35,34 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         )
 
         let ball = BallSprite(position: CGPoint(x: 160, y: 50))
-        
+
         let bricks = brickLayoutFactory.createBrickLayout()
-        
+
+        let topWall = WallSprite(
+            position: CGPoint(x: 160, y: 430),
+            size: CGSize(width: 320, height: 10)
+        )
+        let leftWall: SKSpriteNode = WallSprite(
+            position: CGPoint(x: 0, y: 245),
+            size: CGSize(width: 10, height: 470)
+        )
+        let rightWall: SKSpriteNode = WallSprite(
+            position: CGPoint(x: 320, y: 245),
+            size: CGSize(width: 10, height: 470)
+        )
+        let gutter: SKSpriteNode = GutterSprite(
+            position: CGPoint(x: 160, y: 0),
+            size: CGSize(width: 320, height: 10)
+        )
+
         let nodes = SceneNodes(
             paddle: paddle,
             ball: ball,
             bricks: bricks,
+            topWall: topWall,
+            leftWall: leftWall,
+            rightWall: rightWall,
+            gutter: gutter,
         )
 
         let paddleBounceApplier = PaddleBounceApplier(

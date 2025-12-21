@@ -10,23 +10,6 @@ final class DefaultNodeManager: NodeManager {
 
     var removalQueue: Set<BrickId> = []
 
-    let topWall: SKSpriteNode = WallSprite(
-        position: CGPoint(x: 160, y: 430),
-        size: CGSize(width: 320, height: 10)
-    )
-    let leftWall: SKSpriteNode = WallSprite(
-        position: CGPoint(x: 0, y: 245),
-        size: CGSize(width: 10, height: 470)
-    )
-    let rightWall: SKSpriteNode = WallSprite(
-        position: CGPoint(x: 320, y: 245),
-        size: CGSize(width: 10, height: 470)
-    )
-    let gutter: SKSpriteNode = GutterSprite(
-        position: CGPoint(x: 160, y: 0),
-        size: CGSize(width: 320, height: 10)
-    )
-
     init(
         ballLaunchController: BallLaunchController,
         paddleMotionController: PaddleMotionController,

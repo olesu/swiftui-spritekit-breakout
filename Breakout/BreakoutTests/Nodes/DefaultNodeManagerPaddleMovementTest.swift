@@ -89,11 +89,9 @@ struct DefaultNodeManagerPaddleMovementTest {
                 bounceCalculator: BounceCalculator()
             ),
             brickLayoutFactory: FakeBrickLayoutFactory(),
-            nodes: SceneNodes(
+            nodes: SceneNodes.createValid(
                 paddle: paddle,
-                ball: ball,
-                bricks: FakeBrickLayoutFactory().createBrickLayout()
-            )
+            ),
         )
     }
 
