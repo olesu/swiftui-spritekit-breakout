@@ -1,7 +1,6 @@
 import SpriteKit
 
 protocol NodeManager {
-    var paddle: SKSpriteNode { get }
     var ball: SKSpriteNode { get }
     var bricks: SKNode { get }
     

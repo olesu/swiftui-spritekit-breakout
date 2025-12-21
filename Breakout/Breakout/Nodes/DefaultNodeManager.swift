@@ -6,7 +6,8 @@ final class DefaultNodeManager: NodeManager {
     private let paddleMotionController: PaddleMotionController
     private let paddleBounceApplier: PaddleBounceApplier
     
-    let paddle: SKSpriteNode
+    let nodes: SceneNodes
+    
     let ball: SKSpriteNode
     
     let bricks: SKNode
@@ -35,14 +36,14 @@ final class DefaultNodeManager: NodeManager {
         paddleMotionController: PaddleMotionController,
         paddleBounceApplier: PaddleBounceApplier,
         brickLayoutFactory: BrickLayoutFactory,
-        paddle: PaddleSprite,
+        nodes: SceneNodes,
         ball: BallSprite
     ) {
         self.ballLaunchController = ballLaunchController
         self.paddleMotionController = paddleMotionController
         self.paddleBounceApplier = paddleBounceApplier
         self.bricks = brickLayoutFactory.createBrickLayout()
-        self.paddle = paddle
+        self.nodes = nodes
         self.ball = ball
     }
 
@@ -72,26 +73,26 @@ final class DefaultNodeManager: NodeManager {
     func updatePaddleAndClampedBall(deltaTime dt: TimeInterval, sceneSize: CGSize) {
         let newPaddle = paddleMotionController.update(
             paddle: Paddle(
-                x: paddle.position.x,
-                w: paddle.size.width
+                x: nodes.paddle.position.x,
+                w: nodes.paddle.size.width
             ),
             deltaTime: dt,
             sceneSize: sceneSize
         )
-        paddle.position.x = newPaddle.x
-        ballLaunchController.update(ball: ball, paddle: paddle)
+        nodes.paddle.position.x = newPaddle.x
+        ballLaunchController.update(ball: ball, paddle: nodes.paddle)
     }
     
     func beginPaddleKeyboardOverride(to position: CGPoint, sceneSize: CGSize) {
         let newPaddle = paddleMotionController.overridePosition(
             paddle: Paddle(
-                x: paddle.position.x,
-                w: paddle.size.width
+                x: nodes.paddle.position.x,
+                w: nodes.paddle.size.width
             ),
             x: position.x,
             sceneSize: sceneSize
         )
-        paddle.position.x = CGFloat(newPaddle.x)
+        nodes.paddle.position.x = CGFloat(newPaddle.x)
 
     }
     
@@ -112,7 +113,7 @@ final class DefaultNodeManager: NodeManager {
     }
     
     func ballHitPaddle() {
-        paddleBounceApplier.applyBounce(ball: ball, paddle: paddle)
+        paddleBounceApplier.applyBounce(ball: ball, paddle: nodes.paddle)
 
     }
     

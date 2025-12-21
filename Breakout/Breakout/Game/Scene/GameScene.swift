@@ -28,7 +28,7 @@ import SpriteKit
 /// - SeeAlso: `BallLaunchController`, `BallMotionController`, `PaddleMotionController`,
 ///   `PaddleInputController`, `PaddleBounceApplier`, `GameSession`, `GamePhysicsContactHandler`.
 final class GameScene: SKScene {
-    private let nodeManager: NodeManager
+    private let nodeManager: DefaultNodeManager
     private let ballLaunchController: BallLaunchController
     private let contactHandler: GamePhysicsContactHandler
     private let gameController: GameController
@@ -45,7 +45,7 @@ final class GameScene: SKScene {
     ///   - contactHandler: Dedicated physics contact handler assigned to `physicsWorld.contactDelegate`.
     init(
         size: CGSize,
-        nodeManager: NodeManager,
+        nodeManager: DefaultNodeManager,
         ballLaunchController: BallLaunchController,
         contactHandler: GamePhysicsContactHandler,
         gameController: GameController,
@@ -105,6 +105,7 @@ extension GameScene {
 
     /// Adds the background, walls, gutter, bricks, paddle, and ball nodes to the scene.
     private func addGameNodes() {
+        let nodes = nodeManager.nodes
         addChild(GradientBackground.create(with: size))
 
         addChild(nodeManager.topWall)
@@ -114,7 +115,7 @@ extension GameScene {
 
         addChild(nodeManager.bricks)
 
-        addChild(nodeManager.paddle)
+        addChild(nodes.paddle)
         addChild(nodeManager.ball)
 
     }

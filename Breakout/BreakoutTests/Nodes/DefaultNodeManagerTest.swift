@@ -64,7 +64,7 @@ struct DefaultNodeManagerTest {
                 bounceCalculator: BounceCalculator()
             ),
             brickLayoutFactory: brickLayoutFactory,
-            paddle: paddle,
+            nodes: SceneNodes(paddle: paddle),
             ball: ball
         )
     }

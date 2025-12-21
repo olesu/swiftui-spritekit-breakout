@@ -58,7 +58,7 @@ struct DefaultNodeManagerPaddleMovementTest {
             deltaTime: 1.0,
             sceneSize: sceneSize
         )
-        #expect(nodeManager.paddle.position.x == 11.0)
+        #expect(paddle.position.x == 11.0)
 
         // drag override
         nodeManager.beginPaddleKeyboardOverride(
@@ -69,7 +69,7 @@ struct DefaultNodeManagerPaddleMovementTest {
             deltaTime: 1.0,
             sceneSize: sceneSize
         )
-        #expect(nodeManager.paddle.position.x == 3.0)
+        #expect(paddle.position.x == 3.0)
 
         // resume keyboard
         nodeManager.endPaddleKeyboardOverride()
@@ -89,7 +89,7 @@ struct DefaultNodeManagerPaddleMovementTest {
                 bounceCalculator: BounceCalculator()
             ),
             brickLayoutFactory: FakeBrickLayoutFactory(),
-            paddle: paddle,
+            nodes: SceneNodes(paddle: paddle),
             ball: ball
         )
     }
