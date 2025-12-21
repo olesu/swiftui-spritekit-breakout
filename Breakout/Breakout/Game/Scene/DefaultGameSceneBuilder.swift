@@ -28,13 +28,18 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         let c = gameConfigurationService.getGameConfiguration()
         let sceneWidth = c.sceneWidth
         let sceneHeight = c.sceneHeight
-        
-        
-        let paddle = PaddleSprite(position: CGPoint(x: 160, y: 40), size: CGSize(width: 60, height: 12))
-        
+
+        let paddle = PaddleSprite(
+            position: CGPoint(x: 160, y: 40),
+            size: CGSize(width: 60, height: 12)
+        )
+
         let ball = BallSprite(position: CGPoint(x: 160, y: 50))
-        
-        let paddleBounceApplier = PaddleBounceApplier()
+
+        let paddleBounceApplier = PaddleBounceApplier(
+            bounceSpeedPolicy: .classic,
+            bounceCalculator: BounceCalculator()
+        )
 
         let nodeManager = DefaultNodeManager(
             ballLaunchController: ballLaunchController,

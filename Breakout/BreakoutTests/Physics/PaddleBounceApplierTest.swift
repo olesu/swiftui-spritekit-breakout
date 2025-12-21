@@ -1,8 +1,12 @@
-import Testing
 import SpriteKit
+import Testing
+
 @testable import Breakout
 
 struct PaddleBounceApplierTest {
+    private let bounceSpeedPolicy = BounceSpeedPolicy.neutral
+    private let bounceCalculator = BounceCalculator()
+
     @Test
     func appliesCorrectVelocityForCenterHit() {
         let ball = makeBall()
@@ -50,7 +54,10 @@ struct PaddleBounceApplierTest {
         let ball = SKSpriteNode()
         let paddle = SKSpriteNode()
 
-        let applier = PaddleBounceApplier()
+        let applier = PaddleBounceApplier(
+            bounceSpeedPolicy: bounceSpeedPolicy,
+            bounceCalculator: bounceCalculator
+        )
 
         // Should not crash when ball has no physics body
         applier.applyBounce(ball: ball, paddle: paddle)
@@ -61,10 +68,12 @@ struct PaddleBounceApplierTest {
 
         // Should not crash when only paddle has physics body
         ball.physicsBody = nil
-        paddle.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 40, height: 8))
+        paddle.physicsBody = SKPhysicsBody(
+            rectangleOf: CGSize(width: 40, height: 8)
+        )
         applier.applyBounce(ball: ball, paddle: paddle)
     }
-    
+
     private func makeBall() -> SKSpriteNode {
         let ball = SKSpriteNode()
         ball.position = CGPoint(x: 160, y: 50)
@@ -73,7 +82,7 @@ struct PaddleBounceApplierTest {
 
         return ball
     }
-    
+
     private func makePaddle() -> SKSpriteNode {
         let paddleSize = CGSize(width: 40, height: 8)
         let paddle = SKSpriteNode(color: .white, size: paddleSize)
@@ -82,9 +91,14 @@ struct PaddleBounceApplierTest {
 
         return paddle
     }
-    
-    private func makeApplier(_ ball: SKSpriteNode, _ paddle: SKSpriteNode) -> PaddleBounceApplier {
-        let applier = PaddleBounceApplier()
+
+    private func makeApplier(_ ball: SKSpriteNode, _ paddle: SKSpriteNode)
+        -> PaddleBounceApplier
+    {
+        let applier = PaddleBounceApplier(
+            bounceSpeedPolicy: bounceSpeedPolicy,
+            bounceCalculator: bounceCalculator
+        )
         applier.applyBounce(ball: ball, paddle: paddle)
 
         return applier
