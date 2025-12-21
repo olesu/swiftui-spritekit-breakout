@@ -60,6 +60,7 @@ struct DefaultNodeManagerPaddleMovementTest {
         DefaultNodeManager(
             ballLaunchController: BallLaunchController(),
             paddleMotionController: paddleMotionController,
+            paddleBounceApplier: PaddleBounceApplier(),
             brickLayoutFactory: FakeBrickLayoutFactory(),
             paddle: paddle,
             ball: ball

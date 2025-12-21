@@ -4,6 +4,7 @@ import SpriteKit
 final class DefaultNodeManager: NodeManager {
     private let ballLaunchController: BallLaunchController
     private let paddleMotionController: PaddleMotionController
+    private let paddleBounceApplier: PaddleBounceApplier
     
     let paddle: SKSpriteNode
     let ball: SKSpriteNode
@@ -32,12 +33,14 @@ final class DefaultNodeManager: NodeManager {
     init(
         ballLaunchController: BallLaunchController,
         paddleMotionController: PaddleMotionController,
+        paddleBounceApplier: PaddleBounceApplier,
         brickLayoutFactory: BrickLayoutFactory,
         paddle: PaddleSprite,
         ball: BallSprite
     ) {
         self.ballLaunchController = ballLaunchController
         self.paddleMotionController = paddleMotionController
+        self.paddleBounceApplier = paddleBounceApplier
         self.bricks = brickLayoutFactory.createBrickLayout()
         self.paddle = paddle
         self.ball = ball
@@ -108,11 +111,9 @@ final class DefaultNodeManager: NodeManager {
         paddleMotionController.stop()
     }
     
-    func ballAccelerated() {
-        let speedMultiplier = 1.03
-        
-        ball.physicsBody?.velocity.dx *= speedMultiplier
-        ball.physicsBody?.velocity.dy *= speedMultiplier
+    func ballHitPaddle() {
+        paddleBounceApplier.applyBounce(ball: ball, paddle: paddle)
+
     }
     
 

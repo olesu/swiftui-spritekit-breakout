@@ -8,6 +8,8 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
         let ballLaunchController = BallLaunchController()
         let paddleMotionController = PaddleMotionController(speed: 0)
         let paddleInputController = PaddleInputController()
+        let paddleBounceApplier = PaddleBounceApplier()
+
         let collisionRouter = FakeCollisionRouter()
         let gameSession = GameSession(
             repository: InMemoryGameStateRepository(),
@@ -16,12 +18,11 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
         let nodeManager = DefaultNodeManager(
             ballLaunchController: ballLaunchController,
             paddleMotionController: paddleMotionController,
+            paddleBounceApplier: paddleBounceApplier,
             brickLayoutFactory: FakeBrickLayoutFactory(),
             paddle: PaddleSprite(position: .zero, size: .zero),
             ball: BallSprite(position: .zero)
         )
-        let paddleBounceApplier = PaddleBounceApplier()
-
         return GameScene(
             size: CGSize(width: 320, height: 480),
             nodeManager: nodeManager,
@@ -29,8 +30,7 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
             contactHandler: GamePhysicsContactHandler(
                 collisionRouter: collisionRouter,
                 gameSession: gameSession,
-                nodeManager: nodeManager,
-                paddleBounceApplier: paddleBounceApplier
+                nodeManager: nodeManager
             ),
             gameController: GameController(
                 paddleInputController: paddleInputController,

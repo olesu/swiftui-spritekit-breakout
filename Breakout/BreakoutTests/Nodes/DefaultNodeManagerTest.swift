@@ -41,7 +41,7 @@ struct DefaultNodeManagerTest {
         let manager = makeManager(ball: ball)
 
         ball.physicsBody?.velocity = .init(dx: 1.0, dy: 1.0)
-        manager.ballAccelerated()
+        manager.ballHitPaddle()
         
         guard let velocity = ball.physicsBody?.velocity else {
             #expect(Bool(false), "ball lacked velocity")
@@ -59,6 +59,7 @@ struct DefaultNodeManagerTest {
         return DefaultNodeManager(
             ballLaunchController: ballLaunchController,
             paddleMotionController: paddleMotionController,
+            paddleBounceApplier: PaddleBounceApplier(),
             brickLayoutFactory: brickLayoutFactory,
             paddle: paddle,
             ball: ball

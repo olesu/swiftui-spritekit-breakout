@@ -23,7 +23,7 @@ protocol NodeManager {
     
     // MARK: ball
     func moveBall(to position: CGPoint)
-    func ballAccelerated()
+    func ballHitPaddle()
     
     // MARK: ball and paddle
     func clampBallToPaddle(sceneSize: CGSize)

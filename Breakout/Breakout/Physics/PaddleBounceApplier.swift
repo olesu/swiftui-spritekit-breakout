@@ -1,9 +1,11 @@
 import SpriteKit
 
-internal struct PaddleBounceApplier {
+struct PaddleBounceApplier {
+    private let speedMultiplier = 1.03
+    
     private let calculator = PaddleBounceCalculator()
 
-    internal func applyBounce(ball: SKNode, paddle: SKNode) {
+    func applyBounce(ball: SKNode, paddle: SKNode) {
         guard let ballBody = ball.physicsBody else { return }
 
         let currentVelocity = ballBody.velocity
@@ -18,6 +20,7 @@ internal struct PaddleBounceApplier {
             ballSpeed: ballSpeed
         )
 
-        ballBody.velocity = newVelocity
+        ballBody.velocity.dx = newVelocity.dx * speedMultiplier
+        ballBody.velocity.dy = newVelocity.dy * speedMultiplier
     }
 }
