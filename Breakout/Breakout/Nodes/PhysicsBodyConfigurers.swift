@@ -58,7 +58,7 @@ internal struct GutterPhysicsBodyConfigurer {
         physicsBody.isDynamic = false
         physicsBody.categoryBitMask = CollisionCategory.gutter.mask
         physicsBody.contactTestBitMask = CollisionCategory.ball.mask
-        physicsBody.collisionBitMask = 0
+        physicsBody.collisionBitMask = CollisionCategory.ball.mask
     }
 }
 
