@@ -68,6 +68,7 @@ struct DefaultNodeManagerTest {
             nodes: SceneNodes(
                 paddle: paddle,
                 ball: ball,
+                bricks: brickLayoutFactory.createBrickLayout()
             )
         )
     }

@@ -1,8 +1,6 @@
 import SpriteKit
 
 protocol NodeManager {
-    var bricks: SKNode { get }
-    
     var topWall: SKSpriteNode { get }
     var leftWall: SKSpriteNode { get }
     var rightWall: SKSpriteNode { get }

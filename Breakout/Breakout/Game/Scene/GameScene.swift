@@ -116,7 +116,7 @@ extension GameScene {
         addChild(nodeManager.rightWall)
         addChild(nodeManager.gutter)
 
-        addChild(nodeManager.bricks)
+        addChild(nodes.bricks)
 
         addChild(nodes.paddle)
         addChild(nodes.ball)

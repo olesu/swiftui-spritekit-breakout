@@ -92,6 +92,7 @@ struct DefaultNodeManagerPaddleMovementTest {
             nodes: SceneNodes(
                 paddle: paddle,
                 ball: ball,
+                bricks: FakeBrickLayoutFactory().createBrickLayout()
             )
         )
     }

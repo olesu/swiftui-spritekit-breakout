@@ -36,9 +36,12 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
 
         let ball = BallSprite(position: CGPoint(x: 160, y: 50))
         
+        let bricks = brickLayoutFactory.createBrickLayout()
+        
         let nodes = SceneNodes(
             paddle: paddle,
             ball: ball,
+            bricks: bricks,
         )
 
         let paddleBounceApplier = PaddleBounceApplier(

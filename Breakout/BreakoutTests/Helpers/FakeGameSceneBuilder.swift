@@ -20,7 +20,8 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
         )
         let nodes = SceneNodes(
             paddle: PaddleSprite(position: .zero, size: .zero),
-            ball: BallSprite(position: .zero)
+            ball: BallSprite(position: .zero),
+            bricks: FakeBrickLayoutFactory().createBrickLayout(),
         )
         let nodeManager = DefaultNodeManager(
             ballLaunchController: ballLaunchController,
