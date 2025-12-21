@@ -5,6 +5,7 @@ import Testing
 
 struct DefaultNodeManagerTest {
     let ballLaunchController = BallLaunchController()
+    let paddleMotionController = PaddleMotionController(speed: 450.0)
 
     @Test func removesBrickNodeById() {
         let brickId = BrickId(of: UUID().uuidString)
@@ -18,6 +19,7 @@ struct DefaultNodeManagerTest {
         brickLayoutFactory.addToBrickLayout(brick)
         let manager = DefaultNodeManager(
             ballLaunchController: ballLaunchController,
+            paddleMotionController: paddleMotionController,
             brickLayoutFactory: brickLayoutFactory
         )
 
@@ -32,6 +34,7 @@ struct DefaultNodeManagerTest {
     @Test func movesBall() {
         let manager = DefaultNodeManager(
             ballLaunchController: ballLaunchController,
+            paddleMotionController: paddleMotionController,
             brickLayoutFactory: FakeBrickLayoutFactory()
         )
 

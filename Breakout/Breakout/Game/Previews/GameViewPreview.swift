@@ -27,7 +27,8 @@ import SwiftUI
             collisionRouter: collisionRouter,
             brickLayoutFactory: brickLayoutFactory,
             session: session,
-            ballLaunchController: ballLaunchController
+            ballLaunchController: ballLaunchController,
+            paddleMotionController: PaddleMotionController(speed: 450.0)
         )
         let viewModel = GameViewModel(
             session: session,

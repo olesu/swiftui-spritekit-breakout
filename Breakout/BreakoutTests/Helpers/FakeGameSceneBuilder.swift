@@ -15,6 +15,7 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
         )
         let nodeManager = DefaultNodeManager(
             ballLaunchController: ballLaunchController,
+            paddleMotionController: paddleMotionController,
             brickLayoutFactory: FakeBrickLayoutFactory()
         )
         let ballMotionController = BallMotionController()
@@ -22,10 +23,7 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
 
         return GameScene(
             size: CGSize(width: 320, height: 480),
-            nodeManager: DefaultNodeManager(
-                ballLaunchController: BallLaunchController(),
-                brickLayoutFactory: FakeBrickLayoutFactory()
-            ),
+            nodeManager: nodeManager,
             ballLaunchController: ballLaunchController,
             contactHandler: GamePhysicsContactHandler(
                 collisionRouter: collisionRouter,

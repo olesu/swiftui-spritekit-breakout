@@ -3,6 +3,7 @@ import SpriteKit
 
 final class DefaultNodeManager: NodeManager {
     private let ballLaunchController: BallLaunchController
+    private let paddleMotionController: PaddleMotionController
     
     let paddle: SKSpriteNode = PaddleSprite(position: CGPoint(x: 160, y: 40))
     let ball: SKSpriteNode = BallSprite(position: CGPoint(x: 160, y: 50))
@@ -30,9 +31,11 @@ final class DefaultNodeManager: NodeManager {
 
     init(
         ballLaunchController: BallLaunchController,
+        paddleMotionController: PaddleMotionController,
         brickLayoutFactory: BrickLayoutFactory
     ) {
         self.ballLaunchController = ballLaunchController
+        self.paddleMotionController = paddleMotionController
         self.bricks = brickLayoutFactory.createBrickLayout()
     }
 
@@ -59,8 +62,16 @@ final class DefaultNodeManager: NodeManager {
         )
     }
     
-    func updatePaddleAndClampedBall(x: CGFloat) {
-        paddle.position.x = x
+    func updatePaddleAndClampedBall(deltaTime dt: TimeInterval, sceneSize: CGSize) {
+        let newPaddle = paddleMotionController.update(
+            paddle: Paddle(
+                x: paddle.position.x,
+                w: paddle.size.width
+            ),
+            deltaTime: dt,
+            sceneSize: sceneSize
+        )
+        paddle.position.x = newPaddle.x
         ballLaunchController.update(ball: ball, paddle: paddle)
     }
 

@@ -117,13 +117,15 @@ extension CompositionRoot {
         )
         
         let ballLaunchController = BallLaunchController()
+        let paddleMotionController = PaddleMotionController(speed: 450.0)
 
         let gameSceneBuilder = DefaultGameSceneBuilder(
             gameConfigurationService: configurationService,
             collisionRouter: collisionRouter,
             brickLayoutFactory: brickLayoutFactory,
             session: session,
-            ballLaunchController: ballLaunchController
+            ballLaunchController: ballLaunchController,
+            paddleMotionController: paddleMotionController
         )
 
         let viewModel = GameViewModel(

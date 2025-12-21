@@ -6,19 +6,22 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
     private let brickLayoutFactory: BrickLayoutFactory
     private let session: GameSession
     private let ballLaunchController: BallLaunchController
+    private let paddleMotionController: PaddleMotionController
 
     init(
         gameConfigurationService: GameConfigurationService,
         collisionRouter: CollisionRouter,
         brickLayoutFactory: BrickLayoutFactory,
         session: GameSession,
-        ballLaunchController: BallLaunchController
+        ballLaunchController: BallLaunchController,
+        paddleMotionController: PaddleMotionController
     ) {
         self.gameConfigurationService = gameConfigurationService
         self.collisionRouter = collisionRouter
         self.brickLayoutFactory = brickLayoutFactory
         self.session = session
         self.ballLaunchController = ballLaunchController
+        self.paddleMotionController = paddleMotionController
     }
 
     func makeScene() -> GameScene {
@@ -28,10 +31,10 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
 
         let nodeManager = DefaultNodeManager(
             ballLaunchController: ballLaunchController,
+            paddleMotionController: paddleMotionController,
             brickLayoutFactory: brickLayoutFactory
         )
 
-        let paddleMotionController = PaddleMotionController(speed: 450.0)
         let paddleInputController = PaddleInputController()
 
         let ballMotionController = BallMotionController()

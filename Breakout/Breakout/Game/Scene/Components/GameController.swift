@@ -27,15 +27,7 @@ final class GameController {
             nodeManager.clampBallToPaddle(sceneSize: sceneSize)
             gameSession.acknowledgeBallReset()
         } else {
-            let newPaddle = paddleMotionController.update(
-                paddle: Paddle(
-                    x: nodeManager.paddle.position.x,
-                    w: nodeManager.paddle.size.width
-                ),
-                deltaTime: dt,
-                sceneSize: sceneSize
-            )
-            nodeManager.updatePaddleAndClampedBall(x: newPaddle.x)
+            nodeManager.updatePaddleAndClampedBall(deltaTime: dt, sceneSize: sceneSize)
         }
     }
 
