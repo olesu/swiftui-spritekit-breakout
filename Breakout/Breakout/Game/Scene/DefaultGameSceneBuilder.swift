@@ -28,11 +28,15 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         let c = gameConfigurationService.getGameConfiguration()
         let sceneWidth = c.sceneWidth
         let sceneHeight = c.sceneHeight
+        
+        
+        let paddle = PaddleSprite(position: CGPoint(x: 160, y: 40), size: CGSize(width: 60, height: 12))
 
         let nodeManager = DefaultNodeManager(
             ballLaunchController: ballLaunchController,
             paddleMotionController: paddleMotionController,
-            brickLayoutFactory: brickLayoutFactory
+            brickLayoutFactory: brickLayoutFactory,
+            paddle: paddle
         )
 
         let paddleInputController = PaddleInputController()

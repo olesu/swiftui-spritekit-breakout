@@ -5,7 +5,7 @@ final class DefaultNodeManager: NodeManager {
     private let ballLaunchController: BallLaunchController
     private let paddleMotionController: PaddleMotionController
     
-    let paddle: SKSpriteNode = PaddleSprite(position: CGPoint(x: 160, y: 40))
+    let paddle: SKSpriteNode
     let ball: SKSpriteNode = BallSprite(position: CGPoint(x: 160, y: 50))
     
     let bricks: SKNode
@@ -32,11 +32,13 @@ final class DefaultNodeManager: NodeManager {
     init(
         ballLaunchController: BallLaunchController,
         paddleMotionController: PaddleMotionController,
-        brickLayoutFactory: BrickLayoutFactory
+        brickLayoutFactory: BrickLayoutFactory,
+        paddle: PaddleSprite
     ) {
         self.ballLaunchController = ballLaunchController
         self.paddleMotionController = paddleMotionController
         self.bricks = brickLayoutFactory.createBrickLayout()
+        self.paddle = paddle
     }
 
     private func remove(brickId: BrickId) {

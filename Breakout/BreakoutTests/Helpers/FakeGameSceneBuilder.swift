@@ -16,7 +16,8 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
         let nodeManager = DefaultNodeManager(
             ballLaunchController: ballLaunchController,
             paddleMotionController: paddleMotionController,
-            brickLayoutFactory: FakeBrickLayoutFactory()
+            brickLayoutFactory: FakeBrickLayoutFactory(),
+            paddle: PaddleSprite(position: .zero, size: .zero)
         )
         let ballMotionController = BallMotionController()
         let paddleBounceApplier = PaddleBounceApplier()
