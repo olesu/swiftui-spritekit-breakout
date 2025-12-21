@@ -55,7 +55,6 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
             contactHandler: contactHandler,
             gameController: GameController(
                 paddleInputController: paddleInputController,
-                paddleMotionController: paddleMotionController,
                 gameSession: session,
                 nodeManager: nodeManager,
             ),

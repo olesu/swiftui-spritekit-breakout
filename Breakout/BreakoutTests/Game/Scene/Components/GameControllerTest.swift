@@ -17,7 +17,6 @@ struct GameControllerTest {
 
         let gameController = GameController(
             paddleInputController: paddleInputController,
-            paddleMotionController: paddleMotionController,
             gameSession: GameSession(
                 repository: InMemoryGameStateRepository(),
                 reducer: GameReducer()
@@ -41,7 +40,6 @@ struct GameControllerTest {
 
         let gameController = GameController(
             paddleInputController: paddleInputController,
-            paddleMotionController: paddleMotionController,
             gameSession: GameSession(
                 repository: InMemoryGameStateRepository(),
                 reducer: GameReducer()
@@ -65,7 +63,6 @@ struct GameControllerTest {
 
         let gameController = GameController(
             paddleInputController: paddleInputController,
-            paddleMotionController: paddleMotionController,
             gameSession: GameSession(
                 repository: InMemoryGameStateRepository(),
                 reducer: GameReducer()
@@ -143,4 +140,22 @@ private final class FakeNodeManager: NodeManager {
         )
         paddle.position.x = CGFloat(newPaddle.x)
     }
+    
+    func endPaddleOverride() {
+        paddleMotionController.endOverride()
+    }
+    
+    func startPaddleLeft() {
+        paddleMotionController.startLeft()
+    }
+    
+    func startPaddleRight() {
+        paddleMotionController.startRight()
+    }
+    
+    func stopPaddle() {
+        paddleMotionController.stop()
+    }
+    
+
 }

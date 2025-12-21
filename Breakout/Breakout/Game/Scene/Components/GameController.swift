@@ -3,18 +3,15 @@ import SpriteKit
 
 final class GameController {
     private let paddleInputController: PaddleInputController
-    private let paddleMotionController: PaddleMotionController
     private let gameSession: GameSession
     private let nodeManager: NodeManager
 
     init(
         paddleInputController: PaddleInputController,
-        paddleMotionController: PaddleMotionController,
         gameSession: GameSession,
         nodeManager: NodeManager,
     ) {
         self.paddleInputController = paddleInputController
-        self.paddleMotionController = paddleMotionController
         self.gameSession = gameSession
         self.nodeManager = nodeManager
     }
@@ -56,17 +53,17 @@ final class GameController {
     }
 
     func endPaddleOverride() {
-        paddleMotionController.endOverride()
+        nodeManager.endPaddleOverride()
     }
 
     private func applyMovement() {
         switch paddleInputController.movement() {
         case .left:
-            paddleMotionController.startLeft()
+            nodeManager.startPaddleLeft()
         case .right:
-            paddleMotionController.startRight()
+            nodeManager.startPaddleRight()
         case .none:
-            paddleMotionController.stop()
+            nodeManager.stopPaddle()
         }
     }
 }

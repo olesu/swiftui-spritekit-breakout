@@ -34,7 +34,6 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
             ),
             gameController: GameController(
                 paddleInputController: paddleInputController,
-                paddleMotionController: paddleMotionController,
                 gameSession: gameSession,
                 nodeManager: nodeManager,
             ),

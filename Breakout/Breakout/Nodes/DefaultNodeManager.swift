@@ -87,5 +87,22 @@ final class DefaultNodeManager: NodeManager {
         paddle.position.x = CGFloat(newPaddle.x)
 
     }
+    
+    func endPaddleOverride() {
+        paddleMotionController.endOverride()
+    }
+    
+    func startPaddleLeft() {
+        paddleMotionController.startLeft()
+    }
+    
+    func startPaddleRight() {
+        paddleMotionController.startRight()
+    }
+    
+    func stopPaddle() {
+        paddleMotionController.stop()
+    }
+    
 
 }
