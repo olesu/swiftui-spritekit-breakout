@@ -85,7 +85,7 @@ struct DefaultNodeManagerPaddleMovementTest {
             ballLaunchController: BallLaunchController(),
             paddleMotionController: paddleMotionController,
             paddleBounceApplier: PaddleBounceApplier(
-                bounceSpeedPolicy: .neutral,
+                bounceSpeedPolicy: GameTuning.testNeutral.bounceSpeedPolicy,
                 bounceCalculator: BounceCalculator()
             ),
             brickLayoutFactory: FakeBrickLayoutFactory(),

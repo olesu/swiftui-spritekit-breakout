@@ -4,7 +4,7 @@ import Testing
 @testable import Breakout
 
 struct PaddleBounceApplierTest {
-    private let bounceSpeedPolicy = BounceSpeedPolicy.neutral
+    private let bounceSpeedPolicy = GameTuning.testNeutral.bounceSpeedPolicy
     private let bounceCalculator = BounceCalculator()
 
     @Test

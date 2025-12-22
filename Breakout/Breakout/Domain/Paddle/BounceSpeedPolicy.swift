@@ -7,8 +7,3 @@ struct BounceSpeedPolicy {
         Velocity(dx: velocity.dx * multiplier, dy: velocity.dy * multiplier)
     }
 }
-
-extension BounceSpeedPolicy {
-    static let classic = BounceSpeedPolicy(multiplier: 1.03)
-    static let neutral = BounceSpeedPolicy(multiplier: 1.0)
-}

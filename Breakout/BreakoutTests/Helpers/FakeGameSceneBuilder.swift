@@ -9,7 +9,7 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
         let paddleMotionController = PaddleMotionController(speed: 0)
         let paddleInputController = PaddleInputController()
         let paddleBounceApplier = PaddleBounceApplier(
-            bounceSpeedPolicy: .neutral,
+            bounceSpeedPolicy: GameTuning.testNeutral.bounceSpeedPolicy,
             bounceCalculator: BounceCalculator()
         )
 

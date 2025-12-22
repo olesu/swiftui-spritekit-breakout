@@ -100,6 +100,8 @@ extension CompositionRoot {
         viewModel: GameViewModel,
         sceneBuilder: GameSceneBuilder
     ) {
+        let gameTuning = GameTuning.classic
+        
         let session = GameSession(
             repository: InMemoryGameStateRepository(),
             reducer: GameReducer()
@@ -111,7 +113,10 @@ extension CompositionRoot {
             brickLayoutFactory: SKBrickLayoutFactory(session: session),
             session: session,
             ballLaunchController: BallLaunchController(),
-            paddleMotionController: PaddleMotionController(speed: 450.0)
+            paddleMotionController: PaddleMotionController(
+                speed: gameTuning.paddleSpeed
+            ),
+            bounceSpeedPolicy: gameTuning.bounceSpeedPolicy
         )
 
         let viewModel = GameViewModel(

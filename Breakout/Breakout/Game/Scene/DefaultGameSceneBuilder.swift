@@ -7,6 +7,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
     private let session: GameSession
     private let ballLaunchController: BallLaunchController
     private let paddleMotionController: PaddleMotionController
+    private let bounceSpeedPolicy: BounceSpeedPolicy
 
     init(
         gameConfigurationService: GameConfigurationService,
@@ -14,7 +15,8 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         brickLayoutFactory: BrickLayoutFactory,
         session: GameSession,
         ballLaunchController: BallLaunchController,
-        paddleMotionController: PaddleMotionController
+        paddleMotionController: PaddleMotionController,
+        bounceSpeedPolicy: BounceSpeedPolicy
     ) {
         self.gameConfigurationService = gameConfigurationService
         self.collisionRouter = collisionRouter
@@ -22,51 +24,39 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         self.session = session
         self.ballLaunchController = ballLaunchController
         self.paddleMotionController = paddleMotionController
+        self.bounceSpeedPolicy = bounceSpeedPolicy
     }
 
     func makeScene() -> GameScene {
         let c = gameConfigurationService.getGameConfiguration()
-        let sceneWidth = c.sceneWidth
-        let sceneHeight = c.sceneHeight
-
-        let paddle = PaddleSprite(
-            position: CGPoint(x: 160, y: 40),
-            size: CGSize(width: 60, height: 12)
-        )
-
-        let ball = BallSprite(position: CGPoint(x: 160, y: 50))
-
-        let bricks = brickLayoutFactory.createNodes()
-
-        let topWall = WallSprite(
-            position: CGPoint(x: 160, y: 430),
-            size: CGSize(width: 320, height: 10)
-        )
-        let leftWall: SKSpriteNode = WallSprite(
-            position: CGPoint(x: 0, y: 245),
-            size: CGSize(width: 10, height: 470)
-        )
-        let rightWall: SKSpriteNode = WallSprite(
-            position: CGPoint(x: 320, y: 245),
-            size: CGSize(width: 10, height: 470)
-        )
-        let gutter: SKSpriteNode = GutterSprite(
-            position: CGPoint(x: 160, y: 0),
-            size: CGSize(width: 320, height: 10)
-        )
 
         let nodes = SceneNodes(
-            paddle: paddle,
-            ball: ball,
-            bricks: bricks,
-            topWall: topWall,
-            leftWall: leftWall,
-            rightWall: rightWall,
-            gutter: gutter,
+            paddle: PaddleSprite(
+                position: c.sceneLayout.paddleStartPosition,
+                size: c.sceneLayout.paddleSize,
+            ),
+            ball: BallSprite(position: c.sceneLayout.ballStartPosition),
+            bricks: brickLayoutFactory.createNodes(),
+            topWall: WallSprite(
+                position: c.sceneLayout.topWallPosition,
+                size: c.sceneLayout.topWallSize,
+            ),
+            leftWall: WallSprite(
+                position: c.sceneLayout.leftWallPosition,
+                size: c.sceneLayout.leftWallSize,
+            ),
+            rightWall: WallSprite(
+                position: c.sceneLayout.rightWallPosition,
+                size: c.sceneLayout.rightWallSize,
+            ),
+            gutter: GutterSprite(
+                position: c.sceneLayout.gutterPosition,
+                size: c.sceneLayout.gutterSize,
+            ),
         )
 
         let paddleBounceApplier = PaddleBounceApplier(
-            bounceSpeedPolicy: .classic,
+            bounceSpeedPolicy: bounceSpeedPolicy,
             bounceCalculator: BounceCalculator()
         )
 
@@ -87,7 +77,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         )
 
         let scene = GameScene(
-            size: CGSize(width: sceneWidth, height: sceneHeight),
+            size: CGSize(width: c.sceneWidth, height: c.sceneHeight),
             nodes: nodes,
             ballLaunchController: ballLaunchController,
             contactHandler: contactHandler,

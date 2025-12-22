@@ -3,6 +3,8 @@ import SwiftUI
 
 #if DEBUG
     #Preview {
+        let gameTuning = GameTuning.classic
+
         let configurationService = PreviewGameConfigurationService()
         let screenNavigationService = DefaultScreenNavigationService(
             navigationState: NavigationState()
@@ -24,7 +26,10 @@ import SwiftUI
             brickLayoutFactory: brickLayoutFactory,
             session: session,
             ballLaunchController: ballLaunchController,
-            paddleMotionController: PaddleMotionController(speed: 450.0)
+            paddleMotionController: PaddleMotionController(
+                speed: gameTuning.paddleSpeed
+            ),
+            bounceSpeedPolicy: gameTuning.bounceSpeedPolicy
         )
         let viewModel = GameViewModel(
             session: session,
