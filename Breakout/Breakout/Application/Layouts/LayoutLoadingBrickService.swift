@@ -1,6 +1,6 @@
 import Foundation
 
-final class BrickService {
+final class LayoutLoadingBrickService: BrickService {
     let adapter: BrickLayoutAdapter
     var cache: [String: [Brick]] = [:]
 
@@ -8,7 +8,7 @@ final class BrickService {
         self.adapter = adapter
     }
 
-    func load(named file: String) throws -> [Brick] {
+    func load(layoutNamed file: String) throws -> [Brick] {
         if let cached = cache[file] {
             return cached
         }

@@ -37,6 +37,7 @@ import SwiftUI
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService,
             brickService: GameWiring.makeBrickService(),
+            startingLevel: GameWiring.makeStartingLevel()
         )
 
         GameView(sceneBuilder: sceneBuilder)

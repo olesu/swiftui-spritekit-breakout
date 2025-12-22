@@ -1,7 +1,6 @@
 import Foundation
 
 struct GameConfiguration: Codable, Equatable {
-    let layoutFileName: String
     let sceneWidth: CGFloat
     let sceneHeight: CGFloat
 
@@ -11,7 +10,6 @@ struct GameConfiguration: Codable, Equatable {
 
     static func defaultValue() -> GameConfiguration {
         GameConfiguration(
-            layoutFileName: "001-classic-breakout",
             sceneWidth: 320,
             sceneHeight: 480,
             brickArea: BrickArea(

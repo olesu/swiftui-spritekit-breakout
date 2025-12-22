@@ -10,7 +10,7 @@ struct GameViewModelTest {
         let (vm, _) = makeGameViewModel(with: .initial)
         try vm.startNewGame()
     }
-    
+
     @Test func startNewGameInitializesDomain() throws {
         let (vm, repo) = makeGameViewModel(with: .initial)
 
@@ -28,8 +28,27 @@ struct GameViewModelTest {
         #expect(vm.currentScore == 0)
     }
 
+    @Test func startNewGameUsesLayoutFromStartingLevel() throws {
+        let layoutFileName = "any_test_level"
+        let brickService = FakeBrickService()
+        let startingLevel = StartingLevel(layoutFileName: layoutFileName)
 
-    private func makeGameViewModel(with state: GameState) -> (
+        let (vm, _) = makeGameViewModel(
+            with: .initial,
+            brickService: brickService,
+            startingLevel: startingLevel
+        )
+
+        _ = try vm.startNewGame()
+
+        #expect(brickService.loadedLayoutName == layoutFileName)
+    }
+
+    private func makeGameViewModel(
+        with state: GameState,
+        brickService: FakeBrickService = FakeBrickService(),
+        startingLevel: StartingLevel = StartingLevel(layoutFileName: "ignored")
+    ) -> (
         GameViewModel, GameStateRepository
     ) {
         let repository = FakeGameStateRepository(state)
@@ -41,9 +60,8 @@ struct GameViewModelTest {
             gameConfigurationService: FakeGameConfigurationService(),
             screenNavigationService: FakeScreenNavigationService(),
             gameResultService: FakeGameResultService(),
-            brickService: BrickService(
-                adapter: FakeBrickLayoutAdapter()
-            ),
+            brickService: brickService,
+            startingLevel: startingLevel
 
         )
         return (model, repository)

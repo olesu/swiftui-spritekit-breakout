@@ -9,6 +9,7 @@ final class GameViewModel {
     private let screenNavigationService: ScreenNavigationService
     private let gameResultService: GameResultService
     private let brickService: BrickService
+    private let startingLevel: StartingLevel
 
     var currentScore: Int = 0
     var remainingLives: Int = 0
@@ -21,12 +22,14 @@ final class GameViewModel {
         screenNavigationService: ScreenNavigationService,
         gameResultService: GameResultService,
         brickService: BrickService,
+        startingLevel: StartingLevel
     ) {
         self.session = session
         self.gameConfigurationService = gameConfigurationService
         self.screenNavigationService = screenNavigationService
         self.gameResultService = gameResultService
         self.brickService = brickService
+        self.startingLevel = startingLevel
 
         startTracking()
     }
@@ -35,8 +38,8 @@ final class GameViewModel {
 
 extension GameViewModel {
     func startNewGame() throws {
-        let layoutFileName = gameConfigurationService.getGameConfiguration().layoutFileName
-        let bricks = try brickService.load(named: layoutFileName)
+        let layoutFileName = startingLevel.layoutFileName
+        let bricks = try brickService.load(layoutNamed: layoutFileName)
 
         session.startGame(bricks: bricks)
     }

@@ -125,6 +125,7 @@ extension CompositionRoot {
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService,
             brickService: GameWiring.makeBrickService(),
+            startingLevel: GameWiring.makeStartingLevel()
         )
 
         return (viewModel, gameSceneBuilder)
