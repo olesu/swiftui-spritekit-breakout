@@ -36,7 +36,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
 
         let ball = BallSprite(position: CGPoint(x: 160, y: 50))
 
-        let bricks = brickLayoutFactory.createBrickLayout()
+        let bricks = brickLayoutFactory.createNodes()
 
         let topWall = WallSprite(
             position: CGPoint(x: 160, y: 430),

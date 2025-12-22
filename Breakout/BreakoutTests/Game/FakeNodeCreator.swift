@@ -5,7 +5,7 @@ import SpriteKit
 struct FakeBrickLayoutFactory: BrickLayoutFactory {
     let brickLayout = SKNode()
     
-    func createBrickLayout() -> SKNode {
+    func createNodes() -> SKNode {
         return brickLayout
     }
     

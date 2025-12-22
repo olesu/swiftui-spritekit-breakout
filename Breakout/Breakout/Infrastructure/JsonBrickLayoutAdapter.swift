@@ -1,8 +1,13 @@
 import Foundation
 
-internal final class JsonBrickLayoutAdapter: BrickLayoutAdapter {
-    internal func load(fileName: String) throws -> BrickLayoutConfig {
-        guard let url = Bundle.main.url(forResource: fileName, withExtension: "json") else {
+final class JsonBrickLayoutAdapter: BrickLayoutAdapter {
+    func load(fileName: String) throws -> BrickLayoutConfig {
+        guard
+            let url = Bundle.main.url(
+                forResource: fileName,
+                withExtension: "json"
+            )
+        else {
             throw BrickLayoutAdapterError.fileNotFound(fileName)
         }
 

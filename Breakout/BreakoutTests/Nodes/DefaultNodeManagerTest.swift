@@ -68,7 +68,7 @@ struct DefaultNodeManagerTest {
             brickLayoutFactory: brickLayoutFactory,
             nodes: SceneNodes.createValid(
                 ball: ball,
-                bricks: brickLayoutFactory.createBrickLayout(),
+                bricks: brickLayoutFactory.createNodes(),
             ),
         )
     }

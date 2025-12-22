@@ -4,7 +4,7 @@ import Testing
 @testable import Breakout
 
 @MainActor
-struct ClassicBrickLayoutFactoryTest {
+struct SKBrickLayoutFactoryTest {
     @Test func createsLayoutFromSpec() {
         let brickId = BrickId(of: "brick-001")
         let brick = Brick(
@@ -15,14 +15,14 @@ struct ClassicBrickLayoutFactoryTest {
         
         let repository = InMemoryGameStateRepository()
         repository.save(GameState.initial.with(bricks: [brickId: brick]))
-        let creator = ClassicBrickLayoutFactory(
+        let creator = SKBrickLayoutFactory(
             session: GameSession(
                 repository: repository,
                 reducer: GameReducer()
             )
         )
 
-        let layout = creator.createBrickLayout()
+        let layout = creator.createNodes()
 
         #expect(layout.children.count == 1)
     }

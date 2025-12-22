@@ -22,7 +22,6 @@ enum CompositionRoot {
             screenNavigationService: navigation.screenNavigationService,
             gameStateStorage: gameResult.gameStateStorage,
             gameResultService: gameResult.gameResultService,
-            gameService: game.reducer,
             idleViewModel: navigation.idleViewModel,
             gameViewModel: game.viewModel,
             gameEndViewModel: gameResult.gameEndViewModel,
@@ -45,7 +44,9 @@ extension CompositionRoot {
             navigationState: navigationState
         )
         let idleViewModel = IdleViewModel(
-            screenNavigationService: screenNavigationService
+            screenNavigationService: DefaultScreenNavigationService(
+                navigationState: navigationState
+            )
         )
 
         return (navigationCoordinator, screenNavigationService, idleViewModel)
@@ -96,36 +97,21 @@ extension CompositionRoot {
         gameResultService: RealGameResultService,
         screenNavigationService: DefaultScreenNavigationService
     ) -> (
-        reducer: GameReducer,
         viewModel: GameViewModel,
         sceneBuilder: GameSceneBuilder
     ) {
-        let repository = InMemoryGameStateRepository()
-        let reducer = GameReducer()
-
         let session = GameSession(
-            repository: repository,
-            reducer: reducer
+            repository: InMemoryGameStateRepository(),
+            reducer: GameReducer()
         )
-
-        let brickService = BrickService(adapter: JsonBrickLayoutAdapter())
-
-        let brickLayoutFactory = ClassicBrickLayoutFactory(session: session)
-
-        let collisionRouter = DefaultCollisionRouter(
-            brickIdentifier: NodeNameBrickIdentifier()
-        )
-        
-        let ballLaunchController = BallLaunchController()
-        let paddleMotionController = PaddleMotionController(speed: 450.0)
 
         let gameSceneBuilder = DefaultGameSceneBuilder(
             gameConfigurationService: configurationService,
-            collisionRouter: collisionRouter,
-            brickLayoutFactory: brickLayoutFactory,
+            collisionRouter: GameWiring.makeCollisionRouter(),
+            brickLayoutFactory: SKBrickLayoutFactory(session: session),
             session: session,
-            ballLaunchController: ballLaunchController,
-            paddleMotionController: paddleMotionController
+            ballLaunchController: BallLaunchController(),
+            paddleMotionController: PaddleMotionController(speed: 450.0)
         )
 
         let viewModel = GameViewModel(
@@ -133,10 +119,10 @@ extension CompositionRoot {
             gameConfigurationService: configurationService,
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService,
-            brickService: brickService,
+            brickService: GameWiring.makeBrickService(),
         )
 
-        return (reducer, viewModel, gameSceneBuilder)
+        return (viewModel, gameSceneBuilder)
     }
 
 }

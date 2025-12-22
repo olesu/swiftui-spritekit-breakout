@@ -16,15 +16,11 @@ import SwiftUI
             repository: InMemoryGameStateRepository(),
             reducer: GameReducer()
         )
-        let collisionRouter = DefaultCollisionRouter(
-            brickIdentifier: NodeNameBrickIdentifier()
-        )
-        let brickService = BrickService(adapter: JsonBrickLayoutAdapter())
-        let brickLayoutFactory = ClassicBrickLayoutFactory(session: session)
+        let brickLayoutFactory = SKBrickLayoutFactory(session: session)
         let ballLaunchController = BallLaunchController()
         let sceneBuilder = DefaultGameSceneBuilder(
             gameConfigurationService: configurationService,
-            collisionRouter: collisionRouter,
+            collisionRouter: GameWiring.makeCollisionRouter(),
             brickLayoutFactory: brickLayoutFactory,
             session: session,
             ballLaunchController: ballLaunchController,
@@ -35,7 +31,7 @@ import SwiftUI
             gameConfigurationService: configurationService,
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService,
-            brickService: brickService,
+            brickService: GameWiring.makeBrickService(),
         )
 
         GameView(sceneBuilder: sceneBuilder)

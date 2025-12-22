@@ -122,7 +122,7 @@ struct BrickSpec {
     }
 }
 
-final class ClassicBricksLayout: SKNode {
+final class SKBricksLayout: SKNode {
     let brickSpecs: [BrickSpec]
 
     init(brickSpecs: [BrickSpec]) {

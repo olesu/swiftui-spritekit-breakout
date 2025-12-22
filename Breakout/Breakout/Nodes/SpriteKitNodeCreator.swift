@@ -2,17 +2,17 @@ import AppKit
 import Foundation
 import SpriteKit
 
-struct ClassicBrickLayoutFactory: BrickLayoutFactory {
+struct SKBrickLayoutFactory: BrickLayoutFactory {
     private let session: GameSession
     
     init(session: GameSession) {
         self.session = session
     }
 
-    func createBrickLayout() -> SKNode {
+    func createNodes() -> SKNode {
         let bricks = session.state.bricks
         let brickSpecs = bricks.map { BrickSpec.init(brick: $1) }
 
-        return ClassicBricksLayout(brickSpecs: brickSpecs)
+        return SKBricksLayout(brickSpecs: brickSpecs)
     }
 }
