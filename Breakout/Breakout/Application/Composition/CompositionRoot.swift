@@ -5,7 +5,7 @@ enum CompositionRoot {
 
     static func makeRootDependencies(
         brickService: BrickService = GameWiring.makeBrickService(),
-        startingLevel: StartingLevel = GameWiring.makeStartingLevel(),
+        startingLevel: StartingLevel,
     ) -> RootDependencies {
         let navigation = makeNavigationDependencies()
         let configuration = makeConfigurationDependencies()
@@ -108,7 +108,7 @@ extension CompositionRoot {
         sceneBuilder: GameSceneBuilder
     ) {
         let gameTuning = GameTuning.classic
-        
+
         let session = GameSession(
             repository: InMemoryGameStateRepository(),
             reducer: GameReducer()

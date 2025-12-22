@@ -16,6 +16,20 @@ struct CompositionRootTest {
         #expect(deps.gameViewModel.gameStatus != .idle)
     }
 
+    @Test func rootUsesDevStartingLevelWhenConfigured() async throws {
+        let brickService = FakeBrickService()
+        let deps = CompositionRoot.makeRootDependencies(
+            brickService: brickService,
+            startingLevel: GameWiring.makeStartingLevel(policy: .dev)
+        )
+
+        try await startNewGameAndYieldToLetObservationFire(deps)
+
+        #expect(
+            brickService.loadedLayoutName == GameWiring.devStartingLevelLayout
+        )
+    }
+
     private func startNewGameAndYieldToLetObservationFire(
         _ deps: RootDependencies
     ) async throws {
