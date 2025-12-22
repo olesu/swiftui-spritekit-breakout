@@ -5,7 +5,7 @@ enum GameWiring {
         .init(layoutFileName: "001-classic-breakout")
     }
     
-    static func makeBrickService() -> LayoutLoadingBrickService {
+    static func makeBrickService() -> BrickService {
         LayoutLoadingBrickService(adapter: JsonBrickLayoutAdapter())
     }
     

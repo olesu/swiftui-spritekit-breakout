@@ -3,7 +3,10 @@ import SwiftUI
 
 enum CompositionRoot {
 
-    static func makeRootDependencies() -> RootDependencies {
+    static func makeRootDependencies(
+        brickService: BrickService = GameWiring.makeBrickService(),
+        startingLevel: StartingLevel = GameWiring.makeStartingLevel(),
+    ) -> RootDependencies {
         let navigation = makeNavigationDependencies()
         let configuration = makeConfigurationDependencies()
         let gameResult = makeGameResultDependencies(
@@ -12,7 +15,9 @@ enum CompositionRoot {
         let game = makeGameDependencies(
             configurationService: configuration.gameConfigurationService,
             gameResultService: gameResult.gameResultService,
-            screenNavigationService: navigation.screenNavigationService
+            screenNavigationService: navigation.screenNavigationService,
+            brickService: brickService,
+            startingLevel: startingLevel,
         )
 
         return RootDependencies(
@@ -95,7 +100,9 @@ extension CompositionRoot {
     fileprivate static func makeGameDependencies(
         configurationService: DefaultGameConfigurationService,
         gameResultService: RealGameResultService,
-        screenNavigationService: DefaultScreenNavigationService
+        screenNavigationService: DefaultScreenNavigationService,
+        brickService: BrickService,
+        startingLevel: StartingLevel,
     ) -> (
         viewModel: GameViewModel,
         sceneBuilder: GameSceneBuilder
@@ -124,8 +131,8 @@ extension CompositionRoot {
             gameConfigurationService: configurationService,
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService,
-            brickService: GameWiring.makeBrickService(),
-            startingLevel: GameWiring.makeStartingLevel()
+            brickService: brickService,
+            startingLevel: startingLevel
         )
 
         return (viewModel, gameSceneBuilder)
