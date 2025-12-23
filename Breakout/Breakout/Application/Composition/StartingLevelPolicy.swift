@@ -1,6 +1,6 @@
 import Foundation
 
-enum StartingLevelPolicy {
+enum StartingLevelPolicy: String, Codable {
     case production
     case dev
 }
