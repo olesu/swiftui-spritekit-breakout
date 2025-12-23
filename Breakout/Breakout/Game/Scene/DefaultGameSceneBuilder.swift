@@ -1,7 +1,7 @@
 import SpriteKit
 
 struct DefaultGameSceneBuilder: GameSceneBuilder {
-    private let gameConfigurationService: GameConfigurationService
+    private let gameConfiguration: GameConfiguration
     private let collisionRouter: CollisionRouter
     private let brickLayoutFactory: BrickLayoutFactory
     private let session: GameSession
@@ -10,7 +10,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
     private let bounceSpeedPolicy: BounceSpeedPolicy
 
     init(
-        gameConfigurationService: GameConfigurationService,
+        gameConfiguration: GameConfiguration,
         collisionRouter: CollisionRouter,
         brickLayoutFactory: BrickLayoutFactory,
         session: GameSession,
@@ -18,7 +18,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         paddleMotionController: PaddleMotionController,
         bounceSpeedPolicy: BounceSpeedPolicy
     ) {
-        self.gameConfigurationService = gameConfigurationService
+        self.gameConfiguration = gameConfiguration
         self.collisionRouter = collisionRouter
         self.brickLayoutFactory = brickLayoutFactory
         self.session = session
@@ -28,30 +28,28 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
     }
 
     func makeScene() -> GameScene {
-        let c = gameConfigurationService.getGameConfiguration()
-
         let nodes = SceneNodes(
             paddle: PaddleSprite(
-                position: c.sceneLayout.paddleStartPosition,
-                size: c.sceneLayout.paddleSize,
+                position: gameConfiguration.sceneLayout.paddleStartPosition,
+                size: gameConfiguration.sceneLayout.paddleSize,
             ),
-            ball: BallSprite(position: c.sceneLayout.ballStartPosition),
+            ball: BallSprite(position: gameConfiguration.sceneLayout.ballStartPosition),
             bricks: brickLayoutFactory.createNodes(),
             topWall: WallSprite(
-                position: c.sceneLayout.topWallPosition,
-                size: c.sceneLayout.topWallSize,
+                position: gameConfiguration.sceneLayout.topWallPosition,
+                size: gameConfiguration.sceneLayout.topWallSize,
             ),
             leftWall: WallSprite(
-                position: c.sceneLayout.leftWallPosition,
-                size: c.sceneLayout.leftWallSize,
+                position: gameConfiguration.sceneLayout.leftWallPosition,
+                size: gameConfiguration.sceneLayout.leftWallSize,
             ),
             rightWall: WallSprite(
-                position: c.sceneLayout.rightWallPosition,
-                size: c.sceneLayout.rightWallSize,
+                position: gameConfiguration.sceneLayout.rightWallPosition,
+                size: gameConfiguration.sceneLayout.rightWallSize,
             ),
             gutter: GutterSprite(
-                position: c.sceneLayout.gutterPosition,
-                size: c.sceneLayout.gutterSize,
+                position: gameConfiguration.sceneLayout.gutterPosition,
+                size: gameConfiguration.sceneLayout.gutterSize,
             ),
         )
 
@@ -77,7 +75,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         )
 
         let scene = GameScene(
-            size: CGSize(width: c.sceneWidth, height: c.sceneHeight),
+            size: CGSize(width: gameConfiguration.sceneWidth, height: gameConfiguration.sceneHeight),
             nodes: nodes,
             ballLaunchController: ballLaunchController,
             contactHandler: contactHandler,

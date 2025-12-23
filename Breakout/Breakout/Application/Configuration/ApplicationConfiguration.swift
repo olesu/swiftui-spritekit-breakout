@@ -1,26 +1,22 @@
 import Foundation
 
-/// Provides application-level configuration.
-///
-/// Calculates window dimensions based on game configuration and scale.
-@Observable
-@MainActor
-internal class ApplicationConfiguration {
-    private let gameConfigurationService: GameConfigurationService
+struct ApplicationConfiguration {
+    private let gameConfiguration: GameConfiguration
+    private let gameScalePolicy: GameScalePolicy
 
-    internal init(gameConfigurationService: GameConfigurationService) {
-        self.gameConfigurationService = gameConfigurationService
+    init(
+        gameConfiguration: GameConfiguration,
+        gameScalePolicy: GameScalePolicy
+    ) {
+        self.gameConfiguration = gameConfiguration
+        self.gameScalePolicy = gameScalePolicy
     }
 
-    internal var windowWidth: CGFloat {
-        let config = gameConfigurationService.getGameConfiguration()
-        let scale = gameConfigurationService.getGameScale()
-        return config.sceneWidth * scale
+    var windowWidth: CGFloat {
+        return gameConfiguration.sceneWidth * gameScalePolicy.scale
     }
 
-    internal var windowHeight: CGFloat {
-        let config = gameConfigurationService.getGameConfiguration()
-        let scale = gameConfigurationService.getGameScale()
-        return config.sceneHeight * scale
+    var windowHeight: CGFloat {
+        return gameConfiguration.sceneHeight * gameScalePolicy.scale
     }
 }

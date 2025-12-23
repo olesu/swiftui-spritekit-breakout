@@ -13,7 +13,7 @@ enum CompositionRoot {
             screenNavigationService: navigation.screenNavigationService
         )
         let game = makeGameDependencies(
-            configurationService: configuration.gameConfigurationService,
+            gameConfiguration: configuration.gameConfiguration,
             gameResultService: gameResult.gameResultService,
             screenNavigationService: navigation.screenNavigationService,
             brickService: brickService,
@@ -23,7 +23,7 @@ enum CompositionRoot {
         return RootDependencies(
             navigationCoordinator: navigation.navigationCoordinator,
             applicationConfiguration: configuration.applicationConfiguration,
-            gameConfigurationService: configuration.gameConfigurationService,
+            gameConfiguration: configuration.gameConfiguration,
             screenNavigationService: navigation.screenNavigationService,
             gameStateStorage: gameResult.gameStateStorage,
             gameResultService: gameResult.gameResultService,
@@ -61,17 +61,18 @@ extension CompositionRoot {
 extension CompositionRoot {
     fileprivate static func makeConfigurationDependencies() -> (
         applicationConfiguration: ApplicationConfiguration,
-        gameConfigurationService: DefaultGameConfigurationService
+        gameConfiguration: GameConfiguration
     ) {
-        let gameConfigurationService = DefaultGameConfigurationService(
+        let gameConfiguration = DefaultGameConfigurationService(
             gameConfigurationAdapter: JsonGameConfigurationAdapter()
-        )
+        ).getGameConfiguration()
 
         let applicationConfiguration = ApplicationConfiguration(
-            gameConfigurationService: gameConfigurationService
+            gameConfiguration: gameConfiguration,
+            gameScalePolicy: GameScalePolicy.deviceScale
         )
 
-        return (applicationConfiguration, gameConfigurationService)
+        return (applicationConfiguration, gameConfiguration)
     }
 }
 
@@ -98,7 +99,7 @@ extension CompositionRoot {
 
 extension CompositionRoot {
     fileprivate static func makeGameDependencies(
-        configurationService: DefaultGameConfigurationService,
+        gameConfiguration: GameConfiguration,
         gameResultService: RealGameResultService,
         screenNavigationService: DefaultScreenNavigationService,
         brickService: BrickService,
@@ -115,7 +116,7 @@ extension CompositionRoot {
         )
 
         let gameSceneBuilder = DefaultGameSceneBuilder(
-            gameConfigurationService: configurationService,
+            gameConfiguration: gameConfiguration,
             collisionRouter: GameWiring.makeCollisionRouter(),
             brickLayoutFactory: SKBrickLayoutFactory(session: session),
             session: session,
@@ -128,7 +129,7 @@ extension CompositionRoot {
 
         let viewModel = GameViewModel(
             session: session,
-            gameConfigurationService: configurationService,
+            gameConfiguration: gameConfiguration,
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService,
             brickService: brickService,

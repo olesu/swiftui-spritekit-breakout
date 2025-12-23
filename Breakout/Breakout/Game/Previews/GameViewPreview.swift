@@ -4,8 +4,8 @@ import SwiftUI
 #if DEBUG
     #Preview {
         let gameTuning = GameTuning.classic
+        let gameConfiguration = GameConfiguration.defaultValue()
 
-        let configurationService = PreviewGameConfigurationService()
         let screenNavigationService = DefaultScreenNavigationService(
             navigationState: NavigationState()
         )
@@ -21,7 +21,7 @@ import SwiftUI
         let brickLayoutFactory = SKBrickLayoutFactory(session: session)
         let ballLaunchController = BallLaunchController()
         let sceneBuilder = DefaultGameSceneBuilder(
-            gameConfigurationService: configurationService,
+            gameConfiguration: gameConfiguration,
             collisionRouter: GameWiring.makeCollisionRouter(),
             brickLayoutFactory: brickLayoutFactory,
             session: session,
@@ -33,7 +33,7 @@ import SwiftUI
         )
         let viewModel = GameViewModel(
             session: session,
-            gameConfigurationService: configurationService,
+            gameConfiguration: gameConfiguration,
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService,
             brickService: GameWiring.makeBrickService(),
@@ -43,21 +43,12 @@ import SwiftUI
         GameView(sceneBuilder: sceneBuilder)
             .environment(viewModel)
             .frame(
-                width: configurationService.getGameConfiguration().sceneWidth
-                    * configurationService.getGameScale(),
-                height: configurationService.getGameConfiguration().sceneHeight
-                    * configurationService.getGameScale()
+                width: gameConfiguration.sceneWidth
+                * GameScalePolicy.preview.scale,
+                height: gameConfiguration.sceneHeight
+                * GameScalePolicy.preview.scale
             )
     }
 
-    private class PreviewGameConfigurationService: GameConfigurationService {
-        func getGameConfiguration() -> GameConfiguration {
-            GameConfiguration.defaultValue()
-        }
-
-        func getGameScale() -> CGFloat {
-            0.5
-        }
-    }
 
 #endif

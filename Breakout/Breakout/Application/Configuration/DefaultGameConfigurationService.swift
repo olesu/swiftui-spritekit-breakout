@@ -1,8 +1,7 @@
 import Foundation
 import OSLog
 
-@Observable
-final class DefaultGameConfigurationService: GameConfigurationService {
+final class DefaultGameConfigurationService {
     private let logger = Logger(subsystem: "Breakout", category: "Configuration")
     private let gameConfigurationAdapter: GameConfigurationAdapter
 
@@ -17,14 +16,6 @@ final class DefaultGameConfigurationService: GameConfigurationService {
             logger.error("Failed to load game configuration: \(error.localizedDescription)")
             return GameConfiguration.defaultValue()
         }
-    }
-
-    internal func getGameScale() -> CGFloat {
-        #if os(macOS)
-            return 1.5
-        #else
-            return UIDevice.current.userInterfaceIdiom == .pad ? 3.0 : 2.0
-        #endif
     }
 
 }

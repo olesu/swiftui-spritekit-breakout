@@ -57,7 +57,7 @@ struct GameViewModelTest {
                 repository: repository,
                 reducer: GameReducer()
             ),
-            gameConfigurationService: FakeGameConfigurationService(),
+            gameConfiguration: GameConfiguration.defaultValue(),
             screenNavigationService: FakeScreenNavigationService(),
             gameResultService: FakeGameResultService(),
             brickService: brickService,

@@ -5,7 +5,7 @@ import SwiftUI
 @Observable
 final class GameViewModel {
     private let session: GameSession
-    private let gameConfigurationService: GameConfigurationService
+    private let gameConfiguration: GameConfiguration
     private let screenNavigationService: ScreenNavigationService
     private let gameResultService: GameResultService
     private let brickService: BrickService
@@ -18,14 +18,14 @@ final class GameViewModel {
 
     init(
         session: GameSession,
-        gameConfigurationService: GameConfigurationService,
+        gameConfiguration: GameConfiguration,
         screenNavigationService: ScreenNavigationService,
         gameResultService: GameResultService,
         brickService: BrickService,
         startingLevel: StartingLevel
     ) {
         self.session = session
-        self.gameConfigurationService = gameConfigurationService
+        self.gameConfiguration = gameConfiguration
         self.screenNavigationService = screenNavigationService
         self.gameResultService = gameResultService
         self.brickService = brickService
