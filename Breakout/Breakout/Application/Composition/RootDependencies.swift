@@ -1,4 +1,4 @@
-struct RootDependencies {
+struct AppContext {
     let navigationCoordinator: NavigationCoordinator
     let applicationConfiguration: ApplicationConfiguration
     let gameConfiguration: GameConfiguration

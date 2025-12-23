@@ -3,14 +3,14 @@ import Foundation
 enum GameWiring {
     static let productionStartingLevelLayout = "001-classic-breakout"
     static let devStartingLevelLayout = "dev-single-brick"
-    
+
     static func makeStartingLevel(policy: StartingLevelPolicy) -> StartingLevel
     {
         switch policy {
         case .production:
             .init(layoutFileName: productionStartingLevelLayout)
         case .dev:
-                .init(layoutFileName: devStartingLevelLayout)
+            .init(layoutFileName: devStartingLevelLayout)
         }
     }
 
@@ -21,6 +21,16 @@ enum GameWiring {
     static func makeCollisionRouter() -> DefaultCollisionRouter {
         DefaultCollisionRouter(
             brickIdentifier: NodeNameBrickIdentifier(),
+        )
+    }
+
+    static func makeGameConfigurationLoader(bundle: Bundle = .main)
+        -> GameConfigurationLoader
+    {
+        GameConfigurationLoader(
+            gameConfigurationAdapter: JsonGameConfigurationAdapter(
+                bundle: bundle
+            )
         )
     }
 

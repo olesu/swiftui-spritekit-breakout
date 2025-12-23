@@ -1,14 +1,19 @@
 import Testing
+import Foundation
 
 @testable import Breakout
 
 @MainActor
-struct CompositionRootTest {
+struct ApplicationComposerTest {
 
     @Test func rootCreatesPlayableGameViewModel() async throws {
-        let deps = CompositionRoot.makeRootDependencies(
+        let loader = GameConfigurationLoader(
+            gameConfigurationAdapter: FakeGameConfigurationAdapter()
+        )
+        let deps = try ApplicationComposer.compose(
             brickService: FakeBrickService(),
-            startingLevel: StartingLevel(layoutFileName: "some-level")
+            startingLevel: StartingLevel(layoutFileName: "some-level"),
+            gameConfigurationLoader: loader
         )
 
         try await startNewGameAndYieldToLetObservationFire(deps)
@@ -17,10 +22,14 @@ struct CompositionRootTest {
     }
 
     @Test func rootUsesDevStartingLevelWhenConfigured() async throws {
+        let loader = GameConfigurationLoader(
+            gameConfigurationAdapter: FakeGameConfigurationAdapter()
+        )
         let brickService = FakeBrickService()
-        let deps = CompositionRoot.makeRootDependencies(
+        let deps = try ApplicationComposer.compose(
             brickService: brickService,
-            startingLevel: GameWiring.makeStartingLevel(policy: .dev)
+            startingLevel: GameWiring.makeStartingLevel(policy: .dev),
+            gameConfigurationLoader: loader
         )
 
         try await startNewGameAndYieldToLetObservationFire(deps)
@@ -31,9 +40,9 @@ struct CompositionRootTest {
     }
 
     private func startNewGameAndYieldToLetObservationFire(
-        _ deps: RootDependencies
+        _ context: AppContext
     ) async throws {
-        try deps.gameViewModel.startNewGame()
+        try context.gameViewModel.startNewGame()
         await Task.yield()
     }
 

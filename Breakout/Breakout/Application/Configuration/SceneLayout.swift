@@ -1,15 +1,15 @@
 import Foundation
 
 struct SceneLayout: Codable, Equatable {
-    let paddleStartPosition: CGPoint
-    let paddleSize: CGSize
-    let ballStartPosition: CGPoint
-    let topWallPosition: CGPoint
-    let topWallSize: CGSize
-    let leftWallPosition: CGPoint
-    let leftWallSize: CGSize
-    let rightWallPosition: CGPoint
-    let rightWallSize: CGSize
-    let gutterPosition: CGPoint
-    let gutterSize: CGSize
+    let paddleStartPosition: Point
+    let paddleSize: Size
+    let ballStartPosition: Point
+    let topWallPosition: Point
+    let topWallSize: Size
+    let leftWallPosition: Point
+    let leftWallSize: Size
+    let rightWallPosition: Point
+    let rightWallSize: Size
+    let gutterPosition: Point
+    let gutterSize: Size
 }

@@ -1,29 +1,29 @@
 import SwiftUI
 
 struct RootView: View {
-    let deps: RootDependencies
+    let context: AppContext
 
-    init(_ deps: RootDependencies) {
-        self.deps = deps
+    init(_ context: AppContext) {
+        self.context = context
     }
 
     var body: some View {
         ZStack {
-            switch deps.navigationCoordinator.currentScreen {
+            switch context.navigationCoordinator.currentScreen {
             case .idle:
                 IdleView()
-                    .environment(deps.idleViewModel)
+                    .environment(context.idleViewModel)
             case .game:
-                GameView(sceneBuilder: deps.sceneBuilder)
-                    .environment(deps.gameViewModel)
+                GameView(sceneBuilder: context.sceneBuilder)
+                    .environment(context.gameViewModel)
             case .gameEnd:
                 GameEndView()
-                    .environment(deps.gameEndViewModel)
+                    .environment(context.gameEndViewModel)
             }
         }
         .frame(
-            width: deps.applicationConfiguration.windowWidth,
-            height: deps.applicationConfiguration.windowHeight
+            width: context.applicationConfiguration.windowWidth,
+            height: context.applicationConfiguration.windowHeight
         )
 
     }

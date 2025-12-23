@@ -28,29 +28,33 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
     }
 
     func makeScene() -> GameScene {
+        let c = gameConfiguration
+
         let nodes = SceneNodes(
             paddle: PaddleSprite(
-                position: gameConfiguration.sceneLayout.paddleStartPosition,
-                size: gameConfiguration.sceneLayout.paddleSize,
+                position: CGPoint(c.sceneLayout.paddleStartPosition),
+                size: CGSize(c.sceneLayout.paddleSize)
             ),
-            ball: BallSprite(position: gameConfiguration.sceneLayout.ballStartPosition),
+            ball: BallSprite(
+                position: CGPoint(c.sceneLayout.ballStartPosition)
+            ),
             bricks: brickLayoutFactory.createNodes(),
             topWall: WallSprite(
-                position: gameConfiguration.sceneLayout.topWallPosition,
-                size: gameConfiguration.sceneLayout.topWallSize,
+                position: CGPoint(c.sceneLayout.topWallPosition),
+                size: CGSize(c.sceneLayout.topWallSize)
             ),
             leftWall: WallSprite(
-                position: gameConfiguration.sceneLayout.leftWallPosition,
-                size: gameConfiguration.sceneLayout.leftWallSize,
+                position: CGPoint(c.sceneLayout.leftWallPosition),
+                size: CGSize(c.sceneLayout.leftWallSize)
             ),
             rightWall: WallSprite(
-                position: gameConfiguration.sceneLayout.rightWallPosition,
-                size: gameConfiguration.sceneLayout.rightWallSize,
+                position: CGPoint(c.sceneLayout.rightWallPosition),
+                size: CGSize(c.sceneLayout.rightWallSize)
             ),
             gutter: GutterSprite(
-                position: gameConfiguration.sceneLayout.gutterPosition,
-                size: gameConfiguration.sceneLayout.gutterSize,
-            ),
+                position: CGPoint(c.sceneLayout.gutterPosition),
+                size: CGSize(c.sceneLayout.gutterSize)
+            )
         )
 
         let paddleBounceApplier = PaddleBounceApplier(
@@ -66,27 +70,43 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
             nodes: nodes
         )
 
-        let paddleInputController = PaddleInputController()
-
         let contactHandler = GamePhysicsContactHandler(
             collisionRouter: collisionRouter,
             gameSession: session,
             nodeManager: nodeManager
         )
 
-        let scene = GameScene(
-            size: CGSize(width: gameConfiguration.sceneWidth, height: gameConfiguration.sceneHeight),
+        return GameScene(
+            size: CGSize(
+                width: c.sceneWidth,
+                height: c.sceneHeight
+            ),
             nodes: nodes,
             ballLaunchController: ballLaunchController,
             contactHandler: contactHandler,
             gameController: GameController(
-                paddleInputController: paddleInputController,
+                paddleInputController: PaddleInputController(),
                 gameSession: session,
-                nodeManager: nodeManager,
-            ),
+                nodeManager: nodeManager
+            )
         )
-
-        return scene
     }
+}
 
+extension CGPoint {
+    init(_ point: Point) {
+        self.init(
+            x: CGFloat(point.x),
+            y: CGFloat(point.y)
+        )
+    }
+}
+
+extension CGSize {
+    init(_ size: Size) {
+        self.init(
+            width: CGFloat(size.width),
+            height: CGFloat(size.height)
+        )
+    }
 }

@@ -3,17 +3,30 @@ import SwiftUI
 
 @main
 struct Application: App {
-    let deps: RootDependencies = {
-        CompositionRoot.makeRootDependencies(
-            startingLevel: GameWiring.makeStartingLevel(
-                policy: AppConfiguration.startingLevelPolicy()
+    let bootState: ApplicationBootState = {
+        do {
+            let loader = GameWiring.makeGameConfigurationLoader()
+
+            let context = try ApplicationComposer.compose(
+                startingLevel: GameWiring.makeStartingLevel(
+                    policy: AppConfiguration.startingLevelPolicy()
+                ),
+                gameConfigurationLoader: loader
             )
-        )
+            return ApplicationBootState.running(context)
+        } catch {
+            return .failed(.configuration(error))
+        }
     }()
 
     var body: some Scene {
         WindowGroup {
-            RootView(deps)
+            switch bootState {
+            case .running(let context):
+                RootView(context)
+            case .failed(let error):
+                ErrorView(error: error)
+            }
         }
     }
 }

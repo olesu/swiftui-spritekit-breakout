@@ -1,14 +1,15 @@
 import OSLog
 import SwiftUI
 
-enum CompositionRoot {
+enum ApplicationComposer {
 
-    static func makeRootDependencies(
+    static func compose(
         brickService: BrickService = GameWiring.makeBrickService(),
         startingLevel: StartingLevel,
-    ) -> RootDependencies {
+        gameConfigurationLoader: GameConfigurationLoader
+    ) throws -> AppContext {
         let navigation = makeNavigationDependencies()
-        let configuration = makeConfigurationDependencies()
+        let configuration = try makeConfigurationDependencies(gameConfigurationLoader: gameConfigurationLoader)
         let gameResult = makeGameResultDependencies(
             screenNavigationService: navigation.screenNavigationService
         )
@@ -20,7 +21,7 @@ enum CompositionRoot {
             startingLevel: startingLevel,
         )
 
-        return RootDependencies(
+        return AppContext(
             navigationCoordinator: navigation.navigationCoordinator,
             applicationConfiguration: configuration.applicationConfiguration,
             gameConfiguration: configuration.gameConfiguration,
@@ -35,7 +36,7 @@ enum CompositionRoot {
     }
 }
 
-extension CompositionRoot {
+extension ApplicationComposer {
     fileprivate static func makeNavigationDependencies() -> (
         navigationCoordinator: NavigationCoordinator,
         screenNavigationService: DefaultScreenNavigationService,
@@ -58,14 +59,14 @@ extension CompositionRoot {
     }
 }
 
-extension CompositionRoot {
-    fileprivate static func makeConfigurationDependencies() -> (
+extension ApplicationComposer {
+    fileprivate static func makeConfigurationDependencies(
+        gameConfigurationLoader: GameConfigurationLoader
+    ) throws -> (
         applicationConfiguration: ApplicationConfiguration,
         gameConfiguration: GameConfiguration
     ) {
-        let gameConfiguration = DefaultGameConfigurationService(
-            gameConfigurationAdapter: JsonGameConfigurationAdapter()
-        ).getGameConfiguration()
+        let gameConfiguration = try gameConfigurationLoader.load()
 
         let applicationConfiguration = ApplicationConfiguration(
             gameConfiguration: gameConfiguration,
@@ -76,7 +77,7 @@ extension CompositionRoot {
     }
 }
 
-extension CompositionRoot {
+extension ApplicationComposer {
     fileprivate static func makeGameResultDependencies(
         screenNavigationService: DefaultScreenNavigationService
     ) -> (
@@ -97,7 +98,7 @@ extension CompositionRoot {
     }
 }
 
-extension CompositionRoot {
+extension ApplicationComposer {
     fileprivate static func makeGameDependencies(
         gameConfiguration: GameConfiguration,
         gameResultService: RealGameResultService,

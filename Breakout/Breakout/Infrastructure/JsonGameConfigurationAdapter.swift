@@ -1,17 +1,23 @@
 import Foundation
 
-internal final class JsonGameConfigurationAdapter: GameConfigurationAdapter {
-    internal enum LoaderError: Error {
+final class JsonGameConfigurationAdapter: GameConfigurationAdapter {
+    private let bundle: Bundle
+    
+    init(bundle: Bundle) {
+        self.bundle = bundle
+    }
+    
+    enum LoaderError: Error {
         case resourceNotFound(String, String)
         case decodingFailed(Error)
     }
 
-    internal func load() throws -> GameConfiguration {
+    func load() throws -> GameConfiguration {
         let resourceName = "GameConfiguration"
         let resourceExt = "json"
 
         guard
-            let url = Bundle.main.url(
+            let url = bundle.url(
                 forResource: resourceName,
                 withExtension: resourceExt
             )
