@@ -3,22 +3,8 @@ import SwiftUI
 
 @main
 struct Application: App {
-    let bootState: ApplicationBootState = {
-        do {
-            let loader = GameWiring.makeGameConfigurationLoader()
-
-            let context = try ApplicationComposer.compose(
-                startingLevel: GameWiring.makeStartingLevel(
-                    policy: AppConfiguration.startingLevelPolicy()
-                ),
-                gameConfigurationLoader: loader
-            )
-            return ApplicationBootState.running(context)
-        } catch {
-            return .failed(.configuration(error))
-        }
-    }()
-
+    let bootState = resolveBootState()
+    
     var body: some Scene {
         WindowGroup {
             switch bootState {
@@ -29,4 +15,23 @@ struct Application: App {
             }
         }
     }
+    
+    private static func resolveBootState() -> ApplicationBootState {
+        do {
+            return ApplicationBootState.running(try loadContext())
+        } catch {
+            return .failed(.configuration(error))
+        }
+    }
+
+    private static func loadContext() throws -> AppContext {
+        try ApplicationComposer.compose(
+            startingLevel: GameWiring.makeStartingLevel(
+                policy: AppConfiguration.startingLevelPolicy()
+            ),
+            gameConfigurationLoader:
+                GameWiring.makeGameConfigurationLoader()
+        )
+    }
+
 }
