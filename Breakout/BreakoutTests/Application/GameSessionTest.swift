@@ -30,8 +30,7 @@ struct GameSessionTest {
 
         let session = makeSession(repository: repository)
 
-        let brickId = BrickId(of: "1")
-        let brick = Brick(id: brickId, color: .red, position: .zero)
+        let brick = Brick.createValid()
         let bricks = [brick]
 
         session.startGame(bricks: bricks)
@@ -41,24 +40,23 @@ struct GameSessionTest {
         #expect(saved.score == 0)
         #expect(saved.lives == 3)
         #expect(saved.status == .playing)
-        #expect(saved.bricks[brickId] == brick)
+        #expect(saved.bricks[brick.id] == brick)
     }
 
     @Test
     func applyingAnEventUpdatesAndPersistsState() {
         let repository = InMemoryGameStateRepository()
-        let brickId = BrickId(of: "1")
-        let brick = Brick(id: brickId, color: .red, position: .zero)
+        let brick = Brick.createValid()
 
         repository.save(
             GameState.initial
                 .with(status: .playing)
-                .with(bricks: [brickId: brick])
+                .with(bricks: [brick.id: brick])
         )
 
         let session = makeSession(repository: repository)
 
-        session.apply(.brickHit(brickID: brickId))
+        session.apply(.brickHit(brickID: brick.id))
 
         let saved = repository.load()
 
@@ -162,7 +160,7 @@ struct GameSessionTest {
     // MARK: - Progression
 
     @Test func winningTheOnlyLevelEndsTheGame() {
-        let brick = Brick(id: BrickId(of: "id"), color: .green, position: .zero)
+        let brick = Brick.createValid()
         let session = makeSession(levelOrder: [.only])
 
         session.startGame(bricks: [brick])
