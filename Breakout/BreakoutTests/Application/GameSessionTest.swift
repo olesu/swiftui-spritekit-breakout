@@ -11,11 +11,14 @@ struct GameSessionTest {
         let initial = GameState.initial.with(score: 42)
         repository.save(initial)
 
-        let session = GameSession(repository: repository, reducer: GameReducer())
+        let session = GameSession(
+            repository: repository,
+            reducer: GameReducer()
+        )
 
         #expect(session.state == initial)
     }
-    
+
     @Test
     func startingAGameUpdatesAndPersistsState() {
         let repository = InMemoryGameStateRepository()
@@ -26,7 +29,10 @@ struct GameSessionTest {
 
         repository.save(oldState)
 
-        let session = GameSession(repository: repository, reducer: GameReducer())
+        let session = GameSession(
+            repository: repository,
+            reducer: GameReducer()
+        )
 
         let brickId = BrickId(of: "1")
         let brick = Brick(id: brickId, color: .red, position: .zero)
@@ -41,7 +47,7 @@ struct GameSessionTest {
         #expect(saved.status == .playing)
         #expect(saved.bricks[brickId] == brick)
     }
-    
+
     @Test
     func applyingAnEventUpdatesAndPersistsState() {
         let repository = InMemoryGameStateRepository()
@@ -54,16 +60,19 @@ struct GameSessionTest {
                 .with(bricks: [brickId: brick])
         )
 
-        let session = GameSession(repository: repository, reducer: GameReducer())
+        let session = GameSession(
+            repository: repository,
+            reducer: GameReducer()
+        )
 
         session.apply(.brickHit(brickID: brickId))
 
         let saved = repository.load()
-        
+
         #expect(saved.score == 7)
         #expect(saved.bricks.isEmpty)
     }
-    
+
     @Test
     func announcingBallResetInProgressClearsFlagAndPersistsState() {
         let repository = InMemoryGameStateRepository()
@@ -73,7 +82,10 @@ struct GameSessionTest {
                 .with(status: .playing)
         )
 
-        let session = GameSession(repository: repository, reducer: GameReducer())
+        let session = GameSession(
+            repository: repository,
+            reducer: GameReducer()
+        )
 
         // When acknowledging the ball reset
         session.announceBallResetInProgress()
@@ -92,7 +104,10 @@ struct GameSessionTest {
                 .with(status: .playing)
         )
 
-        let session = GameSession(repository: repository, reducer: GameReducer())
+        let session = GameSession(
+            repository: repository,
+            reducer: GameReducer()
+        )
 
         session.acknowledgeBallReset()
 
@@ -109,7 +124,10 @@ struct GameSessionTest {
                 .with(status: .playing)
         )
 
-        let session = GameSession(repository: repository, reducer: GameReducer())
+        let session = GameSession(
+            repository: repository,
+            reducer: GameReducer()
+        )
 
         session.acknowledgeBallReset()
 
@@ -127,7 +145,10 @@ struct GameSessionTest {
                 .with(status: .playing)
         )
 
-        let session = GameSession(repository: repository, reducer: GameReducer())
+        let session = GameSession(
+            repository: repository,
+            reducer: GameReducer()
+        )
 
         session.announceBallResetInProgress()
 
@@ -146,7 +167,10 @@ struct GameSessionTest {
                 .with(lives: 1)
         )
 
-        let session = GameSession(repository: repository, reducer: GameReducer())
+        let session = GameSession(
+            repository: repository,
+            reducer: GameReducer()
+        )
 
         session.apply(.ballLost)
 
