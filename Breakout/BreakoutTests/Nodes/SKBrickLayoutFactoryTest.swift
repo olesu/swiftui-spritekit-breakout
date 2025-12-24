@@ -18,7 +18,8 @@ struct SKBrickLayoutFactoryTest {
         let creator = SKBrickLayoutFactory(
             session: GameSession(
                 repository: repository,
-                reducer: GameReducer()
+                reducer: GameReducer(),
+                levelOrder: []
             )
         )
 

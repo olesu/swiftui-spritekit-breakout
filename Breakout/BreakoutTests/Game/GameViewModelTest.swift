@@ -55,7 +55,8 @@ struct GameViewModelTest {
         let model = GameViewModel(
             session: GameSession(
                 repository: repository,
-                reducer: GameReducer()
+                reducer: GameReducer(),
+                levelOrder: []
             ),
             gameConfiguration: GameConfiguration.defaultValue(),
             screenNavigationService: FakeScreenNavigationService(),

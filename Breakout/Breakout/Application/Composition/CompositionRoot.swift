@@ -113,7 +113,8 @@ extension ApplicationComposer {
 
         let session = GameSession(
             repository: InMemoryGameStateRepository(),
-            reducer: GameReducer()
+            reducer: GameReducer(),
+            levelOrder: []
         )
 
         let gameSceneBuilder = DefaultGameSceneBuilder(

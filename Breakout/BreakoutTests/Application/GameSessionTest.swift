@@ -5,16 +5,15 @@ import Testing
 @MainActor
 struct GameSessionTest {
 
+    // MARK: Persistance
+
     @Test
     func sessionReturnsPersistedStateOnInitialization() {
         let repository = InMemoryGameStateRepository()
         let initial = GameState.initial.with(score: 42)
         repository.save(initial)
 
-        let session = GameSession(
-            repository: repository,
-            reducer: GameReducer()
-        )
+        let session = makeSession(repository: repository)
 
         #expect(session.state == initial)
     }
@@ -29,10 +28,7 @@ struct GameSessionTest {
 
         repository.save(oldState)
 
-        let session = GameSession(
-            repository: repository,
-            reducer: GameReducer()
-        )
+        let session = makeSession(repository: repository)
 
         let brickId = BrickId(of: "1")
         let brick = Brick(id: brickId, color: .red, position: .zero)
@@ -60,10 +56,7 @@ struct GameSessionTest {
                 .with(bricks: [brickId: brick])
         )
 
-        let session = GameSession(
-            repository: repository,
-            reducer: GameReducer()
-        )
+        let session = makeSession(repository: repository)
 
         session.apply(.brickHit(brickID: brickId))
 
@@ -72,6 +65,8 @@ struct GameSessionTest {
         #expect(saved.score == 7)
         #expect(saved.bricks.isEmpty)
     }
+
+    // MARK: Reset
 
     @Test
     func announcingBallResetInProgressClearsFlagAndPersistsState() {
@@ -82,10 +77,7 @@ struct GameSessionTest {
                 .with(status: .playing)
         )
 
-        let session = GameSession(
-            repository: repository,
-            reducer: GameReducer()
-        )
+        let session = makeSession(repository: repository)
 
         // When acknowledging the ball reset
         session.announceBallResetInProgress()
@@ -104,10 +96,7 @@ struct GameSessionTest {
                 .with(status: .playing)
         )
 
-        let session = GameSession(
-            repository: repository,
-            reducer: GameReducer()
-        )
+        let session = makeSession(repository: repository)
 
         session.acknowledgeBallReset()
 
@@ -124,10 +113,7 @@ struct GameSessionTest {
                 .with(status: .playing)
         )
 
-        let session = GameSession(
-            repository: repository,
-            reducer: GameReducer()
-        )
+        let session = makeSession(repository: repository)
 
         session.acknowledgeBallReset()
 
@@ -145,10 +131,7 @@ struct GameSessionTest {
                 .with(status: .playing)
         )
 
-        let session = GameSession(
-            repository: repository,
-            reducer: GameReducer()
-        )
+        let session = makeSession(repository: repository)
 
         session.announceBallResetInProgress()
 
@@ -167,10 +150,7 @@ struct GameSessionTest {
                 .with(lives: 1)
         )
 
-        let session = GameSession(
-            repository: repository,
-            reducer: GameReducer()
-        )
+        let session = makeSession(repository: repository)
 
         session.apply(.ballLost)
 
@@ -179,4 +159,56 @@ struct GameSessionTest {
         #expect(saved.ballResetInProgress == false)
     }
 
+    // MARK: - Progression
+
+    @Test func winningTheOnlyLevelEndsTheGame() {
+        let brick = Brick(id: BrickId(of: "id"), color: .green, position: .zero)
+        let session = makeSession(levelOrder: [.only])
+
+        session.startGame(bricks: [brick])
+        session.apply(.brickHit(brickID: brick.id))
+
+        #expect(session.state.status == .won)
+    }
+
+    @MainActor
+    private func makeSession() -> GameSession {
+        makeSession(
+            repository: InMemoryGameStateRepository(),
+            reducer: GameReducer(),
+            levelOrder: [.only]
+        )
+    }
+
+    @MainActor
+    private func makeSession(repository: any GameStateRepository) -> GameSession
+    {
+        makeSession(
+            repository: repository,
+            reducer: GameReducer(),
+            levelOrder: [.only]
+        )
+    }
+
+    @MainActor
+    private func makeSession(levelOrder: [LevelId]) -> GameSession {
+        makeSession(
+            repository: InMemoryGameStateRepository(),
+            reducer: GameReducer(),
+            levelOrder: levelOrder
+        )
+    }
+
+    @MainActor
+    private func makeSession(
+        repository: any GameStateRepository,
+        reducer: GameReducer,
+        levelOrder: [LevelId],
+    ) -> GameSession {
+        GameSession(
+            repository: repository,
+            reducer: reducer,
+            levelOrder: levelOrder
+        )
+    }
 }

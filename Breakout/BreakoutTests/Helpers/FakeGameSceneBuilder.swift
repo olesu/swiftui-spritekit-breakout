@@ -16,7 +16,8 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
         let collisionRouter = FakeCollisionRouter()
         let gameSession = GameSession(
             repository: InMemoryGameStateRepository(),
-            reducer: GameReducer()
+            reducer: GameReducer(),
+            levelOrder: []
         )
         let nodes = SceneNodes.createValid()
         let nodeManager = DefaultNodeManager(
