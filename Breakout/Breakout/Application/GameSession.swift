@@ -31,9 +31,15 @@ final class GameSession {
 
     func apply(_ event: GameEvent) {
         let reduced = reducer.reduce(state, event: event)
-        
-        if shouldContinueAfterWinning(previous: state, reduced: reduced) {
-            let continued = reduced.with(status: .playing)
+
+        if shouldContinueAfterWinning(previous: state, reduced: reduced),
+            let next = nextLevel(after: reduced.levelId)
+        {
+            let continued =
+                reduced
+                .with(status: .playing)
+                .with(levelId: next)
+
             repository.save(continued)
             state = continued
 
@@ -44,13 +50,20 @@ final class GameSession {
         state = reduced
     }
 
+    private func nextLevel(after level: LevelId) -> LevelId? {
+        guard let index = levelOrder.firstIndex(of: level) else { return nil }
+        let nextIndex = index + 1
+        guard levelOrder.indices.contains(nextIndex) else { return nil }
+        return levelOrder[nextIndex]
+    }
+
     private func shouldContinueAfterWinning(
         previous: GameState,
         reduced: GameState
     ) -> Bool {
         guard previous.status == .playing else { return false }
         guard reduced.status == .won else { return false }
-        
+
         return hasNextLevel(afterWonState: reduced)
     }
 
