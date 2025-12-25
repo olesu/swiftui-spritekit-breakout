@@ -6,6 +6,7 @@ struct GameState: Equatable {
     let status: GameStatus
     let bricks: [BrickId: Brick]
     let ball: Ball
+    let levelId: LevelId
     
     var ballResetNeeded: Bool {
         ball.resetNeeded
@@ -20,7 +21,8 @@ struct GameState: Equatable {
         lives: 3,
         status: .idle,
         bricks: [:],
-        ball: Ball.initial
+        ball: Ball.initial,
+        levelId: LevelId.level1
     )
 
     func with(score: Int) -> GameState {
@@ -29,7 +31,8 @@ struct GameState: Equatable {
             lives: lives,
             status: status,
             bricks: bricks,
-            ball: ball
+            ball: ball,
+            levelId: levelId
         )
     }
 
@@ -39,7 +42,8 @@ struct GameState: Equatable {
             lives: lives,
             status: status,
             bricks: bricks,
-            ball: ball
+            ball: ball,
+            levelId: levelId
         )
     }
 
@@ -49,7 +53,8 @@ struct GameState: Equatable {
             lives: lives,
             status: status,
             bricks: bricks,
-            ball: ball
+            ball: ball,
+            levelId: levelId
         )
     }
 
@@ -59,7 +64,8 @@ struct GameState: Equatable {
             lives: lives,
             status: status,
             bricks: bricks,
-            ball: ball
+            ball: ball,
+            levelId: levelId
         )
     }
 
@@ -70,6 +76,7 @@ struct GameState: Equatable {
             status: status,
             bricks: bricks,
             ball: ball.with(resetNeeded: ballResetNeeded),
+            levelId: levelId
         )
     }
 
@@ -79,7 +86,19 @@ struct GameState: Equatable {
             lives: lives,
             status: status,
             bricks: bricks,
-            ball: ball.with(resetInProgress: ballResetInProgress)
+            ball: ball.with(resetInProgress: ballResetInProgress),
+            levelId: levelId
+        )
+    }
+
+    func with(levelId: LevelId) -> GameState {
+        GameState(
+            score: score,
+            lives: lives,
+            status: status,
+            bricks: bricks,
+            ball: ball,
+            levelId: levelId
         )
     }
 }

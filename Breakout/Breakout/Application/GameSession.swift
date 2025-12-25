@@ -31,8 +31,26 @@ final class GameSession {
 
     func apply(_ event: GameEvent) {
         let newState = reducer.reduce(state, event: event)
+        
+        if state.status == .playing {
+            let afterWonState = newState.with(status: .won)
+            if hasNextLevel(afterWonState: afterWonState) {
+                let continuedState = afterWonState.with(status: .playing)
+                repository.save(continuedState)
+                state = continuedState
+                
+                return
+            }
+        }
+        
         repository.save(newState)
         state = newState
+    }
+    
+    private func hasNextLevel(afterWonState: GameState) -> Bool {
+        guard let currentIndex = levelOrder.firstIndex(of: afterWonState.levelId) else { return false}
+        
+        return levelOrder.indices.contains(currentIndex + 1)
     }
 
     private func reset(bricks: [Brick]) {

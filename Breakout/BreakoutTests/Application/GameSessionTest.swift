@@ -168,6 +168,18 @@ struct GameSessionTest {
 
         #expect(session.state.status == .won)
     }
+    
+    @Test func winningALevelWithANextLevelKeepsTheGamePlaying()  {
+        let brick = Brick.createValid()
+        let session = makeSession(levelOrder: [.level1, .level2])
+        
+        session.startGame(bricks: [brick])
+        session.apply(.brickHit(brickID: brick.id))
+        
+        #expect(session.state.status == .playing)
+    }
+    
+    // MARK: Setup helpers
 
     @MainActor
     private func makeSession() -> GameSession {
