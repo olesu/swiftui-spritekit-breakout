@@ -17,7 +17,8 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
         let gameSession = GameSession(
             repository: InMemoryGameStateRepository(),
             reducer: GameReducer(),
-            levelOrder: []
+            levelOrder: [],
+            levelBricksProvider: DefaultLevelBricksProvider()
         )
         let nodes = SceneNodes.createValid()
         let nodeManager = DefaultNodeManager(

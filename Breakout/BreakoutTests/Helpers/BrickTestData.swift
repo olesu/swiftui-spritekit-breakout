@@ -2,8 +2,14 @@ import Foundation
 
 @testable import Breakout
 
+extension BrickId {
+    static func createValid(id: String = "1") -> BrickId {
+        .init(of: id)
+    }
+}
+
 extension Brick {
-    static func createValid() -> Brick {
-        .init(id: BrickId(of: "1"), color: .red, position: Point.zero)
+    static func createValid(brickId: BrickId = BrickId.createValid()) -> Brick {
+        .init(id: brickId, color: .red, position: Point.zero)
     }
 }

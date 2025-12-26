@@ -17,7 +17,8 @@ import SwiftUI
         let session = GameSession(
             repository: InMemoryGameStateRepository(),
             reducer: GameReducer(),
-            levelOrder: []
+            levelOrder: [],
+            levelBricksProvider: DefaultLevelBricksProvider(),
         )
         let brickLayoutFactory = SKBrickLayoutFactory(session: session)
         let ballLaunchController = BallLaunchController()

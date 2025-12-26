@@ -219,6 +219,25 @@ struct GameSessionTest {
         #expect(session.state.bricks.isEmpty == false)
     }
 
+    @Test
+    func winningALevelLoadsBricksForNextLevel() {
+        let brickLevel1 = Brick.createValid(brickId: BrickId(of: "id-1"))
+        let brickLevel2 = Brick.createValid(brickId: BrickId(of: "id-2"))
+        
+        let levelBricksProvider = FakeLevelBricksProvider(
+            bricksByLevel: [
+                .level1: [brickLevel1.id: brickLevel1],
+                .level2: [brickLevel2.id: brickLevel2],
+            ]
+        )
+        
+        let session = makeSession(levelOrder: [.level1, .level2], levelBricksProvider: levelBricksProvider)
+
+        session.startGame(bricks: [brickLevel1])
+        session.apply(.brickHit(brickID: brickLevel1.id))
+
+        #expect(session.state.bricks.values.contains(brickLevel2))
+    }
     
     // MARK: Setup helpers
 
@@ -227,7 +246,11 @@ struct GameSessionTest {
         makeSession(
             repository: InMemoryGameStateRepository(),
             reducer: GameReducer(),
-            levelOrder: [.only]
+            levelOrder: [.only],
+            levelBricksProvider: FakeLevelBricksProvider(bricksByLevel: [
+                .level1: [BrickId.createValid(): Brick.createValid()],
+                .level2: [BrickId.createValid(): Brick.createValid()],
+            ])
         )
     }
 
@@ -237,7 +260,11 @@ struct GameSessionTest {
         makeSession(
             repository: repository,
             reducer: GameReducer(),
-            levelOrder: [.only]
+            levelOrder: [.only],
+            levelBricksProvider: FakeLevelBricksProvider(bricksByLevel: [
+                .level1: [BrickId.createValid(): Brick.createValid()],
+                .level2: [BrickId.createValid(): Brick.createValid()],
+            ])
         )
     }
 
@@ -246,7 +273,21 @@ struct GameSessionTest {
         makeSession(
             repository: InMemoryGameStateRepository(),
             reducer: GameReducer(),
-            levelOrder: levelOrder
+            levelOrder: levelOrder,
+            levelBricksProvider: FakeLevelBricksProvider(bricksByLevel: [
+                .level1: [BrickId.createValid(): Brick.createValid()],
+                .level2: [BrickId.createValid(): Brick.createValid()],
+            ])
+        )
+    }
+
+    @MainActor
+    private func makeSession(levelOrder: [LevelId], levelBricksProvider: LevelBricksProvider) -> GameSession {
+        makeSession(
+            repository: InMemoryGameStateRepository(),
+            reducer: GameReducer(),
+            levelOrder: levelOrder,
+            levelBricksProvider: levelBricksProvider,
         )
     }
 
@@ -255,11 +296,13 @@ struct GameSessionTest {
         repository: any GameStateRepository,
         reducer: GameReducer,
         levelOrder: [LevelId],
+        levelBricksProvider: LevelBricksProvider
     ) -> GameSession {
         GameSession(
             repository: repository,
             reducer: reducer,
-            levelOrder: levelOrder
+            levelOrder: levelOrder,
+            levelBricksProvider: levelBricksProvider
         )
     }
 }

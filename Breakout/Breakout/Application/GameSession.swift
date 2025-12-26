@@ -5,6 +5,7 @@ final class GameSession {
     private let repository: GameStateRepository
     private let reducer: GameReducer
     private let levelOrder: [LevelId]
+    private let levelBricksProvider: LevelBricksProvider
 
     var state: GameState {
         didSet {}
@@ -13,11 +14,13 @@ final class GameSession {
     init(
         repository: GameStateRepository,
         reducer: GameReducer,
-        levelOrder: [LevelId]
+        levelOrder: [LevelId],
+        levelBricksProvider: LevelBricksProvider
     ) {
         self.repository = repository
         self.reducer = reducer
         self.levelOrder = levelOrder
+        self.levelBricksProvider = levelBricksProvider
 
         self.state = repository.load()
     }
@@ -35,7 +38,7 @@ final class GameSession {
         if shouldContinueAfterWinning(previous: state, reduced: reduced),
             let next = nextLevel(after: reduced.levelId)
         {
-            let bricksForNextLevel = state.bricks // TODO: Obviously wrong!
+            let bricksForNextLevel = levelBricksProvider.bricks(for: next)
             let continued =
                 reduced
                 .with(status: .playing)

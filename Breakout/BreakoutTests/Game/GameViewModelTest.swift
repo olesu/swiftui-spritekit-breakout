@@ -56,7 +56,8 @@ struct GameViewModelTest {
             session: GameSession(
                 repository: repository,
                 reducer: GameReducer(),
-                levelOrder: []
+                levelOrder: [],
+                levelBricksProvider: DefaultLevelBricksProvider()
             ),
             gameConfiguration: GameConfiguration.defaultValue(),
             screenNavigationService: FakeScreenNavigationService(),

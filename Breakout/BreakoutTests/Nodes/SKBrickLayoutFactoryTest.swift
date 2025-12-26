@@ -19,7 +19,8 @@ struct SKBrickLayoutFactoryTest {
             session: GameSession(
                 repository: repository,
                 reducer: GameReducer(),
-                levelOrder: []
+                levelOrder: [],
+                levelBricksProvider: DefaultLevelBricksProvider()
             )
         )
 
