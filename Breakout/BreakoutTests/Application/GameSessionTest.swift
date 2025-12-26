@@ -189,6 +189,26 @@ struct GameSessionTest {
         #expect(session.state.levelId == .level2)
     }
     
+    @Test
+    func losingInSecondLevelEndsTheGame() {
+        let brick = Brick.createValid()
+        let session = makeSession(levelOrder: [.level1, .level2])
+
+        // Win level 1
+        session.startGame(bricks: [brick])
+        session.apply(.brickHit(brickID: brick.id))
+
+        #expect(session.state.levelId == .level2)
+        #expect(session.state.status == .playing)
+
+        // Lose the only ball in level 2
+        session.state = session.state.with(lives: 1)
+        session.apply(.ballLost)
+
+        #expect(session.state.status == .gameOver)
+    }
+
+    
     // MARK: Setup helpers
 
     @MainActor
