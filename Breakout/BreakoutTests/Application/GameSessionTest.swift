@@ -160,23 +160,25 @@ struct GameSessionTest {
     // MARK: - Progression
 
     @Test func winningTheOnlyLevelEndsTheGame() {
-        let brick = Brick.createValid()
-        let session = makeSession(levelOrder: [.only])
+        let scenario = GameSessionScenario
+            .newGame
+            .withLevels([.only])
+            .startingWith(bricks: [Brick.createValid()])
+        
+        scenario.destroyAllBricks()
 
-        session.startGame(bricks: [brick])
-        session.apply(.brickHit(brickID: brick.id))
-
-        #expect(session.state.status == .won)
+        #expect(scenario.gameStatus == .won)
     }
 
     @Test func winningALevelWithANextLevelKeepsTheGamePlaying() {
-        let brick = Brick.createValid()
-        let session = makeSession(levelOrder: [.level1, .level2])
+        let scenario = GameSessionScenario
+            .newGame
+            .withLevels([.level1, .level2,])
+            .startingWith(bricks: [Brick.createValid()])
+        
+        scenario.destroyAllBricks()
 
-        session.startGame(bricks: [brick])
-        session.apply(.brickHit(brickID: brick.id))
-
-        #expect(session.state.status == .playing)
+        #expect(scenario.gameStatus == .playing)
     }
 
     @Test func winningALevelAdvancesToTheNextLevel() {
