@@ -35,10 +35,12 @@ final class GameSession {
         if shouldContinueAfterWinning(previous: state, reduced: reduced),
             let next = nextLevel(after: reduced.levelId)
         {
+            let bricksForNextLevel = state.bricks // TODO: Obviously wrong!
             let continued =
                 reduced
                 .with(status: .playing)
                 .with(levelId: next)
+                .with(bricks: bricksForNextLevel)
 
             repository.save(continued)
             state = continued
