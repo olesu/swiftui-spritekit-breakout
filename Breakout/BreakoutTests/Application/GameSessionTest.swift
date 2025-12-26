@@ -182,9 +182,7 @@ struct GameSessionTest {
     @Test func winningALevelAdvancesToTheNextLevel() {
         let scenario = GameSessionScenario
             .newGame
-            .withLevels([
-                .level1, .level2,
-            ])
+            .withLevels([.level1, .level2,])
             .startingWith(bricks: [Brick.createValid()])
 
         scenario.destroyAllBricks()
@@ -194,32 +192,27 @@ struct GameSessionTest {
 
     @Test
     func losingInSecondLevelEndsTheGame() {
-        let brick = Brick.createValid()
-        let session = makeSession(levelOrder: [.level1, .level2])
+        let scenario = GameSessionScenario
+            .newGame
+            .withLevels([.level1, .level2,])
+            .startingWith(bricks: [Brick.createValid()])
+        
+        scenario.destroyAllBricks()
+        scenario.loseAllBalls()
 
-        // Win level 1
-        session.startGame(bricks: [brick])
-        session.apply(.brickHit(brickID: brick.id))
-
-        #expect(session.state.levelId == .level2)
-        #expect(session.state.status == .playing)
-
-        // Lose the only ball in level 2
-        session.state = session.state.with(lives: 1)
-        session.apply(.ballLost)
-
-        #expect(session.state.status == .gameOver)
+        #expect(scenario.gameStatus == .gameOver)
     }
 
     @Test
     func winningALevelWithANextLevelResetsBricks() {
-        let brick = Brick.createValid()
-        let session = makeSession(levelOrder: [.level1, .level2])
+        let scenario = GameSessionScenario
+            .newGame
+            .withLevels([.level1, .level2,])
+            .startingWith(bricks: [Brick.createValid()])
 
-        session.startGame(bricks: [brick])
-        session.apply(.brickHit(brickID: brick.id))
+        scenario.destroyAllBricks()
 
-        #expect(session.state.bricks.isEmpty == false)
+        #expect(scenario.hasBricksInPlay == true)
     }
 
     @Test
@@ -257,6 +250,14 @@ private struct GameSessionScenario {
     var currentLevel: LevelId {
         session.state.levelId
     }
+    
+    var gameStatus: GameStatus {
+        session.state.status
+    }
+    
+    var hasBricksInPlay: Bool {
+        !session.state.bricks.isEmpty
+    }
 
     init(levelOrder: [LevelId]) {
         self.levels = levelOrder
@@ -289,9 +290,13 @@ private struct GameSessionScenario {
     func destroyAllBricks() {
         bricks.forEach { session.apply(.brickHit(brickID: $0.id)) }
     }
+    
+    func loseAllBalls() {
+        for _ in 0..<session.state.lives {
+            session.apply(.ballLost)
+        }
+    }
 }
-
-
 
 // MARK: Setup helpers
 
