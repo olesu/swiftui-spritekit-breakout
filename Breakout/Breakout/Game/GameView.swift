@@ -6,9 +6,9 @@ struct GameView: View {
     @Environment(GameViewModel.self) private var viewModel: GameViewModel
     @State private var scene: GameScene?
     @FocusState private var isFocused: Bool
-    
+
     private let sceneBuilder: GameSceneBuilder
-    
+
     init(sceneBuilder: GameSceneBuilder) {
         self.sceneBuilder = sceneBuilder
     }
@@ -59,12 +59,8 @@ struct GameView: View {
                 }
             }
             .onAppear {
-                do {
-                    try viewModel.startNewGame()
-                    scene = sceneBuilder.makeScene()
-                } catch {
-                    // TODO
-                }
+                viewModel.startNewGame()
+                scene = sceneBuilder.makeScene()
             }
             .task {
                 isFocused = true

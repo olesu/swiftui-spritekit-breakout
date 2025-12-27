@@ -8,8 +8,6 @@ final class GameViewModel {
     private let gameConfiguration: GameConfiguration
     private let screenNavigationService: ScreenNavigationService
     private let gameResultService: GameResultService
-    private let brickService: BrickService
-    private let startingLevel: StartingLevel
 
     var currentScore: Int = 0
     var remainingLives: Int = 0
@@ -21,15 +19,11 @@ final class GameViewModel {
         gameConfiguration: GameConfiguration,
         screenNavigationService: ScreenNavigationService,
         gameResultService: GameResultService,
-        brickService: BrickService,
-        startingLevel: StartingLevel
     ) {
         self.session = session
         self.gameConfiguration = gameConfiguration
         self.screenNavigationService = screenNavigationService
         self.gameResultService = gameResultService
-        self.brickService = brickService
-        self.startingLevel = startingLevel
 
         startTracking()
     }
@@ -37,13 +31,8 @@ final class GameViewModel {
 }
 
 extension GameViewModel {
-    func startNewGame() throws {
-        // TODO: Need to move this over to LevelBricksProvider
-        let layoutFileName = startingLevel.layoutFileName
-        let bricks = try brickService.load(layoutNamed: layoutFileName)
-
-        // TODO: Use parameterless variant when bricks are being provided
-        session.startGame(bricks: bricks)
+    func startNewGame() {
+        session.startGame()
     }
 
 }

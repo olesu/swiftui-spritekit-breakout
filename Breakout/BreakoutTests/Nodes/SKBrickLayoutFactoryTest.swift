@@ -20,7 +20,7 @@ struct SKBrickLayoutFactoryTest {
                 repository: repository,
                 reducer: GameReducer(),
                 levelOrder: [],
-                levelBricksProvider: DefaultLevelBricksProvider()
+                levelBricksProvider: DefaultLevelBricksProvider.empty
             )
         )
 

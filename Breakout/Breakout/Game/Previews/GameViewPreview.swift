@@ -18,7 +18,7 @@ import SwiftUI
             repository: InMemoryGameStateRepository(),
             reducer: GameReducer(),
             levelOrder: [],
-            levelBricksProvider: DefaultLevelBricksProvider(),
+            levelBricksProvider: DefaultLevelBricksProvider.empty,
         )
         let brickLayoutFactory = SKBrickLayoutFactory(session: session)
         let ballLaunchController = BallLaunchController()
@@ -38,8 +38,6 @@ import SwiftUI
             gameConfiguration: gameConfiguration,
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService,
-            brickService: GameWiring.makeBrickService(),
-            startingLevel: GameWiring.makeStartingLevel(policy: .production)
         )
 
         GameView(sceneBuilder: sceneBuilder)

@@ -25,23 +25,23 @@ final class GameSession {
         self.state = repository.load()
     }
 
-    func startGame(bricks: [Brick]) {
+    func startGame() {
+        guard let firstLevel = levelOrder.first else {
+            initializeGame(bricks: [])
+            return
+        }
+        
+        let bricks = levelBricksProvider.bricks(for: firstLevel)
+        initializeGame(bricks: bricks.values.map { $0 })
+    }
+
+    private func initializeGame(bricks: [Brick]) {
         reset(bricks: bricks)
         let newState = reducer.start(state)
         repository.save(newState)
         state = newState
     }
     
-    func startGame() {
-        guard let firstLevel = levelOrder.first else {
-            startGame(bricks: [])
-            return
-        }
-        
-        let bricks = levelBricksProvider.bricks(for: firstLevel)
-        startGame(bricks: bricks.values.map { $0 })
-    }
-
     func apply(_ event: GameEvent) {
         let reduced = reducer.reduce(state, event: event)
 

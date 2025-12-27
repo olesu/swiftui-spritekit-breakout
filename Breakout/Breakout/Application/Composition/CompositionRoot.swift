@@ -13,7 +13,7 @@ enum ApplicationComposer {
         let gameResult = makeGameResultDependencies(
             screenNavigationService: navigation.screenNavigationService
         )
-        let game = makeGameDependencies(
+        let game = try makeGameDependencies(
             gameConfiguration: configuration.gameConfiguration,
             gameResultService: gameResult.gameResultService,
             screenNavigationService: navigation.screenNavigationService,
@@ -105,17 +105,21 @@ extension ApplicationComposer {
         screenNavigationService: DefaultScreenNavigationService,
         brickService: BrickService,
         startingLevel: StartingLevel,
-    ) -> (
+    ) throws -> (
         viewModel: GameViewModel,
         sceneBuilder: GameSceneBuilder
     ) {
         let gameTuning = GameTuning.classic
+        
+        let levels: [LevelId] = [.level1]
+        let bricks = try brickService.load(layoutNamed: startingLevel.layoutFileName)
+        let levelBricksProvider = DefaultLevelBricksProvider.providerForAllLevels(levels: levels, bricks: bricks)
 
         let session = GameSession(
             repository: InMemoryGameStateRepository(),
             reducer: GameReducer(),
-            levelOrder: [],
-            levelBricksProvider: DefaultLevelBricksProvider()
+            levelOrder: levels,
+            levelBricksProvider: levelBricksProvider
         )
 
         let gameSceneBuilder = DefaultGameSceneBuilder(
@@ -135,8 +139,6 @@ extension ApplicationComposer {
             gameConfiguration: gameConfiguration,
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService,
-            brickService: brickService,
-            startingLevel: startingLevel
         )
 
         return (viewModel, gameSceneBuilder)

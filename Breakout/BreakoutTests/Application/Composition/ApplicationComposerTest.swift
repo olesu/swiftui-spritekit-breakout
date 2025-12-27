@@ -42,7 +42,7 @@ struct ApplicationComposerTest {
     private func startNewGameAndYieldToLetObservationFire(
         _ context: AppContext
     ) async throws {
-        try context.gameViewModel.startNewGame()
+        context.gameViewModel.startNewGame()
         await Task.yield()
     }
 
