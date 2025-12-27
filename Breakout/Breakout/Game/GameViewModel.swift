@@ -38,9 +38,11 @@ final class GameViewModel {
 
 extension GameViewModel {
     func startNewGame() throws {
+        // TODO: Need to move this over to LevelBricksProvider
         let layoutFileName = startingLevel.layoutFileName
         let bricks = try brickService.load(layoutNamed: layoutFileName)
 
+        // TODO: Use parameterless variant when bricks are being provided
         session.startGame(bricks: bricks)
     }
 

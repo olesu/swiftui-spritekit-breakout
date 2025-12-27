@@ -28,12 +28,18 @@ struct GameSessionStorageTest {
 
         repository.save(oldState)
 
-        let session = makeSession(repository: repository)
-
         let brick = Brick.createValid()
-        let bricks = [brick]
 
-        session.startGame(bricks: bricks)
+        let provider = FakeLevelBricksProvider(
+            bricksByLevel: [.level1: [brick.id: brick]])
+
+        let session = makeSession(
+            repository: repository,
+            levelOrder: [.level1],
+            levelBricksProvider: provider
+        )
+
+        session.startGame()
 
         let saved = repository.load()
 
@@ -162,8 +168,7 @@ struct GameSessionStorageTest {
 // MARK: Setup helpers
 
 @MainActor
-private func makeSession(repository: any GameStateRepository) -> GameSession
-{
+private func makeSession(repository: any GameStateRepository) -> GameSession {
     makeSession(
         repository: repository,
         reducer: GameReducer(),
@@ -172,6 +177,20 @@ private func makeSession(repository: any GameStateRepository) -> GameSession
             .level1: [BrickId.createValid(): Brick.createValid()],
             .level2: [BrickId.createValid(): Brick.createValid()],
         ])
+    )
+}
+
+@MainActor
+private func makeSession(
+    repository: any GameStateRepository,
+    levelOrder: [LevelId],
+    levelBricksProvider: LevelBricksProvider
+) -> GameSession {
+    makeSession(
+        repository: repository,
+        reducer: GameReducer(),
+        levelOrder: levelOrder,
+        levelBricksProvider: levelBricksProvider
     )
 }
 
