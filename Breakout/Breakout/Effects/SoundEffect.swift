@@ -1,6 +1,6 @@
 import Foundation
 
-enum SoundEffect: Equatable {
+enum SoundEffect: Equatable, CaseIterable {
     case brickHit
     case ballLost
 }

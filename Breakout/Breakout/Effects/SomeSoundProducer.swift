@@ -2,15 +2,27 @@ import Foundation
 import SpriteKit
 
 final class SKSoundProducer: SoundProducer {
-    private weak var node: SKNode?
-    
-    init(node: SKNode) {
-        self.node = node
+    private weak var parentNode: SKNode?
+    private var audioNodes: [SoundEffect: SKAudioNode] = [:]
+
+    func attach(to parentNode: SKNode) {
+        self.parentNode = parentNode
+        preloadSounds()
     }
-    
+
+    private func preloadSounds() {
+        guard let parentNode else { return }
+
+        for sound in SoundEffect.allCases {
+            let node = SKAudioNode(fileNamed: sound.fileName)
+            node.autoplayLooped = false
+            node.isPositional = false
+            parentNode.addChild(node)
+            audioNodes[sound] = node
+        }
+    }
+
     func play(_ soundEffect: SoundEffect) {
-        guard let node else { return }
-        
-        node.run(.playSoundFileNamed(soundEffect.fileName, waitForCompletion: false))
+        audioNodes[soundEffect]?.run(.play())
     }
 }

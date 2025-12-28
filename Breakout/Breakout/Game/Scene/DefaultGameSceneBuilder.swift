@@ -70,10 +70,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
             nodes: nodes
         )
 
-        let effectsNode = SKNode()
-        effectsNode.name = "effects"
-        effectsNode.zPosition = 1000
-        let soundProducer = SKSoundProducer(node: effectsNode)
+        let soundProducer = SKSoundProducer()
 
         let contactHandler = GamePhysicsContactHandler(
             collisionRouter: collisionRouter,
@@ -99,10 +96,20 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
                 nodeManager: nodeManager
             )
         )
-        scene.addChild(effectsNode)
+        scene.configureForSound(soundProducer)
         return scene
     }
+    
+}
 
+extension SKScene {
+    fileprivate func configureForSound(_ soundProducer: SKSoundProducer) {
+        let effectsNode = SKNode()
+        effectsNode.name = "effects"
+        effectsNode.zPosition = 1000
+        addChild(effectsNode)
+        soundProducer.attach(to: effectsNode)
+    }
 }
 
 extension CGPoint {
