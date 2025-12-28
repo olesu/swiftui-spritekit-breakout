@@ -38,7 +38,8 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
                 nodeManager: nodeManager,
                 gameEventHandler: GameEventHandler(
                     gameEventSink: gameSession,
-                    nodeManager: nodeManager
+                    nodeManager: nodeManager,
+                    soundProducer: FakeSoundProducer(),
                 )
             ),
             gameController: GameController(

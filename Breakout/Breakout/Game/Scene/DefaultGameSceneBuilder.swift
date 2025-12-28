@@ -16,7 +16,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         session: GameSession,
         ballLaunchController: BallLaunchController,
         paddleMotionController: PaddleMotionController,
-        bounceSpeedPolicy: BounceSpeedPolicy
+        bounceSpeedPolicy: BounceSpeedPolicy,
     ) {
         self.gameConfiguration = gameConfiguration
         self.collisionRouter = collisionRouter
@@ -69,13 +69,16 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
             brickLayoutFactory: brickLayoutFactory,
             nodes: nodes
         )
+        
+        let soundProducer = DefaultSoundProducer()
 
         let contactHandler = GamePhysicsContactHandler(
             collisionRouter: collisionRouter,
             nodeManager: nodeManager,
             gameEventHandler: GameEventHandler(
                 gameEventSink: session,
-                nodeManager: nodeManager
+                nodeManager: nodeManager,
+                soundProducer: soundProducer,
             )
         )
 
