@@ -35,8 +35,11 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
             ballLaunchController: ballLaunchController,
             contactHandler: GamePhysicsContactHandler(
                 collisionRouter: collisionRouter,
-                gameSession: gameSession,
-                nodeManager: nodeManager
+                nodeManager: nodeManager,
+                gameEventHandler: GameEventHandler(
+                    gameEventSink: gameSession,
+                    nodeManager: nodeManager
+                )
             ),
             gameController: GameController(
                 paddleInputController: paddleInputController,

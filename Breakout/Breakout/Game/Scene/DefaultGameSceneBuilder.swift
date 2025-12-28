@@ -72,8 +72,11 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
 
         let contactHandler = GamePhysicsContactHandler(
             collisionRouter: collisionRouter,
-            gameSession: session,
-            nodeManager: nodeManager
+            nodeManager: nodeManager,
+            gameEventHandler: GameEventHandler(
+                gameEventSink: session,
+                nodeManager: nodeManager
+            )
         )
 
         return GameScene(

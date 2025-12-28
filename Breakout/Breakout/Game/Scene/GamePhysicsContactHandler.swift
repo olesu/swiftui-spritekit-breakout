@@ -9,17 +9,17 @@ import SpriteKit
 /// - Adjusts ball speed and bounce on paddle hits using `BallMotionController` and `PaddleBounceApplier`.
 final class GamePhysicsContactHandler: NSObject, SKPhysicsContactDelegate {
     private let collisionRouter: CollisionRouter
-    private let gameSession: GameSession
     private let nodeManager: NodeManager
+    private let gameEventHandler: GameEventHandler
 
     init(
         collisionRouter: CollisionRouter,
-        gameSession: GameSession,
-        nodeManager: NodeManager
+        nodeManager: NodeManager,
+        gameEventHandler: GameEventHandler
     ) {
         self.collisionRouter = collisionRouter
-        self.gameSession = gameSession
         self.nodeManager = nodeManager
+        self.gameEventHandler = gameEventHandler
     }
 
     /// Handles the start of a physics contact and translates it into a game event.
@@ -44,11 +44,11 @@ final class GamePhysicsContactHandler: NSObject, SKPhysicsContactDelegate {
 
         switch result {
         case .ballHitBrick(let brickId):
-            handleBallHitBrick(brickId)
+            gameEventHandler.handle(.brickHit(brickID: brickId))
         case .ballHitGutter:
-            handleBallHitGutter()
+            gameEventHandler.handle(.ballLost)
         case .ballHitPaddle:
-            handleBallHitPaddle()
+            nodeManager.ballHitPaddle()
         case .none:
             break
         }
@@ -57,30 +57,6 @@ final class GamePhysicsContactHandler: NSObject, SKPhysicsContactDelegate {
     /// Called when two bodies stop contacting. Currently unused.
     func didEnd(_ contact: SKPhysicsContact) {
         // No-op, but available for future use (e.g., clearing transient state).
-    }
-
-    private func handleBallHitBrick(_ brickId: BrickId) {
-        let event: GameEvent = .brickHit(brickID: brickId)
-
-        gameSession.handle(event)
-        handlePresentation(for: event)
-    }
-
-    private func handleBallHitGutter() {
-        gameSession.handle(.ballLost)
-    }
-
-    private func handleBallHitPaddle() {
-        nodeManager.ballHitPaddle()
-    }
-    
-    private func handlePresentation(for event: GameEvent) {
-        switch event {
-        case .brickHit(let brickId):
-            nodeManager.enqueueRemoval(of: brickId)
-        case .ballLost:
-            break
-        }
     }
 
 }

@@ -1,7 +1,7 @@
 import Foundation
 
 @Observable
-final class GameSession {
+final class GameSession: GameEventSink {
     private let repository: GameStateRepository
     private let reducer: GameReducer
     private let levelOrder: [LevelId]
