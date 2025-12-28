@@ -45,7 +45,7 @@ final class GameSession {
         state = newState
     }
     
-    func apply(_ event: GameEvent) {
+    func handle(_ event: GameEvent) {
         let reduced = reducer.reduce(state, event: event)
 
         if shouldContinueAfterWinning(previous: state, reduced: reduced),

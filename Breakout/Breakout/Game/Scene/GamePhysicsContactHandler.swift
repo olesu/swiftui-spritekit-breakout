@@ -60,15 +60,27 @@ final class GamePhysicsContactHandler: NSObject, SKPhysicsContactDelegate {
     }
 
     private func handleBallHitBrick(_ brickId: BrickId) {
-        gameSession.apply(.brickHit(brickID: brickId))
-        nodeManager.enqueueRemoval(of: brickId)
+        let event: GameEvent = .brickHit(brickID: brickId)
+
+        gameSession.handle(event)
+        handlePresentation(for: event)
     }
 
     private func handleBallHitGutter() {
-        gameSession.apply(.ballLost)
+        gameSession.handle(.ballLost)
     }
 
     private func handleBallHitPaddle() {
         nodeManager.ballHitPaddle()
     }
+    
+    private func handlePresentation(for event: GameEvent) {
+        switch event {
+        case .brickHit(let brickId):
+            nodeManager.enqueueRemoval(of: brickId)
+        case .ballLost:
+            break
+        }
+    }
+
 }

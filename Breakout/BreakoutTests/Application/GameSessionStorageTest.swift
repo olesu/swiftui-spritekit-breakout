@@ -63,7 +63,7 @@ struct GameSessionStorageTest {
 
         let session = makeSession(repository: repository)
 
-        session.apply(.brickHit(brickID: brick.id))
+        session.handle(.brickHit(brickID: brick.id))
 
         let saved = repository.load()
 
@@ -157,7 +157,7 @@ struct GameSessionStorageTest {
 
         let session = makeSession(repository: repository)
 
-        session.apply(.ballLost)
+        session.handle(.ballLost)
 
         let saved = repository.load()
         #expect(saved.ballResetNeeded == false)

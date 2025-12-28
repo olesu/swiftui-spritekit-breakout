@@ -85,7 +85,7 @@ struct GameSessionProgressionTest {
         )
 
         session.startGame()
-        session.apply(.brickHit(brickID: brickLevel1.id))
+        session.handle(.brickHit(brickID: brickLevel1.id))
 
         #expect(session.state.bricks.values.contains(brickLevel2))
     }
@@ -150,13 +150,13 @@ private struct GameSessionScenario {
 
     func destroyAllBricks() {
         session.state.bricks.keys.forEach {
-            session.apply(.brickHit(brickID: $0))
+            session.handle(.brickHit(brickID: $0))
         }
     }
 
     func loseAllBalls() {
         for _ in 0..<session.state.lives {
-            session.apply(.ballLost)
+            session.handle(.ballLost)
         }
     }
 }
