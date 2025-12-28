@@ -8,7 +8,11 @@ final class LayoutLoadingBrickService: BrickService {
         self.adapter = adapter
     }
 
-    func load(layoutNamed file: String) throws -> [Brick] {
+    func loadBundle(named file: String, levels: [LevelId]) throws -> LevelBundle {
+        LevelBundle(levels: levels, bricks: try loadLayout(named: file))
+    }
+    
+    private func loadLayout(named file: String) throws -> [Brick] {
         if let cached = cache[file] {
             return cached
         }
@@ -28,4 +32,5 @@ final class LayoutLoadingBrickService: BrickService {
 
         return bricks
     }
+    
 }

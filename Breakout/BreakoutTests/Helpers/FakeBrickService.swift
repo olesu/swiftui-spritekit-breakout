@@ -5,7 +5,11 @@ import Foundation
 final class FakeBrickService: BrickService {
     var loadedLayoutName = ""
     
-    func load(layoutNamed file: String) throws -> [Breakout.Brick] {
+    func loadBundle(named file: String, levels: [Breakout.LevelId]) throws -> Breakout.LevelBundle {
+        LevelBundle(levels: levels, bricks: try loadLayout(named: file))
+    }
+    
+    private func loadLayout(named file: String) throws -> [Breakout.Brick] {
         loadedLayoutName = file
         return []
     }

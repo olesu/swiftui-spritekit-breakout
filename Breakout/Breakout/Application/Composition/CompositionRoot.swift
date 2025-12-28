@@ -110,10 +110,9 @@ extension ApplicationComposer {
         sceneBuilder: GameSceneBuilder
     ) {
         let gameTuning = GameTuning.classic
-        
         let levels: [LevelId] = [.level1]
-        let bricks = try brickService.load(layoutNamed: startingLevel.layoutFileName)
-        let levelBricksProvider = DefaultLevelBricksProvider.providerForAllLevels(levels: levels, bricks: bricks)
+        let bundle = try brickService.loadBundle(named: startingLevel.layoutFileName, levels: levels)
+        let levelBricksProvider = DefaultLevelBricksProvider(bundle)
 
         let session = GameSession(
             repository: InMemoryGameStateRepository(),

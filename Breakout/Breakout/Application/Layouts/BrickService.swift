@@ -1,5 +1,5 @@
 import Foundation
 
 protocol BrickService {
-    func load(layoutNamed file: String) throws -> [Brick]
+    func loadBundle(named file: String, levels: [LevelId]) throws -> LevelBundle
 }
