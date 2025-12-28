@@ -69,8 +69,11 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
             brickLayoutFactory: brickLayoutFactory,
             nodes: nodes
         )
-        
-        let soundProducer = DefaultSoundProducer()
+
+        let effectsNode = SKNode()
+        effectsNode.name = "effects"
+        effectsNode.zPosition = 1000
+        let soundProducer = SKSoundProducer(node: effectsNode)
 
         let contactHandler = GamePhysicsContactHandler(
             collisionRouter: collisionRouter,
@@ -82,7 +85,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
             )
         )
 
-        return GameScene(
+        let scene = GameScene(
             size: CGSize(
                 width: c.sceneWidth,
                 height: c.sceneHeight
@@ -96,7 +99,10 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
                 nodeManager: nodeManager
             )
         )
+        scene.addChild(effectsNode)
+        return scene
     }
+
 }
 
 extension CGPoint {

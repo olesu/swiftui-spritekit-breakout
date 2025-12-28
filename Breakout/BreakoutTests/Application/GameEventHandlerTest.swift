@@ -36,6 +36,22 @@ struct GameEventHandlerTest {
         #expect(soundProducer.soundsPlayed == [.brickHit])
     }
 
+    @Test func ballLostPlaysSound() {
+        let gameEventSink = FakeGameEventSink()
+        let nodeManager = FakeNodeManager()
+        let soundProducer = FakeSoundProducer()
+
+        let scenario = Scenario(
+            gameEventSink: gameEventSink,
+            nodeManager: nodeManager,
+            soundProducer: soundProducer,
+        )
+
+        scenario.simulateBallLost()
+
+        #expect(soundProducer.soundsPlayed == [.ballLost])
+    }
+
 }
 
 @MainActor
@@ -61,5 +77,9 @@ private final class Scenario {
     func simulateBrickHit(brickId: BrickId) {
         handler.handle(.brickHit(brickID: brickId))
         nodeManager.removeEnqueued()
+    }
+    
+    func simulateBallLost() {
+        handler.handle(.ballLost)
     }
 }

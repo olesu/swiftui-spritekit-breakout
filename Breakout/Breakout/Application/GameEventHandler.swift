@@ -22,7 +22,7 @@ final class GameEventHandler {
             nodeManager.enqueueRemoval(of: brickId)
             soundProducer.play(.brickHit)
         case .ballLost:
-            break
+            soundProducer.play(.ballLost)
         }
     }
 }
