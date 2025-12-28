@@ -4,13 +4,14 @@ import Testing
 
 @MainActor
 struct GameSessionStorageTest {
+    private let initial: GameState = .initial(startingLives: 3)
 
     // MARK: Persistance
 
     @Test
     func sessionReturnsPersistedStateOnInitialization() {
         let repository = InMemoryGameStateRepository()
-        let initial = GameState.initial.with(score: 42)
+        let initial = initial.with(score: 42)
         repository.save(initial)
 
         let session = makeSession(repository: repository)
@@ -21,7 +22,7 @@ struct GameSessionStorageTest {
     @Test
     func startingAGameUpdatesAndPersistsState() {
         let repository = InMemoryGameStateRepository()
-        let oldState = GameState.initial
+        let oldState = GameState.initial(startingLives: 9)
             .with(score: 100)
             .with(lives: 0)
             .with(status: .gameOver)
@@ -44,7 +45,7 @@ struct GameSessionStorageTest {
         let saved = repository.load()
 
         #expect(saved.score == 0)
-        #expect(saved.lives == 3)
+        #expect(saved.lives == initial.lives)
         #expect(saved.status == .playing)
         #expect(saved.bricks[brick.id] == brick)
     }
@@ -55,7 +56,7 @@ struct GameSessionStorageTest {
         let brick = Brick.createValid()
 
         repository.save(
-            GameState.initial
+            initial
                 .with(status: .playing)
                 .with(bricks: [brick.id: brick])
         )
@@ -76,7 +77,7 @@ struct GameSessionStorageTest {
     func announcingBallResetInProgressClearsFlagAndPersistsState() {
         let repository = InMemoryGameStateRepository()
         repository.save(
-            GameState.initial
+            initial
                 .with(ballResetNeeded: true)
                 .with(status: .playing)
         )
@@ -95,7 +96,7 @@ struct GameSessionStorageTest {
     func acknowledgingBallResetClearsFlagAndPersistsState() {
         let repository = InMemoryGameStateRepository()
         repository.save(
-            GameState.initial
+            initial
                 .with(ballResetNeeded: true)
                 .with(status: .playing)
         )
@@ -112,7 +113,7 @@ struct GameSessionStorageTest {
     func sessionShouldNotAcknowledgeResetAsLongAsBallResetIsNeeded() {
         let repository = InMemoryGameStateRepository()
         repository.save(
-            GameState.initial
+            initial
                 .with(ballResetNeeded: true)
                 .with(status: .playing)
         )
@@ -130,7 +131,7 @@ struct GameSessionStorageTest {
     func sessionCannotAnnounceResetInProgressUnlessResetWasNeeded() {
         let repository = InMemoryGameStateRepository()
         repository.save(
-            GameState.initial
+            initial
                 .with(ballResetNeeded: false)
                 .with(status: .playing)
         )
@@ -148,7 +149,7 @@ struct GameSessionStorageTest {
     func losingTheFinalBallMustNeverProduceBallResetInProgress() {
         let repository = InMemoryGameStateRepository()
         repository.save(
-            GameState.initial
+            initial
                 .with(ballResetNeeded: false)
                 .with(status: .playing)
                 .with(lives: 1)
@@ -205,6 +206,7 @@ private func makeSession(
         repository: repository,
         reducer: reducer,
         levelOrder: levelOrder,
-        levelBricksProvider: levelBricksProvider
+        levelBricksProvider: levelBricksProvider,
+        startingLives: 3
     )
 }

@@ -5,12 +5,13 @@ import Testing
 
 @MainActor
 struct GameReducerTest {
+    private let initial = GameState.initial(startingLives: 3)
     let reducer = GameReducer()
 
     // MARK: - Start Game
 
     @Test func startingAGameFromIdleBeginsPlay() {
-        let state = GameState.initial
+        let state = initial
 
         let newState = reducer.start(state)
 
@@ -18,7 +19,7 @@ struct GameReducerTest {
     }
 
     @Test func startingAGameWhenAlreadyPlayingHasNoEffect() {
-        let state = GameState.initial.with(status: .playing)
+        let state = initial.with(status: .playing)
 
         let newState = reducer.start(state)
 
@@ -26,7 +27,7 @@ struct GameReducerTest {
     }
 
     @Test func startingAGameWhenAlreadyWonDoesNothing() {
-        let state = GameState.initial.with(status: .won)
+        let state = initial.with(status: .won)
 
         let newState = reducer.start(state)
 
@@ -34,7 +35,7 @@ struct GameReducerTest {
     }
 
     @Test func startingAGameWhenGameOverDoesNothing() {
-        let state = GameState.initial.with(status: .gameOver)
+        let state = initial.with(status: .gameOver)
 
         let newState = reducer.start(state)
 
@@ -45,7 +46,7 @@ struct GameReducerTest {
 
     @Test func hittingABrickRemovesItFromTheBoard() {
         let brick = Brick(id: BrickId(of: "1"), color: .red, position: .zero)
-        let state = GameState.initial
+        let state = initial
             .with(status: .playing)
             .with(bricks: [brick.id: brick])
 
@@ -56,7 +57,7 @@ struct GameReducerTest {
 
     @Test func hittingABrickAddsScoreBasedOnColor_red() {
         let brick = Brick(id: BrickId(of: "1"), color: .red, position: .zero)
-        let state = GameState.initial
+        let state = initial
             .with(status: .playing)
             .with(bricks: [brick.id: brick])
 
@@ -67,7 +68,7 @@ struct GameReducerTest {
 
     @Test func hittingABrickAddsScoreBasedOnColor_orange() {
         let brick = Brick(id: BrickId(of: "1"), color: .orange, position: .zero)
-        let state = GameState.initial
+        let state = initial
             .with(status: .playing)
             .with(bricks: [brick.id: brick])
 
@@ -78,7 +79,7 @@ struct GameReducerTest {
 
     @Test func hittingABrickAddsScoreBasedOnColor_yellow() {
         let brick = Brick(id: BrickId(of: "1"), color: .yellow, position: .zero)
-        let state = GameState.initial
+        let state = initial
             .with(status: .playing)
             .with(bricks: [brick.id: brick])
 
@@ -89,7 +90,7 @@ struct GameReducerTest {
 
     @Test func hittingABrickAddsScoreBasedOnColor_green() {
         let brick = Brick(id: BrickId(of: "1"), color: .green, position: .zero)
-        let state = GameState.initial
+        let state = initial
             .with(status: .playing)
             .with(bricks: [brick.id: brick])
 
@@ -100,7 +101,7 @@ struct GameReducerTest {
 
     @Test func hittingTheLastBrickEndsTheGameAsWon() {
         let brick = Brick(id: BrickId(of: "1"), color: .red, position: .zero)
-        let state = GameState.initial
+        let state = initial
             .with(status: .playing)
             .with(bricks: [brick.id: brick])
 
@@ -111,7 +112,7 @@ struct GameReducerTest {
 
     @Test func hittingABrickWhenNotPlayingHasNoEffect() {
         let brick = Brick(id: BrickId(of: "1"), color: .red, position: .zero)
-        let state = GameState.initial
+        let state = initial
             .with(status: .idle)
             .with(bricks: [brick.id: brick])
 
@@ -123,7 +124,7 @@ struct GameReducerTest {
     @Test func hittingANonexistentBrickHasNoEffect() {
         let brick = Brick(id: BrickId(of: "1"), color: .red, position: .zero)
         let nonExistent = BrickId(of: "999")
-        let state = GameState.initial
+        let state = initial
             .with(status: .playing)
             .with(bricks: [brick.id: brick])
 
@@ -135,7 +136,7 @@ struct GameReducerTest {
     // MARK: - Ball Lost
 
     @Test func losingABallReducesRemainingLives() {
-        let state = GameState.initial
+        let state = initial
             .with(status: .playing)
             .with(lives: 3)
 
@@ -145,7 +146,7 @@ struct GameReducerTest {
     }
 
     @Test func losingABallTriggersBallResetWhenLivesRemain() {
-        let state = GameState.initial
+        let state = initial
             .with(status: .playing)
             .with(lives: 3)
 
@@ -155,7 +156,7 @@ struct GameReducerTest {
     }
 
     @Test func losingTheFinalBallEndsTheGame() {
-        let state = GameState.initial
+        let state = initial
             .with(status: .playing)
             .with(lives: 1)
 
@@ -166,7 +167,7 @@ struct GameReducerTest {
     }
 
     @Test func losingTheFinalBallDoesNotRequestBallReset() {
-        let state = GameState.initial
+        let state = initial
             .with(status: .playing)
             .with(lives: 1)
 
@@ -176,7 +177,7 @@ struct GameReducerTest {
     }
 
     @Test func losingABallWhenNotPlayingHasNoEffect() {
-        let state = GameState.initial
+        let state = initial
             .with(status: .idle)
             .with(lives: 3)
 
@@ -188,7 +189,7 @@ struct GameReducerTest {
     // MARK: - Ball Reset Acknowledgment
     
     @Test func announcedBallResetInProgressClearsResetFlag() {
-        let state = GameState.initial.with(ballResetNeeded: true)
+        let state = initial.with(ballResetNeeded: true)
 
         let newState = reducer.announcedBallResetInProgress(state)
 
@@ -196,7 +197,7 @@ struct GameReducerTest {
     }
 
     @Test func acknowledgingBallResetClearsResetInProgressFlag() {
-        let state = GameState.initial.with(ballResetInProgress: true)
+        let state = initial.with(ballResetInProgress: true)
 
         let newState = reducer.acknowledgeBallReset(state)
 
@@ -204,7 +205,7 @@ struct GameReducerTest {
     }
     
     @Test func cannotAnnounceBallResetInProgressUnlessResetIsWanted() {
-        let state = GameState.initial.with(ballResetNeeded: false)
+        let state = initial.with(ballResetNeeded: false)
 
         let newState = reducer.announcedBallResetInProgress(state)
 

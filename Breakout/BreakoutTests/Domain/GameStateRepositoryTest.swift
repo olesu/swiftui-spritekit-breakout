@@ -5,9 +5,11 @@ import Testing
 
 @MainActor
 struct GameStateRepositoryTest {
+    private let initial = GameState.initial(startingLives: 3)
+    
     @Test func testSaveAndLoad_persistsGameState() {
         let repository = InMemoryGameStateRepository()
-        let state = GameState.initial
+        let state = initial
             .with(score: 100)
             .with(lives: 2)
             .with(status: .playing)
@@ -19,17 +21,17 @@ struct GameStateRepositoryTest {
     }
 
     @Test func testLoad_whenNoStateSaved_returnsInitialState() {
-        let repository = InMemoryGameStateRepository()
+        let repository = InMemoryGameStateRepository(initialState: initial)
 
         let loadedState = repository.load()
 
-        #expect(loadedState == GameState.initial)
+        #expect(loadedState == initial)
     }
 
     @Test func testSave_overwritesPreviousState() {
         let repository = InMemoryGameStateRepository()
-        let state1 = GameState.initial.with(score: 50)
-        let state2 = GameState.initial.with(score: 100)
+        let state1 = initial.with(score: 50)
+        let state2 = initial.with(score: 100)
 
         repository.save(state1)
         repository.save(state2)

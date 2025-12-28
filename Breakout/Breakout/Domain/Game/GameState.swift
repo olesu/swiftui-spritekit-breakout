@@ -16,14 +16,16 @@ struct GameState: Equatable {
         ball.resetInProgress
     }
     
-    static let initial = GameState(
-        score: 0,
-        lives: 3,
-        status: .idle,
-        bricks: [:],
-        ball: Ball.initial,
-        levelId: LevelId.level1
-    )
+    static func initial(startingLives: Int) -> GameState {
+        .init(
+            score: 0,
+            lives: startingLives,
+            status: .idle,
+            bricks: [:],
+            ball: Ball.initial,
+            levelId: LevelId.level1
+        )
+    }
 
     func with(score: Int) -> GameState {
         GameState(

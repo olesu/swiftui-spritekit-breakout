@@ -109,8 +109,8 @@ extension ApplicationComposer {
         viewModel: GameViewModel,
         sceneBuilder: GameSceneBuilder
     ) {
-        let gameTuning = GameTuning.classic
-        let levels: [LevelId] = [.level1]
+        let rules = GameRules.classic
+        let levels: [LevelId] = Array([.level1, .level2].prefix(rules.maxLevels))
         let bundle = try brickService.loadBundle(named: startingLevel.layoutFileName, levels: levels)
         let levelBricksProvider = DefaultLevelBricksProvider(bundle)
 
@@ -118,7 +118,8 @@ extension ApplicationComposer {
             repository: InMemoryGameStateRepository(),
             reducer: GameReducer(),
             levelOrder: levels,
-            levelBricksProvider: levelBricksProvider
+            levelBricksProvider: levelBricksProvider,
+            startingLives: rules.startingLives,
         )
 
         let gameSceneBuilder = DefaultGameSceneBuilder(
@@ -128,9 +129,9 @@ extension ApplicationComposer {
             session: session,
             ballLaunchController: BallLaunchController(),
             paddleMotionController: PaddleMotionController(
-                speed: gameTuning.paddleSpeed
+                speed: rules.tuning.paddleSpeed
             ),
-            bounceSpeedPolicy: gameTuning.bounceSpeedPolicy
+            bounceSpeedPolicy: rules.tuning.bounceSpeedPolicy
         )
 
         let viewModel = GameViewModel(

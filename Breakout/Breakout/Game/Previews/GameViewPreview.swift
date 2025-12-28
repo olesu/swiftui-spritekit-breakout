@@ -19,6 +19,7 @@ import SwiftUI
             reducer: GameReducer(),
             levelOrder: [],
             levelBricksProvider: DefaultLevelBricksProvider.empty,
+            startingLives: GameRules.classic.startingLives,
         )
         let brickLayoutFactory = SKBrickLayoutFactory(session: session)
         let ballLaunchController = BallLaunchController()

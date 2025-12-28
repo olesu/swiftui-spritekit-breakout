@@ -6,6 +6,7 @@ final class GameSession {
     private let reducer: GameReducer
     private let levelOrder: [LevelId]
     private let levelBricksProvider: LevelBricksProvider
+    private let startingLives: Int
 
     var state: GameState {
         didSet {}
@@ -15,12 +16,14 @@ final class GameSession {
         repository: GameStateRepository,
         reducer: GameReducer,
         levelOrder: [LevelId],
-        levelBricksProvider: LevelBricksProvider
+        levelBricksProvider: LevelBricksProvider,
+        startingLives: Int
     ) {
         self.repository = repository
         self.reducer = reducer
         self.levelOrder = levelOrder
         self.levelBricksProvider = levelBricksProvider
+        self.startingLives = startingLives
 
         self.state = repository.load()
     }
@@ -95,7 +98,7 @@ final class GameSession {
             uniqueKeysWithValues: bricks.map { ($0.id, $0) }
         )
 
-        let newState = GameState.initial.with(bricks: bricks)
+        let newState = GameState.initial(startingLives: startingLives).with(bricks: bricks)
         repository.save(newState)
         state = newState
     }

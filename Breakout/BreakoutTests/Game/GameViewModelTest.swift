@@ -5,9 +5,10 @@ import Testing
 
 @MainActor
 struct GameViewModelTest {
+    let initial: GameState = .initial(startingLives: 3)
 
     @Test func startNewGameInitializesDomain() throws {
-        let (vm, repo) = makeGameViewModel(with: .initial)
+        let (vm, repo) = makeGameViewModel(with: initial)
 
         vm.startNewGame()
 
@@ -15,11 +16,11 @@ struct GameViewModelTest {
     }
 
     @Test func startNewGameUpdatesUIState() throws {
-        let (vm, _) = makeGameViewModel(with: .initial)
+        let (vm, _) = makeGameViewModel(with: initial)
 
         vm.startNewGame()
 
-        #expect(vm.remainingLives == GameState.initial.lives)
+        #expect(vm.remainingLives == initial.lives)
         #expect(vm.currentScore == 0)
     }
 
@@ -30,7 +31,8 @@ struct GameViewModelTest {
                 repository: repository,
                 reducer: GameReducer(),
                 levelOrder: [],
-                levelBricksProvider: DefaultLevelBricksProvider.empty
+                levelBricksProvider: DefaultLevelBricksProvider.empty,
+                startingLives: state.lives,
             ),
             gameConfiguration: GameConfiguration.defaultValue(),
             screenNavigationService: FakeScreenNavigationService(),

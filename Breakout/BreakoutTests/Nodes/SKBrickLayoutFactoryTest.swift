@@ -5,6 +5,8 @@ import Testing
 
 @MainActor
 struct SKBrickLayoutFactoryTest {
+    private let initial: GameState = .initial(startingLives: 3)
+    
     @Test func createsLayoutFromSpec() {
         let brickId = BrickId(of: "brick-001")
         let brick = Brick(
@@ -14,13 +16,14 @@ struct SKBrickLayoutFactoryTest {
         )
         
         let repository = InMemoryGameStateRepository()
-        repository.save(GameState.initial.with(bricks: [brickId: brick]))
+        repository.save(initial.with(bricks: [brickId: brick]))
         let creator = SKBrickLayoutFactory(
             session: GameSession(
                 repository: repository,
                 reducer: GameReducer(),
                 levelOrder: [],
-                levelBricksProvider: DefaultLevelBricksProvider.empty
+                levelBricksProvider: DefaultLevelBricksProvider.empty,
+                startingLives: initial.lives
             )
         )
 

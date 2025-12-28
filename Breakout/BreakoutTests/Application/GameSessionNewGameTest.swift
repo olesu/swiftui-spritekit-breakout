@@ -66,6 +66,7 @@ private func makeSession(
         repository: repository,
         reducer: reducer,
         levelOrder: levelOrder,
-        levelBricksProvider: levelBricksProvider
+        levelBricksProvider: levelBricksProvider,
+        startingLives: 3,
     )
 }
