@@ -7,79 +7,71 @@ struct GameEventHandlerTest {
     let brick = Brick.createValid()
 
     @Test func brickHitTriggersNodeRemoval() {
-        let gameEventSink = FakeGameEventSink()
-        let nodeManager = FakeNodeManager()
-        let scenario = Scenario(
-            gameEventSink: gameEventSink,
-            nodeManager: nodeManager
-        )
+        let sim = GameSimulation()
 
-        scenario.simulateBrickHit(brickId: brick.id)
+        sim.hitBrick(brickId: brick.id)
 
-        #expect(gameEventSink.receivedEvents == [.brickHit(brickID: brick.id)])
-        #expect(nodeManager.removedBrickIds == [brick.id])
+        #expect(sim.receivedEvents == [.brickHit(brickID: brick.id)])
+        #expect(sim.removedBrickIds == [brick.id])
     }
 
     @Test func brickHitPlaysSound() {
-        let gameEventSink = FakeGameEventSink()
-        let nodeManager = FakeNodeManager()
-        let soundProducer = FakeSoundProducer()
+        let sim = GameSimulation()
 
-        let scenario = Scenario(
-            gameEventSink: gameEventSink,
-            nodeManager: nodeManager,
-            soundProducer: soundProducer,
-        )
+        sim.hitBrick(brickId: brick.id)
 
-        scenario.simulateBrickHit(brickId: brick.id)
-
-        #expect(soundProducer.soundsPlayed == [.brickHit])
+        #expect(sim.soundsPlayed == [.brickHit])
     }
 
     @Test func ballLostPlaysSound() {
-        let gameEventSink = FakeGameEventSink()
-        let nodeManager = FakeNodeManager()
-        let soundProducer = FakeSoundProducer()
+        let sim = GameSimulation()
 
-        let scenario = Scenario(
-            gameEventSink: gameEventSink,
-            nodeManager: nodeManager,
-            soundProducer: soundProducer,
-        )
+        sim.loseBall()
 
-        scenario.simulateBallLost()
-
-        #expect(soundProducer.soundsPlayed == [.ballLost])
+        #expect(sim.soundsPlayed == [.ballLost])
     }
 
 }
 
 @MainActor
-private final class Scenario {
-    let handler: GameEventHandler
+private final class GameSimulation {
+    let gameEventSink: FakeGameEventSink
     let nodeManager: FakeNodeManager
-    let soundProducer: SoundProducer
+    let soundProducer: FakeSoundProducer
 
-    init(
-        gameEventSink: GameEventSink,
-        nodeManager: FakeNodeManager,
-        soundProducer: SoundProducer = FakeSoundProducer(),
-    ) {
-        self.nodeManager = nodeManager
-        self.handler = GameEventHandler(
+    let gameEventHandler: GameEventHandler
+
+    init() {
+        self.gameEventSink = FakeGameEventSink()
+        self.nodeManager = FakeNodeManager()
+        self.soundProducer = FakeSoundProducer()
+        
+        self.gameEventHandler = GameEventHandler(
             gameEventSink: gameEventSink,
             nodeManager: nodeManager,
             soundProducer: soundProducer,
         )
-        self.soundProducer = soundProducer
     }
 
-    func simulateBrickHit(brickId: BrickId) {
-        handler.handle(.brickHit(brickID: brickId))
+    var receivedEvents: [GameEvent] {
+        gameEventSink.receivedEvents
+    }
+    
+    var removedBrickIds: [BrickId] {
+        nodeManager.removedBrickIds
+    }
+    
+    var soundsPlayed: [SoundEffect] {
+        soundProducer.soundsPlayed
+    }
+    
+    func hitBrick(brickId: BrickId) {
+        gameEventHandler.handle(.brickHit(brickID: brickId))
         nodeManager.removeEnqueued()
     }
     
-    func simulateBallLost() {
-        handler.handle(.ballLost)
+    func loseBall() {
+        gameEventHandler.handle(.ballLost)
     }
+    
 }
