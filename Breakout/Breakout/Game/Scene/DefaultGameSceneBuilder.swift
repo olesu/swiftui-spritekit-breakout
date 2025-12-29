@@ -1,5 +1,6 @@
 import SpriteKit
 
+// TODO: Rename to SKGameSceneBuilder?
 struct DefaultGameSceneBuilder: GameSceneBuilder {
     private let gameConfiguration: GameConfiguration
     private let collisionRouter: CollisionRouter
@@ -71,6 +72,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         )
 
         let soundProducer = SKSoundProducer()
+        let visualEffectProducer = SKVisualEffectProducer()
 
         let contactHandler = GamePhysicsContactHandler(
             collisionRouter: collisionRouter,
@@ -79,6 +81,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
                 gameEventSink: session,
                 nodeManager: nodeManager,
                 soundProducer: soundProducer,
+                visualEffectProducer: visualEffectProducer,
             )
         )
 

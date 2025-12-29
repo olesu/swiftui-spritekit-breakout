@@ -22,6 +22,14 @@ struct GameEventHandlerTest {
 
         #expect(sim.soundsPlayed == [.brickHit])
     }
+    
+    @Test func brickHitTriggersAnimation() {
+        let sim = GameSimulation()
+
+        sim.hitBrick(brickId: brick.id)
+
+        #expect(sim.visualEffectsPlayed == [.brickHit])
+    }
 
     @Test func ballLostPlaysSound() {
         let sim = GameSimulation()
@@ -38,6 +46,7 @@ private final class GameSimulation {
     let gameEventSink: FakeGameEventSink
     let nodeManager: FakeNodeManager
     let soundProducer: FakeSoundProducer
+    let visualEffectsProducer: FakeVisualEffectProducer
 
     let gameEventHandler: GameEventHandler
 
@@ -45,11 +54,13 @@ private final class GameSimulation {
         self.gameEventSink = FakeGameEventSink()
         self.nodeManager = FakeNodeManager()
         self.soundProducer = FakeSoundProducer()
+        self.visualEffectsProducer = FakeVisualEffectProducer()
         
         self.gameEventHandler = GameEventHandler(
             gameEventSink: gameEventSink,
             nodeManager: nodeManager,
             soundProducer: soundProducer,
+            visualEffectProducer: visualEffectsProducer,
         )
     }
 
@@ -63,6 +74,10 @@ private final class GameSimulation {
     
     var soundsPlayed: [SoundEffect] {
         soundProducer.soundsPlayed
+    }
+    
+    var visualEffectsPlayed: [VisualEffect] {
+        visualEffectsProducer.visualEffectsPlayed
     }
     
     func hitBrick(brickId: BrickId) {

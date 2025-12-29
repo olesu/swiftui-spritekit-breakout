@@ -22,6 +22,7 @@ final class SKSoundProducer: SoundProducer {
         }
     }
 
+    // TODO: Sounds seem to be playing in sequence, so it takes a long time to finish when hitting multiple bricks
     func play(_ soundEffect: SoundEffect) {
         audioNodes[soundEffect]?.run(.play())
     }
