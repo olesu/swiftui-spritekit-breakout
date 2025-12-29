@@ -1,6 +1,10 @@
 import SpriteKit
 
 protocol NodeManager {
+    // TODO: Does it make sense to separate command and query now? (I.e., NodeCommands, NodeQueries)?
+    // MARK: Queries
+    var lastBrickHitPosition: CGPoint? { get }
+
     // MARK: bricks
     func removeEnqueued()
     func enqueueRemoval(of brickId: BrickId)

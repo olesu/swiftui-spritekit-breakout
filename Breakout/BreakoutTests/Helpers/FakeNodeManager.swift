@@ -6,6 +6,8 @@ final class FakeNodeManager: NodeManager {
     var removedBrickIds: [BrickId] = []
     var removalQueue: [BrickId] = []
     
+    var lastBrickHitPosition: CGPoint? = nil
+    
     func removeEnqueued() {
         removalQueue.forEach { removedBrickIds.append($0) }
         removalQueue.removeAll()

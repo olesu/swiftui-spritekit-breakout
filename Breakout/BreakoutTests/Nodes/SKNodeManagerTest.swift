@@ -27,6 +27,25 @@ struct SKNodeManagerTest {
 
         #expect(brick.parent == nil)
     }
+    
+    @Test func recordsLastBrickHitPosition() {
+        let brickId = BrickId(of: UUID().uuidString)
+        let brick = BrickSprite(
+            id: brickId.value,
+            position: CGPoint(x: 100, y: 400),
+            color: .red
+        )
+        
+        let brickLayoutFactory = FakeBrickLayoutFactory()
+        brickLayoutFactory.addToBrickLayout(brick)
+        
+        let manager = makeManager(brickLayoutFactory)
+
+        manager.enqueueRemoval(of: brickId)
+        manager.removeEnqueued()
+        
+        #expect(manager.lastBrickHitPosition == brick.position)
+    }
 
     @Test func movesBall() {
         let ball = BallSprite(position: .zero)
@@ -53,7 +72,7 @@ struct SKNodeManagerTest {
         #expect(velocity.dx - 1.03 < 0.001)
         #expect(velocity.dy - 1.03 < 0.001)
     }
-
+    
     private func makeManager(
         _ brickLayoutFactory: BrickLayoutFactory = FakeBrickLayoutFactory(),
         ball: BallSprite = BallSprite(position: .zero)
