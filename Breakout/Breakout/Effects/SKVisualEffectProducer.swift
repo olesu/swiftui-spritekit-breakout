@@ -16,14 +16,15 @@ final class SKVisualEffectProducer: VisualEffectProducer {
     func play(_ visualEffect: VisualEffect) {
         switch visualEffect {
         case .brickHit:
-            playBrickHitEffect()
+            playBrickHitFlashEffect()
+            playBrickHitShardEffect()
         }
     }
 }
 
-// MARK: Brick Hit Effect
+// MARK: Brick Hit Flash
 extension SKVisualEffectProducer {
-    private func playBrickHitEffect() {
+    private func playBrickHitFlashEffect() {
         guard let effectsNode else { return }
         guard let position = nodeManager.lastBrickHitPosition else { return }
 
@@ -68,4 +69,21 @@ extension SKVisualEffectProducer {
         static let fadeDuration = TimeInterval(0.08)
     }
 
+}
+
+// MARK: Brick Hit Shards
+extension SKVisualEffectProducer {
+    private func playBrickHitShardEffect() {
+        guard let effectsNode else { return }
+        guard let emitter = SKEmitterNode(fileNamed: "BrickHitShards") else {
+            return
+        }
+        guard let position = nodeManager.lastBrickHitPosition else { return }
+
+        emitter.position = position
+        emitter.numParticlesToEmit = 8
+        effectsNode.addChild(emitter)
+
+        emitter.run(.sequence([.wait(forDuration: 1.0), .removeFromParent()]))
+    }
 }
