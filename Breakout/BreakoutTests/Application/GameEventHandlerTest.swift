@@ -45,7 +45,7 @@ struct GameEventHandlerTest {
 private final class GameSimulation {
     let gameEventSink: FakeGameEventSink
     let nodeManager: FakeNodeManager
-    let soundProducer: FakeSoundProducer
+    let soundEffectProducer: FakeSoundEffectProducer
     let visualEffectsProducer: FakeVisualEffectProducer
 
     let gameEventHandler: GameEventHandler
@@ -53,13 +53,13 @@ private final class GameSimulation {
     init() {
         self.gameEventSink = FakeGameEventSink()
         self.nodeManager = FakeNodeManager()
-        self.soundProducer = FakeSoundProducer()
+        self.soundEffectProducer = FakeSoundEffectProducer()
         self.visualEffectsProducer = FakeVisualEffectProducer()
         
         self.gameEventHandler = GameEventHandler(
             gameEventSink: gameEventSink,
             nodeManager: nodeManager,
-            soundProducer: soundProducer,
+            soundEffectProducer: soundEffectProducer,
             visualEffectProducer: visualEffectsProducer,
         )
     }
@@ -73,7 +73,7 @@ private final class GameSimulation {
     }
     
     var soundsPlayed: [SoundEffect] {
-        soundProducer.soundsPlayed
+        soundEffectProducer.soundEffectsPlayed
     }
     
     var visualEffectsPlayed: [VisualEffect] {

@@ -3,18 +3,18 @@ import Foundation
 final class GameEventHandler {
     private let gameEventSink: GameEventSink
     private let nodeManager: NodeManager
-    private let soundProducer: SoundProducer
+    private let soundEffectProducer: SoundEffectProducer
     private let visualEffectProducer: VisualEffectProducer
 
     init(
         gameEventSink: GameEventSink,
         nodeManager: NodeManager,
-        soundProducer: SoundProducer,
+        soundEffectProducer: SoundEffectProducer,
         visualEffectProducer: VisualEffectProducer,
     ) {
         self.gameEventSink = gameEventSink
         self.nodeManager = nodeManager
-        self.soundProducer = soundProducer
+        self.soundEffectProducer = soundEffectProducer
         self.visualEffectProducer = visualEffectProducer
     }
 
@@ -27,10 +27,10 @@ final class GameEventHandler {
         switch event {
         case .brickHit(let brickId):
             nodeManager.enqueueRemoval(of: brickId)
-            soundProducer.play(.brickHit)
+            soundEffectProducer.play(.brickHit)
             visualEffectProducer.play(.brickHit)
         case .ballLost:
-            soundProducer.play(.ballLost)
+            soundEffectProducer.play(.ballLost)
         }
     }
 }

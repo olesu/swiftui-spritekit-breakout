@@ -1,7 +1,7 @@
 import Foundation
 import SpriteKit
 
-final class SKSoundProducer: SoundProducer {
+final class SKSoundEffectProducer: SoundEffectProducer {
     private weak var parentNode: SKNode?
     private var audioNodes: [SoundEffect: SKAudioNode] = [:]
 

@@ -70,7 +70,7 @@ struct SKGameSceneBuilder: GameSceneBuilder {
             nodes: nodes
         )
 
-        let soundProducer = SKSoundProducer()
+        let soundEffectProducer = SKSoundEffectProducer()
         let visualEffectProducer = SKVisualEffectProducer()
 
         let contactHandler = SKGamePhysicsContactHandler(
@@ -79,7 +79,7 @@ struct SKGameSceneBuilder: GameSceneBuilder {
             gameEventHandler: GameEventHandler(
                 gameEventSink: session,
                 nodeManager: nodeManager,
-                soundProducer: soundProducer,
+                soundEffectProducer: soundEffectProducer,
                 visualEffectProducer: visualEffectProducer,
             )
         )
@@ -98,14 +98,14 @@ struct SKGameSceneBuilder: GameSceneBuilder {
                 nodeManager: nodeManager
             )
         )
-        scene.configureForSound(soundProducer)
+        scene.configureForSound(soundEffectProducer)
         return scene
     }
     
 }
 
 extension SKScene {
-    fileprivate func configureForSound(_ soundProducer: SKSoundProducer) {
+    fileprivate func configureForSound(_ soundProducer: SKSoundEffectProducer) {
         let effectsNode = SKNode()
         effectsNode.name = "effects"
         effectsNode.zPosition = 1000

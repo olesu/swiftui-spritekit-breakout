@@ -39,7 +39,7 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
                 gameEventHandler: GameEventHandler(
                     gameEventSink: gameSession,
                     nodeManager: nodeManager,
-                    soundProducer: FakeSoundProducer(),
+                    soundEffectProducer: FakeSoundEffectProducer(),
                     visualEffectProducer: FakeVisualEffectProducer(),
                 )
             ),

@@ -1,5 +1,5 @@
 import Foundation
 
-protocol SoundProducer { // TODO: rename to SoundEffectProducer?
+protocol SoundEffectProducer {
     func play(_ soundEffect: SoundEffect)
 }
