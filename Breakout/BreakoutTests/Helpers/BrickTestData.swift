@@ -10,6 +10,6 @@ extension BrickId {
 
 extension Brick {
     static func createValid(brickId: BrickId = BrickId.createValid()) -> Brick {
-        .init(id: brickId, color: .red, position: Point.zero)
+        .init(id: brickId, color: .red, position: Point(x: 100, y: 200))
     }
 }

@@ -26,6 +26,9 @@ final class SKNodeManager: NodeManager {
     }
 
     func enqueueRemoval(of brickId: BrickId) {
+        guard let brick = findBrick(brickId) else { return }
+        
+        lastBrickHitPosition = brick.position
         removalQueue.insert(brickId)
     }
 
@@ -105,7 +108,6 @@ extension SKNodeManager {
         guard let brickToRemove = findBrick(brickId) else {
             return
         }
-        lastBrickHitPosition = brickToRemove.position
         remove(node: brickToRemove)
 
     }

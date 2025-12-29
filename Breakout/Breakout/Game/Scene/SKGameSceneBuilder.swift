@@ -71,7 +71,7 @@ struct SKGameSceneBuilder: GameSceneBuilder {
         )
 
         let soundEffectProducer = SKSoundEffectProducer()
-        let visualEffectProducer = SKVisualEffectProducer()
+        let visualEffectProducer = SKVisualEffectProducer(nodeManager: nodeManager)
 
         let contactHandler = SKGamePhysicsContactHandler(
             collisionRouter: collisionRouter,

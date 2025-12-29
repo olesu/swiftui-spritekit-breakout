@@ -9,42 +9,26 @@ struct SKNodeManagerTest {
     let paddle = PaddleSprite(position: .zero, size: .zero)
 
     @Test func removesBrickNodeById() {
-        let brickId = BrickId(of: UUID().uuidString)
-        let brick = BrickSprite(
-            id: brickId.value,
-            position: CGPoint(x: 100, y: 400),
-            color: .red
-        )
-
-        let brickLayoutFactory = FakeBrickLayoutFactory()
-        brickLayoutFactory.addToBrickLayout(brick)
+        let brickId = BrickId.createValid()
+        let brickLayoutFactory = makeBrickLayoutFactory(brickId)
         let manager = makeManager(brickLayoutFactory)
 
-        #expect(brick.parent != nil)
+        #expect(brickLayoutFactory.hasParent(brickId) == true)
 
         manager.enqueueRemoval(of: brickId)
         manager.removeEnqueued()
 
-        #expect(brick.parent == nil)
+        #expect(brickLayoutFactory.hasParent(brickId) == false)
     }
     
-    @Test func recordsLastBrickHitPosition() {
-        let brickId = BrickId(of: UUID().uuidString)
-        let brick = BrickSprite(
-            id: brickId.value,
-            position: CGPoint(x: 100, y: 400),
-            color: .red
-        )
-        
-        let brickLayoutFactory = FakeBrickLayoutFactory()
-        brickLayoutFactory.addToBrickLayout(brick)
-        
+    @Test func recordsLastBrickHitPositionWhenBrickRemovalIsQueued() {
+        let brickId = BrickId.createValid()
+        let brickLayoutFactory = makeBrickLayoutFactory(brickId)
         let manager = makeManager(brickLayoutFactory)
 
         manager.enqueueRemoval(of: brickId)
-        manager.removeEnqueued()
         
-        #expect(manager.lastBrickHitPosition == brick.position)
+        #expect(manager.lastBrickHitPosition == brickLayoutFactory.position(of: brickId))
     }
 
     @Test func movesBall() {
@@ -71,6 +55,19 @@ struct SKNodeManagerTest {
 
         #expect(velocity.dx - 1.03 < 0.001)
         #expect(velocity.dy - 1.03 < 0.001)
+    }
+    
+    private func makeBrickLayoutFactory(_ brickId: BrickId) -> FakeBrickLayoutFactory {
+        let brick = BrickSprite(
+            id: brickId.value,
+            position: CGPoint(x: 100, y: 400),
+            color: .red
+        )
+
+        let brickLayoutFactory = FakeBrickLayoutFactory()
+        brickLayoutFactory.addToBrickLayout(brick)
+        
+        return brickLayoutFactory
     }
     
     private func makeManager(

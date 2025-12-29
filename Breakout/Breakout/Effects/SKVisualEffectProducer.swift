@@ -2,7 +2,12 @@ import Foundation
 import SpriteKit
 
 final class SKVisualEffectProducer: VisualEffectProducer {
+    private let nodeManager: NodeManager
     private weak var effectsNode: SKNode?
+    
+    init(nodeManager: NodeManager) {
+        self.nodeManager = nodeManager
+    }
 
     func attach(to effectsNode: SKNode) {
         self.effectsNode = effectsNode
@@ -17,6 +22,7 @@ final class SKVisualEffectProducer: VisualEffectProducer {
 
     private func playBrickHitEffect() {
         guard let effectsNode else { return }
+        guard let position = nodeManager.lastBrickHitPosition else { return }
 
         let flash = SKShapeNode(rectOf: CGSize(width: 24, height: 12))
         flash.fillColor = .white
@@ -24,7 +30,7 @@ final class SKVisualEffectProducer: VisualEffectProducer {
         flash.alpha = 0.8
         flash.zPosition = 1000
 
-        flash.position = effectsNode.convert(.zero, from: effectsNode)
+        flash.position = position
 
         effectsNode.addChild(flash)
 
