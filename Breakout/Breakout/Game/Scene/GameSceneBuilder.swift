@@ -1,5 +1,5 @@
 import SpriteKit
 
 protocol GameSceneBuilder {
-    func makeScene() -> GameScene
+    func makeScene() -> SKGameScene
 }

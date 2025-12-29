@@ -27,10 +27,10 @@ import SpriteKit
 ///
 /// - SeeAlso: `BallLaunchController`, `BallMotionController`, `PaddleMotionController`,
 ///   `PaddleInputController`, `PaddleBounceApplier`, `GameSession`, `GamePhysicsContactHandler`.
-final class GameScene: SKScene {
+final class SKGameScene: SKScene {
     private let nodes: SceneNodes
     private let ballLaunchController: BallLaunchController
-    private let contactHandler: GamePhysicsContactHandler
+    private let contactHandler: SKGamePhysicsContactHandler
     private let gameController: GameController
     
 
@@ -48,7 +48,7 @@ final class GameScene: SKScene {
         size: CGSize,
         nodes: SceneNodes,
         ballLaunchController: BallLaunchController,
-        contactHandler: GamePhysicsContactHandler,
+        contactHandler: SKGamePhysicsContactHandler,
         gameController: GameController,
     ) {
         self.nodes = nodes
@@ -65,7 +65,7 @@ final class GameScene: SKScene {
 
 }
 
-extension GameScene {
+extension SKGameScene {
     /// Advances the scene by one frame, updating input-driven motion and handling resets.
     ///
     /// On the first invocation, this method initializes the timing reference and returns
@@ -89,7 +89,7 @@ extension GameScene {
 }
 
 // MARK: - didMove (add nodes)
-extension GameScene {
+extension SKGameScene {
     /// Called by SpriteKit after the scene has been presented by a view.
     ///
     /// This method finalizes scene setup by:
@@ -123,7 +123,7 @@ extension GameScene {
 }
 
 // MARK: - Ball Control
-extension GameScene {
+extension SKGameScene {
     /// Launches the ball if it is currently clamped to the paddle.
     func launchBall() {
         ballLaunchController.launch(ball: nodes.ball)
@@ -132,7 +132,7 @@ extension GameScene {
 }
 
 // Mark: - Paddle Intent API
-extension GameScene {
+extension SKGameScene {
     /// Moves the paddle to a world-space point (typically from mouse/touch input),
     /// temporarily overriding continuous left/right input.
     func movePaddle(to point: CGPoint) {

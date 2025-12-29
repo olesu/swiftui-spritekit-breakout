@@ -1,7 +1,6 @@
 import SpriteKit
 
-// TODO: Rename to SKGameSceneBuilder?
-struct DefaultGameSceneBuilder: GameSceneBuilder {
+struct SKGameSceneBuilder: GameSceneBuilder {
     private let gameConfiguration: GameConfiguration
     private let collisionRouter: CollisionRouter
     private let brickLayoutFactory: BrickLayoutFactory
@@ -28,7 +27,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         self.bounceSpeedPolicy = bounceSpeedPolicy
     }
 
-    func makeScene() -> GameScene {
+    func makeScene() -> SKGameScene {
         let c = gameConfiguration
 
         let nodes = SceneNodes(
@@ -74,7 +73,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
         let soundProducer = SKSoundProducer()
         let visualEffectProducer = SKVisualEffectProducer()
 
-        let contactHandler = GamePhysicsContactHandler(
+        let contactHandler = SKGamePhysicsContactHandler(
             collisionRouter: collisionRouter,
             nodeManager: nodeManager,
             gameEventHandler: GameEventHandler(
@@ -85,7 +84,7 @@ struct DefaultGameSceneBuilder: GameSceneBuilder {
             )
         )
 
-        let scene = GameScene(
+        let scene = SKGameScene(
             size: CGSize(
                 width: c.sceneWidth,
                 height: c.sceneHeight

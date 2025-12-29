@@ -4,7 +4,7 @@ import SpriteKit
 @testable import Breakout
 
 final class FakeGameSceneBuilder: GameSceneBuilder {
-    func makeScene() -> GameScene {
+    func makeScene() -> SKGameScene {
         let ballLaunchController = BallLaunchController()
         let paddleMotionController = PaddleMotionController(speed: 0)
         let paddleInputController = PaddleInputController()
@@ -29,11 +29,11 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
             brickLayoutFactory: FakeBrickLayoutFactory(),
             nodes: nodes
         )
-        return GameScene(
+        return SKGameScene(
             size: CGSize(width: 320, height: 480),
             nodes: nodes,
             ballLaunchController: ballLaunchController,
-            contactHandler: GamePhysicsContactHandler(
+            contactHandler: SKGamePhysicsContactHandler(
                 collisionRouter: collisionRouter,
                 nodeManager: nodeManager,
                 gameEventHandler: GameEventHandler(

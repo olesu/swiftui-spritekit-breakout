@@ -4,7 +4,7 @@ import SwiftUI
 
 struct GameView: View {
     @Environment(GameViewModel.self) private var viewModel: GameViewModel
-    @State private var scene: GameScene?
+    @State private var scene: SKGameScene?
     @FocusState private var isFocused: Bool
 
     private let sceneBuilder: GameSceneBuilder

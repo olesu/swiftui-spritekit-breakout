@@ -23,7 +23,7 @@ import SwiftUI
         )
         let brickLayoutFactory = SKBrickLayoutFactory(session: session)
         let ballLaunchController = BallLaunchController()
-        let sceneBuilder = DefaultGameSceneBuilder(
+        let sceneBuilder = SKGameSceneBuilder(
             gameConfiguration: gameConfiguration,
             collisionRouter: GameWiring.makeCollisionRouter(),
             brickLayoutFactory: brickLayoutFactory,

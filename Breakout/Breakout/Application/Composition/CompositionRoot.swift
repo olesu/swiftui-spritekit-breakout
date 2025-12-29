@@ -122,7 +122,7 @@ extension ApplicationComposer {
             startingLives: rules.startingLives,
         )
 
-        let gameSceneBuilder = DefaultGameSceneBuilder(
+        let gameSceneBuilder = SKGameSceneBuilder(
             gameConfiguration: gameConfiguration,
             collisionRouter: GameWiring.makeCollisionRouter(),
             brickLayoutFactory: SKBrickLayoutFactory(session: session),

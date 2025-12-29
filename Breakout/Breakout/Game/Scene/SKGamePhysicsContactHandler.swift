@@ -7,7 +7,7 @@ import SpriteKit
 /// - Applies state changes to `GameSession`.
 /// - Removes bricks via `NodeManager`.
 /// - Adjusts ball speed and bounce on paddle hits using `BallMotionController` and `PaddleBounceApplier`.
-final class GamePhysicsContactHandler: NSObject, SKPhysicsContactDelegate {
+final class SKGamePhysicsContactHandler: NSObject, SKPhysicsContactDelegate {
     private let collisionRouter: CollisionRouter
     private let nodeManager: NodeManager
     private let gameEventHandler: GameEventHandler
