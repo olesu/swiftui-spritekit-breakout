@@ -4,7 +4,7 @@ import SpriteKit
 final class SKVisualEffectProducer: VisualEffectProducer {
     private let nodeManager: NodeManager
     private weak var effectsNode: SKNode?
-    
+
     init(nodeManager: NodeManager) {
         self.nodeManager = nodeManager
     }
@@ -19,12 +19,22 @@ final class SKVisualEffectProducer: VisualEffectProducer {
             playBrickHitEffect()
         }
     }
+}
 
+// MARK: Brick Hit Effect
+extension SKVisualEffectProducer {
     private func playBrickHitEffect() {
         guard let effectsNode else { return }
         guard let position = nodeManager.lastBrickHitPosition else { return }
 
-        let flash = SKShapeNode(rectOf: CGSize(width: 24, height: 12))
+        let flash = makeBrickHitFlash(at: position)
+        effectsNode.addChild(flash)
+
+        flash.run(brickHitAction())
+    }
+
+    private func makeBrickHitFlash(at position: CGPoint) -> SKShapeNode {
+        let flash = SKShapeNode(rectOf: BrickHitTuning.size)
         flash.fillColor = .white
         flash.strokeColor = .clear
         flash.alpha = 0.8
@@ -32,15 +42,30 @@ final class SKVisualEffectProducer: VisualEffectProducer {
 
         flash.position = position
 
-        effectsNode.addChild(flash)
+        return flash
+    }
 
-        let scaleUp = SKAction.scale(to: 1.4, duration: 0.05)
-        let fadeOut = SKAction.fadeOut(withDuration: 0.08)
+    private func brickHitAction() -> SKAction {
+        let scaleUp = SKAction.scale(
+            to: BrickHitTuning.scale,
+            duration: BrickHitTuning.scaleDuration
+        )
+        let fadeOut = SKAction.fadeOut(
+            withDuration: BrickHitTuning.fadeDuration
+        )
         let remove = SKAction.removeFromParent()
 
-        flash.run(.sequence([
+        return .sequence([
             .group([scaleUp, fadeOut]),
-            remove
-        ]))
+            remove,
+        ])
     }
+
+    private enum BrickHitTuning {
+        static let size = CGSize(width: 24, height: 12)
+        static let scale = CGFloat(1.4)
+        static let scaleDuration = TimeInterval(0.05)
+        static let fadeDuration = TimeInterval(0.08)
+    }
+
 }
