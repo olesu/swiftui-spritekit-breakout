@@ -3,7 +3,7 @@ import Testing
 
 @testable import Breakout
 
-struct DefaultNodeManagerTest {
+struct SKNodeManagerTest {
     let ballLaunchController = BallLaunchController()
     let paddleMotionController = PaddleMotionController(speed: 450.0)
     let paddle = PaddleSprite(position: .zero, size: .zero)
@@ -57,8 +57,8 @@ struct DefaultNodeManagerTest {
     private func makeManager(
         _ brickLayoutFactory: BrickLayoutFactory = FakeBrickLayoutFactory(),
         ball: BallSprite = BallSprite(position: .zero)
-    ) -> DefaultNodeManager {
-        return DefaultNodeManager(
+    ) -> SKNodeManager {
+        return SKNodeManager(
             ballLaunchController: ballLaunchController,
             paddleMotionController: paddleMotionController,
             paddleBounceApplier: PaddleBounceApplier(

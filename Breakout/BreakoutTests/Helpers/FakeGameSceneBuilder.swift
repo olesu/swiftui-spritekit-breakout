@@ -22,7 +22,7 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
             startingLives: 999
         )
         let nodes = SceneNodes.createValid()
-        let nodeManager = DefaultNodeManager(
+        let nodeManager = SKNodeManager(
             ballLaunchController: ballLaunchController,
             paddleMotionController: paddleMotionController,
             paddleBounceApplier: paddleBounceApplier,

@@ -1,7 +1,7 @@
 import Foundation
 import SpriteKit
 
-final class DefaultNodeManager: NodeManager {
+final class SKNodeManager: NodeManager {
     private let ballLaunchController: BallLaunchController
     private let paddleMotionController: PaddleMotionController
     private let paddleBounceApplier: PaddleBounceApplier

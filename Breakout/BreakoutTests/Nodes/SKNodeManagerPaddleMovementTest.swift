@@ -5,7 +5,7 @@ import Testing
 @testable import Breakout
 
 @MainActor
-struct DefaultNodeManagerPaddleMovementTest {
+struct SKNodeManagerPaddleMovementTest {
     private let sceneSize = CGSize(width: 100, height: 100)
     private let paddlePosition = CGPoint(x: 10, y: 0)
     private let paddleSize = CGSize(width: 2, height: 20)
@@ -80,8 +80,8 @@ struct DefaultNodeManagerPaddleMovementTest {
         #expect(paddle.position.x == 4.0)
     }
 
-    private func makeManager(_ paddle: PaddleSprite) -> DefaultNodeManager {
-        DefaultNodeManager(
+    private func makeManager(_ paddle: PaddleSprite) -> SKNodeManager {
+        SKNodeManager(
             ballLaunchController: BallLaunchController(),
             paddleMotionController: paddleMotionController,
             paddleBounceApplier: PaddleBounceApplier(

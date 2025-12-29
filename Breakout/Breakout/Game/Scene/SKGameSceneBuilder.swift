@@ -62,7 +62,7 @@ struct SKGameSceneBuilder: GameSceneBuilder {
             bounceCalculator: BounceCalculator()
         )
 
-        let nodeManager = DefaultNodeManager(
+        let nodeManager = SKNodeManager(
             ballLaunchController: ballLaunchController,
             paddleMotionController: paddleMotionController,
             paddleBounceApplier: paddleBounceApplier,
