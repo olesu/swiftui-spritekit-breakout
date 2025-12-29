@@ -3,7 +3,7 @@ import SpriteKit
 
 final class SKSoundEffectProducer: SoundEffectProducer {
     private weak var parentNode: SKNode?
-    private var audioNodes: [SoundEffect: SKAudioNode] = [:]
+    private var soundActions: [SoundEffect: SKAction] = [:]
 
     func attach(to parentNode: SKNode) {
         self.parentNode = parentNode
@@ -11,19 +11,15 @@ final class SKSoundEffectProducer: SoundEffectProducer {
     }
 
     private func preloadSounds() {
-        guard let parentNode else { return }
-
         for sound in SoundEffect.allCases {
-            let node = SKAudioNode(fileNamed: sound.fileName)
-            node.autoplayLooped = false
-            node.isPositional = false
-            parentNode.addChild(node)
-            audioNodes[sound] = node
+            let action = SKAction.playSoundFileNamed(sound.fileName, waitForCompletion: false)
+            soundActions[sound] = action
         }
     }
 
-    // TODO: Sounds seem to be playing in sequence, so it takes a long time to finish when hitting multiple bricks
     func play(_ soundEffect: SoundEffect) {
-        audioNodes[soundEffect]?.run(.play())
+        guard let action = soundActions[soundEffect] else { return }
+        
+        parentNode?.run(action)
     }
 }
