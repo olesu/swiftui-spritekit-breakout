@@ -98,19 +98,28 @@ struct SKGameSceneBuilder: GameSceneBuilder {
                 nodeManager: nodeManager
             )
         )
-        scene.configureForSound(soundEffectProducer)
+        scene.configureForSoundEffects(soundEffectProducer)
+        scene.configureForVisualEffects(visualEffectProducer)
         return scene
     }
     
 }
 
 extension SKScene {
-    fileprivate func configureForSound(_ soundProducer: SKSoundEffectProducer) {
+    fileprivate func configureForSoundEffects(_ soundEffectProducer: SKSoundEffectProducer) {
         let effectsNode = SKNode()
-        effectsNode.name = "effects"
+        effectsNode.name = "sound-effects"
         effectsNode.zPosition = 1000
         addChild(effectsNode)
-        soundProducer.attach(to: effectsNode)
+        soundEffectProducer.attach(to: effectsNode)
+    }
+    
+    fileprivate func configureForVisualEffects(_ visualEffectProducer: SKVisualEffectProducer) {
+        let effectsNode = SKNode()
+        effectsNode.name = "visual-effects"
+        effectsNode.zPosition = 1000
+        addChild(effectsNode)
+        visualEffectProducer.attach(to: effectsNode)
     }
 }
 
