@@ -52,8 +52,8 @@ struct SKGameSceneBuilder: GameSceneBuilder {
                 size: c.sceneLayout.rightWallSize
             ),
             gutter: GutterSprite(
-                position: CGPoint(c.sceneLayout.gutterPosition),
-                size: CGSize(c.sceneLayout.gutterSize)
+                position: c.sceneLayout.gutterPosition,
+                size: c.sceneLayout.gutterSize
             )
         )
 

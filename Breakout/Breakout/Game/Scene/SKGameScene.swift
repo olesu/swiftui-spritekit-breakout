@@ -115,7 +115,7 @@ extension SKGameScene {
         nodes.topWall.attach(to: self)
         nodes.leftWall.attach(to: self)
         nodes.rightWall.attach(to: self)
-        addChild(nodes.gutter)
+        nodes.gutter.attach(to: self)
 
         addChild(nodes.bricks)
 

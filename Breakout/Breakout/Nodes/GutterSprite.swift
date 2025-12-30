@@ -1,14 +1,15 @@
 import SpriteKit
 
-internal final class GutterSprite: SKSpriteNode {
-    internal init(position: CGPoint, size: CGSize) {
-        super.init(texture: nil, color: .clear, size: size)
-        self.name = NodeNames.gutter.rawValue
-        self.position = position
-        self.physicsBody = GutterPhysicsBodyConfigurer(size: size).physicsBody
+final class GutterSprite: Sprite {
+    var node: SKSpriteNode
+    
+    init(position: Point, size: Size) {
+        let node = SKSpriteNode(texture: nil, color: .clear, size: CGSize(size))
+        node.name = NodeNames.gutter.rawValue
+        node.position = CGPoint(position)
+        node.physicsBody = GutterPhysicsBodyConfigurer(size: CGSize(size)).physicsBody
+        
+        self.node = node
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }

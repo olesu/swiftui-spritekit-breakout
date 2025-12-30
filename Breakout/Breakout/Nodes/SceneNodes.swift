@@ -10,5 +10,5 @@ struct SceneNodes {
     let topWall: Sprite
     let leftWall: Sprite
     let rightWall: Sprite
-    let gutter: SKSpriteNode
+    let gutter: Sprite
 }
