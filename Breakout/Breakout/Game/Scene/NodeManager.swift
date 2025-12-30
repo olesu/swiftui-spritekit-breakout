@@ -17,7 +17,7 @@ protocol NodeManager {
     func stopPaddle()
     
     // MARK: ball
-    func moveBall(to position: CGPoint)
+    func moveBall(to position: Point)
     func ballHitPaddle()
     
     // MARK: ball and paddle

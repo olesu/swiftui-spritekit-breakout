@@ -1,14 +1,16 @@
 import SpriteKit
 import AppKit
 
-internal final class BallSprite: SKSpriteNode {
-    internal init(position: CGPoint) {
+final class BallSprite: Sprite {
+    var node: SKSpriteNode
+    
+    init(position: Point) {
         let ballSize = CGSize(width: 10, height: 10)
         let texture = BallSprite.createBallTexture(size: ballSize)
-        super.init(texture: texture, color: .white, size: ballSize)
-        self.name = NodeNames.ball.rawValue
-        self.position = position
-        self.physicsBody = BallPhysicsBodyConfigurer(size: size).physicsBody
+        let node = SKSpriteNode(texture: texture, color: .white, size: ballSize)
+        node.name = NodeNames.ball.rawValue
+        node.position = CGPoint(position)
+        node.physicsBody = BallPhysicsBodyConfigurer(size: node.size).physicsBody
 
         // Add glow effect
         let glow = SKEffectNode()
@@ -20,9 +22,26 @@ internal final class BallSprite: SKSpriteNode {
         glowSprite.alpha = 0.8
         glow.addChild(glowSprite)
         glow.zPosition = -1
-        addChild(glow)
+        node.addChild(glow)
+        
+        self.node = node
     }
 
+}
+
+extension BallSprite {
+    var velocity: Vector {
+        let v = node.physicsBody?.velocity ?? .zero
+        
+        return Vector(dx: v.dx, dy: v.dy)
+    }
+    
+    func setVelocity(_ velocity: Vector) {
+        node.physicsBody?.velocity = CGVector(velocity)
+    }
+}
+
+extension BallSprite {
     private static func createBallTexture(size: CGSize) -> SKTexture {
         let image = NSImage(size: size, flipped: false) { rect in
             let center = CGPoint(x: rect.midX, y: rect.midY)
@@ -47,7 +66,5 @@ internal final class BallSprite: SKSpriteNode {
         return SKTexture(image: image)
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+
 }

@@ -39,13 +39,13 @@ final class SKNodeManager: NodeManager {
         removalQueue.removeAll()
     }
     
-    func moveBall(to position: CGPoint) {
-        nodes.ball.position = position
+    func moveBall(to position: Point) {
+        nodes.ball.setPosition(position)
     }
 
     func resetBall(sceneSize: CGSize) {
         ballLaunchController.performReset(
-            ball: nodes.ball,
+            ball: nodes.ball.node,
             at: CGPoint(x: sceneSize.width / 2, y: 50)
         )
     }
@@ -63,7 +63,7 @@ final class SKNodeManager: NodeManager {
             sceneSize: sceneSize
         )
         nodes.paddle.setPosition(newPaddle.position)
-        ballLaunchController.update(ball: nodes.ball, paddle: nodes.paddle.node)
+        ballLaunchController.update(ball: nodes.ball.node, paddle: nodes.paddle.node)
     }
 
     func beginPaddleKeyboardOverride(to position: CGPoint, sceneSize: CGSize) {
@@ -96,7 +96,7 @@ final class SKNodeManager: NodeManager {
     }
 
     func ballHitPaddle() {
-        paddleBounceApplier.applyBounce(ball: nodes.ball, paddle: nodes.paddle.node)
+        paddleBounceApplier.applyBounce(ball: nodes.ball.node, paddle: nodes.paddle.node)
 
     }
 

@@ -37,7 +37,7 @@ final class FakeNodeManager: NodeManager {
 
     }
 
-    func moveBall(to position: CGPoint) {
+    func moveBall(to position: Point) {
 
     }
 

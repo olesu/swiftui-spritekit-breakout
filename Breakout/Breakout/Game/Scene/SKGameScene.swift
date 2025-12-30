@@ -120,7 +120,7 @@ extension SKGameScene {
         addChild(nodes.bricks)
 
         nodes.paddle.attach(to: self)
-        addChild(nodes.ball)
+        nodes.ball.attach(to: self)
 
     }
     
@@ -130,7 +130,7 @@ extension SKGameScene {
 extension SKGameScene {
     /// Launches the ball if it is currently clamped to the paddle.
     func launchBall() {
-        ballLaunchController.launch(ball: nodes.ball)
+        ballLaunchController.launch(ball: nodes.ball.node)
     }
 
 }

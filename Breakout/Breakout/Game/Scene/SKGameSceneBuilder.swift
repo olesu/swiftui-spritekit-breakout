@@ -36,7 +36,7 @@ struct SKGameSceneBuilder: GameSceneBuilder {
                 size: c.sceneLayout.paddleSize
             ),
             ball: BallSprite(
-                position: CGPoint(c.sceneLayout.ballStartPosition)
+                position: c.sceneLayout.ballStartPosition
             ),
             bricks: brickLayoutFactory.createNodes(),
             topWall: WallSprite(
@@ -120,25 +120,5 @@ extension SKScene {
         effectsNode.zPosition = 1000
         addChild(effectsNode)
         visualEffectProducer.attach(to: effectsNode)
-    }
-}
-
-// TODO Move to SK <-> Domain converters group someting?!?
-extension CGPoint {
-    init(_ point: Point) {
-        self.init(
-            x: CGFloat(point.x),
-            y: CGFloat(point.y)
-        )
-    }
-}
-
-// TODO Move to SK <-> Domain converters group someting?!?
-extension CGSize {
-    init(_ size: Size) {
-        self.init(
-            width: CGFloat(size.width),
-            height: CGFloat(size.height)
-        )
     }
 }

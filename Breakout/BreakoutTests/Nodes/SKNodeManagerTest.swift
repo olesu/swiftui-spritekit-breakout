@@ -35,7 +35,7 @@ struct SKNodeManagerTest {
         let ball = BallSprite(position: .zero)
         let manager = makeManager(ball: ball)
 
-        manager.moveBall(to: CGPoint(x: 200, y: 500))
+        manager.moveBall(to: Point(x: 200, y: 500))
 
         #expect(abs(ball.position.x - 200) <= 0.001)
         #expect(abs(ball.position.y - 500) <= 0.001)
@@ -45,16 +45,11 @@ struct SKNodeManagerTest {
         let ball = BallSprite(position: .zero)
         let manager = makeManager(ball: ball)
 
-        ball.physicsBody?.velocity = .init(dx: 1.0, dy: 1.0)
+        ball.setVelocity(.init(dx: 1.0, dy: 1.0))
         manager.ballHitPaddle()
 
-        guard let velocity = ball.physicsBody?.velocity else {
-            #expect(Bool(false), "ball lacked velocity")
-            return
-        }
-
-        #expect(velocity.dx - 1.03 < 0.001)
-        #expect(velocity.dy - 1.03 < 0.001)
+        #expect(ball.velocity.dx - 1.03 < 0.001)
+        #expect(ball.velocity.dy - 1.03 < 0.001)
     }
     
     private func makeBrickLayoutFactory(_ brickId: BrickId) -> FakeBrickLayoutFactory {
