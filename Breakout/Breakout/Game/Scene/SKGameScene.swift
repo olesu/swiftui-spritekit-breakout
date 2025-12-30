@@ -109,20 +109,7 @@ extension SKGameScene {
     private func addGameNodes() {
         addChild(GradientBackground.create(with: size))
         
-        // TODO: Extend all sprites to conform to Sprite, then
-        // add an func attach(to parent: SKNode) to SceneNodes and do
-        // nodes.attach(to: self)
-
-        nodes.topWall.attach(to: self)
-        nodes.leftWall.attach(to: self)
-        nodes.rightWall.attach(to: self)
-        nodes.gutter.attach(to: self)
-
-        nodes.bricks.attach(to: self)
-
-        nodes.paddle.attach(to: self)
-        nodes.ball.attach(to: self)
-
+        nodes.attach(to: self)
     }
     
 }
