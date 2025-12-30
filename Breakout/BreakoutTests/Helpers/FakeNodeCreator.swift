@@ -9,8 +9,8 @@ struct FakeBrickLayoutFactory: BrickLayoutFactory {
         return container
     }
     
-    func addToContainer(_ node: SKNode) {
-        container.addChild(node)
+    func addToContainer(_ sprite: Sprite) {
+        container.addChild(sprite.node)
     }
     
     func hasParent(_ brickId: BrickId) -> Bool {

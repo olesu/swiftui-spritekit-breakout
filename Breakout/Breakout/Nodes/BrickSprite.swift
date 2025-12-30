@@ -1,33 +1,19 @@
 import SpriteKit
 
-/// Represents sprite-level brick information for SpriteKit rendering.
-///
-/// BrickData is part of the presentation layer and uses string IDs
-/// for compatibility with SpriteKit's node naming system.
-internal struct BrickData {
-    /// String identifier for SpriteKit node naming.
-    internal let id: String
-    internal let position: CGPoint
-    internal let color: NSColor
-
-    internal init(id: String, position: CGPoint, color: NSColor) {
-        self.id = id
-        self.position = position
-        self.color = color
-    }
-}
-
-internal final class BrickSprite: SKSpriteNode {
-    internal init(id: String, position: CGPoint, color: NSColor) {
+final class BrickSprite: Sprite {
+    var node: SKSpriteNode
+    
+    init(brickData: BrickData) {
+        // TODO: Should not be hardcoded here
         let brickSize = CGSize(width: 22, height: 10)
         let texture = BrickSprite.createBrickTexture(
             size: brickSize,
-            baseColor: color
+            baseColor: brickData.color.toNSColor()
         )
-        super.init(texture: texture, color: .white, size: brickSize)
-        self.name = id
-        self.position = position
-        self.physicsBody =
+        self.node = SKSpriteNode(texture: texture, color: .white, size: brickSize)
+        node.name = brickData.id
+        node.position = brickData.cgPosition
+        node.physicsBody =
             BrickPhysicsBodyConfigurer(brickSize: brickSize).physicsBody
     }
 
@@ -103,68 +89,3 @@ internal final class BrickSprite: SKSpriteNode {
     }
 }
 
-struct BrickSpec {
-    let data: BrickData
-    let color: BrickColor
-    
-    init(data: BrickData, color: BrickColor) {
-        self.data = data
-        self.color = color
-    }
-    
-    init(brick: Brick) {
-        data = BrickData(
-            id: brick.id.value,
-            position: CGPoint(x: brick.position.x, y: brick.position.y),
-            color: brick.color.toNSColor()
-        )
-        color = brick.color
-    }
-}
-
-final class SKBricksLayout: SpriteContainer {
-    var node: SKNode
-    
-    let brickSpecs: [BrickSpec]
-
-    init(brickSpecs: [BrickSpec]) {
-        self.brickSpecs = brickSpecs
-        self.node = SKNode()
-
-        setupBricks(in: node)
-    }
-
-    private(set) var createdBricks: [Brick] = []
-    
-    var children: [SKNode] {
-        node.children
-    }
-
-    private func setupBricks(in parent: SKNode) {
-        brickSpecs.forEach { brickSpec in
-            let sprite = makeBrickSprite(from: brickSpec)
-            node.addChild(sprite)
-
-            let domainBrick = makeBrick(from: brickSpec)
-            createdBricks.append(domainBrick)
-        }
-    }
-
-    private func makeBrickSprite(from brickSpec: BrickSpec) -> BrickSprite {
-        BrickSprite(
-            id: brickSpec.data.id,
-            position: brickSpec.data.position,
-            color: brickSpec.data.color
-        )
-    }
-
-    private func makeBrick(from brickSpec: BrickSpec)
-        -> Brick
-    {
-        Brick(
-            id: BrickId(of: brickSpec.data.id),
-            color: brickSpec.color,
-            position: Point(x: brickSpec.data.position.x, y: brickSpec.data.position.y)
-        )
-    }
-}

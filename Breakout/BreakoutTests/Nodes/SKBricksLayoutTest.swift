@@ -1,34 +1,33 @@
 import Testing
-import AppKit
+import SpriteKit
 
 @testable import Breakout
 
-struct ClassicBricksLayoutTest {
+struct SKBricksLayoutTest {
 
     @Test func acceptsCustomBrickLayout() throws {
         let bricks = [
-            BrickSpec(data: BrickData(id: "brick-001", position: CGPoint(x: 10, y: 20), color: .red), color: .red)
+            BrickData(id: "brick-001", position: Point(x: 10, y: 20), color: .red)
         ]
 
-        let layout = SKBricksLayout(brickSpecs: bricks)
+        let layout = SKBricksLayout(brickData: bricks)
 
-        #expect(layout.brickSpecs.count == 1)
-        #expect(layout.brickSpecs[0].data.position == CGPoint(x: 10, y: 20))
-        #expect(layout.brickSpecs[0].data.color == .red)
-        #expect(layout.brickSpecs[0].color == BrickColor.red)
+        #expect(layout.brickData.count == 1)
+        #expect(layout.brickData[0].position == Point(x: 10, y: 20))
+        #expect(layout.brickData[0].color == .red)
     }
 
     @Test func brickDataAcceptsPredictableID() throws {
         let expectedId = "12345678-1234-1234-1234-123456789012"
         let brickData = BrickData(
             id: expectedId,
-            position: CGPoint(x: 5, y: 10),
-            color: .blue
+            position: Point(x: 5, y: 10),
+            color: .green
         )
 
         #expect(brickData.id == expectedId)
-        #expect(brickData.position == CGPoint(x: 5, y: 10))
-        #expect(brickData.color == .blue)
+        #expect(brickData.position == Point(x: 5, y: 10))
+        #expect(brickData.color == .green)
     }
 
     @Test func layoutUsesBrickDataIDs() throws {
@@ -36,15 +35,29 @@ struct ClassicBricksLayoutTest {
         let id2 = "22222222-2222-2222-2222-222222222222"
 
         let bricks = [
-            BrickSpec(data: BrickData(id: id1, position: CGPoint(x: 0, y: 0), color: .red), color: .red),
-            BrickSpec(data: BrickData(id: id2, position: CGPoint(x: 0, y: 0), color: .green), color: .green)
+            BrickData(id: id1, position: Point(x: 0, y: 0), color: .red),
+            BrickData(id: id2, position: Point(x: 0, y: 0), color: .green),
         ]
 
-        let layout = SKBricksLayout(brickSpecs: bricks)
-        let addedBrickIds = layout.createdBricks.map { $0.id.value }
+        let layout = SKBricksLayout(brickData: bricks)
+        let addedBrickIds = layout.brickData.map { $0.id }
 
         #expect(addedBrickIds.count == 2)
         #expect(addedBrickIds[0] == id1)
         #expect(addedBrickIds[1] == id2)
     }
+    
+    @Test func brickSpriteUsesBrickDataPosition() {
+        let data = BrickData(
+            id: "brick-1",
+            position: Point(x: 42, y: 1337),
+            color: .red
+        )
+
+        let sprite = BrickSprite(brickData: data)
+
+        #expect(sprite.node.position.x == 42)
+        #expect(sprite.node.position.y == 1337)
+    }
+
 }

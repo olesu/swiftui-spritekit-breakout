@@ -57,6 +57,8 @@ final class SKGameScene: SKScene {
         self.gameController = gameController
         
         super.init(size: size)
+        
+        addGameNodes()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -101,7 +103,6 @@ extension SKGameScene {
     /// - Parameter view: The `SKView` that is now presenting this scene.
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = contactHandler
-        addGameNodes()
     }
 
     /// Adds the background, walls, gutter, bricks, paddle, and ball nodes to the scene.

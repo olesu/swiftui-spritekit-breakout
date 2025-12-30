@@ -20,15 +20,18 @@ struct SKNodeManagerTest {
 
         #expect(brickLayoutFactory.hasParent(brickId) == false)
     }
-    
+
     @Test func recordsLastBrickHitPositionWhenBrickRemovalIsQueued() {
         let brickId = BrickId.createValid()
         let brickLayoutFactory = makeBrickLayoutFactory(brickId)
         let manager = makeManager(brickLayoutFactory)
 
         manager.enqueueRemoval(of: brickId)
-        
-        #expect(manager.lastBrickHitPosition == brickLayoutFactory.position(of: brickId))
+
+        #expect(
+            manager.lastBrickHitPosition
+                == brickLayoutFactory.position(of: brickId)
+        )
     }
 
     @Test func movesBall() {
@@ -51,20 +54,24 @@ struct SKNodeManagerTest {
         #expect(ball.velocity.dx - 1.03 < 0.001)
         #expect(ball.velocity.dy - 1.03 < 0.001)
     }
-    
-    private func makeBrickLayoutFactory(_ brickId: BrickId) -> FakeBrickLayoutFactory {
+
+    private func makeBrickLayoutFactory(_ brickId: BrickId)
+        -> FakeBrickLayoutFactory
+    {
         let brick = BrickSprite(
-            id: brickId.value,
-            position: CGPoint(x: 100, y: 400),
-            color: .red
+            brickData: BrickData(
+                id: brickId.value,
+                position: Point(x: 100, y: 400),
+                color: .red
+            )
         )
 
         let brickLayoutFactory = FakeBrickLayoutFactory()
         brickLayoutFactory.addToContainer(brick)
-        
+
         return brickLayoutFactory
     }
-    
+
     private func makeManager(
         _ brickLayoutFactory: BrickLayoutFactory = FakeBrickLayoutFactory(),
         ball: BallSprite = BallSprite(position: .zero)
