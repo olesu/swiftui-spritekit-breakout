@@ -107,10 +107,14 @@ extension SKGameScene {
     /// Adds the background, walls, gutter, bricks, paddle, and ball nodes to the scene.
     private func addGameNodes() {
         addChild(GradientBackground.create(with: size))
+        
+        // TODO: Extend all sprites to conform to Sprite, then
+        // add an func attach(to parent: SKNode) to SceneNodes and do
+        // nodes.attach(to: self)
 
-        addChild(nodes.topWall)
-        addChild(nodes.leftWall)
-        addChild(nodes.rightWall)
+        nodes.topWall.attach(to: self)
+        nodes.leftWall.attach(to: self)
+        nodes.rightWall.attach(to: self)
         addChild(nodes.gutter)
 
         addChild(nodes.bricks)

@@ -40,16 +40,16 @@ struct SKGameSceneBuilder: GameSceneBuilder {
             ),
             bricks: brickLayoutFactory.createNodes(),
             topWall: WallSprite(
-                position: CGPoint(c.sceneLayout.topWallPosition),
-                size: CGSize(c.sceneLayout.topWallSize)
+                position: c.sceneLayout.topWallPosition,
+                size: c.sceneLayout.topWallSize
             ),
             leftWall: WallSprite(
-                position: CGPoint(c.sceneLayout.leftWallPosition),
-                size: CGSize(c.sceneLayout.leftWallSize)
+                position: c.sceneLayout.leftWallPosition,
+                size: c.sceneLayout.leftWallSize
             ),
             rightWall: WallSprite(
-                position: CGPoint(c.sceneLayout.rightWallPosition),
-                size: CGSize(c.sceneLayout.rightWallSize)
+                position: c.sceneLayout.rightWallPosition,
+                size: c.sceneLayout.rightWallSize
             ),
             gutter: GutterSprite(
                 position: CGPoint(c.sceneLayout.gutterPosition),
@@ -123,6 +123,7 @@ extension SKScene {
     }
 }
 
+// TODO Move to SK <-> Domain converters group someting?!?
 extension CGPoint {
     init(_ point: Point) {
         self.init(
@@ -132,6 +133,7 @@ extension CGPoint {
     }
 }
 
+// TODO Move to SK <-> Domain converters group someting?!?
 extension CGSize {
     init(_ size: Size) {
         self.init(

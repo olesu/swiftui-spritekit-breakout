@@ -1,22 +1,21 @@
 import AppKit
 import SpriteKit
 
-final class WallSprite: SKSpriteNode {
+final class WallSprite: Sprite {
+    var node: SKSpriteNode
 
-    init(position: CGPoint, size: CGSize) {
+    init(position: Point, size: Size) {
         let texture = SKTexture(
             image: WallTextureFactory.diagonalStripes()
         )
 
-        super.init(texture: texture, color: .clear, size: size)
+        let node = SKSpriteNode(texture: texture, color: .clear, size: CGSize(size))
 
-        self.position = position
-        self.alpha = 0.35
-        self.physicsBody = WallPhysicsBodyConfigurer(size: size).physicsBody
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        node.position = CGPoint(position)
+        node.alpha = 0.35
+        node.physicsBody = WallPhysicsBodyConfigurer(size: CGSize(size)).physicsBody
+        
+        self.node = node
     }
 }
 
