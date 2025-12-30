@@ -26,7 +26,6 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
             ballLaunchController: ballLaunchController,
             paddleMotionController: paddleMotionController,
             paddleBounceApplier: paddleBounceApplier,
-            brickLayoutFactory: FakeBrickLayoutFactory(),
             nodes: nodes
         )
         return SKGameScene(

@@ -66,7 +66,6 @@ struct SKGameSceneBuilder: GameSceneBuilder {
             ballLaunchController: ballLaunchController,
             paddleMotionController: paddleMotionController,
             paddleBounceApplier: paddleBounceApplier,
-            brickLayoutFactory: brickLayoutFactory,
             nodes: nodes
         )
 

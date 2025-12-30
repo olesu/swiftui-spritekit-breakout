@@ -60,7 +60,7 @@ struct SKNodeManagerTest {
         )
 
         let brickLayoutFactory = FakeBrickLayoutFactory()
-        brickLayoutFactory.addToBrickLayout(brick)
+        brickLayoutFactory.addToContainer(brick)
         
         return brickLayoutFactory
     }
@@ -76,7 +76,6 @@ struct SKNodeManagerTest {
                 bounceSpeedPolicy: GameTuning.testNeutral.bounceSpeedPolicy,
                 bounceCalculator: BounceCalculator()
             ),
-            brickLayoutFactory: brickLayoutFactory,
             nodes: SceneNodes.createValid(
                 ball: ball,
                 bricks: brickLayoutFactory.createNodes(),

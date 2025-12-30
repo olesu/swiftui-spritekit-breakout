@@ -122,25 +122,28 @@ struct BrickSpec {
     }
 }
 
-final class SKBricksLayout: SKNode {
+final class SKBricksLayout: SpriteContainer {
+    var node: SKNode
+    
     let brickSpecs: [BrickSpec]
 
     init(brickSpecs: [BrickSpec]) {
         self.brickSpecs = brickSpecs
-        super.init()
-        setupBricks()
-    }
+        self.node = SKNode()
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        setupBricks(in: node)
     }
 
     private(set) var createdBricks: [Brick] = []
+    
+    var children: [SKNode] {
+        node.children
+    }
 
-    private func setupBricks() {
+    private func setupBricks(in parent: SKNode) {
         brickSpecs.forEach { brickSpec in
             let sprite = makeBrickSprite(from: brickSpec)
-            addChild(sprite)
+            node.addChild(sprite)
 
             let domainBrick = makeBrick(from: brickSpec)
             createdBricks.append(domainBrick)

@@ -6,7 +6,7 @@ import Foundation
 struct SceneNodes {
     let paddle: Sprite
     let ball: Sprite
-    let bricks: SKNode
+    let bricks: SpriteContainer
     let topWall: Attachable
     let leftWall: Attachable
     let rightWall: Attachable

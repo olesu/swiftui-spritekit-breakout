@@ -2,5 +2,5 @@ import Foundation
 import SpriteKit
 
 protocol BrickLayoutFactory {
-    func createNodes() -> SKNode
+    func createNodes() -> SpriteContainer
 }

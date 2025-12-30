@@ -9,7 +9,7 @@ struct SKBrickLayoutFactory: BrickLayoutFactory {
         self.session = session
     }
 
-    func createNodes() -> SKNode {
+    func createNodes() -> SpriteContainer {
         let bricks = session.state.bricks
         let brickSpecs = bricks.map { BrickSpec.init(brick: $1) }
 

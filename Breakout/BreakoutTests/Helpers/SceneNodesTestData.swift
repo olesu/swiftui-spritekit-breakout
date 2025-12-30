@@ -7,7 +7,7 @@ extension SceneNodes {
     static func createValid(
         paddle: PaddleSprite = PaddleSprite(position: .zero, size: .zero),
         ball: BallSprite = BallSprite(position: .zero),
-        bricks: SKNode = SKNode(),
+        bricks: SpriteContainer = FakeBrickLayoutFactory().createNodes(),
         topWall: WallSprite = WallSprite(position: .zero, size: .zero),
         leftWall: WallSprite = WallSprite(position: .zero, size: .zero),
         rightWall: WallSprite = WallSprite(position: .zero, size: .zero),

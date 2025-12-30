@@ -16,7 +16,6 @@ final class SKNodeManager: NodeManager {
         ballLaunchController: BallLaunchController,
         paddleMotionController: PaddleMotionController,
         paddleBounceApplier: PaddleBounceApplier,
-        brickLayoutFactory: BrickLayoutFactory,
         nodes: SceneNodes
     ) {
         self.ballLaunchController = ballLaunchController

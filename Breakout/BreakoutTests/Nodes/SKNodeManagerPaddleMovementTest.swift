@@ -88,7 +88,6 @@ struct SKNodeManagerPaddleMovementTest {
                 bounceSpeedPolicy: GameTuning.testNeutral.bounceSpeedPolicy,
                 bounceCalculator: BounceCalculator()
             ),
-            brickLayoutFactory: FakeBrickLayoutFactory(),
             nodes: SceneNodes.createValid(
                 paddle: paddle,
             ),
