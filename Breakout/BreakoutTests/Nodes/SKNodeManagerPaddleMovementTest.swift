@@ -7,8 +7,8 @@ import Testing
 @MainActor
 struct SKNodeManagerPaddleMovementTest {
     private let sceneSize = CGSize(width: 100, height: 100)
-    private let paddlePosition = CGPoint(x: 10, y: 0)
-    private let paddleSize = CGSize(width: 2, height: 20)
+    private let paddlePosition = Point(x: 10, y: 0)
+    private let paddleSize = Size(width: 2, height: 20)
     private let paddleMotionController = PaddleMotionController(speed: 1)
     private let ball = BallSprite(position: .zero)
 

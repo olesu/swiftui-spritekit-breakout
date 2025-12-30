@@ -14,7 +14,7 @@ struct PaddleMotionControllerTest {
         controller.startRight()
         let newPaddle = controller.update(paddle: paddle, deltaTime: 1.0, sceneSize: sceneSize)
         
-        #expect(newPaddle.x <= sceneSize.width - newPaddle.halfWidth)
+        #expect(newPaddle.position.x <= sceneSize.width - newPaddle.halfWidth)
     }
     
     @Test func stopsRightMotionWHenStopped() {
@@ -28,7 +28,7 @@ struct PaddleMotionControllerTest {
         controller.stop()
         let stoppedPaddle = controller.update(paddle: movingPaddle, deltaTime: 1.0, sceneSize: sceneSize)
         
-        #expect(stoppedPaddle.x <= sceneSize.width - stoppedPaddle.halfWidth)
+        #expect(stoppedPaddle.position.x <= sceneSize.width - stoppedPaddle.halfWidth)
     }
     
     @Test func stopsLeftMotionWHenStopped() {
@@ -49,7 +49,7 @@ struct PaddleMotionControllerTest {
             sceneSize: sceneSize
         )
 
-        #expect(stoppedPaddle.x >= stoppedPaddle.halfWidth)
+        #expect(stoppedPaddle.position.x >= stoppedPaddle.halfWidth)
     }
 
     @Test func movesLeftBySpeedTimesDeltaTime() {
@@ -63,7 +63,7 @@ struct PaddleMotionControllerTest {
             sceneSize: sceneSize
         )
 
-        #expect(newPaddle.x >= newPaddle.halfWidth)
+        #expect(newPaddle.position.x >= newPaddle.halfWidth)
     }
 
     @Test func doesNotMovePastLeftBoundary() {
@@ -77,7 +77,7 @@ struct PaddleMotionControllerTest {
             sceneSize: sceneSize
         )
 
-        #expect(newPaddle.x >= newPaddle.halfWidth)
+        #expect(newPaddle.position.x >= newPaddle.halfWidth)
     }
 
     @Test func doesNotMovePastRightBoundary() {
@@ -91,7 +91,7 @@ struct PaddleMotionControllerTest {
             sceneSize: sceneSize
         )
 
-        #expect(newPaddle.x <= sceneSize.width - newPaddle.halfWidth)
+        #expect(newPaddle.position.x <= sceneSize.width - newPaddle.halfWidth)
     }
 
     @Test func clampsLeftConsideringPaddleWidth() {
@@ -105,7 +105,7 @@ struct PaddleMotionControllerTest {
             sceneSize: sceneSize
         )
 
-        let leftEdge = newPaddle.x - newPaddle.halfWidth
+        let leftEdge = newPaddle.position.x - newPaddle.halfWidth
         #expect(leftEdge >= 0)
     }
 
@@ -127,7 +127,7 @@ struct PaddleMotionControllerTest {
             sceneSize: sceneSize
         )
 
-        #expect(abs(afterLeft.x - paddle.x) < 0.001)
+        #expect(abs(afterLeft.position.x - paddle.position.x) < 0.001)
     }
 
     @Test func draggingOverridesKeyboardMovement() {
@@ -153,7 +153,7 @@ struct PaddleMotionControllerTest {
             sceneSize: sceneSize
         )
 
-        #expect(abs(afterUpdate.x - overridden.x) < 0.001)
+        #expect(abs(afterUpdate.position.x - overridden.position.x) < 0.001)
     }
 
     @Test func movementResumesAfterDragEnds() {
@@ -180,7 +180,7 @@ struct PaddleMotionControllerTest {
             sceneSize: sceneSize
         )
 
-        #expect(abs(resumed.x - 250) < 0.001)
+        #expect(abs(resumed.position.x - 250) < 0.001)
     }
 
     @Test func overridePositionIsClamped() {
@@ -193,7 +193,7 @@ struct PaddleMotionControllerTest {
             sceneSize: sceneSize
         )
 
-        #expect(overridden.x >= overridden.halfWidth)
+        #expect(overridden.position.x >= overridden.halfWidth)
     }
 
     @Test func overrideDoesNotClearIntent() {
@@ -214,11 +214,11 @@ struct PaddleMotionControllerTest {
             sceneSize: sceneSize
         )
 
-        #expect(resumed.x > overridden.x)
+        #expect(resumed.position.x > overridden.position.x)
     }
 
     private func makePaddle() -> Paddle {
-        .init(x: 100, w: 50)
+        .init(position: Point(x: 100, y: 0), w: 50)
     }
 
 }

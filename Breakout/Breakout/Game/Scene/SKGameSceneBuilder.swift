@@ -32,8 +32,8 @@ struct SKGameSceneBuilder: GameSceneBuilder {
 
         let nodes = SceneNodes(
             paddle: PaddleSprite(
-                position: CGPoint(c.sceneLayout.paddleStartPosition),
-                size: CGSize(c.sceneLayout.paddleSize)
+                position: c.sceneLayout.paddleStartPosition,
+                size: c.sceneLayout.paddleSize
             ),
             ball: BallSprite(
                 position: CGPoint(c.sceneLayout.ballStartPosition)

@@ -1,28 +1,29 @@
 import SpriteKit
 import AppKit
 
-internal final class PaddleSprite: SKSpriteNode {
-    internal init(
-        position: CGPoint,
-        size: CGSize
-    ) {
-        let texture = PaddleSprite.createPaddleTexture(size: size)
-        super.init(texture: texture, color: .white, size: size)
-        self.name = NodeNames.paddle.rawValue
-        self.position = position
-        self.physicsBody = PaddlePhysicsBodyConfigurer(paddleSize: size).physicsBody
+final class PaddleSprite: Sprite {
+    var node: SKSpriteNode
+    
+    init(position: Point,size: Size) {
+        let texture = PaddleSprite.createPaddleTexture(size: CGSize(size))
+        let node = SKSpriteNode(texture: texture, color: .white, size: CGSize(size))
+        node.name = NodeNames.paddle.rawValue
+        node.position = CGPoint(position)
+        node.physicsBody = PaddlePhysicsBodyConfigurer(paddleSize: CGSize(size)).physicsBody
 
         // Add glow effect
         let glow = SKEffectNode()
         glow.shouldRasterize = true
         glow.filter = CIFilter(name: "CIGaussianBlur", parameters: ["inputRadius": 4.0])
-        let glowSprite = SKSpriteNode(texture: texture, size: size)
+        let glowSprite = SKSpriteNode(texture: texture, size: CGSize(size))
         glowSprite.color = NSColor.cyan
         glowSprite.colorBlendFactor = 0.8
         glowSprite.alpha = 0.6
         glow.addChild(glowSprite)
         glow.zPosition = -1
-        addChild(glow)
+        node.addChild(glow)
+        
+        self.node = node
     }
 
     private static func createPaddleTexture(size: CGSize) -> SKTexture {

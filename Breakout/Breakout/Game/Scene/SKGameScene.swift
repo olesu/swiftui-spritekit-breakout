@@ -119,7 +119,7 @@ extension SKGameScene {
 
         addChild(nodes.bricks)
 
-        addChild(nodes.paddle)
+        nodes.paddle.attach(to: self)
         addChild(nodes.ball)
 
     }

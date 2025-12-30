@@ -1,18 +1,18 @@
 struct Paddle {
-    let x: Double
+    let position: Point
     let w: Double
     
     var halfWidth: Double { w / 2 }
     
-    func with(x: Double) -> Paddle {
-        .init(x: x, w: w)
+    func with(position: Point) -> Paddle {
+        .init(position: position, w: w)
     }
     
     func moveBy(amount dx: Double) -> Paddle {
-        with(x: x + dx)
+        with(position: Point(x: position.x + dx, y: position.y))
     }
     
-    func moveTo(_ x: Double) -> Paddle {
-        with(x: x)
+    func moveTo(_ position: Point) -> Paddle {
+        with(position: position)
     }
 }

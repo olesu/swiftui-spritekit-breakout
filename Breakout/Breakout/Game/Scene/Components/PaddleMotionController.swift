@@ -31,7 +31,7 @@ class PaddleMotionController {
             if isMovingLeft { dx -= amount }
         }
 
-        let newX = paddle.x + dx
+        let newX = paddle.position.x + dx
         return paddle.moveTo(clampedX(paddle, x: newX, sceneWidth: sceneSize.width))
     }
 
@@ -50,10 +50,10 @@ class PaddleMotionController {
         isOverriding = false
     }
     
-    private func clampedX(_ paddle: Paddle, x: CGFloat, sceneWidth: CGFloat) -> CGFloat {
+    private func clampedX(_ paddle: Paddle, x: Double, sceneWidth: Double) -> Point {
         let minX = paddle.halfWidth
         let maxX = sceneWidth - paddle.halfWidth
-        return max(minX, min(maxX, x))
+        return Point(x: max(minX, min(maxX, x)), y: paddle.position.y)
     }
 }
 
