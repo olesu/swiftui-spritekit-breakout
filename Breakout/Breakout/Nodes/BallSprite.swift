@@ -4,6 +4,8 @@ import AppKit
 final class BallSprite: Sprite {
     var node: SKSpriteNode
     
+    private let disabledMask: UInt32 = 0x0
+    
     init(position: Point) {
         let ballSize = CGSize(width: 10, height: 10)
         let texture = BallSprite.createBallTexture(size: ballSize)
@@ -70,5 +72,31 @@ extension BallSprite {
 extension BallSprite {
     var radius: Double {
         size.width / 2
+    }
+}
+
+// MARK: Physics
+extension BallSprite {
+    func hide() {
+        node.physicsBody?.categoryBitMask = disabledMask
+        node.physicsBody?.contactTestBitMask = disabledMask
+        node.physicsBody?.collisionBitMask = disabledMask
+        node.alpha = 0
+    }
+    
+    func show() {
+        node.alpha = 1
+        node.physicsBody?.angularVelocity = 0
+        node.physicsBody?.categoryBitMask = CollisionCategory.ball.mask
+        node.physicsBody?.contactTestBitMask =
+            CollisionCategory.wall.mask
+            | CollisionCategory.gutter.mask
+            | CollisionCategory.brick.mask
+            | CollisionCategory.paddle.mask
+        node.physicsBody?.collisionBitMask =
+            CollisionCategory.wall.mask
+            | CollisionCategory.brick.mask
+            | CollisionCategory.paddle.mask
+
     }
 }

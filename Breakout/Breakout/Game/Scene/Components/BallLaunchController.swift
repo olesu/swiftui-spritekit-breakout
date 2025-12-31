@@ -2,7 +2,6 @@ import SpriteKit
 
 final class BallLaunchController {
     private let launchVector = Vector(dx: 0, dy: 400)
-    private let disabledMask: UInt32 = 0x0
 
     private(set) var state: BallState = .clamped
 
@@ -35,50 +34,25 @@ final class BallLaunchController {
     }
 
     func prepareReset(ball: BallSprite) {
-        ball.node.physicsBody?.categoryBitMask = disabledMask
-        ball.node.physicsBody?.contactTestBitMask = disabledMask
-        ball.node.physicsBody?.collisionBitMask = disabledMask
-        ball.node.alpha = 0
+        ball.hide()
     }
 
     func performReset(ball: BallSprite, at resetPosition: Point) {
         state = .clamped
         ball.setPosition(resetPosition)
-        ball.node.alpha = 1
         ball.setVelocity(.zero)
-        ball.node.physicsBody?.angularVelocity = 0
-        restorePhysicsMasks(ball)
-    }
-
-    private func restorePhysicsMasks(_ ball: BallSprite) {
-        ball.node.physicsBody?.categoryBitMask = CollisionCategory.ball.mask
-        ball.node.physicsBody?.contactTestBitMask =
-            CollisionCategory.wall.mask
-            | CollisionCategory.gutter.mask
-            | CollisionCategory.brick.mask
-            | CollisionCategory.paddle.mask
-        ball.node.physicsBody?.collisionBitMask =
-            CollisionCategory.wall.mask
-            | CollisionCategory.brick.mask
-            | CollisionCategory.paddle.mask
-
+        ball.show()
     }
 
     func performWorldReset(ball: BallSprite, at position: Point) {
         state = .launched
         ball.setPosition(position)
-        ball.node.alpha = 1
-        ball.setVelocity(.zero)
-        ball.node.physicsBody?.angularVelocity = 0
-        restorePhysicsMasks(ball)
+        ball.show()
     }
 
     func performPaddleReset(ball: BallSprite, paddle: SKSpriteNode) {
         state = .clamped
-        ball.node.alpha = 1
-        ball.setVelocity(.zero)
-        ball.node.physicsBody?.angularVelocity = 0
         clamp(ball: ball, to: paddle)
-        restorePhysicsMasks(ball)
+        ball.show()
     }
 }
