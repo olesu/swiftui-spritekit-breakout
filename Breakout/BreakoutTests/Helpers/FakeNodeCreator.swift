@@ -18,7 +18,7 @@ struct FakeBrickLayoutFactory: BrickLayoutFactory {
     }
     
     func position(of brickId: BrickId) -> CGPoint {
-        guard let node = container.node.childNode(withName: brickId.value) else {
+        guard let node = container.findNode(named: brickId.value) else {
             return CGPoint(x: Int.max, y: Int.max)
         }
         
@@ -50,6 +50,10 @@ private class TestContainer: SpriteContainer {
         }
         
         return node.position
+    }
+    
+    func findNode(named name: String) -> SKNode? {
+        node.childNode(withName: name)
     }
 }
 
