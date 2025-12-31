@@ -65,6 +65,10 @@ extension BallSprite {
         }
         return SKTexture(image: image)
     }
+}
 
-
+extension BallSprite {
+    var radius: Double {
+        size.width / 2
+    }
 }

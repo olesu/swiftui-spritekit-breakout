@@ -6,80 +6,78 @@ final class BallLaunchController {
 
     private(set) var state: BallState = .clamped
 
-    func clamp(ball: SKSpriteNode, to paddle: SKSpriteNode) {
+    func clamp(ball: BallSprite, to paddle: SKSpriteNode) {
         state = .clamped
 
-        ball.physicsBody?.velocity = .zero
-        ball.position.x = paddle.position.x
-        ball.position.y = topOf(paddle: paddle) + radiusOf(ball: ball)
+        ball.setVelocity(.zero)
+        ball.setPosition(Point(
+            x: paddle.position.x,
+            y: topOf(paddle: paddle) + ball.radius,
+        ))
     }
     
     private func topOf(paddle: SKSpriteNode) -> CGFloat {
         paddle.position.y + paddle.size.height / 2
     }
     
-    private func radiusOf(ball: SKSpriteNode) -> CGFloat {
-        ball.size.width / 2
-    }
-
     func launch(ball: BallSprite) {
         state = .launched
         ball.setVelocity(launchVector)
     }
 
-    func reset(ball: SKSpriteNode, onto paddle: SKSpriteNode) {
+    func reset(ball: BallSprite, onto paddle: SKSpriteNode) {
         clamp(ball: ball, to: paddle)
     }
 
-    func update(ball: SKSpriteNode, paddle: SKSpriteNode) {
+    func update(ball: BallSprite, paddle: SKSpriteNode) {
         guard state == .clamped else { return }
         clamp(ball: ball, to: paddle)
     }
 
-    func prepareReset(ball: SKSpriteNode) {
-        ball.physicsBody?.categoryBitMask = disabledMask
-        ball.physicsBody?.contactTestBitMask = disabledMask
-        ball.physicsBody?.collisionBitMask = disabledMask
-        ball.alpha = 0
+    func prepareReset(ball: BallSprite) {
+        ball.node.physicsBody?.categoryBitMask = disabledMask
+        ball.node.physicsBody?.contactTestBitMask = disabledMask
+        ball.node.physicsBody?.collisionBitMask = disabledMask
+        ball.node.alpha = 0
     }
 
-    func performReset(ball: SKSpriteNode, at resetPosition: CGPoint) {
+    func performReset(ball: BallSprite, at resetPosition: Point) {
         state = .clamped
-        ball.position = resetPosition
-        ball.alpha = 1
-        ball.physicsBody?.velocity = .zero
-        ball.physicsBody?.angularVelocity = 0
+        ball.setPosition(resetPosition)
+        ball.node.alpha = 1
+        ball.setVelocity(.zero)
+        ball.node.physicsBody?.angularVelocity = 0
         restorePhysicsMasks(ball)
     }
 
-    private func restorePhysicsMasks(_ ball: SKSpriteNode) {
-        ball.physicsBody?.categoryBitMask = CollisionCategory.ball.mask
-        ball.physicsBody?.contactTestBitMask =
+    private func restorePhysicsMasks(_ ball: BallSprite) {
+        ball.node.physicsBody?.categoryBitMask = CollisionCategory.ball.mask
+        ball.node.physicsBody?.contactTestBitMask =
             CollisionCategory.wall.mask
             | CollisionCategory.gutter.mask
             | CollisionCategory.brick.mask
             | CollisionCategory.paddle.mask
-        ball.physicsBody?.collisionBitMask =
+        ball.node.physicsBody?.collisionBitMask =
             CollisionCategory.wall.mask
             | CollisionCategory.brick.mask
             | CollisionCategory.paddle.mask
 
     }
 
-    func performWorldReset(ball: SKSpriteNode, at position: CGPoint) {
+    func performWorldReset(ball: BallSprite, at position: Point) {
         state = .launched
-        ball.position = position
-        ball.alpha = 1
-        ball.physicsBody?.velocity = .zero
-        ball.physicsBody?.angularVelocity = 0
+        ball.setPosition(position)
+        ball.node.alpha = 1
+        ball.setVelocity(.zero)
+        ball.node.physicsBody?.angularVelocity = 0
         restorePhysicsMasks(ball)
     }
 
-    func performPaddleReset(ball: SKSpriteNode, paddle: SKSpriteNode) {
+    func performPaddleReset(ball: BallSprite, paddle: SKSpriteNode) {
         state = .clamped
-        ball.alpha = 1
-        ball.physicsBody?.velocity = .zero
-        ball.physicsBody?.angularVelocity = 0
+        ball.node.alpha = 1
+        ball.setVelocity(.zero)
+        ball.node.physicsBody?.angularVelocity = 0
         clamp(ball: ball, to: paddle)
         restorePhysicsMasks(ball)
     }

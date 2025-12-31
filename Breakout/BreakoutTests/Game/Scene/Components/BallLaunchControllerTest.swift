@@ -14,7 +14,7 @@ struct BallLaunchControllerTest {
     @Test func clampsBallCenteredAboveThePaddle() {
         paddle.position = TD.paddleStartPosition()
 
-        controller.clamp(ball: ball.node, to: paddle)
+        controller.clamp(ball: ball, to: paddle)
 
         #expect(abs(ball.position.x - paddle.position.x) < tolerance)
         #expect(abs(ball.position.y - expectedY(ball.node, paddle)) < tolerance)
@@ -33,7 +33,7 @@ struct BallLaunchControllerTest {
 
         ball.setPosition(Point(x: 999, y: 999))
 
-        controller.reset(ball: ball.node, onto: paddle)
+        controller.reset(ball: ball, onto: paddle)
 
         #expect(
             ball.position
@@ -47,7 +47,7 @@ struct BallLaunchControllerTest {
     @Test func clampStopsBallMovement() {
         ball.setVelocity(Vector(dx: 10, dy: 10))
         
-        controller.clamp(ball: ball.node, to: TD.paddle())
+        controller.clamp(ball: ball, to: TD.paddle())
         
         #expect(ball.velocity == Vector.zero)
     }
@@ -55,11 +55,11 @@ struct BallLaunchControllerTest {
     @Test func clampedBallFollowsPaddle() {
         paddle.position = TD.paddleStartPosition()
         
-        controller.clamp(ball: ball.node, to: paddle)
+        controller.clamp(ball: ball, to: paddle)
         
         paddle.position.x += 30
         
-        controller.update(ball: ball.node, paddle: paddle)
+        controller.update(ball: ball, paddle: paddle)
         
         #expect(abs(ball.position.x - paddle.position.x) < tolerance)
         #expect(abs(ball.position.y - expectedY(ball.node, paddle)) < tolerance)
@@ -68,20 +68,20 @@ struct BallLaunchControllerTest {
     @Test func launchedBallDoesNotFollowPaddle() {
         paddle.position = TD.paddleStartPosition()
         
-        controller.clamp(ball: ball.node, to: paddle)
+        controller.clamp(ball: ball, to: paddle)
         controller.launch(ball: ball)
         
         let oldPosition = ball.position
         
         paddle.position.x += 50
         
-        controller.update(ball: ball.node, paddle: paddle)
+        controller.update(ball: ball, paddle: paddle)
         
         #expect(ball.position == oldPosition)
     }
     
     @Test func prepareResetDisablesPhysicsAndHidesBall() {
-        controller.prepareReset(ball: ball.node)
+        controller.prepareReset(ball: ball)
         
         #expect(ball.node.physicsBody?.categoryBitMask == 0)
         #expect(ball.node.physicsBody?.contactTestBitMask == 0)
@@ -93,10 +93,10 @@ struct BallLaunchControllerTest {
         ball.setVelocity(Vector(dx: 123, dy: -456))
         ball.node.physicsBody?.angularVelocity = .pi
         
-        controller.prepareReset(ball: ball.node)
+        controller.prepareReset(ball: ball)
         
         let resetPosition = Point(x: 160, y: 50)
-        controller.performReset(ball: ball.node, at: CGPoint(resetPosition))
+        controller.performReset(ball: ball, at: resetPosition)
         
         #expect(ball.velocity == .zero)
         #expect(ball.node.physicsBody?.angularVelocity == 0)
@@ -119,8 +119,8 @@ struct BallLaunchControllerTest {
     
     @Test func performResetSetsStateToClamped() {
         controller.launch(ball: ball)
-        controller.prepareReset(ball: ball.node)
-        controller.performReset(ball: ball.node, at: CGPoint(x: 160, y: 50))
+        controller.prepareReset(ball: ball)
+        controller.performReset(ball: ball, at: Point(x: 160, y: 50))
         
         #expect(controller.state == .clamped)
     }
@@ -129,29 +129,29 @@ struct BallLaunchControllerTest {
         let paddle = TD.paddle()
 
         controller.launch(ball: ball)
-        controller.prepareReset(ball: ball.node)
-        controller.performReset(ball: ball.node, at: CGPoint(x: 160, y: 50))
+        controller.prepareReset(ball: ball)
+        controller.performReset(ball: ball, at: Point(x: 160, y: 50))
 
         // Move paddle
         paddle.position.x += 30
 
-        controller.update(ball: ball.node, paddle: paddle)
+        controller.update(ball: ball, paddle: paddle)
 
         #expect(abs(ball.position.x - paddle.position.x) < tolerance)
     }
 
     @Test func performWorldResetDoesNotClampBall() {
-        controller.prepareReset(ball: ball.node)
+        controller.prepareReset(ball: ball)
 
         let position = Point(x: 200, y: 200)
-        controller.performWorldReset(ball: ball.node, at: CGPoint(position))
+        controller.performWorldReset(ball: ball, at: position)
 
         // Correct expectation: world reset means "ball is free", not clamped
         #expect(controller.state == .launched)
 
         // Move paddle
         paddle.position.x += 50
-        controller.update(ball: ball.node, paddle: paddle)
+        controller.update(ball: ball, paddle: paddle)
 
         // Ball should stay at world reset position, not clamp to paddle
         #expect(ball.position == position)
@@ -160,8 +160,8 @@ struct BallLaunchControllerTest {
     @Test func performPaddleResetClampsBallToPaddle() {
         paddle.position = TD.paddleStartPosition()
 
-        controller.prepareReset(ball: ball.node)
-        controller.performPaddleReset(ball: ball.node, paddle: paddle)
+        controller.prepareReset(ball: ball)
+        controller.performPaddleReset(ball: ball, paddle: paddle)
 
         #expect(abs(ball.position.x - paddle.position.x) < tolerance)
         #expect(abs(ball.position.y - expectedY(ball.node, paddle)) < tolerance)
@@ -172,13 +172,13 @@ struct BallLaunchControllerTest {
         ball.node.physicsBody = TD.ballPhysicsBody()
         paddle.position = TD.paddleStartPosition()
 
-        controller.prepareReset(ball: ball.node)
-        controller.performPaddleReset(ball: ball.node, paddle: paddle)
+        controller.prepareReset(ball: ball)
+        controller.performPaddleReset(ball: ball, paddle: paddle)
 
         // Move paddle
         paddle.position.x += 40
 
-        controller.update(ball: ball.node, paddle: paddle)
+        controller.update(ball: ball, paddle: paddle)
 
         #expect(abs(ball.position.x - paddle.position.x) < tolerance)
     }
