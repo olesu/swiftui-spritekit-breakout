@@ -5,7 +5,7 @@ final class BallLaunchController {
 
     private(set) var state: BallState = .clamped
 
-    func clamp(ball: BallSprite, to paddle: PaddleSprite) {
+    func clamp(ball: SKBallSprite, to paddle: PaddleSprite) {
         state = .clamped
 
         ball.setVelocity(.zero)
@@ -19,38 +19,38 @@ final class BallLaunchController {
         paddle.position.y + paddle.size.height / 2
     }
     
-    func launch(ball: BallSprite) {
+    func launch(ball: SKBallSprite) {
         state = .launched
         ball.setVelocity(launchVector)
     }
 
-    func reset(ball: BallSprite, onto paddle: PaddleSprite) {
+    func reset(ball: SKBallSprite, onto paddle: PaddleSprite) {
         clamp(ball: ball, to: paddle)
     }
 
-    func update(ball: BallSprite, paddle: PaddleSprite) {
+    func update(ball: SKBallSprite, paddle: PaddleSprite) {
         guard state == .clamped else { return }
         clamp(ball: ball, to: paddle)
     }
 
-    func prepareReset(ball: BallSprite) {
+    func prepareReset(ball: SKBallSprite) {
         ball.hide()
     }
 
-    func performReset(ball: BallSprite, at resetPosition: Point) {
+    func performReset(ball: SKBallSprite, at resetPosition: Point) {
         state = .clamped
         ball.setPosition(resetPosition)
         ball.setVelocity(.zero)
         ball.show()
     }
 
-    func performWorldReset(ball: BallSprite, at position: Point) {
+    func performWorldReset(ball: SKBallSprite, at position: Point) {
         state = .launched
         ball.setPosition(position)
         ball.show()
     }
 
-    func performPaddleReset(ball: BallSprite, paddle: PaddleSprite) {
+    func performPaddleReset(ball: SKBallSprite, paddle: PaddleSprite) {
         state = .clamped
         clamp(ball: ball, to: paddle)
         ball.show()

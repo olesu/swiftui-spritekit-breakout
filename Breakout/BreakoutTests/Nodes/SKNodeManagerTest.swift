@@ -35,7 +35,7 @@ struct SKNodeManagerTest {
     }
 
     @Test func movesBall() {
-        let ball = BallSprite(position: .zero)
+        let ball = SKBallSprite(position: .zero)
         let manager = makeManager(ball: ball)
 
         manager.moveBall(to: Point(x: 200, y: 500))
@@ -45,7 +45,7 @@ struct SKNodeManagerTest {
     }
 
     @Test func acceleratesBall() {
-        let ball = BallSprite(position: .zero)
+        let ball = SKBallSprite(position: .zero)
         let manager = makeManager(ball: ball)
 
         ball.setVelocity(.init(dx: 1.0, dy: 1.0))
@@ -74,7 +74,7 @@ struct SKNodeManagerTest {
 
     private func makeManager(
         _ brickLayoutFactory: BrickLayoutFactory = FakeBrickLayoutFactory(),
-        ball: BallSprite = BallSprite(position: .zero)
+        ball: SKBallSprite = .init(position: .zero)
     ) -> SKNodeManager {
         return SKNodeManager(
             ballLaunchController: ballLaunchController,

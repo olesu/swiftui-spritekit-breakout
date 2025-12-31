@@ -51,7 +51,7 @@ struct PaddleBounceApplierTest {
 
     @Test
     func handlesMissingPhysicsBodies() {
-        let ball = BallSprite(position: .zero)
+        let ball = SKBallSprite(position: .zero)
         let paddle = PaddleSprite(position: .zero, size: .zero)
 
         let applier = PaddleBounceApplier(
@@ -74,8 +74,8 @@ struct PaddleBounceApplierTest {
         applier.applyBounce(ball: ball, paddle: paddle)
     }
 
-    private func makeBall() -> BallSprite {
-        let ball = BallSprite(position: Point(x: 160, y: 50))
+    private func makeBall() -> SKBallSprite {
+        let ball = SKBallSprite(position: Point(x: 160, y: 50))
         ball.node.physicsBody = SKPhysicsBody(circleOfRadius: 4)
         ball.setVelocity(Vector(dx: 200, dy: -300))
 
@@ -90,7 +90,7 @@ struct PaddleBounceApplierTest {
         return paddle
     }
 
-    private func makeApplier(_ ball: BallSprite, _ paddle: PaddleSprite)
+    private func makeApplier(_ ball: SKBallSprite, _ paddle: PaddleSprite)
         -> PaddleBounceApplier
     {
         let applier = PaddleBounceApplier(

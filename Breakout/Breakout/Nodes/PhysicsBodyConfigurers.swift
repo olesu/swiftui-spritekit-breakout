@@ -1,9 +1,9 @@
 import SpriteKit
 
-internal struct BallPhysicsBodyConfigurer {
-    internal let physicsBody: SKPhysicsBody
+struct BallPhysicsBodyConfigurer {
+    let physicsBody: SKPhysicsBody
 
-    internal init(size: CGSize) {
+    init(size: CGSize) {
         physicsBody = SKPhysicsBody(circleOfRadius: size.width / 2)
         physicsBody.isDynamic = true
         physicsBody.categoryBitMask = CollisionCategory.ball.mask
@@ -24,10 +24,10 @@ internal struct BallPhysicsBodyConfigurer {
     }
 }
 
-internal struct PaddlePhysicsBodyConfigurer {
-    internal let physicsBody: SKPhysicsBody
+struct PaddlePhysicsBodyConfigurer {
+    let physicsBody: SKPhysicsBody
 
-    internal init(paddleSize: CGSize) {
+    init(paddleSize: CGSize) {
         let topEdgeStart = CGPoint(x: -paddleSize.width / 2, y: paddleSize.height / 2)
         let topEdgeEnd = CGPoint(x: paddleSize.width / 2, y: paddleSize.height / 2)
         physicsBody = SKPhysicsBody(edgeFrom: topEdgeStart, to: topEdgeEnd)
@@ -38,10 +38,10 @@ internal struct PaddlePhysicsBodyConfigurer {
     }
 }
 
-internal struct BrickPhysicsBodyConfigurer {
-    internal let physicsBody: SKPhysicsBody
+struct BrickPhysicsBodyConfigurer {
+    let physicsBody: SKPhysicsBody
 
-    internal init(brickSize: CGSize) {
+    init(brickSize: CGSize) {
         physicsBody = SKPhysicsBody(rectangleOf: brickSize)
         physicsBody.isDynamic = false
         physicsBody.categoryBitMask = CollisionCategory.brick.mask
@@ -50,10 +50,10 @@ internal struct BrickPhysicsBodyConfigurer {
     }
 }
 
-internal struct GutterPhysicsBodyConfigurer {
-    internal let physicsBody: SKPhysicsBody
+struct GutterPhysicsBodyConfigurer {
+    let physicsBody: SKPhysicsBody
 
-    internal init(size: CGSize) {
+    init(size: CGSize) {
         physicsBody = SKPhysicsBody(rectangleOf: size)
         physicsBody.isDynamic = false
         physicsBody.categoryBitMask = CollisionCategory.gutter.mask
@@ -62,10 +62,10 @@ internal struct GutterPhysicsBodyConfigurer {
     }
 }
 
-internal struct WallPhysicsBodyConfigurer {
-    internal let physicsBody: SKPhysicsBody
+struct WallPhysicsBodyConfigurer {
+    let physicsBody: SKPhysicsBody
 
-    internal init(size: CGSize) {
+    init(size: CGSize) {
         physicsBody = SKPhysicsBody(rectangleOf: size)
         physicsBody.isDynamic = false
         physicsBody.categoryBitMask = CollisionCategory.wall.mask

@@ -1,20 +1,28 @@
-import SpriteKit
 import AppKit
+import SpriteKit
 
 final class PaddleSprite: Sprite {
     var node: SKSpriteNode
-    
-    init(position: Point,size: Size) {
+
+    init(position: Point, size: Size) {
         let texture = PaddleSprite.createPaddleTexture(size: CGSize(size))
-        let node = SKSpriteNode(texture: texture, color: .white, size: CGSize(size))
+        let node = SKSpriteNode(
+            texture: texture,
+            color: .white,
+            size: CGSize(size)
+        )
         node.name = NodeNames.paddle.rawValue
         node.position = CGPoint(position)
-        node.physicsBody = PaddlePhysicsBodyConfigurer(paddleSize: CGSize(size)).physicsBody
+        node.physicsBody =
+            PaddlePhysicsBodyConfigurer(paddleSize: CGSize(size)).physicsBody
 
         // Add glow effect
         let glow = SKEffectNode()
         glow.shouldRasterize = true
-        glow.filter = CIFilter(name: "CIGaussianBlur", parameters: ["inputRadius": 4.0])
+        glow.filter = CIFilter(
+            name: "CIGaussianBlur",
+            parameters: ["inputRadius": 4.0]
+        )
         let glowSprite = SKSpriteNode(texture: texture, size: CGSize(size))
         glowSprite.color = NSColor.cyan
         glowSprite.colorBlendFactor = 0.8
@@ -22,7 +30,7 @@ final class PaddleSprite: Sprite {
         glow.addChild(glowSprite)
         glow.zPosition = -1
         node.addChild(glow)
-        
+
         self.node = node
     }
 
@@ -33,13 +41,22 @@ final class PaddleSprite: Sprite {
             // Gradient fill
             let gradient = NSGradient(colors: [
                 NSColor(red: 0.2, green: 0.7, blue: 1.0, alpha: 1.0),  // Bright cyan
-                NSColor(red: 0.1, green: 0.4, blue: 0.8, alpha: 1.0)   // Darker blue
+                NSColor(red: 0.1, green: 0.4, blue: 0.8, alpha: 1.0),  // Darker blue
             ])!
             gradient.draw(in: path, angle: 90)
 
             // Top highlight
             NSColor.white.withAlphaComponent(0.3).setFill()
-            let highlight = NSBezierPath(roundedRect: NSRect(x: 2, y: rect.height - 4, width: rect.width - 4, height: 2), xRadius: 1, yRadius: 1)
+            let highlight = NSBezierPath(
+                roundedRect: NSRect(
+                    x: 2,
+                    y: rect.height - 4,
+                    width: rect.width - 4,
+                    height: 2
+                ),
+                xRadius: 1,
+                yRadius: 1
+            )
             highlight.fill()
 
             // Border
@@ -52,7 +69,4 @@ final class PaddleSprite: Sprite {
         return SKTexture(image: image)
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }

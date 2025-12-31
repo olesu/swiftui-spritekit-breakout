@@ -35,7 +35,7 @@ struct SKGameSceneBuilder: GameSceneBuilder {
                 position: c.sceneLayout.paddleStartPosition,
                 size: c.sceneLayout.paddleSize
             ),
-            ball: BallSprite(
+            ball: SKBallSprite(
                 position: c.sceneLayout.ballStartPosition
             ),
             bricks: brickLayoutFactory.createNodes(),

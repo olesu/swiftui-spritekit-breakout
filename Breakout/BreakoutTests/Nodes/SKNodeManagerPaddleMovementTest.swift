@@ -10,7 +10,7 @@ struct SKNodeManagerPaddleMovementTest {
     private let paddlePosition = Point(x: 10, y: 0)
     private let paddleSize = Size(width: 2, height: 20)
     private let paddleMotionController = PaddleMotionController(speed: 1)
-    private let ball = BallSprite(position: .zero)
+    private let ball = SKBallSprite(position: .zero)
 
     @Test func controlsThePaddleByMovingLeft() {
         let paddle = PaddleSprite(position: paddlePosition, size: paddleSize)

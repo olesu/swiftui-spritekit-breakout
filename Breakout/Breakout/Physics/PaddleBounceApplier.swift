@@ -12,7 +12,7 @@ struct PaddleBounceApplier {
         self.bounceCalculator = bounceCalculator
     }
 
-    func applyBounce(ball: BallSprite, paddle: PaddleSprite) {
+    func applyBounce(ball: SKBallSprite, paddle: PaddleSprite) {
         let currentVelocity = ball.velocity
         let ballSpeed = sqrt(
             currentVelocity.dx * currentVelocity.dx + currentVelocity.dy

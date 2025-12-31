@@ -183,7 +183,7 @@ struct BallLaunchControllerTest {
         #expect(abs(ball.position.x - paddle.position.x) < tolerance)
     }
     
-    private func expectedY(_ ball: BallSprite, _ paddle: PaddleSprite) -> Double {
+    private func expectedY(_ ball: SKBallSprite, _ paddle: PaddleSprite) -> Double {
         paddle.position.y + paddle.size.height / 2 + ball.size
             .height / 2
     }
@@ -194,8 +194,8 @@ private enum TD {
         BallLaunchController()
     }
 
-    static func ball() -> BallSprite {
-        BallSprite(position: .zero)
+    static func ball() -> SKBallSprite {
+        SKBallSprite(position: .zero)
     }
 
     static func paddle() -> PaddleSprite {

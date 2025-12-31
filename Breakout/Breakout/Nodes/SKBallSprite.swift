@@ -1,37 +1,41 @@
 import SpriteKit
 import AppKit
 
-final class BallSprite: Sprite {
+final class SKBallSprite: Sprite {
     var node: SKSpriteNode
     
     private let disabledMask: UInt32 = 0x0
     
     init(position: Point) {
         let ballSize = CGSize(width: 10, height: 10)
-        let texture = BallSprite.createBallTexture(size: ballSize)
-        let node = SKSpriteNode(texture: texture, color: .white, size: ballSize)
+        let texture = SKBallSprite.createBallTexture(size: ballSize)
+
+        self.node = SKSpriteNode(texture: texture, color: .white, size: ballSize)
         node.name = NodeNames.ball.rawValue
         node.position = CGPoint(position)
-        node.physicsBody = BallPhysicsBodyConfigurer(size: node.size).physicsBody
+        node.physicsBody = BallPhysicsBodyConfigurer(size: ballSize).physicsBody
+        node.addChild(makeGlowEffect(texture: texture, size: ballSize))
+    }
 
-        // Add glow effect
+}
+
+extension SKBallSprite {
+    private func makeGlowEffect(texture: SKTexture, size: CGSize) -> SKEffectNode {
         let glow = SKEffectNode()
         glow.shouldRasterize = true
         glow.filter = CIFilter(name: "CIGaussianBlur", parameters: ["inputRadius": 3.0])
-        let glowSprite = SKSpriteNode(texture: texture, size: ballSize)
+        let glowSprite = SKSpriteNode(texture: texture, size: size)
         glowSprite.color = NSColor.yellow
         glowSprite.colorBlendFactor = 0.6
         glowSprite.alpha = 0.8
         glow.addChild(glowSprite)
         glow.zPosition = -1
-        node.addChild(glow)
         
-        self.node = node
+        return glow
     }
-
 }
 
-extension BallSprite {
+extension SKBallSprite {
     var velocity: Vector {
         let v = node.physicsBody?.velocity ?? .zero
         
@@ -43,7 +47,13 @@ extension BallSprite {
     }
 }
 
-extension BallSprite {
+extension SKBallSprite {
+    var radius: Double {
+        size.width / 2
+    }
+}
+
+extension SKBallSprite {
     private static func createBallTexture(size: CGSize) -> SKTexture {
         let image = NSImage(size: size, flipped: false) { rect in
             let center = CGPoint(x: rect.midX, y: rect.midY)
@@ -69,14 +79,8 @@ extension BallSprite {
     }
 }
 
-extension BallSprite {
-    var radius: Double {
-        size.width / 2
-    }
-}
-
 // MARK: Physics
-extension BallSprite {
+extension SKBallSprite {
     func hide() {
         node.physicsBody?.categoryBitMask = disabledMask
         node.physicsBody?.contactTestBitMask = disabledMask
