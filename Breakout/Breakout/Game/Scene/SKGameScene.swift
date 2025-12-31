@@ -118,7 +118,7 @@ extension SKGameScene {
 extension SKGameScene {
     /// Launches the ball if it is currently clamped to the paddle.
     func launchBall() {
-        ballLaunchController.launch(ball: nodes.ball.node)
+        ballLaunchController.launch(ball: nodes.ball)
     }
 
 }

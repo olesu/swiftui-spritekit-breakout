@@ -1,7 +1,7 @@
 import SpriteKit
 
 final class BallLaunchController {
-    private let launchVector = CGVector(dx: 0, dy: 400)
+    private let launchVector = Vector(dx: 0, dy: 400)
     private let disabledMask: UInt32 = 0x0
 
     private(set) var state: BallState = .clamped
@@ -22,9 +22,9 @@ final class BallLaunchController {
         ball.size.width / 2
     }
 
-    func launch(ball: SKSpriteNode) {
+    func launch(ball: BallSprite) {
         state = .launched
-        ball.physicsBody?.velocity = launchVector
+        ball.setVelocity(launchVector)
     }
 
     func reset(ball: SKSpriteNode, onto paddle: SKSpriteNode) {

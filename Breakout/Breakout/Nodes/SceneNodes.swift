@@ -5,7 +5,7 @@ import Foundation
 /// Nodes are mutated by NodeManager, not replaced.
 struct SceneNodes {
     let paddle: Sprite
-    let ball: Sprite
+    let ball: BallSprite
     let bricks: SpriteContainer
     let topWall: Attachable
     let leftWall: Attachable
