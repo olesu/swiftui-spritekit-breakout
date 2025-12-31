@@ -62,7 +62,7 @@ final class SKNodeManager: NodeManager {
             sceneSize: sceneSize
         )
         nodes.paddle.setPosition(newPaddle.position)
-        ballLaunchController.update(ball: nodes.ball, paddle: nodes.paddle.node)
+        ballLaunchController.update(ball: nodes.ball, paddle: nodes.paddle)
     }
 
     func beginPaddleKeyboardOverride(to position: CGPoint, sceneSize: CGSize) {
@@ -95,7 +95,7 @@ final class SKNodeManager: NodeManager {
     }
 
     func ballHitPaddle() {
-        paddleBounceApplier.applyBounce(ball: nodes.ball.node, paddle: nodes.paddle.node)
+        paddleBounceApplier.applyBounce(ball: nodes.ball, paddle: nodes.paddle)
 
     }
 

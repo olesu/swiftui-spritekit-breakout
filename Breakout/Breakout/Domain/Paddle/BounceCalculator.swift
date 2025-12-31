@@ -1,34 +1,12 @@
 import Foundation
 
-/// Calculates ball velocity after bouncing off the paddle.
-///
-/// Implements position-based bounce angle control to give players precise
-/// control over ball direction. The angle varies based on where the ball
-/// hits the paddle, with the center producing a straight vertical bounce
-/// and the edges producing angled bounces.
 struct BounceCalculator {
-    /// Calculates the ball's velocity after bouncing off the paddle.
-    ///
-    /// The bounce angle is determined by the ball's position relative to the paddle center:
-    /// - Center hit (0.0): Vertical bounce (0° from vertical)
-    /// - Edge hits (±1.0): Maximum angle bounce (±45° from vertical)
-    /// - Intermediate positions: Proportional angles between 0° and 45°
-    ///
-    /// The ball always bounces upward (positive dy) with the original speed maintained.
-    ///
-    /// - Parameters:
-    ///   - ballX: The x-coordinate of the ball's position.
-    ///   - paddleX: The x-coordinate of the paddle's center.
-    ///   - paddleWidth: The width of the paddle.
-    ///   - ballSpeed: The desired magnitude of the ball's velocity.
-    /// - Returns: A velocity vector with magnitude equal to `ballSpeed` and direction
-    ///            determined by the hit position.
     func calculateBounce(
         ballX: Double,
         paddleX: Double,
         paddleWidth: Double,
         ballSpeed: Double
-    ) -> Velocity {
+    ) -> Vector {
         // Calculate where on paddle the ball hit (-1.0 to 1.0, center = 0)
         let rawIntersectX = (ballX - paddleX) / (paddleWidth / 2)
 
@@ -43,6 +21,6 @@ struct BounceCalculator {
         let dx = ballSpeed * sin(bounceAngle)
         let dy = ballSpeed * cos(bounceAngle)
 
-        return Velocity(dx: dx, dy: dy)
+        return Vector(dx: dx, dy: dy)
     }
 }

@@ -4,7 +4,7 @@ import Foundation
 /// Owns all Sprites in the scene.
 /// Nodes are mutated by NodeManager, not replaced.
 struct SceneNodes {
-    let paddle: Sprite
+    let paddle: PaddleSprite
     let ball: BallSprite
     let bricks: SpriteContainer
     let topWall: Attachable

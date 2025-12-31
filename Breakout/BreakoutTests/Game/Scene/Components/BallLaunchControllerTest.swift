@@ -12,12 +12,12 @@ struct BallLaunchControllerTest {
 
 
     @Test func clampsBallCenteredAboveThePaddle() {
-        paddle.position = TD.paddleStartPosition()
+        paddle.setPosition(TD.paddleStartPosition())
 
         controller.clamp(ball: ball, to: paddle)
 
         #expect(abs(ball.position.x - paddle.position.x) < tolerance)
-        #expect(abs(ball.position.y - expectedY(ball.node, paddle)) < tolerance)
+        #expect(abs(ball.position.y - expectedY(ball, paddle)) < tolerance)
     }
 
     @Test func launchesBallWithUpwardVelocity() {
@@ -29,7 +29,7 @@ struct BallLaunchControllerTest {
     }
 
     @Test func resetClampsBallToThePaddle() {
-        paddle.position = TD.paddleStartPosition()
+        paddle.setPosition(TD.paddleStartPosition())
 
         ball.setPosition(Point(x: 999, y: 999))
 
@@ -39,7 +39,7 @@ struct BallLaunchControllerTest {
             ball.position
                 == Point(
                     x: paddle.position.x,
-                    y: expectedY(ball.node, paddle)
+                    y: expectedY(ball, paddle)
                 )
         )
     }
@@ -53,27 +53,27 @@ struct BallLaunchControllerTest {
     }
     
     @Test func clampedBallFollowsPaddle() {
-        paddle.position = TD.paddleStartPosition()
+        paddle.setPosition(TD.paddleStartPosition())
         
         controller.clamp(ball: ball, to: paddle)
         
-        paddle.position.x += 30
+        paddle.setPosition(Point(x: paddle.position.x + 30, y: paddle.position.y))
         
         controller.update(ball: ball, paddle: paddle)
         
         #expect(abs(ball.position.x - paddle.position.x) < tolerance)
-        #expect(abs(ball.position.y - expectedY(ball.node, paddle)) < tolerance)
+        #expect(abs(ball.position.y - expectedY(ball, paddle)) < tolerance)
     }
     
     @Test func launchedBallDoesNotFollowPaddle() {
-        paddle.position = TD.paddleStartPosition()
+        paddle.setPosition(TD.paddleStartPosition())
         
         controller.clamp(ball: ball, to: paddle)
         controller.launch(ball: ball)
         
         let oldPosition = ball.position
         
-        paddle.position.x += 50
+        paddle.setPosition(Point(x: paddle.position.x + 50, y: paddle.position.y))
         
         controller.update(ball: ball, paddle: paddle)
         
@@ -133,7 +133,7 @@ struct BallLaunchControllerTest {
         controller.performReset(ball: ball, at: Point(x: 160, y: 50))
 
         // Move paddle
-        paddle.position.x += 30
+        paddle.setPosition(Point(x: paddle.position.x + 30, y: paddle.position.y))
 
         controller.update(ball: ball, paddle: paddle)
 
@@ -150,7 +150,7 @@ struct BallLaunchControllerTest {
         #expect(controller.state == .launched)
 
         // Move paddle
-        paddle.position.x += 50
+        paddle.setPosition(Point(x: paddle.position.x + 50, y: paddle.position.y))
         controller.update(ball: ball, paddle: paddle)
 
         // Ball should stay at world reset position, not clamp to paddle
@@ -158,32 +158,32 @@ struct BallLaunchControllerTest {
     }
 
     @Test func performPaddleResetClampsBallToPaddle() {
-        paddle.position = TD.paddleStartPosition()
+        paddle.setPosition(TD.paddleStartPosition())
 
         controller.prepareReset(ball: ball)
         controller.performPaddleReset(ball: ball, paddle: paddle)
 
         #expect(abs(ball.position.x - paddle.position.x) < tolerance)
-        #expect(abs(ball.position.y - expectedY(ball.node, paddle)) < tolerance)
+        #expect(abs(ball.position.y - expectedY(ball, paddle)) < tolerance)
         #expect(controller.state == .clamped)
     }
 
     @Test func performPaddleResetMakesBallFollowPaddle() {
         ball.node.physicsBody = TD.ballPhysicsBody()
-        paddle.position = TD.paddleStartPosition()
+        paddle.setPosition(TD.paddleStartPosition())
 
         controller.prepareReset(ball: ball)
         controller.performPaddleReset(ball: ball, paddle: paddle)
 
         // Move paddle
-        paddle.position.x += 40
+        paddle.setPosition(Point(x: paddle.position.x + 40, y: paddle.position.y))
 
         controller.update(ball: ball, paddle: paddle)
 
         #expect(abs(ball.position.x - paddle.position.x) < tolerance)
     }
     
-    private func expectedY(_ ball: SKSpriteNode, _ paddle: SKSpriteNode) -> CGFloat {
+    private func expectedY(_ ball: BallSprite, _ paddle: PaddleSprite) -> Double {
         paddle.position.y + paddle.size.height / 2 + ball.size
             .height / 2
     }
@@ -198,15 +198,15 @@ private enum TD {
         BallSprite(position: .zero)
     }
 
-    static func paddle() -> SKSpriteNode {
-        SKSpriteNode(
-            color: .white,
-            size: CGSize(width: 100, height: 20)
+    static func paddle() -> PaddleSprite {
+        PaddleSprite(
+            position: .zero,
+            size: Size(width: 100, height: 20)
         )
     }
 
-    static func paddleStartPosition() -> CGPoint {
-        CGPoint(x: 150, y: 40)
+    static func paddleStartPosition() -> Point {
+        Point(x: 150, y: 40)
     }
 
     static func ballPhysicsBody() -> SKPhysicsBody {

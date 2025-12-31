@@ -56,4 +56,3 @@ final class PaddleSprite: Sprite {
         fatalError("init(coder:) has not been implemented")
     }
 }
-

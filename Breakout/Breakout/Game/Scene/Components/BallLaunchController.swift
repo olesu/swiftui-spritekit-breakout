@@ -5,7 +5,7 @@ final class BallLaunchController {
 
     private(set) var state: BallState = .clamped
 
-    func clamp(ball: BallSprite, to paddle: SKSpriteNode) {
+    func clamp(ball: BallSprite, to paddle: PaddleSprite) {
         state = .clamped
 
         ball.setVelocity(.zero)
@@ -15,7 +15,7 @@ final class BallLaunchController {
         ))
     }
     
-    private func topOf(paddle: SKSpriteNode) -> CGFloat {
+    private func topOf(paddle: PaddleSprite) -> Double {
         paddle.position.y + paddle.size.height / 2
     }
     
@@ -24,11 +24,11 @@ final class BallLaunchController {
         ball.setVelocity(launchVector)
     }
 
-    func reset(ball: BallSprite, onto paddle: SKSpriteNode) {
+    func reset(ball: BallSprite, onto paddle: PaddleSprite) {
         clamp(ball: ball, to: paddle)
     }
 
-    func update(ball: BallSprite, paddle: SKSpriteNode) {
+    func update(ball: BallSprite, paddle: PaddleSprite) {
         guard state == .clamped else { return }
         clamp(ball: ball, to: paddle)
     }
@@ -50,7 +50,7 @@ final class BallLaunchController {
         ball.show()
     }
 
-    func performPaddleReset(ball: BallSprite, paddle: SKSpriteNode) {
+    func performPaddleReset(ball: BallSprite, paddle: PaddleSprite) {
         state = .clamped
         clamp(ball: ball, to: paddle)
         ball.show()

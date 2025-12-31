@@ -14,8 +14,8 @@ struct PaddleBounceApplierTest {
         let _ = makeApplier(ball, paddle)
 
         // Center hit should have minimal horizontal component
-        let dx = ball.physicsBody?.velocity.dx ?? 0
-        let dy = ball.physicsBody?.velocity.dy ?? 0
+        let dx = ball.velocity.dx
+        let dy = ball.velocity.dy
 
         #expect(abs(dx) < 50)
         #expect(dy > 0)  // Should bounce upward
@@ -24,12 +24,12 @@ struct PaddleBounceApplierTest {
     @Test
     func appliesCorrectVelocityForLeftEdgeHit() {
         let ball = makeBall()
-        ball.position.x = 140  // Left of paddle center
+        ball.setPosition(Point(x: 140, y: ball.position.y))  // Left of paddle center
         let paddle = makePaddle()
         let _ = makeApplier(ball, paddle)
 
-        let dx = ball.physicsBody?.velocity.dx ?? 0
-        let dy = ball.physicsBody?.velocity.dy ?? 0
+        let dx = ball.velocity.dx
+        let dy = ball.velocity.dy
 
         #expect(dx < 0)  // Should bounce left
         #expect(dy > 0)  // Should bounce upward
@@ -38,12 +38,12 @@ struct PaddleBounceApplierTest {
     @Test
     func appliesCorrectVelocityForRightEdgeHit() {
         let ball = makeBall()
-        ball.position.x = 180  // Right of paddle center
+        ball.setPosition(Point(x: 180, y: ball.position.y))  // Right of paddle center
         let paddle = makePaddle()
         let _ = makeApplier(ball, paddle)
 
-        let dx = ball.physicsBody?.velocity.dx ?? 0
-        let dy = ball.physicsBody?.velocity.dy ?? 0
+        let dx = ball.velocity.dx
+        let dy = ball.velocity.dy
 
         #expect(dx > 0)  // Should bounce right
         #expect(dy > 0)  // Should bounce upward
@@ -51,8 +51,8 @@ struct PaddleBounceApplierTest {
 
     @Test
     func handlesMissingPhysicsBodies() {
-        let ball = SKSpriteNode()
-        let paddle = SKSpriteNode()
+        let ball = BallSprite(position: .zero)
+        let paddle = PaddleSprite(position: .zero, size: .zero)
 
         let applier = PaddleBounceApplier(
             bounceSpeedPolicy: bounceSpeedPolicy,
@@ -63,36 +63,34 @@ struct PaddleBounceApplierTest {
         applier.applyBounce(ball: ball, paddle: paddle)
 
         // Should not crash when only ball has physics body
-        ball.physicsBody = SKPhysicsBody(circleOfRadius: 4)
+        ball.node.physicsBody = SKPhysicsBody(circleOfRadius: 4)
         applier.applyBounce(ball: ball, paddle: paddle)
 
         // Should not crash when only paddle has physics body
-        ball.physicsBody = nil
-        paddle.physicsBody = SKPhysicsBody(
+        ball.node.physicsBody = nil
+        paddle.node.physicsBody = SKPhysicsBody(
             rectangleOf: CGSize(width: 40, height: 8)
         )
         applier.applyBounce(ball: ball, paddle: paddle)
     }
 
-    private func makeBall() -> SKSpriteNode {
-        let ball = SKSpriteNode()
-        ball.position = CGPoint(x: 160, y: 50)
-        ball.physicsBody = SKPhysicsBody(circleOfRadius: 4)
-        ball.physicsBody?.velocity = CGVector(dx: 200, dy: -300)
+    private func makeBall() -> BallSprite {
+        let ball = BallSprite(position: Point(x: 160, y: 50))
+        ball.node.physicsBody = SKPhysicsBody(circleOfRadius: 4)
+        ball.setVelocity(Vector(dx: 200, dy: -300))
 
         return ball
     }
 
-    private func makePaddle() -> SKSpriteNode {
-        let paddleSize = CGSize(width: 40, height: 8)
-        let paddle = SKSpriteNode(color: .white, size: paddleSize)
-        paddle.position = CGPoint(x: 160, y: 40)
-        paddle.physicsBody = SKPhysicsBody(rectangleOf: paddleSize)
+    private func makePaddle() -> PaddleSprite {
+        let paddleSize = Size(width: 40, height: 8)
+        let paddle = PaddleSprite(position: Point(x: 160, y: 40), size: paddleSize)
+        paddle.node.physicsBody = SKPhysicsBody(rectangleOf: CGSize(paddleSize))
 
         return paddle
     }
 
-    private func makeApplier(_ ball: SKSpriteNode, _ paddle: SKSpriteNode)
+    private func makeApplier(_ ball: BallSprite, _ paddle: PaddleSprite)
         -> PaddleBounceApplier
     {
         let applier = PaddleBounceApplier(
