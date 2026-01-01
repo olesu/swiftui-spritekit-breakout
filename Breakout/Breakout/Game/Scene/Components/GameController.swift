@@ -5,6 +5,8 @@ final class GameController {
     private let paddleInputController: PaddleInputController
     private let gameSession: GameSession
     private let nodeManager: NodeManager
+    
+    weak var observer: GameSessionObserver?
 
     init(
         paddleInputController: PaddleInputController,
@@ -29,6 +31,8 @@ final class GameController {
                 sceneSize: sceneSize
             )
         }
+        
+        observer?.gameSessionDidUpdate()
     }
 
     func pressLeft() {

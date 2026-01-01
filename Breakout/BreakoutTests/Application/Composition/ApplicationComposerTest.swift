@@ -3,10 +3,9 @@ import Foundation
 
 @testable import Breakout
 
-@MainActor
 struct ApplicationComposerTest {
 
-    @Test func rootCreatesPlayableGameViewModel() async throws {
+    @Test func rootCreatesPlayableGameViewModel() throws {
         let loader = GameConfigurationLoader(
             gameConfigurationAdapter: FakeGameConfigurationAdapter()
         )
@@ -16,12 +15,12 @@ struct ApplicationComposerTest {
             gameConfigurationLoader: loader
         )
 
-        try await startNewGameAndYieldToLetObservationFire(deps)
+        deps.gameViewModel.startNewGame()
 
         #expect(deps.gameViewModel.gameStatus != .idle)
     }
 
-    @Test func rootUsesDevStartingLevelWhenConfigured() async throws {
+    @Test func rootUsesDevStartingLevelWhenConfigured() throws {
         let loader = GameConfigurationLoader(
             gameConfigurationAdapter: FakeGameConfigurationAdapter()
         )
@@ -32,18 +31,11 @@ struct ApplicationComposerTest {
             gameConfigurationLoader: loader
         )
 
-        try await startNewGameAndYieldToLetObservationFire(deps)
+        deps.gameViewModel.startNewGame()
 
         #expect(
             brickService.loadedLayoutName == GameWiring.devStartingLevelLayout
         )
-    }
-
-    private func startNewGameAndYieldToLetObservationFire(
-        _ context: AppContext
-    ) async throws {
-        context.gameViewModel.startNewGame()
-        await Task.yield()
     }
 
 }

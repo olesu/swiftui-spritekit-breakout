@@ -122,7 +122,15 @@ extension ApplicationComposer {
             startingLives: rules.startingLives,
         )
 
+        let viewModel = GameViewModel(
+            session: session,
+            gameConfiguration: gameConfiguration,
+            screenNavigationService: screenNavigationService,
+            gameResultService: gameResultService,
+        )
+
         let gameSceneBuilder = SKGameSceneBuilder(
+            gameViewModel: viewModel,
             gameConfiguration: gameConfiguration,
             collisionRouter: GameWiring.makeCollisionRouter(),
             brickLayoutFactory: SKBrickLayoutFactory(session: session),
@@ -132,13 +140,6 @@ extension ApplicationComposer {
                 speed: rules.tuning.paddleSpeed
             ),
             bounceSpeedPolicy: rules.tuning.bounceSpeedPolicy
-        )
-
-        let viewModel = GameViewModel(
-            session: session,
-            gameConfiguration: gameConfiguration,
-            screenNavigationService: screenNavigationService,
-            gameResultService: gameResultService,
         )
 
         return (viewModel, gameSceneBuilder)

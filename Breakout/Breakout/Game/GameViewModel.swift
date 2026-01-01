@@ -24,8 +24,6 @@ final class GameViewModel {
         self.gameConfiguration = gameConfiguration
         self.screenNavigationService = screenNavigationService
         self.gameResultService = gameResultService
-
-        startTracking()
     }
 
 }
@@ -33,39 +31,41 @@ final class GameViewModel {
 extension GameViewModel {
     func startNewGame() {
         session.startGame()
+        refreshFromSession()
     }
 
 }
 
-extension GameViewModel {
-    private func startTracking() {
-        withObservationTracking {
-            updateFromSession()
-        } onChange: { [weak self] in
-            Task { @MainActor [weak self] in
-                self?.startTracking()
-            }
-        }
+extension GameViewModel: GameSessionObserver {
+    func gameSessionDidUpdate() {
+        refreshFromSession()
+    }
+    
+    @MainActor
+    func refreshFromSession() {
+        apply(snapshot: session.snapshot())
     }
 
     private func updateFromSession() {
-        let s = session.state
-        
-        if gameStatus != s.status {
-            handleStateSideEffects(newState: s)
-        }
-
-        currentScore = s.score
-        remainingLives = s.lives
-        gameStatus = s.status
+        apply(snapshot: session.snapshot())
     }
 
-    private func handleStateSideEffects(newState: GameState) {
-        switch newState.status {
+    private func apply(snapshot: GameSessionSnapshot) {
+        if gameStatus != snapshot.status {
+            handleStateSideEffects(snapshot: snapshot)
+        }
+
+        currentScore = snapshot.score
+        remainingLives = snapshot.lives
+        gameStatus = snapshot.status
+    }
+
+    private func handleStateSideEffects(snapshot: GameSessionSnapshot) {
+        switch snapshot.status {
         case .gameOver, .won:
             gameResultService.save(
-                didWin: newState.status == .won,
-                score: newState.score
+                didWin: snapshot.status == .won,
+                score: snapshot.score
             )
             screenNavigationService.navigate(to: .gameEnd)
         default:

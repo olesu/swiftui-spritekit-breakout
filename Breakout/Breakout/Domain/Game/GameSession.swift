@@ -1,6 +1,5 @@
 import Foundation
 
-@Observable
 final class GameSession: GameEventSink {
     private let repository: GameStateRepository
     private let reducer: GameReducer
@@ -33,7 +32,7 @@ final class GameSession: GameEventSink {
             initializeGame(bricks: [])
             return
         }
-        
+
         let bricks = levelBricksProvider.bricks(for: firstLevel)
         initializeGame(bricks: bricks.values.map { $0 })
     }
@@ -44,7 +43,7 @@ final class GameSession: GameEventSink {
         repository.save(newState)
         state = newState
     }
-    
+
     func handle(_ event: GameEvent) {
         let reduced = reducer.reduce(state, event: event)
 
@@ -98,7 +97,9 @@ final class GameSession: GameEventSink {
             uniqueKeysWithValues: bricks.map { ($0.id, $0) }
         )
 
-        let newState = GameState.initial(startingLives: startingLives).with(bricks: bricks)
+        let newState = GameState.initial(startingLives: startingLives).with(
+            bricks: bricks
+        )
         repository.save(newState)
         state = newState
     }
@@ -113,5 +114,17 @@ final class GameSession: GameEventSink {
         let newState = reducer.acknowledgeBallReset(state)
         repository.save(newState)
         state = newState
+    }
+}
+
+extension GameSession {
+    func snapshot() -> GameSessionSnapshot {
+        let s = state
+
+        return GameSessionSnapshot(
+            score: s.score,
+            lives: s.lives,
+            status: s.status
+        )
     }
 }

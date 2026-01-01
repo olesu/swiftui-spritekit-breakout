@@ -1,6 +1,7 @@
 import SpriteKit
 
 struct SKGameSceneBuilder: GameSceneBuilder {
+    private let gameViewModel: GameViewModel
     private let gameConfiguration: GameConfiguration
     private let collisionRouter: CollisionRouter
     private let brickLayoutFactory: BrickLayoutFactory
@@ -10,6 +11,7 @@ struct SKGameSceneBuilder: GameSceneBuilder {
     private let bounceSpeedPolicy: BounceSpeedPolicy
 
     init(
+        gameViewModel: GameViewModel,
         gameConfiguration: GameConfiguration,
         collisionRouter: CollisionRouter,
         brickLayoutFactory: BrickLayoutFactory,
@@ -18,6 +20,7 @@ struct SKGameSceneBuilder: GameSceneBuilder {
         paddleMotionController: PaddleMotionController,
         bounceSpeedPolicy: BounceSpeedPolicy,
     ) {
+        self.gameViewModel = gameViewModel
         self.gameConfiguration = gameConfiguration
         self.collisionRouter = collisionRouter
         self.brickLayoutFactory = brickLayoutFactory
@@ -82,6 +85,13 @@ struct SKGameSceneBuilder: GameSceneBuilder {
                 visualEffectProducer: visualEffectProducer,
             )
         )
+        
+        let gameController = GameController(
+            paddleInputController: PaddleInputController(),
+            gameSession: session,
+            nodeManager: nodeManager
+        )
+        gameController.observer = gameViewModel
 
         let scene = SKGameScene(
             size: CGSize(
@@ -91,11 +101,7 @@ struct SKGameSceneBuilder: GameSceneBuilder {
             nodes: nodes,
             ballLaunchController: ballLaunchController,
             contactHandler: contactHandler,
-            gameController: GameController(
-                paddleInputController: PaddleInputController(),
-                gameSession: session,
-                nodeManager: nodeManager
-            )
+            gameController: gameController,
         )
         scene.configureForSoundEffects(soundEffectProducer)
         scene.configureForVisualEffects(visualEffectProducer)

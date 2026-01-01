@@ -23,7 +23,15 @@ import SwiftUI
         )
         let brickLayoutFactory = SKBrickLayoutFactory(session: session)
         let ballLaunchController = BallLaunchController()
+        let viewModel = GameViewModel(
+            session: session,
+            gameConfiguration: gameConfiguration,
+            screenNavigationService: screenNavigationService,
+            gameResultService: gameResultService,
+        )
+
         let sceneBuilder = SKGameSceneBuilder(
+            gameViewModel: viewModel,
             gameConfiguration: gameConfiguration,
             collisionRouter: GameWiring.makeCollisionRouter(),
             brickLayoutFactory: brickLayoutFactory,
@@ -34,13 +42,6 @@ import SwiftUI
             ),
             bounceSpeedPolicy: gameTuning.bounceSpeedPolicy
         )
-        let viewModel = GameViewModel(
-            session: session,
-            gameConfiguration: gameConfiguration,
-            screenNavigationService: screenNavigationService,
-            gameResultService: gameResultService,
-        )
-
         GameView(sceneBuilder: sceneBuilder)
             .environment(viewModel)
             .frame(
