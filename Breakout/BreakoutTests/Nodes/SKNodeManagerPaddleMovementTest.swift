@@ -4,7 +4,6 @@ import Testing
 
 @testable import Breakout
 
-@MainActor
 struct SKNodeManagerPaddleMovementTest {
     private let sceneSize = CGSize(width: 100, height: 100)
     private let paddlePosition = Point(x: 10, y: 0)

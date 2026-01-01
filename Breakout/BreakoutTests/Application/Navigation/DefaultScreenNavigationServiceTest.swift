@@ -1,7 +1,6 @@
 import Testing
 @testable import Breakout
 
-@MainActor
 struct DefaultScreenNavigationServiceTests {
 
     @Test

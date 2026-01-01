@@ -3,7 +3,6 @@ import Testing
 
 @testable import Breakout
 
-@MainActor
 struct SKBrickLayoutFactoryTest {
     private let initial: GameState = .initial(startingLives: 3)
     

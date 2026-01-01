@@ -3,7 +3,6 @@ import Testing
 
 @testable import Breakout
 
-@MainActor
 struct DefaultCollisionRouterTests {
     private let collisionRouter = DefaultCollisionRouter(
         brickIdentifier: NodeNameBrickIdentifier()

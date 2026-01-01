@@ -3,7 +3,6 @@ import Testing
 
 @testable import Breakout
 
-@MainActor
 struct GameViewModelTest {
     let initial: GameState = .initial(startingLives: 3)
 
@@ -24,7 +23,12 @@ struct GameViewModelTest {
         #expect(vm.currentScore == 0)
     }
 
-    private func makeGameViewModel(with state: GameState) -> (GameViewModel, GameStateRepository) {
+    private func makeGameViewModel(
+        with state: GameState,
+        screenNavigationService: ScreenNavigationService =
+            FakeScreenNavigationService(),
+        gameResultService: GameResultService = FakeGameResultService(),
+    ) -> (GameViewModel, GameStateRepository) {
         let repository = FakeGameStateRepository(state)
         let model = GameViewModel(
             session: GameSession(
@@ -35,8 +39,8 @@ struct GameViewModelTest {
                 startingLives: state.lives,
             ),
             gameConfiguration: GameConfiguration.defaultValue(),
-            screenNavigationService: FakeScreenNavigationService(),
-            gameResultService: FakeGameResultService(),
+            screenNavigationService: screenNavigationService,
+            gameResultService: gameResultService,
 
         )
         return (model, repository)

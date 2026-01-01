@@ -3,7 +3,6 @@ import Testing
 
 @testable import Breakout
 
-@MainActor
 struct GameStateTest {
     private let startingLives = 5
     

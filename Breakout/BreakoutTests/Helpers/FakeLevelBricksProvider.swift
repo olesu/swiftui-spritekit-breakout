@@ -2,7 +2,6 @@ import Foundation
 
 @testable import Breakout
 
-@MainActor
 final class FakeLevelBricksProvider: LevelBricksProvider {
     static func providerForAllLevels(levels: [LevelId], bricks: [Brick]) -> FakeLevelBricksProvider {
         .init(

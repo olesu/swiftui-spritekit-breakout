@@ -2,7 +2,6 @@ import Testing
 
 @testable import Breakout
 
-@MainActor
 struct IdleViewModelTest {
 
     @Test func canStartANewGame() {

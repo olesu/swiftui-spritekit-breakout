@@ -3,7 +3,6 @@ import Testing
 
 @testable import Breakout
 
-@MainActor
 struct GameConfigurationLoaderTest {
 
     @Test func returnsGameConfigurationFromAdapter() throws {

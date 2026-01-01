@@ -3,7 +3,6 @@ import Testing
 
 @testable import Breakout
 
-@MainActor
 struct GameReducerTest {
     private let initial = GameState.initial(startingLives: 3)
     let reducer = GameReducer()

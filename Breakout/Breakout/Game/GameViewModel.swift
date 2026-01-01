@@ -12,7 +12,6 @@ final class GameViewModel {
     var currentScore: Int = 0
     var remainingLives: Int = 0
     var gameStatus: GameStatus = .idle
-    private var lastStatus: GameStatus = .idle
 
     init(
         session: GameSession,
@@ -31,18 +30,18 @@ final class GameViewModel {
 extension GameViewModel {
     func startNewGame() {
         session.startGame()
-        refreshFromSession()
+        syncFromSession()
     }
 
 }
 
 extension GameViewModel: GameSessionObserver {
     func gameSessionDidUpdate() {
-        refreshFromSession()
+        syncFromSession()
     }
     
     @MainActor
-    func refreshFromSession() {
+    func syncFromSession() {
         apply(snapshot: session.snapshot())
     }
 

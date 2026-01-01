@@ -3,7 +3,6 @@ import Testing
 
 @testable import Breakout
 
-@MainActor
 struct BallLaunchControllerTest {
     private let tolerance = 0.001
     let controller = TD.ballLaunchController()

@@ -2,7 +2,6 @@ import Testing
 
 @testable import Breakout
 
-@MainActor
 struct GameSessionProgressionTest {
     @Test func winningTheOnlyLevelEndsTheGame() {
         let scenario = GameSessionScenario
@@ -92,7 +91,6 @@ struct GameSessionProgressionTest {
 
 }
 
-@MainActor
 private struct GameSessionScenario {
     private let session: GameSession
 
@@ -163,7 +161,6 @@ private struct GameSessionScenario {
 
 // MARK: Setup helpers
 
-@MainActor
 private func makeSession(levelOrder: [LevelId]) -> GameSession {
     makeSession(
         repository: InMemoryGameStateRepository(),
@@ -176,7 +173,6 @@ private func makeSession(levelOrder: [LevelId]) -> GameSession {
     )
 }
 
-@MainActor
 private func makeSession(
     levelOrder: [LevelId],
     levelBricksProvider: LevelBricksProvider
@@ -189,7 +185,6 @@ private func makeSession(
     )
 }
 
-@MainActor
 private func makeSession(
     repository: any GameStateRepository,
     reducer: GameReducer,

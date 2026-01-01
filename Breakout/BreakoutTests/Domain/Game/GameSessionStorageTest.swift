@@ -2,7 +2,6 @@ import Testing
 
 @testable import Breakout
 
-@MainActor
 struct GameSessionStorageTest {
     private let initial: GameState = .initial(startingLives: 3)
 
@@ -168,7 +167,6 @@ struct GameSessionStorageTest {
 
 // MARK: Setup helpers
 
-@MainActor
 private func makeSession(repository: any GameStateRepository) -> GameSession {
     makeSession(
         repository: repository,
@@ -181,7 +179,6 @@ private func makeSession(repository: any GameStateRepository) -> GameSession {
     )
 }
 
-@MainActor
 private func makeSession(
     repository: any GameStateRepository,
     levelOrder: [LevelId],
@@ -195,7 +192,6 @@ private func makeSession(
     )
 }
 
-@MainActor
 private func makeSession(
     repository: any GameStateRepository,
     reducer: GameReducer,

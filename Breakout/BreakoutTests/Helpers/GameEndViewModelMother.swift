@@ -1,6 +1,5 @@
 @testable import Breakout
 
-@MainActor
 struct GameEndViewModelMother {
     static func makeModel() -> GameEndViewModel {
         let navigationState = NavigationState()

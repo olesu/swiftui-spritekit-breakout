@@ -2,7 +2,6 @@ import Testing
 
 @testable import Breakout
 
-@MainActor
 struct GameEventHandlerTest {
     let brick = Brick.createValid()
 
@@ -41,7 +40,6 @@ struct GameEventHandlerTest {
 
 }
 
-@MainActor
 private final class GameSimulation {
     let gameEventSink: FakeGameEventSink
     let nodeManager: FakeNodeManager

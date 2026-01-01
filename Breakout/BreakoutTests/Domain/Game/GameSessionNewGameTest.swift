@@ -2,7 +2,6 @@ import Testing
 
 @testable import Breakout
 
-@MainActor
 struct GameSessionNewGameTest {
     @Test
     func startingAGameWithNoLevelsIsStillPlaying() {
@@ -42,7 +41,6 @@ struct GameSessionNewGameTest {
 
 // MARK: Setup helpers
 
-@MainActor
 private func makeSession(
     levelOrder: [LevelId],
     levelBricksProvider: LevelBricksProvider
@@ -55,7 +53,6 @@ private func makeSession(
     )
 }
 
-@MainActor
 private func makeSession(
     repository: any GameStateRepository,
     reducer: GameReducer,

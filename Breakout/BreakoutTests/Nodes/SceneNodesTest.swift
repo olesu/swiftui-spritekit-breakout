@@ -3,7 +3,6 @@ import SpriteKit
 
 @testable import Breakout
 
-@MainActor
 struct SceneNodesTest {
 
     @Test func attachesAllNodesToParent() async throws {
