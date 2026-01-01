@@ -56,8 +56,7 @@ struct SKNodeManagerTest {
     }
 
     private func makeBrickLayoutFactory(_ brickId: BrickId)
-        -> FakeBrickLayoutFactory
-    {
+        -> FakeBrickLayoutFactory {
         let brick = BrickSprite(
             brickData: BrickData(
                 id: brickId.value,

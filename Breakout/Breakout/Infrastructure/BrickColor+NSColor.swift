@@ -9,10 +9,10 @@ extension BrickColor {
         let b = color.blueComponent
 
         // Tolerance for floating-point comparison
-        let t: CGFloat = 0.05
+        let tolerance: CGFloat = 0.05
 
         func close(_ a: CGFloat, _ b: CGFloat) -> Bool {
-            abs(a - b) <= t
+            abs(a - b) <= tolerance
         }
 
         switch true {
@@ -44,4 +44,3 @@ extension BrickColor {
         }
     }
 }
-

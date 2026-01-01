@@ -4,7 +4,7 @@ import SwiftUI
 @main
 struct Application: App {
     let bootState = resolveBootState()
-    
+
     var body: some Scene {
         WindowGroup {
             switch bootState {
@@ -15,7 +15,7 @@ struct Application: App {
             }
         }
     }
-    
+
     private static func resolveBootState() -> ApplicationBootState {
         do {
             return ApplicationBootState.running(try loadContext())

@@ -2,7 +2,7 @@ import Foundation
 
 struct LevelBundle {
     static let empty = LevelBundle(levels: [], bricks: [])
-    
+
     let levels: [LevelId]
     let bricksById: [BrickId: Brick]
 

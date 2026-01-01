@@ -39,21 +39,20 @@ class PaddleMotionController {
         isMovingLeft = false
         isMovingRight = false
     }
-    
+
     func overridePosition(paddle: Paddle, x: CGFloat, sceneSize: CGSize) -> Paddle {
         isOverriding = true
         let clamped = clampedX(paddle, x: x, sceneWidth: sceneSize.width)
         return paddle.moveTo(clamped)
     }
-    
+
     func endOverride() {
         isOverriding = false
     }
-    
+
     private func clampedX(_ paddle: Paddle, x: Double, sceneWidth: Double) -> Point {
         let minX = paddle.halfWidth
         let maxX = sceneWidth - paddle.halfWidth
         return Point(x: max(minX, min(maxX, x)), y: paddle.position.y)
     }
 }
-

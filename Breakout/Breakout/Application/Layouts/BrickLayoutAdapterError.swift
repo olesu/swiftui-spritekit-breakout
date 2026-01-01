@@ -5,4 +5,3 @@ internal enum BrickLayoutAdapterError: Error {
     /// The layout file contains invalid JSON or cannot be decoded.
     case invalidJson(String)
 }
-

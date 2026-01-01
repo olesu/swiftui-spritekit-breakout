@@ -4,8 +4,7 @@ enum GameWiring {
     static let productionStartingLevelLayout = "001-classic-breakout"
     static let devStartingLevelLayout = "dev-single-brick"
 
-    static func makeStartingLevel(policy: StartingLevelPolicy) -> StartingLevel
-    {
+    static func makeStartingLevel(policy: StartingLevelPolicy) -> StartingLevel {
         switch policy {
         case .production:
             .init(layoutFileName: productionStartingLevelLayout)
@@ -25,8 +24,7 @@ enum GameWiring {
     }
 
     static func makeGameConfigurationLoader(bundle: Bundle = .main)
-        -> GameConfigurationLoader
-    {
+        -> GameConfigurationLoader {
         GameConfigurationLoader(
             gameConfigurationAdapter: JsonGameConfigurationAdapter(
                 bundle: bundle

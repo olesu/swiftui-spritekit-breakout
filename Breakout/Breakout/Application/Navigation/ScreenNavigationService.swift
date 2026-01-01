@@ -6,4 +6,3 @@ protocol ScreenNavigationService {
     /// - Parameter screen: The screen to navigate to.
     func navigate(to screen: Screen)
 }
-

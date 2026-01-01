@@ -48,8 +48,7 @@ final class GameSession: GameEventSink {
         let reduced = reducer.reduce(state, event: event)
 
         if shouldContinueAfterWinning(previous: state, reduced: reduced),
-            let next = nextLevel(after: reduced.levelId)
-        {
+            let next = nextLevel(after: reduced.levelId) {
             let bricksForNextLevel = levelBricksProvider.bricks(for: next)
             let continued =
                 reduced
@@ -119,12 +118,10 @@ final class GameSession: GameEventSink {
 
 extension GameSession {
     func snapshot() -> GameSessionSnapshot {
-        let s = state
-
-        return GameSessionSnapshot(
-            score: s.score,
-            lives: s.lives,
-            status: s.status
+        GameSessionSnapshot(
+            score: state.score,
+            lives: state.lives,
+            status: state.status
         )
     }
 }

@@ -11,7 +11,7 @@ struct PaddleBounceApplierTest {
     func appliesCorrectVelocityForCenterHit() {
         let ball = makeBall()
         let paddle = makePaddle()
-        let _ = makeApplier(ball, paddle)
+        _ = makeApplier(ball, paddle)
 
         // Center hit should have minimal horizontal component
         let dx = ball.velocity.dx
@@ -26,7 +26,7 @@ struct PaddleBounceApplierTest {
         let ball = makeBall()
         ball.setPosition(Point(x: 140, y: ball.position.y))  // Left of paddle center
         let paddle = makePaddle()
-        let _ = makeApplier(ball, paddle)
+        _ = makeApplier(ball, paddle)
 
         let dx = ball.velocity.dx
         let dy = ball.velocity.dy
@@ -40,7 +40,7 @@ struct PaddleBounceApplierTest {
         let ball = makeBall()
         ball.setPosition(Point(x: 180, y: ball.position.y))  // Right of paddle center
         let paddle = makePaddle()
-        let _ = makeApplier(ball, paddle)
+        _ = makeApplier(ball, paddle)
 
         let dx = ball.velocity.dx
         let dy = ball.velocity.dy
@@ -91,8 +91,7 @@ struct PaddleBounceApplierTest {
     }
 
     private func makeApplier(_ ball: SKBallSprite, _ paddle: PaddleSprite)
-        -> PaddleBounceApplier
-    {
+        -> PaddleBounceApplier {
         let applier = PaddleBounceApplier(
             bounceSpeedPolicy: bounceSpeedPolicy,
             bounceCalculator: bounceCalculator

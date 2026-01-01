@@ -12,7 +12,7 @@ struct BrickTest {
         ColorAndValue(color: BrickColor.red, value: 7),
         ColorAndValue(color: BrickColor.orange, value: 7),
         ColorAndValue(color: BrickColor.yellow, value: 4),
-        ColorAndValue(color: BrickColor.green, value: 1),
+        ColorAndValue(color: BrickColor.green, value: 1)
     ])
     func hasValueForColor(_ args: ColorAndValue) {
         let brick = Brick(id: BrickId(of: "1"), color: args.color, position: .zero)

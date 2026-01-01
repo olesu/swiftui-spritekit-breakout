@@ -10,8 +10,8 @@ final class SKNodeManager: NodeManager {
 
     var removalQueue: Set<BrickId> = []
 
-    var lastBrickHitPosition: CGPoint? = nil
-    
+    var lastBrickHitPosition: CGPoint?
+
     init(
         ballLaunchController: BallLaunchController,
         paddleMotionController: PaddleMotionController,
@@ -26,7 +26,7 @@ final class SKNodeManager: NodeManager {
 
     func enqueueRemoval(of brickId: BrickId) {
         guard let brick = findBrick(brickId) else { return }
-        
+
         lastBrickHitPosition = brick.position
         removalQueue.insert(brickId)
     }
@@ -37,7 +37,7 @@ final class SKNodeManager: NodeManager {
         }
         removalQueue.removeAll()
     }
-    
+
     func moveBall(to position: Point) {
         nodes.ball.setPosition(position)
     }
@@ -56,7 +56,7 @@ final class SKNodeManager: NodeManager {
         let newPaddle = paddleMotionController.update(
             paddle: Paddle(
                 position: nodes.paddle.position,
-                w: nodes.paddle.size.width
+                width: nodes.paddle.size.width
             ),
             deltaTime: dt,
             sceneSize: sceneSize
@@ -69,7 +69,7 @@ final class SKNodeManager: NodeManager {
         let newPaddle = paddleMotionController.overridePosition(
             paddle: Paddle(
                 position: nodes.paddle.position,
-                w: nodes.paddle.size.width
+                width: nodes.paddle.size.width
             ),
             x: position.x,
             sceneSize: sceneSize
@@ -110,7 +110,7 @@ extension SKNodeManager {
         remove(node: brickToRemove)
 
     }
-    
+
     private func findBrick(_ brickId: BrickId) -> SKNode? {
         nodes.bricks.children.first {
             $0.name == brickId.value

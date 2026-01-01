@@ -8,29 +8,29 @@ struct PaddleMotionControllerTest {
 
     @Test func movesRightBySpeedTimesDeltaTime() {
         let paddle = makePaddle()
-        
+
         let controller = PaddleMotionController(speed: 200)
-        
+
         controller.startRight()
         let newPaddle = controller.update(paddle: paddle, deltaTime: 1.0, sceneSize: sceneSize)
-        
+
         #expect(newPaddle.position.x <= sceneSize.width - newPaddle.halfWidth)
     }
-    
+
     @Test func stopsRightMotionWHenStopped() {
         let paddle = makePaddle()
-        
+
         let controller = PaddleMotionController(speed: 200)
-        
+
         controller.startRight()
         let movingPaddle = controller.update(paddle: paddle, deltaTime: 1.0, sceneSize: sceneSize)
-        
+
         controller.stop()
         let stoppedPaddle = controller.update(paddle: movingPaddle, deltaTime: 1.0, sceneSize: sceneSize)
-        
+
         #expect(stoppedPaddle.position.x <= sceneSize.width - stoppedPaddle.halfWidth)
     }
-    
+
     @Test func stopsLeftMotionWHenStopped() {
         let paddle = makePaddle()
         let controller = PaddleMotionController(speed: 200)
@@ -218,7 +218,7 @@ struct PaddleMotionControllerTest {
     }
 
     private func makePaddle() -> Paddle {
-        .init(position: Point(x: 100, y: 0), w: 50)
+        .init(position: Point(x: 100, y: 0), width: 50)
     }
 
 }

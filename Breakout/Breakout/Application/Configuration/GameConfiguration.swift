@@ -9,4 +9,3 @@ struct GameConfiguration: Codable, Equatable {
     let sceneLayout: SceneLayout
 
 }
-

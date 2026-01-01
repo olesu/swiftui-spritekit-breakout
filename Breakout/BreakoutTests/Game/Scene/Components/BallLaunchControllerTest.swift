@@ -9,7 +9,6 @@ struct BallLaunchControllerTest {
     let paddle = TD.paddle()
     let ball = TD.ball()
 
-
     @Test func clampsBallCenteredAboveThePaddle() {
         paddle.setPosition(TD.paddleStartPosition())
 
@@ -42,65 +41,65 @@ struct BallLaunchControllerTest {
                 )
         )
     }
-    
+
     @Test func clampStopsBallMovement() {
         ball.setVelocity(Vector(dx: 10, dy: 10))
-        
+
         controller.clamp(ball: ball, to: TD.paddle())
-        
+
         #expect(ball.velocity == Vector.zero)
     }
-    
+
     @Test func clampedBallFollowsPaddle() {
         paddle.setPosition(TD.paddleStartPosition())
-        
+
         controller.clamp(ball: ball, to: paddle)
-        
+
         paddle.setPosition(Point(x: paddle.position.x + 30, y: paddle.position.y))
-        
+
         controller.update(ball: ball, paddle: paddle)
-        
+
         #expect(abs(ball.position.x - paddle.position.x) < tolerance)
         #expect(abs(ball.position.y - expectedY(ball, paddle)) < tolerance)
     }
-    
+
     @Test func launchedBallDoesNotFollowPaddle() {
         paddle.setPosition(TD.paddleStartPosition())
-        
+
         controller.clamp(ball: ball, to: paddle)
         controller.launch(ball: ball)
-        
+
         let oldPosition = ball.position
-        
+
         paddle.setPosition(Point(x: paddle.position.x + 50, y: paddle.position.y))
-        
+
         controller.update(ball: ball, paddle: paddle)
-        
+
         #expect(ball.position == oldPosition)
     }
-    
+
     @Test func prepareResetDisablesPhysicsAndHidesBall() {
         controller.prepareReset(ball: ball)
-        
+
         #expect(ball.node.physicsBody?.categoryBitMask == 0)
         #expect(ball.node.physicsBody?.contactTestBitMask == 0)
         #expect(ball.node.physicsBody?.collisionBitMask == 0)
         #expect(ball.node.alpha == 0)
     }
-    
+
     @Test func performResetRestoresPhysicsAndVisibility() {
         ball.setVelocity(Vector(dx: 123, dy: -456))
         ball.node.physicsBody?.angularVelocity = .pi
-        
+
         controller.prepareReset(ball: ball)
-        
+
         let resetPosition = Point(x: 160, y: 50)
         controller.performReset(ball: ball, at: resetPosition)
-        
+
         #expect(ball.velocity == .zero)
         #expect(ball.node.physicsBody?.angularVelocity == 0)
         #expect(ball.position == resetPosition)
-        
+
         #expect(ball.node.physicsBody?.categoryBitMask == CollisionCategory.ball.mask)
         #expect(ball.node.physicsBody?.contactTestBitMask ==
                 CollisionCategory.wall.mask
@@ -115,15 +114,15 @@ struct BallLaunchControllerTest {
         )
         #expect(ball.node.alpha == 1)
     }
-    
+
     @Test func performResetSetsStateToClamped() {
         controller.launch(ball: ball)
         controller.prepareReset(ball: ball)
         controller.performReset(ball: ball, at: Point(x: 160, y: 50))
-        
+
         #expect(controller.state == .clamped)
     }
-    
+
     @Test func performResetClampsBallAndFollowsPaddle() {
         let paddle = TD.paddle()
 
@@ -181,7 +180,7 @@ struct BallLaunchControllerTest {
 
         #expect(abs(ball.position.x - paddle.position.x) < tolerance)
     }
-    
+
     private func expectedY(_ ball: SKBallSprite, _ paddle: PaddleSprite) -> Double {
         paddle.position.y + paddle.size.height / 2 + ball.size
             .height / 2
@@ -212,4 +211,3 @@ private enum TD {
         SKPhysicsBody(circleOfRadius: 10)
     }
 }
-

@@ -22,15 +22,14 @@ struct GameConfigurationLoaderTest {
             try loader.load()
         }
     }
-    
+
     @Test func bundledGameConfigurationDecodes() throws {
         let loader = GameConfigurationLoader(
             gameConfigurationAdapter: JsonGameConfigurationAdapter(bundle: .main)
         )
-        
+
         _ = try loader.load()
-        
+
     }
 
 }
-

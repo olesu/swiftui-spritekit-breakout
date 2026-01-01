@@ -15,11 +15,11 @@ protocol NodeManager {
     func startPaddleLeft()
     func startPaddleRight()
     func stopPaddle()
-    
+
     // MARK: ball
     func moveBall(to position: Point)
     func ballHitPaddle()
-    
+
     // MARK: ball and paddle
     func resetBall(sceneSize: CGSize)
     func update(deltaTime dt: TimeInterval, sceneSize: CGSize)

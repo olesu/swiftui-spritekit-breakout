@@ -3,9 +3,9 @@ import AppKit
 
 final class SKBallSprite: Sprite {
     var node: SKSpriteNode
-    
+
     private let disabledMask: UInt32 = 0x0
-    
+
     init(position: Point) {
         let ballSize = CGSize(width: 10, height: 10)
         let texture = SKBallSprite.createBallTexture(size: ballSize)
@@ -30,7 +30,7 @@ extension SKBallSprite {
         glowSprite.alpha = 0.8
         glow.addChild(glowSprite)
         glow.zPosition = -1
-        
+
         return glow
     }
 }
@@ -38,10 +38,10 @@ extension SKBallSprite {
 extension SKBallSprite {
     var velocity: Vector {
         let v = node.physicsBody?.velocity ?? .zero
-        
+
         return Vector(dx: v.dx, dy: v.dy)
     }
-    
+
     func setVelocity(_ velocity: Vector) {
         node.physicsBody?.velocity = CGVector(velocity)
     }
@@ -87,7 +87,7 @@ extension SKBallSprite {
         node.physicsBody?.collisionBitMask = disabledMask
         node.alpha = 0
     }
-    
+
     func show() {
         node.alpha = 1
         node.physicsBody?.angularVelocity = 0

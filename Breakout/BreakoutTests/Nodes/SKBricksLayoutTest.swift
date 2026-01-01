@@ -36,7 +36,7 @@ struct SKBricksLayoutTest {
 
         let bricks = [
             BrickData(id: id1, position: Point(x: 0, y: 0), color: .red),
-            BrickData(id: id2, position: Point(x: 0, y: 0), color: .green),
+            BrickData(id: id2, position: Point(x: 0, y: 0), color: .green)
         ]
 
         let layout = SKBricksLayout(brickData: bricks)
@@ -46,7 +46,7 @@ struct SKBricksLayoutTest {
         #expect(addedBrickIds[0] == id1)
         #expect(addedBrickIds[1] == id2)
     }
-    
+
     @Test func brickSpriteUsesBrickDataPosition() {
         let data = BrickData(
             id: "brick-1",

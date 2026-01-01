@@ -85,7 +85,7 @@ struct SKGameSceneBuilder: GameSceneBuilder {
                 visualEffectProducer: visualEffectProducer,
             )
         )
-        
+
         let gameController = GameController(
             paddleInputController: PaddleInputController(),
             gameSession: session,
@@ -107,7 +107,7 @@ struct SKGameSceneBuilder: GameSceneBuilder {
         scene.configureForVisualEffects(visualEffectProducer)
         return scene
     }
-    
+
 }
 
 extension SKScene {
@@ -118,7 +118,7 @@ extension SKScene {
         addChild(effectsNode)
         soundEffectProducer.attach(to: effectsNode)
     }
-    
+
     fileprivate func configureForVisualEffects(_ visualEffectProducer: SKVisualEffectProducer) {
         let effectsNode = SKNode()
         effectsNode.name = "visual-effects"

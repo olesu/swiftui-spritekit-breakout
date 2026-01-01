@@ -14,11 +14,11 @@ final class BallLaunchController {
             y: topOf(paddle: paddle) + ball.radius,
         ))
     }
-    
+
     private func topOf(paddle: PaddleSprite) -> Double {
         paddle.position.y + paddle.size.height / 2
     }
-    
+
     func launch(ball: SKBallSprite) {
         state = .launched
         ball.setVelocity(launchVector)

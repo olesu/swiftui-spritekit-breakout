@@ -20,9 +20,9 @@ final class SKGameScene: SKScene {
         self.ballLaunchController = ballLaunchController
         self.contactHandler = contactHandler
         self.gameController = gameController
-        
+
         super.init(size: size)
-        
+
         addGameNodes()
     }
 
@@ -43,7 +43,7 @@ extension SKGameScene {
 
         lastUpdateTime = currentTime
     }
-    
+
 }
 
 // MARK: - didMove (add nodes)
@@ -56,7 +56,7 @@ extension SKGameScene {
         addChild(GradientBackground.create(with: size))
         nodes.attach(to: self)
     }
-    
+
 }
 
 // MARK: - Ball Control
@@ -67,7 +67,7 @@ extension SKGameScene {
 
 }
 
-// Mark: - Paddle Intent API
+// MARK: - Paddle Intent API
 extension SKGameScene {
     func movePaddle(to point: CGPoint) {
         gameController.movePaddle(to: point, sceneSize: size)

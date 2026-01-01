@@ -14,7 +14,7 @@ final class WallSprite: Sprite {
         node.position = CGPoint(position)
         node.alpha = 0.35
         node.physicsBody = WallPhysicsBodyConfigurer(size: CGSize(size)).physicsBody
-        
+
         self.node = node
     }
 }

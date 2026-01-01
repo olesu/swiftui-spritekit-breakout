@@ -11,4 +11,3 @@ internal enum NodeNames: String {
     case rightWall
     case gutter
 }
-

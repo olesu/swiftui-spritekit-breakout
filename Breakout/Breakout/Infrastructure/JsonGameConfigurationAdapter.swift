@@ -2,11 +2,11 @@ import Foundation
 
 final class JsonGameConfigurationAdapter: GameConfigurationAdapter {
     private let bundle: Bundle
-    
+
     init(bundle: Bundle) {
         self.bundle = bundle
     }
-    
+
     enum LoaderError: Error {
         case resourceNotFound(String, String)
         case decodingFailed(Error)

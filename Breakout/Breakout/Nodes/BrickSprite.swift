@@ -2,7 +2,7 @@ import SpriteKit
 
 final class BrickSprite: Sprite {
     var node: SKSpriteNode
-    
+
     init(brickData: BrickData) {
         // TODO: Should not be hardcoded here
         let brickSize = CGSize(width: 22, height: 10)
@@ -18,8 +18,7 @@ final class BrickSprite: Sprite {
     }
 
     private static func createBrickTexture(size: CGSize, baseColor: NSColor)
-        -> SKTexture
-    {
+        -> SKTexture {
         let image = NSImage(size: size, flipped: false) { rect in
             let path = NSBezierPath(
                 roundedRect: rect.insetBy(dx: 0.5, dy: 0.5),
@@ -37,7 +36,7 @@ final class BrickSprite: Sprite {
 
             // Vertical gradient for 3D effect
             let gradient = NSGradient(colors: [
-                lightColor, baseColor, darkColor,
+                lightColor, baseColor, darkColor
             ])!
             gradient.draw(in: path, angle: 90)
 
@@ -88,4 +87,3 @@ final class BrickSprite: Sprite {
         fatalError("init(coder:) has not been implemented")
     }
 }
-

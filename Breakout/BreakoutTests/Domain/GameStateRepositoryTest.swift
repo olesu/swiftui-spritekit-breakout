@@ -5,7 +5,7 @@ import Testing
 
 struct GameStateRepositoryTest {
     private let initial = GameState.initial(startingLives: 3)
-    
+
     @Test func testSaveAndLoad_persistsGameState() {
         let repository = InMemoryGameStateRepository()
         let state = initial

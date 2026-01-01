@@ -174,7 +174,7 @@ private func makeSession(repository: any GameStateRepository) -> GameSession {
         levelOrder: [.only],
         levelBricksProvider: FakeLevelBricksProvider(bricksByLevel: [
             .level1: [BrickId.createValid(): Brick.createValid()],
-            .level2: [BrickId.createValid(): Brick.createValid()],
+            .level2: [BrickId.createValid(): Brick.createValid()]
         ])
     )
 }

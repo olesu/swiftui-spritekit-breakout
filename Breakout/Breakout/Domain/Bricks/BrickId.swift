@@ -7,6 +7,5 @@ nonisolated struct BrickId: Hashable {
     init(of value: String) {
         self.value = value
     }
-    
-}
 
+}

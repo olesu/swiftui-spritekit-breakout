@@ -20,7 +20,7 @@ struct GameView: View {
                     SpriteView(
                         scene: scene,
                         debugOptions: [ /*.showsPhysics,*/
-                            .showsFPS, .showsNodeCount,
+                            .showsFPS, .showsNodeCount
                         ]
                     )
                     .focusable()

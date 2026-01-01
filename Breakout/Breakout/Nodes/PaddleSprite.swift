@@ -41,7 +41,7 @@ final class PaddleSprite: Sprite {
             // Gradient fill
             let gradient = NSGradient(colors: [
                 NSColor(red: 0.2, green: 0.7, blue: 1.0, alpha: 1.0),  // Bright cyan
-                NSColor(red: 0.1, green: 0.4, blue: 0.8, alpha: 1.0),  // Darker blue
+                NSColor(red: 0.1, green: 0.4, blue: 0.8, alpha: 1.0)  // Darker blue
             ])!
             gradient.draw(in: path, angle: 90)
 

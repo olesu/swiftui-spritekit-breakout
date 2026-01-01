@@ -5,7 +5,7 @@ import Testing
 
 struct SKBrickLayoutFactoryTest {
     private let initial: GameState = .initial(startingLives: 3)
-    
+
     @Test func createsLayoutFromSpec() {
         let brickId = BrickId(of: "brick-001")
         let brick = Brick(
@@ -13,7 +13,7 @@ struct SKBrickLayoutFactoryTest {
             color: .red,
             position: .zero,
         )
-        
+
         let repository = InMemoryGameStateRepository()
         repository.save(initial.with(bricks: [brickId: brick]))
         let creator = SKBrickLayoutFactory(

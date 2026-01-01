@@ -30,7 +30,7 @@ struct NavigationCoordinatorTest {
         let coordinator = NavigationCoordinator(
             navigationState: navigationState
         )
-        
+
         #expect(coordinator.currentScreen == .gameEnd)
     }
 
@@ -57,16 +57,16 @@ struct NavigationCoordinatorTest {
 
         #expect(coordinator.currentScreen == .idle)
     }
-    
+
     @Test func updatesScreenWhenStateChangesToGameEnd() {
         let navigationState = NavigationState()
         navigationState.currentScreen = .game
         let coordinator = NavigationCoordinator(
             navigationState: navigationState
         )
-        
+
         navigationState.currentScreen = .gameEnd
-        
+
         #expect(coordinator.currentScreen == .gameEnd)
     }
 }

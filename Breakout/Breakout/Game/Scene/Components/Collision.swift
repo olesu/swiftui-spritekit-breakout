@@ -7,7 +7,7 @@ struct Collision {
     let nodeB: SKNode?
 
     var combinedMask: UInt32 { categoryA | categoryB }
-    
+
     func node(forCategory category: UInt32) -> SKNode? {
         categoryA == category ? nodeA : nodeB
     }

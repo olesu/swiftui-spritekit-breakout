@@ -12,8 +12,7 @@ import SwiftUI
             .frame(width: 320 * 0.5, height: 480 * 0.5)
     }
 
-    private class GameEndPreviewScreenNavigationService: ScreenNavigationService
-    {
+    private class GameEndPreviewScreenNavigationService: ScreenNavigationService {
         func navigate(to screen: Screen) {
 
         }

@@ -9,7 +9,7 @@ final class SKBricksLayout: SpriteContainer {
     init(brickData: [BrickData]) {
         self.brickData = brickData
         self.node = SKNode()
-        
+
         setupBricks(in: node)
     }
 

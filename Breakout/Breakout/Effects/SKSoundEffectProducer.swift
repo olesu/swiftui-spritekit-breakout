@@ -19,7 +19,7 @@ final class SKSoundEffectProducer: SoundEffectProducer {
 
     func play(_ soundEffect: SoundEffect) {
         guard let action = soundActions[soundEffect] else { return }
-        
+
         parentNode?.run(action)
     }
 }

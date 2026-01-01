@@ -12,7 +12,7 @@ struct GradientBackground {
     }
 
     static private func createGradientTexture(_ size: CGSize) -> SKTexture {
-        let image = NSImage(size: size, flipped: false) { rect in
+        let image = NSImage(size: size, flipped: false) { _ in
             let colors = [
                 NSColor(
                     red: 0x1a / 255,
@@ -25,7 +25,7 @@ struct GradientBackground {
                     green: 0x21 / 255,
                     blue: 0x3e / 255,
                     alpha: 1.0
-                ),
+                )
             ]
             let gradient = NSGradient(colors: colors)!
             gradient.draw(

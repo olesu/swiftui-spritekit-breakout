@@ -5,7 +5,7 @@ import Testing
 
 struct GameStateTest {
     private let startingLives = 5
-    
+
     @Test func hasInitialDefaultValues() {
         let state = GameState.initial(startingLives: startingLives)
 

@@ -74,7 +74,7 @@ struct GameSessionProgressionTest {
         let levelBricksProvider = FakeLevelBricksProvider(
             bricksByLevel: [
                 .level1: [brickLevel1.id: brickLevel1],
-                .level2: [brickLevel2.id: brickLevel2],
+                .level2: [brickLevel2.id: brickLevel2]
             ]
         )
 
@@ -125,7 +125,7 @@ private struct GameSessionScenario {
             levelOrder: levels.map { $0 }
         )
     }
-    
+
     func withBricks(_ bricks: [Brick]) -> GameSessionScenario {
         let provider = FakeLevelBricksProvider.providerForAllLevels(
             levels: levels,
@@ -168,7 +168,7 @@ private func makeSession(levelOrder: [LevelId]) -> GameSession {
         levelOrder: levelOrder,
         levelBricksProvider: FakeLevelBricksProvider(bricksByLevel: [
             .level1: [BrickId.createValid(): Brick.createValid()],
-            .level2: [BrickId.createValid(): Brick.createValid()],
+            .level2: [BrickId.createValid(): Brick.createValid()]
         ])
     )
 }

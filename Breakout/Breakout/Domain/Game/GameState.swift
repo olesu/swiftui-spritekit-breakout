@@ -7,15 +7,15 @@ struct GameState: Equatable {
     let bricks: [BrickId: Brick]
     let ball: Ball
     let levelId: LevelId
-    
+
     var ballResetNeeded: Bool {
         ball.resetNeeded
     }
-    
+
     var ballResetInProgress: Bool {
         ball.resetInProgress
     }
-    
+
     static func initial(startingLives: Int) -> GameState {
         .init(
             score: 0,

@@ -49,8 +49,7 @@ extension BrickLayoutConfig {
     /// - Returns: An array of brick layout data with calculated positions and colors.
     /// - Throws: BrickColorError if a brick type has an invalid color name.
     static func generateBricks(from config: BrickLayoutConfig) throws
-        -> [BrickLayoutData]
-    {
+        -> [BrickLayoutData] {
         let brickTypesById = Dictionary(
             uniqueKeysWithValues: config.brickTypes.map { ($0.id, $0) }
         )

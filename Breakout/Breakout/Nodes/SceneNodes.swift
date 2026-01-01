@@ -25,8 +25,6 @@ extension SceneNodes: Attachable {
         paddle.attach(to: parent)
         ball.attach(to: parent)
 
-
     }
-    
-    
+
 }

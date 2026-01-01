@@ -3,10 +3,6 @@ import Foundation
 struct GameScalePolicy {
     let scale: CGFloat
 
-    init(scale: CGFloat) {
-        self.scale = scale
-    }
-
     static var deviceScale: GameScalePolicy {
         #if os(macOS)
             return .init(scale: 1.5)

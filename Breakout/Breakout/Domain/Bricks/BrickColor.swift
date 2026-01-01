@@ -34,4 +34,3 @@ nonisolated enum BrickColor {
         }
     }
 }
-

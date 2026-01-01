@@ -39,7 +39,7 @@ extension GameViewModel: GameSessionObserver {
     func gameSessionDidUpdate() {
         syncFromSession()
     }
-    
+
     @MainActor
     func syncFromSession() {
         apply(snapshot: session.snapshot())

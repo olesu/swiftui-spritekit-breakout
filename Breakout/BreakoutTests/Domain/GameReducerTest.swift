@@ -186,7 +186,7 @@ struct GameReducerTest {
     }
 
     // MARK: - Ball Reset Acknowledgment
-    
+
     @Test func announcedBallResetInProgressClearsResetFlag() {
         let state = initial.with(ballResetNeeded: true)
 
@@ -202,7 +202,7 @@ struct GameReducerTest {
 
         #expect(newState.ballResetInProgress == false)
     }
-    
+
     @Test func cannotAnnounceBallResetInProgressUnlessResetIsWanted() {
         let state = initial.with(ballResetNeeded: false)
 
@@ -210,6 +210,5 @@ struct GameReducerTest {
 
         #expect(newState.ballResetInProgress == false)
     }
-    
 
 }

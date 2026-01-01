@@ -22,7 +22,7 @@ struct GameSessionNewGameTest {
 
         let levelBricksProvider = FakeLevelBricksProvider(
             bricksByLevel: [
-                .level1: [brickLevel1.id: brickLevel1],
+                .level1: [brickLevel1.id: brickLevel1]
             ]
         )
 

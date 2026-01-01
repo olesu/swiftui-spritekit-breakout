@@ -5,7 +5,7 @@ final class GameController {
     private let paddleInputController: PaddleInputController
     private let gameSession: GameSession
     private let nodeManager: NodeManager
-    
+
     weak var observer: GameSessionObserver?
 
     init(
@@ -31,7 +31,7 @@ final class GameController {
                 sceneSize: sceneSize
             )
         }
-        
+
         observer?.gameSessionDidUpdate()
     }
 

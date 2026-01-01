@@ -7,7 +7,7 @@ final class FakeBrickLayoutAdapter: BrickLayoutAdapter {
 
     private var brickTypes: [BrickTypeConfig] = []
     private var brickLayout: [Int] = []
-    
+
     func load(fileName: String) throws -> BrickLayoutConfig {
         BrickLayoutConfig.init(
             levelName: "a-level",
@@ -23,11 +23,11 @@ final class FakeBrickLayoutAdapter: BrickLayoutAdapter {
             layout: brickLayout
         )
     }
-    
+
     func setBrickTypes(_ brickTypes: [BrickTypeConfig]) {
         self.brickTypes = brickTypes
     }
-    
+
     func setBrickLayout(_ brickLayout: [Int]) {
         self.brickLayout = brickLayout
     }

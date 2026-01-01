@@ -5,4 +5,3 @@ struct FakeGameConfigurationAdapter: GameConfigurationAdapter {
         GameConfiguration.defaultValue()
     }
 }
-

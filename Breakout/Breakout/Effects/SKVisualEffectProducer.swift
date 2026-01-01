@@ -58,7 +58,7 @@ extension SKVisualEffectProducer {
 
         return .sequence([
             .group([scaleUp, fadeOut]),
-            remove,
+            remove
         ])
     }
 
