@@ -19,22 +19,41 @@ final class GameController {
     }
 
     func step(deltaTime dt: TimeInterval, sceneSize: Size) {
-        if game.levelDidChange {
+        handleLevelTransitionIfNeeded()
+        advanceWorld(deltaTime: dt, sceneSize: sceneSize)
+        notifyObserver()
+    }
+    
+    private func handleLevelTransitionIfNeeded() {
+        if game.consumeLevelDidChange() {
             nodeManager.resetBricks()
         }
+    }
+    
+    private func advanceWorld(deltaTime dt: TimeInterval, sceneSize: Size) {
         nodeManager.removeEnqueued()
 
         if game.ballResetNeeded {
-            game.announceBallResetInProgress()
-            nodeManager.resetBall(sceneSize: sceneSize)
-            game.acknowledgeBallReset()
+            performBallReset(sceneSize: sceneSize)
         } else {
-            nodeManager.update(
-                deltaTime: dt,
-                sceneSize: sceneSize
-            )
+            updateNodes(deltaTime: dt, sceneSize: sceneSize)
         }
-
+    }
+    
+    private func performBallReset(sceneSize: Size) {
+        game.announceBallResetInProgress()
+        nodeManager.resetBall(sceneSize: sceneSize)
+        game.acknowledgeBallReset()
+    }
+    
+    private func updateNodes(deltaTime dt: TimeInterval, sceneSize: Size) {
+        nodeManager.update(
+            deltaTime: dt,
+            sceneSize: sceneSize
+        )
+    }
+    
+    private func notifyObserver() {
         observer?.gameSessionDidUpdate()
     }
 

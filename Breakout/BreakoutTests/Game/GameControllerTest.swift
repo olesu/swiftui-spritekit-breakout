@@ -132,10 +132,8 @@ private final class FakeRunningGame: RunningGame {
     var ballResetNeeded: Bool {
         _ballResetNeeded
     }
+    
     private var _levelDidChange: Bool
-    var levelDidChange: Bool {
-        _levelDidChange
-    }
     
     init () {
         self._ballResetNeeded = false
@@ -160,6 +158,14 @@ private final class FakeRunningGame: RunningGame {
     func changeLevel() {
         _levelDidChange = true
     }
+    
+    func consumeLevelDidChange() -> Bool {
+        let result = _levelDidChange
+        _levelDidChange = false
+        return result
+    }
+    
+
 }
 
 // MARK: - FameGameSessionObserver

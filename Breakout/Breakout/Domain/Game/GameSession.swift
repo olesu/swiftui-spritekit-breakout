@@ -15,10 +15,6 @@ final class GameSession: GameEventSink, RunningGame {
         repository.load().ball.resetNeeded
     }
 
-    var levelDidChange: Bool {
-        false
-    }
-    
     init(
         repository: GameStateRepository,
         reducer: GameReducer,
@@ -122,6 +118,11 @@ final class GameSession: GameEventSink, RunningGame {
         repository.save(newState)
         state = newState
     }
+
+    func consumeLevelDidChange() -> Bool {
+        false
+    }
+    
 }
 
 extension GameSession {
