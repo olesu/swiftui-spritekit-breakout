@@ -20,6 +20,14 @@ struct GameControllerTest {
         #expect(s.nodesWereUpdated() == true)
     }
     
+    @Test func stepNotifiesObserver() {
+        let s = Scenario()
+        
+        s.advanceOneFrameWithBallInFlight()
+        
+        #expect(s.observerWasNotified() == true)
+    }
+    
     @Test func stepDoesNotUpdateNodesWhileBallIsResetting() {
         let s = Scenario()
         
@@ -42,6 +50,7 @@ private final class Scenario {
     private let controller: GameController
     private let nodeManager: FakeNodeManager
     private let runningGame: FakeRunningGame
+    private let observer: FakeGameSessionObserver
     
     init() {
         nodeManager = FakeNodeManager()
@@ -51,6 +60,9 @@ private final class Scenario {
             game: runningGame,
             nodeManager: nodeManager,
         )
+        
+        observer = FakeGameSessionObserver()
+        controller.observer = observer
     }
     
     func advanceOneFrameWithBallInFlight() {
@@ -73,6 +85,10 @@ private final class Scenario {
     
     func nodesWereUpdated() -> Bool {
         nodeManager.updateCount > 0
+    }
+    
+    func observerWasNotified() -> Bool {
+        return observer.sessionUpdateCount > 0
     }
     
     func ballResetSequenceWasPerformed() -> Bool {
@@ -106,4 +122,13 @@ private final class FakeRunningGame: RunningGame {
     func resetBallOnNextStep(_ ballResetNeeded: Bool) {
         _ballResetNeeded = ballResetNeeded
     }
+}
+
+private final class FakeGameSessionObserver: GameSessionObserver {
+    private(set) var sessionUpdateCount: Int = 0
+    
+    func gameSessionDidUpdate() {
+        sessionUpdateCount += 1
+    }
+    
 }
