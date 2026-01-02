@@ -5,18 +5,50 @@ import Testing
 struct GameControllerTest {
 
     @Test func stepRemovesEnqueuedNodes() {
-        let nm = FakeNodeManager()
-        let g = GameController(
-            paddleInputController: PaddleInputController(),
-            game: FakeRunningGame(),
-            nodeManager: nm,
-        )
+        let s = Scenario()
         
-        g.step(deltaTime: 1.0, sceneSize: .zero)
+        s.advanceOneFrame()
         
-        #expect(nm.removeEnqueuedCount == 1)
+        #expect(s.bricksWereRemoved() == true)
+    }
+    
+    @Test func stepUpdatesNodes() {
+        let s = Scenario()
+        
+        s.advanceOneFrame()
+        
+        #expect(s.nodesWereUpdated() == true)
     }
 
+}
+
+private final class Scenario {
+    private let controller: GameController
+    private let nodeManager: FakeNodeManager
+    private let runningGame: FakeRunningGame
+    
+    init() {
+        nodeManager = FakeNodeManager()
+        runningGame = FakeRunningGame()
+        controller = GameController(
+            paddleInputController: PaddleInputController(),
+            game: runningGame,
+            nodeManager: nodeManager,
+        )
+    }
+    
+    func advanceOneFrame() {
+        runningGame.resetBallOnNextStep(false)
+        controller.step(deltaTime: 1.0, sceneSize: .zero)
+    }
+    
+    func bricksWereRemoved() -> Bool {
+        nodeManager.removeEnqueuedCount > 0
+    }
+    
+    func nodesWereUpdated() -> Bool {
+        nodeManager.updateCount > 0
+    }
 }
 
 private final class FakeRunningGame: RunningGame {
@@ -40,5 +72,7 @@ private final class FakeRunningGame: RunningGame {
         acknowledgeCount += 1
     }
     
-    
+    func resetBallOnNextStep(_ ballResetNeeded: Bool) {
+        _ballResetNeeded = ballResetNeeded
+    }
 }

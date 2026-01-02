@@ -7,6 +7,7 @@ final class FakeNodeManager: NodeManager {
     var removalQueue: [BrickId] = []
     
     var removeEnqueuedCount : Int = 0
+    var updateCount: Int = 0
 
     var lastBrickHitPosition: CGPoint?
 
@@ -54,7 +55,7 @@ final class FakeNodeManager: NodeManager {
     }
 
     func update(deltaTime dt: TimeInterval, sceneSize: Size) {
-
+        updateCount += 1
     }
 
 }
