@@ -7,7 +7,7 @@ struct GameControllerTest {
     @Test func stepRemovesEnqueuedNodes() {
         let s = Scenario()
         
-        s.advanceOneFrame()
+        s.advanceOneFrameWithBallInFlight()
         
         #expect(s.bricksWereRemoved() == true)
     }
@@ -15,9 +15,17 @@ struct GameControllerTest {
     @Test func stepUpdatesNodes() {
         let s = Scenario()
         
-        s.advanceOneFrame()
+        s.advanceOneFrameWithBallInFlight()
         
         #expect(s.nodesWereUpdated() == true)
+    }
+    
+    @Test func stepDoesNotUpdateNodesWhileBallIsResetting() {
+        let s = Scenario()
+        
+        s.advanceOneFrameWhileBallIsResetting()
+        
+        #expect(s.nodesWereUpdated() == false)
     }
 
 }
@@ -37,8 +45,17 @@ private final class Scenario {
         )
     }
     
-    func advanceOneFrame() {
+    func advanceOneFrameWithBallInFlight() {
         runningGame.resetBallOnNextStep(false)
+        advanceOneFrame()
+    }
+    
+    func advanceOneFrameWhileBallIsResetting() {
+        runningGame.resetBallOnNextStep(true)
+        advanceOneFrame()
+    }
+    
+    private func advanceOneFrame() {
         controller.step(deltaTime: 1.0, sceneSize: .zero)
     }
     
