@@ -43,6 +43,14 @@ struct GameControllerTest {
         
         #expect(s.ballResetSequenceWasPerformed() == true)
     }
+    
+    @Test func stepResetsBricksWhenLevelChanges() {
+        let s = Scenario()
+        
+        s.advanceOneFrameWithLevelChange()
+        
+        #expect(s.bricksWereReset() == true)
+    }
 
 }
 
@@ -75,12 +83,21 @@ private final class Scenario {
         advanceOneFrame()
     }
     
+    func advanceOneFrameWithLevelChange() {
+        runningGame.changeLevel()
+        advanceOneFrame()
+    }
+    
     private func advanceOneFrame() {
         controller.step(deltaTime: 1.0, sceneSize: .zero)
     }
     
     func bricksWereRemoved() -> Bool {
         nodeManager.removeEnqueuedCount > 0
+    }
+    
+    func bricksWereReset() -> Bool {
+        nodeManager.resetBrickCount > 0
     }
     
     func nodesWereUpdated() -> Bool {
@@ -103,9 +120,14 @@ private final class FakeRunningGame: RunningGame {
     var ballResetNeeded: Bool {
         _ballResetNeeded
     }
+    private var _currentLevel: LevelId
+    var currentLevel: LevelId {
+        _currentLevel
+    }
     
     init () {
         self._ballResetNeeded = false
+        self._currentLevel = .level1
     }
     
     var announceCount: Int = 0
@@ -121,6 +143,10 @@ private final class FakeRunningGame: RunningGame {
     
     func resetBallOnNextStep(_ ballResetNeeded: Bool) {
         _ballResetNeeded = ballResetNeeded
+    }
+    
+    func changeLevel() {
+        _currentLevel = .level2
     }
 }
 

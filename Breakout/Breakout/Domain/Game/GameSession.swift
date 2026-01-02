@@ -10,10 +10,15 @@ final class GameSession: GameEventSink, RunningGame {
     private(set) var state: GameState {
         didSet {}
     }
+    
     var ballResetNeeded: Bool {
         repository.load().ball.resetNeeded
     }
 
+    var currentLevel: LevelId {
+        repository.load().levelId
+    }
+    
     init(
         repository: GameStateRepository,
         reducer: GameReducer,

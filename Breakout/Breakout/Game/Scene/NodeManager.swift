@@ -8,6 +8,7 @@ protocol NodeManager {
     // MARK: bricks
     func removeEnqueued()
     func enqueueRemoval(of brickId: BrickId)
+    func resetBricks()
 
     // MARK: paddle
     func beginPaddleKeyboardOverride(to position: CGPoint, sceneSize: CGSize)

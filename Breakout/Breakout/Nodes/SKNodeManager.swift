@@ -99,6 +99,10 @@ final class SKNodeManager: NodeManager {
 
     }
 
+    func resetBricks() {
+        
+    }
+    
 }
 
 // MARK: Handle Brick Removal

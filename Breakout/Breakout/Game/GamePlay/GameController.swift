@@ -5,6 +5,8 @@ final class GameController {
     private let paddleInputController: PaddleInputController
     private let game: RunningGame
     private let nodeManager: NodeManager
+    
+    private var currentLevel: LevelId?
 
     weak var observer: GameSessionObserver?
 
@@ -19,6 +21,10 @@ final class GameController {
     }
 
     func step(deltaTime dt: TimeInterval, sceneSize: Size) {
+        if currentLevel != game.currentLevel {
+            currentLevel = game.currentLevel
+            nodeManager.resetBricks()
+        }
         nodeManager.removeEnqueued()
 
         if game.ballResetNeeded {
