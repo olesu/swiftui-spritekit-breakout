@@ -1,14 +1,17 @@
 import Foundation
 
-final class GameSession: GameEventSink {
+final class GameSession: GameEventSink, RunningGame {
     private let repository: GameStateRepository
     private let reducer: GameReducer
     private let levelOrder: [LevelId]
     private let levelBricksProvider: LevelBricksProvider
     private let startingLives: Int
 
-    var state: GameState {
+    private(set) var state: GameState {
         didSet {}
+    }
+    var ballResetNeeded: Bool {
+        repository.load().ball.resetNeeded
     }
 
     init(

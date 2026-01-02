@@ -5,12 +5,16 @@ import Foundation
 final class FakeNodeManager: NodeManager {
     var removedBrickIds: [BrickId] = []
     var removalQueue: [BrickId] = []
+    
+    var removeEnqueuedCount : Int = 0
 
     var lastBrickHitPosition: CGPoint?
 
     func removeEnqueued() {
         removalQueue.forEach { removedBrickIds.append($0) }
         removalQueue.removeAll()
+        
+        removeEnqueuedCount += 1
     }
 
     func enqueueRemoval(of brickId: Breakout.BrickId) {
@@ -45,11 +49,11 @@ final class FakeNodeManager: NodeManager {
 
     }
 
-    func resetBall(sceneSize: CGSize) {
+    func resetBall(sceneSize: Size) {
 
     }
 
-    func update(deltaTime dt: TimeInterval, sceneSize: CGSize) {
+    func update(deltaTime dt: TimeInterval, sceneSize: Size) {
 
     }
 

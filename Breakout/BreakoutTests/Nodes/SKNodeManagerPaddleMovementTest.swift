@@ -5,7 +5,7 @@ import Testing
 @testable import Breakout
 
 struct SKNodeManagerPaddleMovementTest {
-    private let sceneSize = CGSize(width: 100, height: 100)
+    private let sceneSize = Size(width: 100, height: 100)
     private let paddlePosition = Point(x: 10, y: 0)
     private let paddleSize = Size(width: 2, height: 20)
     private let paddleMotionController = PaddleMotionController(speed: 1)
@@ -62,7 +62,7 @@ struct SKNodeManagerPaddleMovementTest {
         // drag override
         nodeManager.beginPaddleKeyboardOverride(
             to: CGPoint(x: 3.0, y: 999),
-            sceneSize: sceneSize
+            sceneSize: CGSize(sceneSize)
         )
         nodeManager.update(
             deltaTime: 1.0,

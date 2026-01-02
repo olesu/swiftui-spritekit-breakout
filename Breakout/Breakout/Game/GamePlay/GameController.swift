@@ -3,28 +3,28 @@ import SpriteKit
 
 final class GameController {
     private let paddleInputController: PaddleInputController
-    private let gameSession: GameSession
+    private let game: RunningGame
     private let nodeManager: NodeManager
 
     weak var observer: GameSessionObserver?
 
     init(
         paddleInputController: PaddleInputController,
-        gameSession: GameSession,
+        game: RunningGame,
         nodeManager: NodeManager,
     ) {
         self.paddleInputController = paddleInputController
-        self.gameSession = gameSession
+        self.game = game
         self.nodeManager = nodeManager
     }
 
-    func step(deltaTime dt: TimeInterval, sceneSize: CGSize) {
+    func step(deltaTime dt: TimeInterval, sceneSize: Size) {
         nodeManager.removeEnqueued()
 
-        if gameSession.state.ballResetNeeded {
-            gameSession.announceBallResetInProgress()
+        if game.ballResetNeeded {
+            game.announceBallResetInProgress()
             nodeManager.resetBall(sceneSize: sceneSize)
-            gameSession.acknowledgeBallReset()
+            game.acknowledgeBallReset()
         } else {
             nodeManager.update(
                 deltaTime: dt,

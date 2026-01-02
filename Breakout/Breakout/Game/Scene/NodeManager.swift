@@ -21,6 +21,6 @@ protocol NodeManager {
     func ballHitPaddle()
 
     // MARK: ball and paddle
-    func resetBall(sceneSize: CGSize)
-    func update(deltaTime dt: TimeInterval, sceneSize: CGSize)
+    func resetBall(sceneSize: Size)
+    func update(deltaTime dt: TimeInterval, sceneSize: Size)
 }

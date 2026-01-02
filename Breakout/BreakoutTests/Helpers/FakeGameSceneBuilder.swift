@@ -29,7 +29,7 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
             nodes: nodes
         )
         return SKGameScene(
-            size: CGSize(width: 320, height: 480),
+            size: Size(width: 320, height: 480),
             nodes: nodes,
             ballLaunchController: ballLaunchController,
             contactHandler: SKGamePhysicsContactHandler(
@@ -44,7 +44,7 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
             ),
             gameController: GameController(
                 paddleInputController: paddleInputController,
-                gameSession: gameSession,
+                game: gameSession,
                 nodeManager: nodeManager,
             ),
         )

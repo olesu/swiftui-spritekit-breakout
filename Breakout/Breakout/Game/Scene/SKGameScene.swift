@@ -10,7 +10,7 @@ final class SKGameScene: SKScene {
     private var lastUpdateTime: TimeInterval = 0
 
     init(
-        size: CGSize,
+        size: Size,
         nodes: SceneNodes,
         ballLaunchController: BallLaunchController,
         contactHandler: SKGamePhysicsContactHandler,
@@ -21,7 +21,7 @@ final class SKGameScene: SKScene {
         self.contactHandler = contactHandler
         self.gameController = gameController
 
-        super.init(size: size)
+        super.init(size: CGSize(size))
 
         addGameNodes()
     }
@@ -39,7 +39,7 @@ extension SKGameScene {
             return
         }
 
-        gameController.step(deltaTime: currentTime - lastUpdateTime, sceneSize: size)
+        gameController.step(deltaTime: currentTime - lastUpdateTime, sceneSize: Size(width: size.width, height: size.height))
 
         lastUpdateTime = currentTime
     }

@@ -88,13 +88,13 @@ struct SKGameSceneBuilder: GameSceneBuilder {
 
         let gameController = GameController(
             paddleInputController: PaddleInputController(),
-            gameSession: session,
+            game: session,
             nodeManager: nodeManager
         )
         gameController.observer = gameViewModel
 
         let scene = SKGameScene(
-            size: CGSize(
+            size: Size(
                 width: c.sceneWidth,
                 height: c.sceneHeight
             ),

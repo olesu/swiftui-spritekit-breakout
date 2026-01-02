@@ -42,7 +42,7 @@ final class SKNodeManager: NodeManager {
         nodes.ball.setPosition(position)
     }
 
-    func resetBall(sceneSize: CGSize) {
+    func resetBall(sceneSize: Size) {
         ballLaunchController.performReset(
             ball: nodes.ball,
             at: Point(x: sceneSize.width / 2, y: 50)
@@ -51,7 +51,7 @@ final class SKNodeManager: NodeManager {
 
     func update(
         deltaTime dt: TimeInterval,
-        sceneSize: CGSize
+        sceneSize: Size
     ) {
         let newPaddle = paddleMotionController.update(
             paddle: Paddle(
@@ -59,7 +59,7 @@ final class SKNodeManager: NodeManager {
                 width: nodes.paddle.size.width
             ),
             deltaTime: dt,
-            sceneSize: sceneSize
+            sceneSize: CGSize(sceneSize)
         )
         nodes.paddle.setPosition(newPaddle.position)
         ballLaunchController.update(ball: nodes.ball, paddle: nodes.paddle)
