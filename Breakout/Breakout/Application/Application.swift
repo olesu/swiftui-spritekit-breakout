@@ -3,28 +3,41 @@ import SwiftUI
 
 @main
 struct Application: App {
-    let bootState = resolveBootState()
+    @State private var bootState: ApplicationBootState = .loading
 
     var body: some Scene {
         WindowGroup {
-            switch bootState {
-            case .running(let context):
-                RootView(context)
-            case .failed(let error):
-                ErrorView(error: error)
+            Group {
+                switch bootState {
+                case .loading:
+                    Text("Loading...")
+                case .running(let context):
+                    RootView(context)
+                case .failed(let error):
+                    ErrorView(error: error)
+                }
+            }.task {
+                await bootstrap()
             }
         }
     }
-
-    private static func resolveBootState() -> ApplicationBootState {
+    
+    private func bootstrap() async {
         do {
-            return ApplicationBootState.running(try loadContext())
+            /*
+             let core = try await Task.detached {
+                try GameCoreLoader.load()
+             }.value
+             */
+            
+            let context = try loadContext()
+            bootState = .running(context)
         } catch {
-            return .failed(.configuration(error))
+            bootState = .failed(.configuration(error))
         }
     }
 
-    private static func loadContext() throws -> AppContext {
+    private func loadContext() throws -> AppContext {
         try ApplicationComposer.compose(
             startingLevel: GameWiring.makeStartingLevel(
                 policy: AppConfiguration.startingLevelPolicy()
