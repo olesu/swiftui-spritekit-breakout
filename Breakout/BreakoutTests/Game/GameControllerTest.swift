@@ -47,13 +47,24 @@ struct GameControllerTest {
     @Test func stepResetsBricksWhenLevelChanges() {
         let s = Scenario()
         
+        s.advanceOneFrameWithBallInFlight()
         s.advanceOneFrameWithLevelChange()
         
         #expect(s.bricksWereReset() == true)
     }
+    
+    @Test func onlyResetBricksWhenLevelChanges() {
+        let s = Scenario()
+        
+        s.advanceOneFrameWithBallInFlight()
+        s.advanceOneFrameWithBallInFlight()
+
+        #expect(s.bricksWereReset() == false)
+    }
 
 }
 
+// MARK: - Scenario
 private final class Scenario {
     private let controller: GameController
     private let nodeManager: FakeNodeManager
@@ -115,19 +126,20 @@ private final class Scenario {
     }
 }
 
+// MARK: - FakeRunningGame
 private final class FakeRunningGame: RunningGame {
     private var _ballResetNeeded: Bool
     var ballResetNeeded: Bool {
         _ballResetNeeded
     }
-    private var _currentLevel: LevelId
-    var currentLevel: LevelId {
-        _currentLevel
+    private var _levelDidChange: Bool
+    var levelDidChange: Bool {
+        _levelDidChange
     }
     
     init () {
         self._ballResetNeeded = false
-        self._currentLevel = .level1
+        self._levelDidChange = false
     }
     
     var announceCount: Int = 0
@@ -146,10 +158,11 @@ private final class FakeRunningGame: RunningGame {
     }
     
     func changeLevel() {
-        _currentLevel = .level2
+        _levelDidChange = true
     }
 }
 
+// MARK: - FameGameSessionObserver
 private final class FakeGameSessionObserver: GameSessionObserver {
     private(set) var sessionUpdateCount: Int = 0
     

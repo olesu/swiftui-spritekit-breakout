@@ -6,8 +6,6 @@ final class GameController {
     private let game: RunningGame
     private let nodeManager: NodeManager
     
-    private var currentLevel: LevelId?
-
     weak var observer: GameSessionObserver?
 
     init(
@@ -21,8 +19,7 @@ final class GameController {
     }
 
     func step(deltaTime dt: TimeInterval, sceneSize: Size) {
-        if currentLevel != game.currentLevel {
-            currentLevel = game.currentLevel
+        if game.levelDidChange {
             nodeManager.resetBricks()
         }
         nodeManager.removeEnqueued()

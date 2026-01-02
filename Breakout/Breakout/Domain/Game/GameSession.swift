@@ -15,8 +15,8 @@ final class GameSession: GameEventSink, RunningGame {
         repository.load().ball.resetNeeded
     }
 
-    var currentLevel: LevelId {
-        repository.load().levelId
+    var levelDidChange: Bool {
+        false
     }
     
     init(
