@@ -8,6 +8,7 @@ final class FakeNodeManager: NodeManager {
     
     var removeEnqueuedCount : Int = 0
     var updateCount: Int = 0
+    var resetBallCount: Int = 0
 
     var lastBrickHitPosition: CGPoint?
 
@@ -51,7 +52,7 @@ final class FakeNodeManager: NodeManager {
     }
 
     func resetBall(sceneSize: Size) {
-
+        resetBallCount += 1
     }
 
     func update(deltaTime dt: TimeInterval, sceneSize: Size) {

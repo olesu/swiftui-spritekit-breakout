@@ -27,6 +27,14 @@ struct GameControllerTest {
         
         #expect(s.nodesWereUpdated() == false)
     }
+    
+    @Test func stepResetsBallWhenRequired() {
+        let s = Scenario()
+        
+        s.advanceOneFrameWhileBallIsResetting()
+        
+        #expect(s.ballResetSequenceWasPerformed() == true)
+    }
 
 }
 
@@ -65,6 +73,12 @@ private final class Scenario {
     
     func nodesWereUpdated() -> Bool {
         nodeManager.updateCount > 0
+    }
+    
+    func ballResetSequenceWasPerformed() -> Bool {
+        runningGame.announceCount > 0 &&
+        nodeManager.resetBallCount > 0 &&
+        runningGame.acknowledgeCount > 0
     }
 }
 
