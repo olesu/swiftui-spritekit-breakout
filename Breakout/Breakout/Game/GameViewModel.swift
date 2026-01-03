@@ -4,7 +4,7 @@ import SwiftUI
 
 @Observable
 final class GameViewModel {
-    private let session: GameStarter & GameSnapshotProvider
+    private let game: GameStarter & GameSnapshotProvider
     private let gameConfiguration: GameConfiguration
     private let screenNavigationService: ScreenNavigationService
     private let gameResultService: GameResultService
@@ -14,12 +14,12 @@ final class GameViewModel {
     var gameStatus: GameStatus = .idle
 
     init(
-        session: GameSession,
+        game: GameStarter & GameSnapshotProvider,
         gameConfiguration: GameConfiguration,
         screenNavigationService: ScreenNavigationService,
         gameResultService: GameResultService,
     ) {
-        self.session = session
+        self.game = game
         self.gameConfiguration = gameConfiguration
         self.screenNavigationService = screenNavigationService
         self.gameResultService = gameResultService
@@ -29,24 +29,20 @@ final class GameViewModel {
 
 extension GameViewModel {
     func startNewGame() {
-        session.startGame()
-        syncFromSession()
+        game.startGame()
+        refreshFromGame()
     }
 
 }
 
 extension GameViewModel: GameSessionObserver {
     func gameSessionDidUpdate() {
-        syncFromSession()
+        refreshFromGame()
     }
 
     @MainActor
-    func syncFromSession() {
-        apply(snapshot: session.snapshot())
-    }
-
-    private func updateFromSession() {
-        apply(snapshot: session.snapshot())
+    private func refreshFromGame() {
+        apply(snapshot: game.snapshot())
     }
 
     private func apply(snapshot: GameSessionSnapshot) {

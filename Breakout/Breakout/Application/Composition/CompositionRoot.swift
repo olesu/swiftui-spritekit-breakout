@@ -123,7 +123,7 @@ extension ApplicationComposer {
         )
 
         let viewModel = GameViewModel(
-            session: session,
+            game: session,
             gameConfiguration: gameConfiguration,
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService,
