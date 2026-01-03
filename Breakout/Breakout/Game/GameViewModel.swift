@@ -4,7 +4,7 @@ import SwiftUI
 
 @Observable
 final class GameViewModel {
-    private let session: GameSession // TODO: GameViewModel uses only startGame and snapshot, extract protocol?
+    private let session: GameStarter & GameSnapshotProvider
     private let gameConfiguration: GameConfiguration
     private let screenNavigationService: ScreenNavigationService
     private let gameResultService: GameResultService

@@ -28,7 +28,7 @@ final class GameSession {
 }
 
 // MARK: - Game Startup
-extension GameSession {
+extension GameSession: GameStarter {
     func startGame() {
         repository.save(initializeGame(bricks: bricksForLevel()))
     }
@@ -129,7 +129,7 @@ extension GameSession: RunningGame {
 }
 
 // MARK: - Snapshot
-extension GameSession {
+extension GameSession: GameSnapshotProvider {
     func snapshot() -> GameSessionSnapshot {
         GameSessionSnapshot(
             score: state.score,
