@@ -1,6 +1,6 @@
 import Foundation
 
-final class GameSession: GameEventSink, RunningGame {
+final class GameSession {
     private let repository: GameStateRepository
     private let reducer: GameReducer
     private let levelOrder: [LevelId]
@@ -9,10 +9,6 @@ final class GameSession: GameEventSink, RunningGame {
 
     var state: GameState {
         repository.load()
-    }
-
-    var ballResetNeeded: Bool {
-        state.ball.resetNeeded
     }
 
     init(
@@ -29,21 +25,42 @@ final class GameSession: GameEventSink, RunningGame {
         self.startingLives = startingLives
     }
 
+}
+
+// MARK: - Game Startup
+extension GameSession {
     func startGame() {
+        repository.save(initializeGame(bricks: bricksForLevel()))
+    }
+    
+    private func bricksForLevel() -> [Brick] {
         guard let firstLevel = levelOrder.first else {
-            initializeGame(bricks: [])
-            return
+            return []
         }
 
         let bricks = levelBricksProvider.bricks(for: firstLevel)
-        initializeGame(bricks: bricks.values.map { $0 })
+        return bricks.values.map { $0 }
     }
 
-    private func initializeGame(bricks: [Brick]) {
-        reset(bricks: bricks)
-        repository.save(reducer.start(state))
+    private func initializeGame(bricks: [Brick]) -> GameState {
+        reducer.start(initialWith(bricks: bricks))
     }
 
+    private func initialWith(bricks: [Brick]) -> GameState {
+        .initial(startingLives: startingLives).with(
+            bricks: bricksToMap(bricks)
+        )
+    }
+
+    private func bricksToMap(_ bricks: [Brick]) -> [BrickId: Brick] {
+        Dictionary(
+            uniqueKeysWithValues: bricks.map { ($0.id, $0) }
+        )
+    }
+}
+
+// MARK: - GameEventSink
+extension GameSession: GameEventSink {
     func handle(_ event: GameEvent) {
         let reduced = reducer.reduce(state, event: event)
 
@@ -64,13 +81,6 @@ final class GameSession: GameEventSink, RunningGame {
 
     }
 
-    private func nextLevel(after level: LevelId) -> LevelId? {
-        guard let index = levelOrder.firstIndex(of: level) else { return nil }
-        let nextIndex = index + 1
-        guard levelOrder.indices.contains(nextIndex) else { return nil }
-        return levelOrder[nextIndex]
-    }
-
     private func shouldContinueAfterWinning(
         previous: GameState,
         reduced: GameState
@@ -89,16 +99,19 @@ final class GameSession: GameEventSink, RunningGame {
         return levelOrder.indices.contains(currentIndex + 1)
     }
 
-    private func reset(bricks: [Brick]) {
-        let bricks = Dictionary(
-            uniqueKeysWithValues: bricks.map { ($0.id, $0) }
-        )
+    private func nextLevel(after level: LevelId) -> LevelId? {
+        guard let index = levelOrder.firstIndex(of: level) else { return nil }
+        let nextIndex = index + 1
+        guard levelOrder.indices.contains(nextIndex) else { return nil }
+        return levelOrder[nextIndex]
+    }
 
-        repository.save(
-            GameState.initial(startingLives: startingLives).with(
-                bricks: bricks
-            )
-        )
+}
+
+// MARK: - RunningGame
+extension GameSession: RunningGame {
+    var ballResetNeeded: Bool {
+        state.ball.resetNeeded
     }
 
     func announceBallResetInProgress() {
@@ -115,6 +128,7 @@ final class GameSession: GameEventSink, RunningGame {
 
 }
 
+// MARK: - Snapshot
 extension GameSession {
     func snapshot() -> GameSessionSnapshot {
         GameSessionSnapshot(
