@@ -7,12 +7,12 @@ final class GameSession: GameEventSink, RunningGame {
     private let levelBricksProvider: LevelBricksProvider
     private let startingLives: Int
 
-    private(set) var state: GameState {
-        didSet {}
+    var state: GameState {
+        repository.load()
     }
-    
+
     var ballResetNeeded: Bool {
-        repository.load().ball.resetNeeded
+        state.ball.resetNeeded
     }
 
     init(
@@ -27,8 +27,6 @@ final class GameSession: GameEventSink, RunningGame {
         self.levelOrder = levelOrder
         self.levelBricksProvider = levelBricksProvider
         self.startingLives = startingLives
-
-        self.state = repository.load()
     }
 
     func startGame() {
@@ -43,16 +41,15 @@ final class GameSession: GameEventSink, RunningGame {
 
     private func initializeGame(bricks: [Brick]) {
         reset(bricks: bricks)
-        let newState = reducer.start(state)
-        repository.save(newState)
-        state = newState
+        repository.save(reducer.start(state))
     }
 
     func handle(_ event: GameEvent) {
         let reduced = reducer.reduce(state, event: event)
 
         if shouldContinueAfterWinning(previous: state, reduced: reduced),
-            let next = nextLevel(after: reduced.levelId) {
+            let next = nextLevel(after: reduced.levelId)
+        {
             let bricksForNextLevel = levelBricksProvider.bricks(for: next)
             let continued =
                 reduced
@@ -61,13 +58,10 @@ final class GameSession: GameEventSink, RunningGame {
                 .with(bricks: bricksForNextLevel)
 
             repository.save(continued)
-            state = continued
-
-            return
+        } else {
+            repository.save(reduced)
         }
 
-        repository.save(reduced)
-        state = reduced
     }
 
     private func nextLevel(after level: LevelId) -> LevelId? {
@@ -100,29 +94,25 @@ final class GameSession: GameEventSink, RunningGame {
             uniqueKeysWithValues: bricks.map { ($0.id, $0) }
         )
 
-        let newState = GameState.initial(startingLives: startingLives).with(
-            bricks: bricks
+        repository.save(
+            GameState.initial(startingLives: startingLives).with(
+                bricks: bricks
+            )
         )
-        repository.save(newState)
-        state = newState
     }
 
     func announceBallResetInProgress() {
-        let newState = reducer.announcedBallResetInProgress(state)
-        repository.save(newState)
-        state = newState
+        repository.save(reducer.announcedBallResetInProgress(state))
     }
 
     func acknowledgeBallReset() {
-        let newState = reducer.acknowledgeBallReset(state)
-        repository.save(newState)
-        state = newState
+        repository.save(reducer.acknowledgeBallReset(state))
     }
 
     func consumeLevelDidChange() -> Bool {
         false
     }
-    
+
 }
 
 extension GameSession {
