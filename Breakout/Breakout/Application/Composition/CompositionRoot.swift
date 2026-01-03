@@ -133,7 +133,7 @@ extension ApplicationComposer {
             gameViewModel: viewModel,
             gameConfiguration: gameConfiguration,
             collisionRouter: GameWiring.makeCollisionRouter(),
-            brickLayoutFactory: SKBrickLayoutFactory(session: session),
+            brickLayoutFactory: SKBrickLayoutFactory(bricksProvider: session),
             session: session,
             ballLaunchController: BallLaunchController(),
             paddleMotionController: PaddleMotionController(

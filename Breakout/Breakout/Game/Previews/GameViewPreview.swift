@@ -21,7 +21,7 @@ import SwiftUI
             levelBricksProvider: DefaultLevelBricksProvider.empty,
             startingLives: GameRules.classic.startingLives,
         )
-        let brickLayoutFactory = SKBrickLayoutFactory(session: session)
+        let brickLayoutFactory = SKBrickLayoutFactory(bricksProvider: session)
         let ballLaunchController = BallLaunchController()
         let viewModel = GameViewModel(
             game: session,

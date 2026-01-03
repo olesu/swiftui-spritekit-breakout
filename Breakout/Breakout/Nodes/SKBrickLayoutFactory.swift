@@ -3,15 +3,14 @@ import Foundation
 import SpriteKit
 
 struct SKBrickLayoutFactory: BrickLayoutFactory {
-    private let session: GameSession
+    private let bricksProvider: BricksProvider
 
-    init(session: GameSession) {
-        self.session = session
+    init(bricksProvider: BricksProvider) {
+        self.bricksProvider = bricksProvider
     }
 
     func createNodes() -> SpriteContainer {
-        let bricks = session.state.bricks
-        let brickData = bricks.map {
+        let brickData = bricksProvider.bricks.map {
             BrickData(id: $1.id.value, position: $1.position, color: $1.color)
         }
 

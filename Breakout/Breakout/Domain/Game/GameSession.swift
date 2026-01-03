@@ -138,3 +138,10 @@ extension GameSession: GameSnapshotProvider {
         )
     }
 }
+
+// MARK: - Bricks Provider
+extension GameSession: BricksProvider {
+    var bricks: [BrickId: Brick] {
+        state.bricks
+    }
+}
