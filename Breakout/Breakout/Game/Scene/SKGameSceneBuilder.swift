@@ -5,7 +5,7 @@ struct SKGameSceneBuilder: GameSceneBuilder {
     private let gameConfiguration: GameConfiguration
     private let collisionRouter: CollisionRouter
     private let brickLayoutFactory: BrickLayoutFactory
-    private let session: GameSession
+    private let session: RunningGame & GameEventSink
     private let ballLaunchController: BallLaunchController
     private let paddleMotionController: PaddleMotionController
     private let bounceSpeedPolicy: BounceSpeedPolicy
@@ -15,7 +15,7 @@ struct SKGameSceneBuilder: GameSceneBuilder {
         gameConfiguration: GameConfiguration,
         collisionRouter: CollisionRouter,
         brickLayoutFactory: BrickLayoutFactory,
-        session: GameSession,
+        session: RunningGame & GameEventSink,
         ballLaunchController: BallLaunchController,
         paddleMotionController: PaddleMotionController,
         bounceSpeedPolicy: BounceSpeedPolicy,

@@ -14,13 +14,8 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
         )
 
         let collisionRouter = FakeCollisionRouter()
-        let gameSession = GameSession(
-            repository: InMemoryGameStateRepository(),
-            reducer: GameReducer(),
-            levelOrder: [],
-            levelBricksProvider: DefaultLevelBricksProvider.empty,
-            startingLives: 999
-        )
+        let game = FakeRunningGame()
+        let gameEventSink = FakeGameEventSink()
         let nodes = SceneNodes.createValid()
         let nodeManager = SKNodeManager(
             ballLaunchController: ballLaunchController,
@@ -36,7 +31,7 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
                 collisionRouter: collisionRouter,
                 nodeManager: nodeManager,
                 gameEventHandler: GameEventHandler(
-                    gameEventSink: gameSession,
+                    gameEventSink: gameEventSink,
                     nodeManager: nodeManager,
                     soundEffectProducer: FakeSoundEffectProducer(),
                     visualEffectProducer: FakeVisualEffectProducer(),
@@ -44,10 +39,26 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
             ),
             gameController: GameController(
                 paddleInputController: paddleInputController,
-                game: gameSession,
+                game: game,
                 nodeManager: nodeManager,
             ),
         )
     }
 
+}
+
+private final class FakeRunningGame: RunningGame {
+    var ballResetNeeded: Bool = false
+    
+    func announceBallResetInProgress() {
+        
+    }
+    
+    func acknowledgeBallReset() {
+        
+    }
+    
+    func consumeLevelDidChange() -> Bool {
+        false
+    }
 }
