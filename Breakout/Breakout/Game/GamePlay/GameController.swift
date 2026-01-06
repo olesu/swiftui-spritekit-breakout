@@ -31,8 +31,6 @@ final class GameController {
     }
     
     private func advanceWorld(deltaTime dt: TimeInterval, sceneSize: Size) {
-        nodeManager.removeEnqueued()
-
         if game.ballResetNeeded {
             performBallReset(sceneSize: sceneSize)
         } else {

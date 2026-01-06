@@ -1,8 +1,6 @@
 import SpriteKit
 import Foundation
 
-/// Owns all Sprites in the scene.
-/// Nodes are mutated by NodeManager, not replaced.
 struct SceneNodes {
     let paddle: PaddleSprite
     let ball: SKBallSprite
@@ -19,12 +17,8 @@ extension SceneNodes: Attachable {
         leftWall.attach(to: parent)
         rightWall.attach(to: parent)
         gutter.attach(to: parent)
-
         bricks.attach(to: parent)
-
         paddle.attach(to: parent)
         ball.attach(to: parent)
-
     }
-
 }

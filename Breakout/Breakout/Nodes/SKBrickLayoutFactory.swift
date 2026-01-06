@@ -1,6 +1,4 @@
-import AppKit
 import Foundation
-import SpriteKit
 
 struct SKBrickLayoutFactory: BrickLayoutFactory {
     private let bricksProvider: BricksProvider

@@ -6,7 +6,7 @@ protocol NodeManager {
     var lastBrickHitPosition: CGPoint? { get }
 
     // MARK: bricks
-    func removeEnqueued()
+//    func removeEnqueued()
     func enqueueRemoval(of brickId: BrickId)
     func resetBricks()
 

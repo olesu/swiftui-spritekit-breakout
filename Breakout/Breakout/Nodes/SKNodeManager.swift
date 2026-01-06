@@ -31,7 +31,7 @@ final class SKNodeManager: NodeManager {
         removalQueue.insert(brickId)
     }
 
-    func removeEnqueued() {
+    private func removeEnqueued() {
         removalQueue.forEach {
             handleBrickRemoval($0)
         }
@@ -53,6 +53,8 @@ final class SKNodeManager: NodeManager {
         deltaTime dt: TimeInterval,
         sceneSize: Size
     ) {
+        removeEnqueued()
+
         let newPaddle = paddleMotionController.update(
             paddle: Paddle(
                 position: nodes.paddle.position,

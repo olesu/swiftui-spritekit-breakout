@@ -112,18 +112,21 @@ extension ApplicationComposer {
         let rules = GameRules.classic
         let levels: [LevelId] = Array([.level1, .level2].prefix(rules.maxLevels))
         let bundle = try brickService.loadBundle(named: startingLevel.layoutFileName, levels: levels)
+        
         let levelBricksProvider = DefaultLevelBricksProvider(bundle)
 
-        let session = GameSession(
+        let gameSession = GameSession(
             repository: InMemoryGameStateRepository(),
             reducer: GameReducer(),
             levelOrder: levels,
             levelBricksProvider: levelBricksProvider,
             startingLives: rules.startingLives,
         )
+        
+        let brickLayoutFactory = SKBrickLayoutFactory(bricksProvider: gameSession)
 
         let viewModel = GameViewModel(
-            game: session,
+            game: gameSession,
             gameConfiguration: gameConfiguration,
             screenNavigationService: screenNavigationService,
             gameResultService: gameResultService,
@@ -133,8 +136,8 @@ extension ApplicationComposer {
             gameViewModel: viewModel,
             gameConfiguration: gameConfiguration,
             collisionRouter: GameWiring.makeCollisionRouter(),
-            brickLayoutFactory: SKBrickLayoutFactory(bricksProvider: session),
-            session: session,
+            brickLayoutFactory: brickLayoutFactory,
+            session: gameSession,
             ballLaunchController: BallLaunchController(),
             paddleMotionController: PaddleMotionController(
                 speed: rules.tuning.paddleSpeed
