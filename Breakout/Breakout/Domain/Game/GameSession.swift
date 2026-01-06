@@ -113,6 +113,10 @@ extension GameSession: RunningGame {
     var ballResetNeeded: Bool {
         state.ball.resetNeeded
     }
+    
+    var visualGameState: VisualGameState {
+        .init(levelId: state.levelId)
+    }
 
     func announceBallResetInProgress() {
         repository.save(reducer.announcedBallResetInProgress(state))

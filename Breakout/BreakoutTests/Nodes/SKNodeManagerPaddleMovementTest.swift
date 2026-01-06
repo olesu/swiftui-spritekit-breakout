@@ -5,82 +5,49 @@ import Testing
 @testable import Breakout
 
 struct SKNodeManagerPaddleMovementTest {
-    private let sceneSize = Size(width: 100, height: 100)
-    private let paddlePosition = Point(x: 10, y: 0)
-    private let paddleSize = Size(width: 2, height: 20)
-    private let paddleMotionController = PaddleMotionController(speed: 1)
-    private let ball = SKBallSprite(position: .zero)
 
     @Test func controlsThePaddleByMovingLeft() {
-        let paddle = PaddleSprite(position: paddlePosition, size: paddleSize)
-        let nodeManager = makeManager(paddle)
+        let s = Scenario()
 
-        nodeManager.startPaddleLeft()
-        nodeManager.update(
-            deltaTime: 1.0,
-            sceneSize: sceneSize
-        )
-        nodeManager.stopPaddle()
-        nodeManager.update(
-            deltaTime: 1.0,
-            sceneSize: sceneSize
-        )
-
-        #expect(paddle.position.x == 9.0)
+        s.leftMotionFrame()
+        s.stopMotionFrame()
+        
+        #expect(s.isPaddleAt(9.0) == true)
     }
 
     @Test func controlsThePaddleByMovingRight() {
-        let paddle = PaddleSprite(position: paddlePosition, size: paddleSize)
-        let nodeManager = makeManager(paddle)
+        let s = Scenario()
 
-        nodeManager.startPaddleRight()
-        nodeManager.update(
-            deltaTime: 1.0,
-            sceneSize: sceneSize
-        )
-        nodeManager.stopPaddle()
-        nodeManager.update(
-            deltaTime: 1.0,
-            sceneSize: sceneSize
-        )
-
-        #expect(paddle.position.x == 11.0)
+        s.rightMotionFrame()
+        s.stopMotionFrame()
+        
+        #expect(s.isPaddleAt(11.0) == true)
     }
 
     @Test func movingToAFixedPointOverridesKeyMovement() {
-        let paddle = PaddleSprite(position: paddlePosition, size: paddleSize)
-        let nodeManager = makeManager(paddle)
+        let s = Scenario()
 
-        // keyboard movement
-        nodeManager.startPaddleRight()
-        nodeManager.update(
-            deltaTime: 1.0,
-            sceneSize: sceneSize
-        )
-        #expect(paddle.position.x == 11.0)
+        s.rightMotionFrame()
+        s.keyboardOverrideBeginFrame(x: 3.0)
+        s.keyboardOverrideEndFrame()
 
-        // drag override
-        nodeManager.beginPaddleKeyboardOverride(
-            to: CGPoint(x: 3.0, y: 999),
-            sceneSize: CGSize(sceneSize)
-        )
-        nodeManager.update(
-            deltaTime: 1.0,
-            sceneSize: sceneSize
-        )
-        #expect(paddle.position.x == 3.0)
-
-        // resume keyboard
-        nodeManager.endPaddleKeyboardOverride()
-        nodeManager.update(
-            deltaTime: 1.0,
-            sceneSize: sceneSize
-        )
-        #expect(paddle.position.x == 4.0)
+        #expect(s.isPaddleAt(4.0) == true)
     }
 
-    private func makeManager(_ paddle: PaddleSprite) -> SKNodeManager {
-        SKNodeManager(
+}
+
+private final class Scenario {
+    private let sceneSize = Size(width: 100, height: 100)
+    private let paddleMotionController = PaddleMotionController(speed: 1)
+    private let ball = SKBallSprite(position: .zero)
+    private let paddlePosition = Point(x: 10, y: 0)
+    private let paddleSize = Size(width: 2, height: 20)
+    private let paddle: PaddleSprite
+    private let nodeManager: SKNodeManager
+
+    init() {
+        paddle = PaddleSprite(position: paddlePosition, size: paddleSize)
+        nodeManager = SKNodeManager(
             ballLaunchController: BallLaunchController(),
             paddleMotionController: paddleMotionController,
             paddleBounceApplier: PaddleBounceApplier(
@@ -91,6 +58,47 @@ struct SKNodeManagerPaddleMovementTest {
                 paddle: paddle,
             ),
         )
+
+    }
+    
+    func leftMotionFrame() {
+        nodeManager.startPaddleLeft()
+        doUpdate()
+    }
+    
+    func rightMotionFrame() {
+        nodeManager.startPaddleRight()
+        doUpdate()
+    }
+    
+    func stopMotionFrame() {
+        nodeManager.stopPaddle()
+        doUpdate()
+    }
+    
+    func keyboardOverrideBeginFrame(x: Double) {
+        nodeManager.beginPaddleKeyboardOverride(
+            to: CGPoint(x: x, y: 999),
+            sceneSize: CGSize(sceneSize)
+        )
+        doUpdate()
+    }
+    
+    func keyboardOverrideEndFrame() {
+        nodeManager.endPaddleKeyboardOverride()
+        doUpdate()
+    }
+    
+    private func doUpdate() {
+        nodeManager.update(
+            deltaTime: 1.0,
+            sceneSize: sceneSize,
+            visualGameState: .init(levelId: .only)
+        )
+    }
+    
+    func isPaddleAt(_ x: Double) -> Bool {
+        abs(x - paddle.position.x) < 0.001
     }
 
 }

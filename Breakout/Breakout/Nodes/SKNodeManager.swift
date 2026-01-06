@@ -51,7 +51,8 @@ final class SKNodeManager: NodeManager {
 
     func update(
         deltaTime dt: TimeInterval,
-        sceneSize: Size
+        sceneSize: Size,
+        visualGameState: VisualGameState,
     ) {
         removeEnqueued()
 

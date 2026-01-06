@@ -49,6 +49,9 @@ final class FakeGameSceneBuilder: GameSceneBuilder {
 
 private final class FakeRunningGame: RunningGame {
     var ballResetNeeded: Bool = false
+    var visualGameState: VisualGameState {
+        .init(levelId: LevelId.only)
+    }
     
     func announceBallResetInProgress() {
         

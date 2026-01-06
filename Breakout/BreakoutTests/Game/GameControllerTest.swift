@@ -133,6 +133,10 @@ private final class FakeRunningGame: RunningGame {
         _ballResetNeeded
     }
     
+    var visualGameState: VisualGameState {
+        .init(levelId: LevelId.only)
+    }
+    
     private var _levelDidChange: Bool
     
     init () {

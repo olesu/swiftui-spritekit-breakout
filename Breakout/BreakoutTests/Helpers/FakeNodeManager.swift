@@ -49,7 +49,7 @@ final class FakeNodeManager: NodeManager {
         resetBallCount += 1
     }
 
-    func update(deltaTime dt: TimeInterval, sceneSize: Size) {
+    func update(deltaTime dt: TimeInterval, sceneSize: Size, visualGameState: VisualGameState) {
         removalQueue.forEach { removedBrickIds.append($0) }
         removalQueue.removeAll()
         

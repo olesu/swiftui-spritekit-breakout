@@ -20,7 +20,7 @@ final class GameController {
 
     func step(deltaTime dt: TimeInterval, sceneSize: Size) {
         handleLevelTransitionIfNeeded()
-        advanceWorld(deltaTime: dt, sceneSize: sceneSize)
+        advanceWorld(deltaTime: dt, sceneSize: sceneSize, visualGameState: game.visualGameState)
         notifyObserver()
     }
     
@@ -30,11 +30,11 @@ final class GameController {
         }
     }
     
-    private func advanceWorld(deltaTime dt: TimeInterval, sceneSize: Size) {
+    private func advanceWorld(deltaTime dt: TimeInterval, sceneSize: Size, visualGameState: VisualGameState) {
         if game.ballResetNeeded {
             performBallReset(sceneSize: sceneSize)
         } else {
-            updateNodes(deltaTime: dt, sceneSize: sceneSize)
+            updateNodes(deltaTime: dt, sceneSize: sceneSize, visualGameState: visualGameState)
         }
     }
     
@@ -44,10 +44,11 @@ final class GameController {
         game.acknowledgeBallReset()
     }
     
-    private func updateNodes(deltaTime dt: TimeInterval, sceneSize: Size) {
+    private func updateNodes(deltaTime dt: TimeInterval, sceneSize: Size, visualGameState: VisualGameState) {
         nodeManager.update(
             deltaTime: dt,
-            sceneSize: sceneSize
+            sceneSize: sceneSize,
+            visualGameState: visualGameState,
         )
     }
     

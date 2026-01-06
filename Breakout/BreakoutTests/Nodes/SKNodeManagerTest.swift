@@ -16,7 +16,7 @@ struct SKNodeManagerTest {
         #expect(brickLayoutFactory.hasParent(brickId) == true)
 
         manager.enqueueRemoval(of: brickId)
-        manager.update(deltaTime: 1, sceneSize: .zero)
+        manager.update(deltaTime: 1, sceneSize: .zero, visualGameState: .init(levelId: .only))
 
         #expect(brickLayoutFactory.hasParent(brickId) == false)
     }

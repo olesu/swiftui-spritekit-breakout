@@ -80,7 +80,7 @@ private final class GameSimulation {
 
     func hitBrick(brickId: BrickId) {
         gameEventHandler.handle(.brickHit(brickID: brickId))
-        nodeManager.update(deltaTime: 1.0, sceneSize: .zero)
+        nodeManager.update(deltaTime: 1.0, sceneSize: .zero, visualGameState: .init(levelId: .only))
     }
 
     func loseBall() {
